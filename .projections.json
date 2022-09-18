@@ -1,0 +1,12 @@
+{
+  "doc/*.md": {"type": "doc"},
+  "README.md": {"type": "doc"},
+  "src/noahtheduke/*.clj": {
+      "type": "source",
+      "alternate": "test/noahtheduke/{}_test.clj"
+  },
+  "test/noahtheduke/*_test.clj": {
+      "type": "test",
+      "alternate": "src/noahtheduke/{}.clj"
+  }
+}

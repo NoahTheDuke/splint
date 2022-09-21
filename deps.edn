@@ -1,11 +1,18 @@
 {:paths ["src" "resources"]
- :deps {org.clojure/clojure {:mvn/version "1.11.1"}}
+ :deps {org.clojure/clojure {:mvn/version "1.11.1"}
+        rewrite-clj/rewrite-clj {:mvn/version "1.1.45"}
+        methodical/methodical {:mvn/version "0.14.0"}
+        clj-kondo/clj-kondo {:mvn/version "2022.09.08"}}
  :aliases
- {:test
+ {:dev {:extra-paths ["dev"]
+        :extra-deps {com.hyperfiddle/rcf {:mvn/version "20220902-130636"}}}
+  :test
   {:extra-paths ["test"]
-   :extra-deps {org.clojure/test.check {:mvn/version "1.1.1"}
-                io.github.cognitect-labs/test-runner
-                {:git/tag "v0.5.1" :git/sha "dfb30dd"}}}
+   :extra-deps {com.hyperfiddle/rcf {:mvn/version "20220902-130636"}
+                org.clojure/test.check {:mvn/version "1.1.1"}
+                lambdaisland/kaocha {:mvn/version "1.69.1069"}}
+   :jvm-opts ["-Dhyperfiddle.rcf.generate-tests=true"]
+   :main-opts ["-m" "kaocha.runner"]}
   :build {:deps {io.github.seancorfield/build-clj
                  {:git/tag "v0.8.2" :git/sha "0ffdb4c"}}
           :ns-default build}}}

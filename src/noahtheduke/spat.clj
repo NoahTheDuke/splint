@@ -42,7 +42,7 @@
       :seq-fn f
       :children ({:value 3, :string-value "3"})})}
 
-(defn read-dispatch [sexp _form]
+(defn s-type [sexp]
   (cond
     ; literals
     (or (nil? sexp)
@@ -50,18 +50,25 @@
         (number? sexp)) :literal
     (keyword? sexp) :keyword
     (string? sexp) :string
-    (symbol? sexp) (cond
-                     (= '_ sexp) :any
-                     (= \% (first (name sexp))) :pred
-                     :else :symbol)
+    (symbol? sexp) :symbol
     ; reader macros
     (map? sexp) :map
     (set? sexp) :set
     (vector? sexp) :vector
-    (seq? sexp) (if (= 'quote (first sexp))
-                  :quote
-                  :list)
+    (seq? sexp) :list
     :else (class sexp)))
+
+(defn read-dispatch [sexp _form]
+  (let [type (s-type sexp)]
+    (case type
+      :symbol (cond
+                (= '_ sexp) :any
+                (= \% (first (name sexp))) :pred
+                :else :symbol)
+      :list (if (= 'quote (first sexp))
+              :quote
+              :list)
+      type)))
 
 (m/defmulti read-form read-dispatch)
 
@@ -113,29 +120,33 @@
 (m/defmethod read-form :vector [sexp form]
   (read-form-seq sexp form :vector))
 
-(def simple? #{:literal :keyword :symbol})
+(def simple? #{:literal :keyword :string :symbol})
 
 (m/defmethod read-form :map [sexp form]
-  (let [{simple-keys true} (->> (keys sexp)
-                                (group-by #(boolean (simple? (read-dispatch % form)))))
-        children-form (gensym "map-form-")
-        c-as-map (gensym "map-form-child-")
-        preds (keep (fn [k] (read-form (sexp k) `(~c-as-map ~k)))
-                    simple-keys)]
-    `(and (= :map (:tag ~form))
-          (let [~children-form (:children ~form)
-                ~c-as-map (->> ~children-form
-                               (partition 2)
-                               (map (fn [[k# v#]] [(get-val k#) v#]))
-                               (into {}))]
-            (and (<= ~(count simple-keys) (count ~c-as-map))
-                ~@preds)))))
+  (let [children-form (gensym "map-form-")
+        ; c-as-map (gensym "map-form-child-")
+        ; _ (prn :keys (keys sexp))
+        simple-keys (filterv (comp simple? s-type) (keys sexp))
+        ; _ (prn :simple-keys simple-keys (select-keys sexp simple-keys))
+        simple-keys-preds (->> (select-keys sexp simple-keys)
+                               (mapcat (fn [[k v]] [`(contains? ~children-form ~k)
+                                                    (read-form v `(get ~children-form ~k))])))
+        ]
+    ; (prn :simple-keys-preds simple-keys-preds)
+    `(let [form# ~form]
+       (and (= :map (:tag form#))
+            (let [~children-form (vec (:children form#))]
+              (and (<= ~(count simple-keys) (/ (count ~children-form) 2))
+                   ~@simple-keys-preds)
+              )
+            ))))
 
 (defmacro pattern [sexp]
   (let [form (gensym "form-")]
     `(fn [~form] ~(read-form sexp form))))
 
 (comment
-  ((pattern {:a [+]}) (p/parse-string "{:a [+] [2] 3}"))
+  (let [pat (pattern {:a (2 3 4)})]
+    (pat (p/parse-string "{:a (2 3 4) :b 2}")))
   (user/refresh-all)
   ,)

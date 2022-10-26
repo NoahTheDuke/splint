@@ -5,6 +5,7 @@
 (ns noahtheduke.spat
   (:require
    [clj-kondo.impl.rewrite-clj.parser :as p]
+   [clj-kondo.impl.utils :as u]
    [clojure.string :as str]
    [methodical.core :as m]))
 
@@ -47,6 +48,7 @@
     ; literals
     (or (nil? sexp)
         (boolean? sexp)
+        (char? sexp)
         (number? sexp)) :literal
     (keyword? sexp) :keyword
     (string? sexp) :string
@@ -132,8 +134,15 @@
                                (mapcat (fn [[k v]] [`(contains? ~children-form ~k)
                                                     (read-form v `(get ~children-form ~k))])))
         ]
-    ; (prn :simple-keys-preds simple-keys-preds)
+    (prn :simple-keys-preds simple-keys-preds)
     `(let [form# ~form]
+       (prn form# (keys form#))
+       (let [~children-form (vec (:children form#))]
+         (prn :map (= :map (:tag form#))
+              :size (<= ~(count simple-keys) (/ (count ~children-form) 2))
+              :preds ~@simple-keys-preds
+              )
+            )
        (and (= :map (:tag form#))
             (let [~children-form (vec (:children form#))]
               (and (<= ~(count simple-keys) (/ (count ~children-form) 2))
@@ -147,6 +156,6 @@
 
 (comment
   (let [pat (pattern {:a (2 3 4)})]
-    (pat (p/parse-string "{:a (2 3 4) :b 2}")))
+    (pat (p/parse-string "{:a (2 3 4)}")))
   (user/refresh-all)
   ,)

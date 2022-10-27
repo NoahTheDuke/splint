@@ -181,7 +181,6 @@
         current-child (gensym "set-current-child-")
         complex-keys-preds (mapv (fn [k]
                                    `(fn [~current-child]
-                                      (prn :inside ~k ~current-child)
                                       ~(read-form k current-child)))
                                 complex-vals)
         new-form (gensym "set-new-form-")]
@@ -193,28 +192,33 @@
                      (and (or ~(empty? simple-keys-preds)
                               (and ~@simple-keys-preds))
                           (or ~(empty? complex-keys-preds)
-                              (let [~complex-children
-                                    (vec (for [child# ~children-form
-                                               :when (not (contains? ~simple-vals-set (get-simple-val child#)))]
-                                           child#))]
-                                (loop [complex-keys-preds# ~complex-keys-preds
-                                       ~complex-children ~complex-children]
-                                  (if-let [cur-pred# (first complex-keys-preds#)]
-                                    (let [~complex-children
-                                          (loop [idx# 0]
-                                            (when-let [cur-child# (nth ~complex-children idx# nil)]
-                                              (if (cur-pred# cur-child#)
-                                                (not-empty (vec-remove idx# ~complex-children))
-                                                (recur (inc idx#)))))]
-                                      (recur (next complex-keys-preds#) ~complex-children))
-                                    true))))))))))))
+                              ;; loop over both the predicates and the children.
+                              ;; for each predicate, compare it against each child
+                              ;; until it finds a match, and then remove the child
+                              ;; from the list of children and recur.
+                              (loop [complex-keys-preds# (seq ~complex-keys-preds)
+                                     ~complex-children
+                                     (vec (for [child# ~children-form
+                                                :when (not (contains? ~simple-vals-set (get-simple-val child#)))]
+                                            child#))]
+                                (or (empty? complex-keys-preds#)
+                                    (when-let [cur-pred# (first complex-keys-preds#)]
+                                      (let [idx#
+                                            (loop [idx# 0]
+                                              (when-let [cur-child# (nth ~complex-children idx# nil)]
+                                                (if (cur-pred# cur-child#)
+                                                  idx#
+                                                  (recur (inc idx#)))))]
+                                        (prn cur-pred# idx# (nth ~complex-children idx# nil))
+                                        (when idx#
+                                          (recur (next complex-keys-preds#) (vec-remove idx# ~complex-children))))))))))))))))
 
 (defmacro pattern [sexp]
   (let [form (gensym "form-")]
     `(fn [~form] ~(read-form sexp form))))
 
 (comment
-  (let [pat (pattern #{:a [2] [3]})]
-    (pat (p/parse-string "#{:a [2] [3]}")))
+  (let [pat (pattern #{:a [2] [5] [3]})]
+    (pat (p/parse-string "#{:a [2] [4] [3]}")))
   (user/refresh-all)
   ,)

@@ -66,33 +66,31 @@
       :symbol (cond
                 (= '_ sexp) :any
                 (= \% (first (name sexp))) :pred
-                :else :symbol)
+                :else :literal)
       :list (if (= 'quote (first sexp))
               :quote
               :list)
+      ;; else
       type)))
 
 (m/defmulti read-form read-dispatch)
 
 (m/defmethod read-form :default [sexp form]
-  `(do (prn :default (read-dispatch ~sexp ~form))
+  `(do (throw (ex-info "default" {:type (read-dispatch ~sexp ~form)}))
        false))
 
+(m/defmethod read-form :quote [sexp form]
+  `(read-form ~sexp (next ~form)))
+
 (m/defmethod read-form :literal [sexp form]
-  (let [new-form (gensym "literal-new-form-")]
-    `(let [~new-form ~form]
-       (= ~sexp (:value ~new-form)))))
+  `(= ~sexp (:value ~form)))
 
 (m/defmethod read-form :keyword [sexp form]
-  (let [new-form (gensym "keyword-new-form-")]
-    `(let [~new-form ~form]
-       (= ~sexp (:k ~new-form)))))
+  `(= ~sexp (:k ~form)))
 
 (m/defmethod read-form :string [sexp form]
-  (let [new-form (gensym "string-new-form-")]
-    `(let [~new-form ~form]
-       (when-let [lines# (:lines ~form)]
-         (= ~(str/split-lines sexp) lines#)))))
+  `(when-let [lines# (:lines ~form)]
+     (= ~(str/split-lines sexp) lines#)))
 
 (defn get-simple-val [form]
   (or (:value form)
@@ -109,15 +107,11 @@
   ;; pred has to be unquoted and then quoted to keep it a simple keyword,
   ;; not fully qualified, as it needs to be resolved in the calling namespace
   ;; to allow for custom predicate functions
-  (let [pred (symbol (subs (name sexp) 1))
-        new-form (gensym "pred-new-form-")]
-    `(let [~new-form ~form]
-       ((resolve '~pred) (get-val ~new-form)))))
+  (let [pred (symbol (subs (name sexp) 1))]
+    `((resolve '~pred) (get-val ~form))))
 
 (m/defmethod read-form :symbol [sexp form]
-  (let [new-form (gensym "symbol-new-form-")]
-    `(let [~new-form ~form]
-       (= '~sexp (:value ~new-form)))))
+  `(= '~sexp (:value ~form)))
 
 (defn- read-form-seq [sexp form tag]
   (let [children-form (gensym (str (name tag) "-form-"))
@@ -165,7 +159,7 @@
   "remove elem in coll
   from: https://stackoverflow.com/a/18319708/3023252"
   [pos coll]
-  (into (subvec coll 0 pos) (subvec coll (inc pos))))
+  (vec (concat (subvec coll 0 pos) (subvec coll (inc pos)))))
 
 (m/defmethod read-form :set [sexp form]
   (let [children-form (gensym "set-form-children-")
@@ -177,7 +171,6 @@
                                            [[] []]
                                            sexp)
         simple-keys-preds (map (fn [k] (list `contains? simple-vals-set k)) simple-vals)
-        complex-children (gensym "set-form-complex-")
         current-child (gensym "set-current-child-")
         complex-keys-preds (mapv (fn [k]
                                    `(fn [~current-child]
@@ -197,7 +190,7 @@
                               ;; until it finds a match, and then remove the child
                               ;; from the list of children and recur.
                               (loop [complex-keys-preds# (seq ~complex-keys-preds)
-                                     ~complex-children
+                                     complex-children#
                                      (vec (for [child# ~children-form
                                                 :when (not (contains? ~simple-vals-set (get-simple-val child#)))]
                                             child#))]
@@ -205,13 +198,12 @@
                                     (when-let [cur-pred# (first complex-keys-preds#)]
                                       (let [idx#
                                             (loop [idx# 0]
-                                              (when-let [cur-child# (nth ~complex-children idx# nil)]
+                                              (when-let [cur-child# (nth complex-children# idx# nil)]
                                                 (if (cur-pred# cur-child#)
                                                   idx#
                                                   (recur (inc idx#)))))]
-                                        (prn cur-pred# idx# (nth ~complex-children idx# nil))
                                         (when idx#
-                                          (recur (next complex-keys-preds#) (vec-remove idx# ~complex-children))))))))))))))))
+                                          (recur (next complex-keys-preds#) (vec-remove idx# complex-children#))))))))))))))))
 
 (defmacro pattern [sexp]
   (let [form (gensym "form-")]

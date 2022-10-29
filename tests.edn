@@ -8,8 +8,7 @@
                   :kaocha/test-paths ["src" "test"]}]
   :kaocha/color? true
   :kaocha/fail-fast? false
-  :kaocha/reporter #profile {:default kaocha.report.progress/report
-                             :ci kaocha.report/result}
+  :kaocha/reporter kaocha.report.progress/report
   :kaocha/plugins [:kaocha.plugin/capture-output
                    :kaocha.plugin/filter
                    :kaocha.plugin/print-invocations

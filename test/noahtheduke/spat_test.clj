@@ -3,9 +3,21 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 (ns noahtheduke.spat-test
-  (:require [clojure.test :refer :all]
-            [noahtheduke.spat :refer :all]))
+  (:require [expectations.clojure.test
+             :refer [defexpect expect expecting]]
+            [clj-kondo.impl.rewrite-clj.parser :as p]
+            [noahtheduke.spat :refer [pattern]]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(set! *warn-on-reflection* true)
+
+(defexpect pattern-test
+  (let [pat (pattern #{:a [2] [5] [3]})]
+    (expect nil? (pat (p/parse-string "#{:a [2] [4] [3]}")))
+    (expect (pat (p/parse-string "#{:a [2] [5] [3]}")))))
+
+(defexpect literals-test
+  (expect (pattern 'a) (p/parse-string "'a"))
+  (expect (pattern :a) (p/parse-string ":a"))
+  (expect (pattern "a") (p/parse-string "\"a\""))
+  (expect (pattern 1) (p/parse-string "1"))
+  (expect (pattern nil) (p/parse-string "nil")))

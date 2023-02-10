@@ -3,11 +3,6 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 (ns user
-  (:require [hyperfiddle.rcf :as rcf]
-            [clojure.tools.namespace.repl :as tns]
-            [clojure.tools.deps.alpha.repl :as ctd.repl]))
+  (:require [clojure.tools.namespace.repl :as tns]))
 
-(def add-libs ctd.repl/add-libs)
 (def refresh-all tns/refresh-all)
-
-(rcf/enable!)

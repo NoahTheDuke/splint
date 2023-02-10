@@ -13,6 +13,8 @@
                 com.github.seancorfield/expectations {:mvn/version "2.0.160"}}
    :jvm-opts ["-Dhyperfiddle.rcf.generate-tests=true"]
    :main-opts ["-m" "kaocha.runner"]}
+  :benchmark {:extra-deps {criterium/criterium {:mvn/version "0.4.6"}}}
+  :profiler {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.0.3"}}}
   :build {:deps {io.github.seancorfield/build-clj
                  {:git/tag "v0.8.2" :git/sha "0ffdb4c"}}
           :ns-default build}}}

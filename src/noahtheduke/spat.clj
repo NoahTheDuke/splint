@@ -491,7 +491,8 @@
                first-next-rules
                fn-rules
                threading-rules
-               misc-rules)))
+               misc-rules
+               math-rules)))
 
 (defn check-rule [rule form]
   (let [pattern (:pattern rule)

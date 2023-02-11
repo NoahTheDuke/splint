@@ -8,7 +8,11 @@
    [clj-kondo.impl.rewrite-clj.parser :as p]
    [clj-kondo.impl.utils :as u]
    [clojure.string :as str]
-   [noahtheduke.core-extensions :refer [postwalk-replace*]]))
+   [clojure.walk :as walk]
+   [clojure.pprint :as pprint]
+   [clojure.java.io :as io])
+  (:import
+    (java.io File)))
 
 (set! *warn-on-reflection* true)
 
@@ -84,9 +88,9 @@
   ;; not fully qualified, as it needs to be resolved in the calling namespace
   ;; to allow for custom predicate functions
   (let [[pred bind] (str/split (name sexp) #"%-")
-        pred (symbol (subs pred 1))
+        pred (requiring-resolve (symbol (str *ns*) (subs pred 1)))
         bind (when bind (symbol bind))]
-    `(let [result# ((resolve '~pred) (get-val ~form))]
+    `(when-let [result# (~pred (get-val ~form))]
        (when (and result# '~bind)
          (swap! ~retval assoc '~bind (hapi/sexpr ~form)))
        result#)))
@@ -100,10 +104,8 @@
 
 (defmethod read-form :rest [sexp form retval]
   ;; drop &&.
-  (let [sym (symbol (subs (name sexp) 3))
-        new-form (gensym (str "rest-new-form-"))]
-    `(let [~new-form ~form]
-       (swap! ~retval assoc '~sym (hapi/sexpr ~new-form))
+  (let [sym (symbol (subs (name sexp) 3))]
+    `(do (swap! ~retval assoc '~sym (map hapi/sexpr ~form))
          true)))
 
 (defn- read-form-seq [sexp form retval tag]
@@ -218,11 +220,13 @@
 
 (defmacro pattern
   "Must be wrapped in a function to be useful."
-  [form sexp]
-  (let [retval (gensym "retval-")]
-    `(let [~retval (atom {})]
+  [sexp]
+  (let [form (gensym "form-")
+        retval (gensym "retval-")]
+    `(fn [~form]
+       (let [~retval (atom {})]
        (when ~(read-form sexp form retval)
-         @~retval))))
+         @~retval)))))
 
 (defmacro defrule
   [rule-name & opts]
@@ -236,17 +240,14 @@
     `(def ~rule-name
        {:name ~(str rule-name)
         :docstring ~docs
-        :pattern (fn ~(symbol (str rule-name "-pattern-fn"))
-                   [form#]
-                   (pattern form# ~pattern))
+        :pattern (pattern ~pattern)
         :message '~message
         :replace (when ~replace
                    (fn ~(symbol (str rule-name "-replacer-fn"))
                      [form#]
                      (when (not-empty form#)
-                       (postwalk-replace* form# ~replace))))
-        :replace-fn (when ~replace-fn ~replace-fn)
-        })))
+                       (walk/postwalk-replace form# ~replace))))
+        :replace-fn ~replace-fn})))
 
 (defrule str-to-string
   "(.toString) to (str)"
@@ -413,9 +414,10 @@
    :replace '(not-any? ?pred ?coll)})
 
 (defrule with-meta-f-meta
-  {:pattern '(with-meta ?x (?f (meta ?x) &&. ?arg))
+  {:pattern '(with-meta ?x (?f (meta ?x) &&. ?args))
    :message ""
-   :replace '(vary-meta ?x ?f &&. ?arg)})
+   :replace-fn (fn [{:syms [?x ?f ?args]}]
+                 (list* 'vary-meta ?x ?f ?args))})
 
 (def misc-rules
   [not-some-pred
@@ -429,29 +431,57 @@
                threading-rules
                misc-rules)))
 
-(defn check-multiple-rules [rules sexp]
+(defn check-rule [rule form]
+  (let [pattern (:pattern rule)
+        replace (or (:replace rule) (:replace-fn rule))]
+    (when-let [result (pattern form)]
+      (if replace
+        (replace result)
+        result))))
+
+(defn check-multiple-rules [rules form]
   (reduce
-    (fn [_ rule]
-      (let [pattern (:pattern rule)
-            replace (or (:replace rule) (:replace-fn rule))]
-        (when-let [result (pattern sexp)]
-          (reduced (replace result)))))
+    (fn [_ rule] (when-let [alt (check-rule rule form)] (reduced alt)))
     nil
     rules))
 
-(defn check-all-rules [sexp]
-  (check-multiple-rules all-rules sexp))
+(defn check-all-rules [form]
+  (check-multiple-rules all-rules form))
 
-; (let [sexp (p/parse-string "(next (first (range 10)))")]
-;   (require '[criterium.core :as cc])
-;   (cc/quick-bench (check-all-rules sexp)))
+(defn print-find [filename form alt]
+  (let [line (:row (meta form))]
+    (printf "At %s:%s%nConsider using:%n" filename line)
+    (pprint/pprint alt)
+    (println "instead of:")
+    (pprint/pprint (hapi/sexpr form))
+    (newline)
+    (flush)))
 
-
-(check-all-rules (p/parse-string "(with-meta {} (+ (meta {}) 1 2 3 4))"))
+(defn check-subforms [[filename form]]
+  (let [alt (check-all-rules form)]
+    (when alt
+      (print-find filename form alt))
+    (doall (map #(check-subforms [filename %]) (:children form)))
+    nil))
 
 (comment
-  (time (let [{pat :pattern r :replace-fn} thread-first-1-arg]
-          (r (pat (p/parse-string "(-> \"hello\" (goodbye heck))")))))
-  (time (let [{pat :pattern r :replace-fn} thread-first-1-arg]
-          (r (pat (p/parse-string "(-> \"hello\" (goodbye))")))))
+  (check-subforms
+    ["asdf"
+     (p/parse-string-all "(-> x y)
+                         (.toString x)
+                         (with-meta {} (+ (meta {}) 1 2 3 4))")])
+
+  (require '[criterium.core :as cc])
+  (let [form (p/parse-string "(next (first (range 10)))")]
+    (cc/quick-bench (check-all-rules form)))
   ,)
+
+(defn -main [& args]
+  (let [[dir] args]
+    (->> (io/file dir)
+         (file-seq)
+         (filter #(and (.isFile ^File %)
+                       (str/ends-with? % ".clj")))
+         (map #(do [(str %) (p/parse-file-all %)]))
+         (map check-subforms)
+         doall)))

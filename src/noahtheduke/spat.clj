@@ -249,6 +249,68 @@
                        (walk/postwalk-replace form# ~replace))))
         :replace-fn ~replace-fn})))
 
+(defrule plus-x-1
+  {:pattern '(+ ?x 1)
+   :message ""
+   :replace '(inc ?x)})
+
+(defrule plus-1-x
+  {:pattern '(+ 1 ?x)
+   :message ""
+   :replace '(inc ?x)})
+
+(defrule minus-x-1
+  {:pattern '(- ?x 1)
+   :message ""
+   :replace '(dec ?x)})
+
+(defrule nested-muliply
+  {:pattern '(* ?x (* &&. ?xs))
+   :message ""
+   :replace '(* ?x &&. ?xs)})
+
+(defrule nested-addition
+  {:pattern '(+ ?x (+ &&. ?xs))
+   :message ""
+   :replace '(+ ?x &&. ?xs)})
+
+(defrule plus-0
+  {:pattern '(+ ?x 0)
+   :message ""
+   :replace '?x})
+
+(defrule minus-0
+  {:pattern '(- ?x 0)
+   :message ""
+   :replace '?x})
+
+(defrule multiply-by-1
+  {:pattern '(* ?x 1)
+   :message ""
+   :replace '?x})
+
+(defrule divide-by-1
+  {:pattern '(/ ?x 1)
+   :message ""
+   :replace '?x})
+
+(defrule multiply-by-0
+  {:pattern '(* ?x 0)
+   :message ""
+   :replace '0})
+
+(def math-rules
+  [plus-x-1
+   plus-1-x
+   minus-x-1
+   nested-muliply
+   nested-addition
+   plus-0
+   minus-0
+   multiply-by-1
+   divide-by-1
+   multiply-by-0])
+
 (defrule str-to-string
   "(.toString) to (str)"
   {:pattern '(.toString ?x)

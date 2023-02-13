@@ -55,6 +55,16 @@
 
 (defmulti read-form #'read-dispatch)
 
+(defmacro pattern
+  "Must be wrapped in a function to be useful."
+  [sexp]
+  (let [form (gensym "form-")
+        retval (gensym "retval-")]
+    `(fn [~form]
+       (let [~retval (atom {})]
+       (when ~(read-form sexp form retval)
+         @~retval)))))
+
 (defmethod read-form :default [sexp form retval]
   `(do (throw (ex-info "default" {:type (read-dispatch ~sexp ~form ~retval)}))
        false))
@@ -95,8 +105,11 @@
          (swap! ~retval assoc '~bind (hapi/sexpr ~form)))
        result#)))
 
+(def ^:private sentinel (Object.))
+
 (defmethod read-form :var [sexp form retval]
-  `(do (swap! ~retval assoc '~sexp (hapi/sexpr ~form))
+  `(do (swap! ~retval assoc '~sexp {:sentinel sentinel
+                                    :val (hapi/sexpr ~form)})
        true))
 
 (defmethod read-form :symbol [sexp form _retval]
@@ -105,7 +118,8 @@
 (defmethod read-form :rest [sexp form retval]
   ;; drop &&.
   (let [sym (symbol (subs (name sexp) 3))]
-    `(do (swap! ~retval assoc '~sym (map hapi/sexpr ~form))
+    `(do (swap! ~retval assoc '~sym {:sentinel sentinel
+                                     :vals (map hapi/sexpr ~form)})
          true)))
 
 (defn- read-form-seq [sexp form retval tag]
@@ -114,19 +128,20 @@
         preds (loop [idx 0
                      sexp sexp
                      acc []]
-                (if-let [item (first sexp)]
-                  ;; flag that we've hit a special rest binding
-                  (if (= '&&. item)
-                    (do (vreset! rest? true)
-                        (let [ret (read-form
-                                    (symbol (str "&&." (name (second sexp))))
-                                    `(drop ~idx ~children-form)
-                                    retval)]
-                          (conj acc ret)))
-                    (let [res (read-form item `(nth ~children-form ~idx) retval)]
-                      (recur (inc idx)
-                             (next sexp)
-                             (if res (conj acc res) acc))))
+                (if (seq sexp)
+                  (let [item (first sexp)]
+                    ;; flag that we've hit a special rest binding
+                    (if (= '&&. item)
+                      (do (vreset! rest? true)
+                          (let [ret (read-form
+                                      (symbol (str "&&." (name (second sexp))))
+                                      `(drop ~idx ~children-form)
+                                      retval)]
+                            (conj acc ret)))
+                      (let [res (read-form item `(nth ~children-form ~idx) retval)]
+                        (recur (inc idx)
+                               (next sexp)
+                               (if res (conj acc res) acc)))))
                   acc))
         ;; If there's a rest arg, then count of given will be less than or equal
         size-pred (if @rest?
@@ -138,6 +153,13 @@
             (let [~children-form (:children ~new-form)]
               (and ~size-pred
                    ~@preds))))))
+
+(comment
+  (declare check-all-rules)
+  (check-all-rules
+    (p/parse-string "(loop [] (do 1))"))
+  ((pattern '(loop ?binding &&. ?x)) (p/parse-string "(loop [] (do 1))"))
+  )
 
 (defmethod read-form :list [sexp form retval]
   (read-form-seq sexp form retval :list))
@@ -218,16 +240,6 @@
                                         (when idx#
                                           (recur (next complex-keys-preds#) (vec-remove idx# complex-children#))))))))))))))))
 
-(defmacro pattern
-  "Must be wrapped in a function to be useful."
-  [sexp]
-  (let [form (gensym "form-")
-        retval (gensym "retval-")]
-    `(fn [~form]
-       (let [~retval (atom {})]
-       (when ~(read-form sexp form retval)
-         @~retval)))))
-
 (defmacro defrule
   [rule-name & opts]
   (let [docs (when (string? (first opts)) (first opts))
@@ -239,6 +251,8 @@
     `(def ~rule-name
        {:name ~(str rule-name)
         :docstring ~docs
+        :pattern-raw '~pattern
+        :replace-raw '~replace
         :pattern (pattern ~pattern)
         :replace (when ~replace
                    (fn ~(symbol (str rule-name "-replacer-fn"))
@@ -331,8 +345,8 @@
    :replace '(mapcat ?x ?y)})
 
 (defrule mapcat-concat-map
-  {:pattern '(apply concat (map ?x . ?y))
-   :replace '(mapcat ?x . ?y)})
+  {:pattern '(apply concat (map ?x &&. ?y))
+   :replace '(mapcat ?x &&. ?y)})
 
 (defrule filter-complement
   {:pattern '(filter (complement ?pred) ?coll)
@@ -725,11 +739,8 @@
     nil))
 
 (comment
-  (check-subforms
-    ["asdf"
-     (p/parse-string-all "(-> x y)
-                         (.toString x)
-                         (with-meta {} (+ (meta {}) 1 2 3 4))")])
+  (check-all-rules
+    (p/parse-string "(loop [] (do 1))"))
 
   (require '[criterium.core :as cc])
   (let [form (p/parse-string "(next (first (range 10)))")]

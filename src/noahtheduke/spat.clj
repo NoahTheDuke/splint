@@ -126,12 +126,10 @@
 (defmethod read-form :symbol [sexp form _retval]
   `(= '~sexp (:value ~form)))
 
-(def -sentinel (Object.))
-
 (defn- rest-form [sym form retval]
   `(if-let [existing# (get @~retval '~sym)]
-       (= existing# (apply list -sentinel (map hapi/sexpr ~form)))
-       (do (swap! ~retval assoc '~sym (apply list -sentinel (map hapi/sexpr ~form)))
+       (= existing# (apply list (map hapi/sexpr ~form)))
+       (do (swap! ~retval assoc '~sym (apply list (map hapi/sexpr ~form)))
            true)))
 
 (defn- accrue-preds
@@ -262,7 +260,7 @@
       (cond
         (list? item)
         (let [[front-sexp rest-sexp] (split-with #(not= '&&. %) item)]
-          (->> (concat (next (second rest-sexp)) (drop 2 rest-sexp))
+          (->> (concat (second rest-sexp) (drop 2 rest-sexp))
                (concat front-sexp)
                (apply list)))
         (contains? smap item) (smap item)
@@ -487,8 +485,7 @@
 
 (defrule with-meta-f-meta
   {:pattern '(with-meta ?x (?f (meta ?x) &&. ?args))
-   :replace-fn (fn [{:syms [?x ?f ?args]}]
-                 (apply list 'vary-meta ?x ?f (next ?args)))})
+   :replace '(vary-meta ?x ?f &&. ?args)})
 
 (def misc-rules
   [not-some-pred

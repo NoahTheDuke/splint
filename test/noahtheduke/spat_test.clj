@@ -288,8 +288,12 @@
   (check-str "(loop [] (do 1))"))
 
 (defexpect cond-else-test
-  '(cond (pos? x) (inc x) :else -1)
-  (check-str "(cond (pos? x) (inc x) :default -1)"))
+  (expect '(cond (pos? x) (inc x) :else -1)
+    (check-str "(cond (pos? x) (inc x) :default -1)"))
+  (expect '(cond (pos? x) (inc x) :else -1)
+    (check-str "(cond (pos? x) (inc x) true -1)"))
+  (expect nil? (check-str "(cond (pos? x) (inc x) (neg? x) (dec x))"))
+  (expect nil? (check-str "(cond :else true)")))
 
 (defexpect not-eq-test
   '(not= arg1 arg2 arg3)

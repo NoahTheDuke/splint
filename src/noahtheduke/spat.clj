@@ -113,7 +113,7 @@
         pred (resolve (symbol (str *ns*) (subs pred 1)))
         bind (when bind (symbol bind))]
     `(let [result# (~pred (get-val ~form))]
-       (when (and result# '~bind)
+       (when (and result# ~(some? bind))
          (swap! ~retval assoc '~bind (hapi/sexpr ~form)))
        result#)))
 
@@ -126,44 +126,52 @@
 (defmethod read-form :symbol [sexp form _retval]
   `(= '~sexp (:value ~form)))
 
+(defn- accrue-preds
+  ([sexp children-form retval] (accrue-preds sexp children-form retval false))
+  ([sexp children-form retval from-back]
+   (prn :accrue-preds sexp from-back)
+   (keep-indexed
+     (fn [idx item]
+       (let [r (read-form item `(nth ~children-form ~(if from-back `(- (count ~children-form) ~(inc idx)) idx)) retval)]
+         (prn :idx idx :item item :r r)
+         r))
+     sexp)))
+
 (defn- rest-form [sym form retval]
   `(if-let [existing# (get @~retval '~sym)]
        (= existing# (apply list (map hapi/sexpr ~form)))
-       (do (swap! ~retval assoc '~sym (apply list (map hapi/sexpr ~form)))
+       (do (prn :rest-form (map hapi/sexpr ~form))
+           (swap! ~retval assoc '~sym (apply list (map hapi/sexpr ~form)))
+           (prn :retval @~retval)
            true)))
 
-(defn- accrue-preds
-  ([sexp children-form retval] (accrue-preds sexp children-form retval 0))
-  ([sexp children-form retval base]
-   (keep-indexed
-     (fn [idx item]
-       (read-form item `(nth ~children-form ~(+ idx base)) retval))
-     sexp)))
-
-(defn- build-rest-pred [rest-sexp idx children-form retval]
+(defn- build-rest-pred [rest-sexp start end children-form retval]
   (let [rest-sexp (next rest-sexp)
-        [rest-sym & rest-body] rest-sexp
-        rest-size (count rest-body)
+        rest-sym (first rest-sexp)
         &&-idx (.indexOf ^PersistentVector (vec rest-sexp) '&&.)]
     (assert rest-sym "&&. needs a follow-up sym")
     (assert (neg? &&-idx) "Only 1 &&. allowed in a pattern")
     (rest-form
       rest-sym
-      (if (pos? rest-size)
-        `(reverse (drop ~rest-size (reverse (drop ~idx ~children-form))))
-        `(drop ~idx ~children-form))
+      `(take (- (count ~children-form) ~(inc end)) (drop ~start ~children-form))
       retval)))
 
 (defn- read-form-seq [sexp form retval tag]
   (let [children-form (gensym (str (name tag) "-form-"))
         [front-sexp rest-sexp] (split-with #(not= '&&. %) sexp)
         preds (accrue-preds front-sexp children-form retval)
+        post-rest-preds (when (seq rest-sexp)
+                          (accrue-preds (drop 2 rest-sexp) children-form retval true))
         rest-pred (when (seq rest-sexp)
-                    (build-rest-pred rest-sexp (count front-sexp) children-form retval))
-        preds (if rest-pred (conj (vec preds) rest-pred) preds)
-        preds (if rest-pred
-                (concat preds (accrue-preds (drop 2 rest-sexp) children-form retval (+ 2 (count front-sexp))))
-                preds)
+                    (build-rest-pred rest-sexp
+                                     (count front-sexp)
+                                     (count post-rest-preds)
+                                     children-form
+                                     retval))
+        _ (prn preds)
+        _ (prn rest-pred)
+        _ (prn post-rest-preds)
+        preds (filter some? (concat preds [rest-pred] post-rest-preds))
         ;; If there's a rest arg, then count of given will be less than or equal
         size-pred (if rest-pred
                     `(<= ~(- (count sexp) 2) (count ~children-form))
@@ -570,14 +578,6 @@
   {:pattern '(if ?x ?y nil)
    :replace '(when ?x ?y)})
 
-(comment
-  (declare check-all-rules)
-  (check-all-rules
-    (p/parse-string "(loop [] (do 1))"))
-  ((pattern '(if ?x ?y nil))
-   (p/parse-string "(if x \"y\" \"z\")"))
-  ,)
-
 (defrule if-nil-else
   {:pattern '(if ?x nil ?y)
    :replace '(when-not ?x ?y)})
@@ -638,11 +638,18 @@
    {:pattern '(loop ?binding (do &&. ?exprs))
     :replace '(loop ?binding &&. ?exprs)})
 
-(defn not-else [s] (not= :else s))
+(defn not-else [s] (and (not= :else s)
+                        (or (keyword? s)
+                            (true? s))))
 
 (defrule cond-else
   {:pattern '(cond &&. ?pairs %not-else ?else)
    :replace '(cond &&. ?pairs :else ?else)})
+
+(comment
+  ((pattern '(cond &&. ?pairs %not-else ?else))
+   (p/parse-string "(cond (pos? x) (inc x) :default -1)"))
+  ,)
 
 (def control-flow-rules
   [if-else-nil
@@ -758,7 +765,14 @@
 (defn check-multiple-rules [rules form]
   (reduce
     (fn [_ rule]
-      (when-let [alt (check-rule rule form)]
+      (when-let [alt (try (check-rule rule form)
+                          (catch Throwable e
+                            (prn (ex-info (ex-message e)
+                                          (merge {:rule-name (:name rule)
+                                                  :form form
+                                                  :row (:row (meta form))}
+                                                 (ex-data e))
+                                            e))))]
         (reduced {:rule-name (:name rule)
                   :form form
                   :row (:row (meta form))
@@ -770,7 +784,11 @@
   (check-multiple-rules all-rules form))
 
 (defn check-subforms [filename form progress]
-  (let [alt-map (check-all-rules form)]
+  (let [alt-map (try (check-all-rules form)
+                     (catch clojure.lang.ExceptionInfo e
+                       (throw (ex-info (ex-message e)
+                                       (assoc (ex-data e) :filename filename)
+                                       e))))]
     (when alt-map
       (swap! progress update :violations conj (assoc alt-map :filename filename)))
     (doall (map #(check-subforms filename % progress) (:children form)))
@@ -778,7 +796,7 @@
 
 (comment
   (check-all-rules
-    (p/parse-string "(loop [] (do 1))"))
+    (p/parse-string "(cond :else true)"))
 
   (require '[criterium.core :as cc])
   (let [form (p/parse-string "(next (first (range 10)))")]
@@ -801,8 +819,9 @@
         _ (->> (io/file dir)
                (file-seq)
                (filter #(and (.isFile ^File %)
-                             (str/ends-with? % ".clj")))
-               (pmap #(check-subforms (str %) (p/parse-file-all %) progress))
+                             (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
+               (sort)
+               (map #(check-subforms (str %) (p/parse-file-all %) progress))
                doall)
         end-time (System/nanoTime)]
     (doseq [violation (sort-by :filename (:violations @progress))]

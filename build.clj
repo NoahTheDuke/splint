@@ -1,29 +1,27 @@
 (ns build
   (:refer-clojure :exclude [test])
-  (:require [clojure.tools.build.api :as b] ; for b/git-count-revs
-            [org.corfield.build :as bb]))
+  (:require [clojure.tools.build.api :as b]))
 
 (def lib 'io.github.noahtheduke/spat)
-(def version "0.1.0-SNAPSHOT")
-#_ ; alternatively, use MAJOR.MINOR.COMMITS:
-(def version (format "1.0.%s" (b/git-count-revs nil)))
+(defn -version [v] (format "1.0.%s" v))
+(def version "1.0.0")
+(def snapshot (-version "999-SNAPSHOT"))
+(def class-dir "target/classes")
 
-(defn test "Run the tests." [opts]
-  (bb/run-tests opts))
+(def basis (b/create-basis {:project "deps.edn"}))
+(def uber-file (format "target/%s-%s-standalone.jar" (name lib) version))
 
-(defn ci "Run the CI pipeline of tests (and build the JAR)." [opts]
-  (-> opts
-      (assoc :lib lib :version version)
-      (bb/run-tests)
-      (bb/clean)
-      (bb/jar)))
+(defn clean [_]
+  (b/delete {:path "target"}))
 
-(defn install "Install the JAR locally." [opts]
-  (-> opts
-      (assoc :lib lib :version version)
-      (bb/install)))
-
-(defn deploy "Deploy the JAR to Clojars." [opts]
-  (-> opts
-      (assoc :lib lib :version version)
-      (bb/deploy)))
+(defn uber [_]
+  (clean nil)
+  (b/copy-dir {:src-dirs ["src" "resources"]
+               :target-dir class-dir})
+  (b/compile-clj {:basis basis
+                  :src-dirs ["src"]
+                  :class-dir class-dir})
+  (b/uber {:class-dir class-dir
+           :uber-file uber-file
+           :basis basis
+           :main 'noahtheduke.spat}))

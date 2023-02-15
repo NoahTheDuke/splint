@@ -9,34 +9,33 @@
 
 (set! *warn-on-reflection* true)
 
+(defexpect multiple-rest-body
+  '{?test (= 1 1)
+    ?exprs ((prn 1) (prn 2))
+    ?foo (foo bar)}
+  ((spat/pattern '(when ?test &&. ?exprs ?foo (recur)))
+   (p/parse-string "(when (= 1 1) (prn 1) (prn 2) (foo bar) (recur))")))
+
+(defexpect quote-in-pattern
+  '{}
+  ((spat/pattern '(a b 'c))
+   (p/parse-string "(a b 'c)")))
+
 (defn check-str
   [s]
   (:alt (spat/check-all-rules (p/parse-string s))))
 
-#_(do (doall (for [rule-sym [`spat/string-rules
-                `spat/sequence-rules
-                `spat/first-next-rules
-                `spat/fn-rules
-                `spat/threading-rules
-                `spat/misc-rules
-                `spat/math-rules
-                `spat/coll-rules
-                `spat/control-flow-rules
-                `spat/equality-rules]
-      :let [rules @(requiring-resolve rule-sym)]
-      rule rules
-      :let [{:keys [name pattern-raw replace-raw]} rule]]
-  (do (printf
-    "(defexpect %s%n  '%s%n  (check-str \"%s\"))%n%n"
-    (str name "-test")
-    (fnext replace-raw) (fnext pattern-raw)
-    )
-      (flush))))
-    nil)
-
 (defexpect str-to-string-test
   '(str x)
   (check-str "(.toString x)"))
+
+(defexpect dot-obj-usage-test
+  '(.method obj 1 2 3)
+  (check-str "(. obj method 1 2 3)"))
+
+(defexpect dot-class-usage-test
+  '(Obj/method  1 2 3)
+  (check-str "(. Obj method 1 2 3)"))
 
 (defexpect str-apply-interpose-test
   '(clojure.string/join x y)
@@ -55,8 +54,8 @@
   (check-str "(apply concat (apply map x y))"))
 
 (defexpect mapcat-concat-map-test
-  '(mapcat x . y)
-  (check-str "(apply concat (map x . y))"))
+  '(mapcat x y z)
+  (check-str "(apply concat (map x y z))"))
 
 (defexpect filter-complement-test
   '(remove pred coll)
@@ -95,28 +94,28 @@
   (check-str "(next (next coll))"))
 
 (defexpect fn*-wrapper-test
-  '?fun
-  (check-str "(fn* [arg] (?fun arg))"))
+  'f
+  (check-str "(fn* [arg] (f arg))"))
 
 (defexpect fn-wrapper-test
-  '?fun
-  (check-str "(fn [arg] (?fun arg))"))
+  'f
+  (check-str "(fn [arg] (f arg))"))
 
 (defexpect thread-first-no-arg-test
   'x
   (check-str "(-> x)"))
 
 (defexpect thread-first-1-arg-test
-  '(f arg)
-  (check-str "(-> arg f)"))
+  (expect '(f arg) (check-str "(-> arg f)"))
+  (expect '(f arg) (check-str "(-> arg (f))")))
 
 (defexpect thread-last-no-arg-test
   'x
   (check-str "(->> x)"))
 
 (defexpect thread-last-1-arg-test
-  '(form arg)
-  (check-str "(->> arg form)"))
+  (expect '(form arg) (check-str "(->> arg form)"))
+  (expect '(form arg) (check-str "(->> arg (form))")))
 
 (defexpect not-some-pred-test
   '(not-any? pred coll)
@@ -199,25 +198,24 @@
   (check-str "(assoc coll :k (f (get coll :k) args))"))
 
 (defexpect update-in-assoc-test
-  '(assoc-in coll ?keys v)
-  (check-str "(update-in coll ?keys assoc v)"))
+  '(assoc-in coll ks v)
+  (check-str "(update-in coll ks assoc v)"))
 
 (defexpect not-empty?-test
-  '(seq x)
+  '(not-empty x)
   (check-str "(not (empty? x))"))
 
 (defexpect when-not-empty?-test
   (expect '(when (seq x) y) (check-str "(when-not (empty? x) y)"))
-  (expect nil? (check-str "(if (= 1 called-with) \"arg\" \"args\")"))
-  )
+  (expect nil? (check-str "(if (= 1 called-with) \"arg\" \"args\")")))
 
 (defexpect into-set-test
   '(set coll)
   (check-str "(into #{} coll)"))
 
 (defexpect take-repeatedly-test
-  '(repeatedly ?n coll)
-  (check-str "(take ?n (repeatedly coll))"))
+  '(repeatedly n coll)
+  (check-str "(take n (repeatedly coll))"))
 
 (defexpect dorun-map-test
   '(run! f coll)
@@ -236,8 +234,8 @@
   (check-str "(if x (do y))"))
 
 (defexpect if-not-x-y-x-test
-  '(if-not x y ?z)
-  (check-str "(if (not x) y ?z)"))
+  '(if-not x y z)
+  (check-str "(if (not x) y z)"))
 
 (defexpect if-x-x-y-test
   '(or x y)
@@ -247,7 +245,7 @@
   '(when-not x y)
   (check-str "(when (not x) y)"))
 
-(defexpect do-x-test
+(defexpect useless-do-x-test
   'x
   (check-str "(do x)"))
 
@@ -268,8 +266,8 @@
   (check-str "(if-not x (do y))"))
 
 (defexpect if-not-not-test
-  '(if x y ?z)
-  (check-str "(if-not (not x) y ?z)"))
+  '(if x y z)
+  (check-str "(if-not (not x) y z)"))
 
 (defexpect when-not-not-test
   '(when x y)

@@ -12,10 +12,24 @@
    [clojure.pprint :as pprint]
    [clojure.java.io :as io])
   (:import
-    (clojure.lang PersistentVector)
-    (java.io File)))
+    (clojure.lang PersistentList)
+    (java.io File))
+  (:gen-class))
 
 (set! *warn-on-reflection* true)
+
+(defn ->list
+  "Alternative to (apply list (...)) to get concrete list"
+  [coll]
+  (PersistentList/create coll))
+
+(defn drop-quote
+  "(quote (a b c)) -> (a b c)"
+  [sexp]
+  (if (and (seq? sexp)
+           (= 'quote (first sexp)))
+    (fnext sexp)
+    sexp))
 
 (defn simple-type [sexp]
   (cond
@@ -60,18 +74,23 @@
   "Must be wrapped in a function to be useful."
   [sexp]
   (let [form (gensym "form-")
-        retval (gensym "retval-")]
+        retval (gensym "retval-")
+        sexp (drop-quote sexp)]
     `(fn [~form]
        (let [~retval (atom {})]
          (when ~(read-form sexp form retval)
            @~retval)))))
 
+(comment
+  ((pattern '(loop [] (when ?test &&. ?exprs ?foo (recur))))
+   (p/parse-string "(loop [] (when (= 1 1) (prn 1) (prn 2) (foo bar) (recur)))"))
+  ((pattern '(cond &&. ?pairs %not-else ?else))
+    (p/parse-string "(cond (pos? x) (inc x) :default -1)"))
+  ,)
+
 (defmethod read-form :default [sexp form retval]
   `(do (throw (ex-info "default" {:type (read-dispatch ~sexp ~form ~retval)}))
        false))
-
-(defmethod read-form :quote [sexp form retval]
-  (read-form (fnext sexp) form retval))
 
 (defmethod read-form :nil [_sexp form _retval]
   `(let [form# ~form]
@@ -97,6 +116,7 @@
 (defn get-simple-val [form]
   (or (:value form)
       (:k form)
+      (:sym form)
       (some->> (:lines form) (str/join "\n"))))
 
 (defn get-val [form]
@@ -110,7 +130,9 @@
   ;; not fully qualified, as it needs to be resolved in the calling namespace
   ;; to allow for custom predicate functions
   (let [[pred bind] (str/split (name sexp) #"%-")
-        pred (resolve (symbol (str *ns*) (subs pred 1)))
+        pred (subs pred 1)
+        pred (or (resolve (symbol "clojure.core" pred))
+                 (resolve (symbol (or (namespace (symbol pred)) (str *ns*)) pred)))
         bind (when bind (symbol bind))]
     `(let [result# (~pred (get-val ~form))]
        (when (and result# ~(some? bind))
@@ -124,54 +146,61 @@
          true)))
 
 (defmethod read-form :symbol [sexp form _retval]
-  `(= '~sexp (:value ~form)))
+  `(= '~sexp (get-val ~form)))
 
 (defn- accrue-preds
-  ([sexp children-form retval] (accrue-preds sexp children-form retval false))
-  ([sexp children-form retval from-back]
-   (prn :accrue-preds sexp from-back)
-   (keep-indexed
-     (fn [idx item]
-       (let [r (read-form item `(nth ~children-form ~(if from-back `(- (count ~children-form) ~(inc idx)) idx)) retval)]
-         (prn :idx idx :item item :r r)
-         r))
-     sexp)))
+  [sexp children-form retval]
+  (keep-indexed
+    (fn [idx item]
+      (read-form item `(nth ~children-form ~idx) retval))
+    sexp))
+
+(defn- accrue-preds-backward
+  [sexp children-form retval]
+  (keep-indexed
+    (fn [idx item]
+      (read-form item `(nth ~children-form (- (count ~children-form) ~(inc idx))) retval))
+    (reverse sexp)))
 
 (defn- rest-form [sym form retval]
   `(if-let [existing# (get @~retval '~sym)]
-       (= existing# (apply list (map hapi/sexpr ~form)))
-       (do (prn :rest-form (map hapi/sexpr ~form))
-           (swap! ~retval assoc '~sym (apply list (map hapi/sexpr ~form)))
-           (prn :retval @~retval)
+       (= existing# (->list (map hapi/sexpr ~form)))
+       (do (swap! ~retval assoc '~sym (->list (map hapi/sexpr ~form)))
            true)))
 
 (defn- build-rest-pred [rest-sexp start end children-form retval]
-  (let [rest-sexp (next rest-sexp)
-        rest-sym (first rest-sexp)
-        &&-idx (.indexOf ^PersistentVector (vec rest-sexp) '&&.)]
+  (let [[_&& rest-sym] rest-sexp]
     (assert rest-sym "&&. needs a follow-up sym")
-    (assert (neg? &&-idx) "Only 1 &&. allowed in a pattern")
     (rest-form
       rest-sym
-      `(take (- (count ~children-form) ~(inc end)) (drop ~start ~children-form))
+      `(take (- (count ~children-form) ~(+ start end)) (drop ~start ~children-form))
       retval)))
+
+(defmethod read-form :quote [sexp form retval]
+  (let [sexp (drop-quote sexp)
+        sexp (if (seq? sexp) sexp [sexp])
+        children-form (gensym "quote-form-")
+        preds (accrue-preds sexp children-form retval)
+        new-form (gensym "quote-new-form-")]
+    `(let [~new-form ~form]
+       (and (= :quote (:tag ~new-form))
+            (let [~children-form (vec (:children ~new-form))]
+              (and (= 1 (count ~children-form))
+                   ~@preds))))))
 
 (defn- read-form-seq [sexp form retval tag]
   (let [children-form (gensym (str (name tag) "-form-"))
         [front-sexp rest-sexp] (split-with #(not= '&&. %) sexp)
         preds (accrue-preds front-sexp children-form retval)
         post-rest-preds (when (seq rest-sexp)
-                          (accrue-preds (drop 2 rest-sexp) children-form retval true))
+                          (accrue-preds-backward (drop 2 rest-sexp) children-form retval))
         rest-pred (when (seq rest-sexp)
-                    (build-rest-pred rest-sexp
+                    (build-rest-pred (take 2 rest-sexp)
                                      (count front-sexp)
                                      (count post-rest-preds)
                                      children-form
                                      retval))
-        _ (prn preds)
-        _ (prn rest-pred)
-        _ (prn post-rest-preds)
-        preds (filter some? (concat preds [rest-pred] post-rest-preds))
+        preds (filterv some? (concat preds [rest-pred] post-rest-preds))
         ;; If there's a rest arg, then count of given will be less than or equal
         size-pred (if rest-pred
                     `(<= ~(- (count sexp) 2) (count ~children-form))
@@ -270,7 +299,7 @@
         (let [[front-sexp rest-sexp] (split-with #(not= '&&. %) item)]
           (->> (concat (second rest-sexp) (drop 2 rest-sexp))
                (concat front-sexp)
-               (apply list)))
+               (->list)))
         (contains? smap item) (smap item)
         :else
         item))
@@ -462,9 +491,9 @@
   "(-> x y) to (y x)
   (-> x (y)) to (y x)"
   {:pattern '(-> ?arg %symbol-or-keyword-or-list?%-?form)
-   :replace-fn (fn [{:syms [?arg ?form]}]
+   :replace-fn (fn [{:syms [?form ?arg]}]
                  (if (list? ?form)
-                   (apply list (first ?form) ?arg (rest ?form))
+                   (->list `(~(first ?form) ~?arg ~@(rest ?form)))
                    (list ?form ?arg)))})
 
 (defrule thread-last-no-arg
@@ -476,9 +505,9 @@
   "(->> x y) to (y x)
   (->> x (y)) to (y x)"
   {:pattern '(->> ?arg %symbol-or-keyword-or-list?%-?form)
-   :replace-fn (fn [{:syms [?arg ?form]}]
+   :replace-fn (fn [{:syms [?form ?arg]}]
                  (if (list? ?form)
-                   (apply list (concat ?form [?arg]))
+                   (->list (concat ?form [?arg]))
                    (list ?form ?arg)))})
 
 (def threading-rules
@@ -495,9 +524,39 @@
   {:pattern '(with-meta ?x (?f (meta ?x) &&. ?args))
    :replace '(vary-meta ?x ?f &&. ?args)})
 
+(defn symbol-not-class? [sym]
+  (and (symbol? sym)
+       (let [sym (pr-str sym)
+             idx (.lastIndexOf sym ".")]
+         (not (if (neg? idx)
+                (Character/isUpperCase ^char (first sym))
+                (Character/isUpperCase ^char (nth sym (inc idx))))))))
+
+(defrule dot-obj-usage
+  "(. obj method args) -> (.method obj args)"
+  {:pattern '(. %symbol-not-class?%-?obj %symbol?%-?method &&. ?args)
+   :replace-fn (fn [{:syms [?obj ?method ?args]}]
+                 (->list `(~(symbol (str "." ?method)) ~?obj ~@?args)))})
+
+(defn symbol-class? [sym]
+  (and (symbol? sym)
+       (let [sym (pr-str sym)
+             idx (.lastIndexOf sym ".")]
+         (if (neg? idx)
+           (Character/isUpperCase ^char (first sym))
+           (Character/isUpperCase ^char (nth sym (inc idx)))))))
+
+(defrule dot-class-usage
+  "(. Obj method args) -> (.method obj args)"
+  {:pattern '(. %symbol-class?%-?class %symbol?%-?method &&. ?args)
+   :replace-fn (fn [{:syms [?class ?method ?args]}]
+                 (->list `(~(symbol (str ?class "/" ?method)) ~@?args)))})
+
 (def misc-rules
   [not-some-pred
-   with-meta-f-meta])
+   with-meta-f-meta
+   dot-obj-usage
+   dot-class-usage])
 
 ;;vector
 (defrule conj-vec
@@ -539,7 +598,7 @@
 ;; empty?
 (defrule not-empty?
   {:pattern '(not (empty? ?x))
-   :replace '(seq ?x)})
+   :replace '(not-empty ?x)})
 
 (defrule when-not-empty?
   {:pattern '(when-not (empty? ?x) &&. ?y)
@@ -598,7 +657,7 @@
   {:pattern '(when (not ?x) &&. ?y)
    :replace '(when-not ?x &&. ?y)})
 
-(defrule do-x
+(defrule useless-do-x
   {:pattern '(do ?x)
    :replace '?x})
 
@@ -646,11 +705,6 @@
   {:pattern '(cond &&. ?pairs %not-else ?else)
    :replace '(cond &&. ?pairs :else ?else)})
 
-(comment
-  ((pattern '(cond &&. ?pairs %not-else ?else))
-   (p/parse-string "(cond (pos? x) (inc x) :default -1)"))
-  ,)
-
 (def control-flow-rules
   [if-else-nil
    if-nil-else
@@ -658,7 +712,7 @@
    if-not-x-y-x
    if-x-x-y
    when-not-x-y
-   do-x
+   useless-do-x
    if-let-else-nil
    when-do
    when-not-do
@@ -790,7 +844,7 @@
                                        (assoc (ex-data e) :filename filename)
                                        e))))]
     (when alt-map
-      (swap! progress update :violations conj (assoc alt-map :filename filename)))
+      (swap! progress conj (assoc alt-map :filename filename)))
     (doall (map #(check-subforms filename % progress) (:children form)))
     nil))
 
@@ -814,21 +868,21 @@
 
 (defn -main [& args]
   (let [[dir] args
-        progress (atom {:violations []})
+        progress (atom [])
         start-time (System/nanoTime)
-        _ (->> (io/file dir)
-               (file-seq)
-               (filter #(and (.isFile ^File %)
-                             (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
-               (sort)
-               (map #(check-subforms (str %) (p/parse-file-all %) progress))
+        files (->> (io/file dir)
+                   (file-seq)
+                   (filter #(and (.isFile ^File %)
+                                 (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
+                   (sort))
+        _ (->> files
+               (pmap #(check-subforms (str %) (p/parse-file-all %) progress))
                doall)
         end-time (System/nanoTime)]
-    (doseq [violation (sort-by :filename (:violations @progress))]
+    (doseq [violation (sort-by :filename @progress)]
       (print-find violation))
-    (swap! progress assoc :time-spent (/ (double (- end-time start-time)) 1000000.0))
     (printf "Linting took %sms, %s style warnings%n"
-            (int (:time-spent @progress))
-            (count (:violations @progress)))
+            (int (/ (double (- end-time start-time)) 1000000.0))
+            (count @progress))
     (flush)
-    (System/exit (count (:violations @progress)))))
+    (System/exit (count @progress))))

@@ -1,39 +1,47 @@
-# io.github.noahtheduke/spat
+# Next-Generation kibit-style linter
 
-FIXME: my new library.
+Compares forms against known templates, prints the more idiomatic/"Clojure-y" way to
+write the form.
 
-## Usage
+Uses macros to generate fast and efficient comparison functions, can use predicates to
+match against, can capture matched forms.
 
-FIXME: write usage documentation!
+## Speed comparison
 
-Invoke a library API function from the command-line:
+```
+$ tokei ../netrunner/
+===============================================================================
+ Language            Files        Lines         Code     Comments       Blanks
+===============================================================================
+ Clojure               169       113620       102756         4266         6598
+ ClojureC                4         1012          850           36          126
+ ClojureScript          48        12666        11649          142          875
 
-    $ clojure -X noahtheduke.spat/foo :a 1 :b '"two"'
-    {:a 1, :b "two"} "Hello, World!"
+$ time clojure -M:run ../netrunner
+...
+Linting took 6943ms, 614 style warnings
 
-Run the project's tests (they'll fail until you edit them):
+real    0m9.673s
+user    0m31.007s
+sys     0m0.751s
 
-    $ clojure -T:build test
+$ clojure -T:build uber
+$ time java -jar target/spat-1.0.0-standalone.jar ../netrunner
+...
+Linting took 6615ms, 614 style warnings
 
-Run the project's CI pipeline and build a JAR (this will fail until you edit the tests to pass):
+real    0m8.173s
+user    0m27.289s
+sys     0m0.588s
 
-    $ clojure -T:build ci
+$ time bb -m noahtheduke.spat ../netrunner/
+...
+Linting took 16693ms, 614 style warnings
 
-This will produce an updated `pom.xml` file with synchronized dependencies inside the `META-INF`
-directory inside `target/classes` and the JAR in `target`. You can update the version (and SCM tag)
-information in generated `pom.xml` by updating `build.clj`.
-
-Install it locally (requires the `ci` task be run first):
-
-    $ clojure -T:build install
-
-Deploy it to Clojars -- needs `CLOJARS_USERNAME` and `CLOJARS_PASSWORD` environment
-variables (requires the `ci` task be run first):
-
-    $ clojure -T:build deploy
-
-Your library will be deployed to io.github.noahtheduke/spat on clojars.org by default.
-
+real    0m17.883s
+user    0m17.700s
+sys     0m0.180s
+```
 ## License
 
 Copyright © 2022 Noah Bogart

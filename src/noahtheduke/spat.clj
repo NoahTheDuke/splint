@@ -11,8 +11,8 @@
    [clojure.walk :as walk]
    [edamame.core :as e])
   (:import
-   (clojure.lang PersistentList)
-   (java.io File)))
+   (java.io File))
+  (:gen-class))
 
 (set! *warn-on-reflection* true)
 
@@ -25,16 +25,17 @@
    :location? seq?
    :features #{:cljs}
    :read-cond :preserve
-   :auto-resolve (fn [x] (if (= :current x) *ns* (get (ns-aliases *ns*) x)))
-   :readers {'js (fn [v] (list 'js v))}})
+   :auto-resolve (fn [k] (if (= :current k) 'spat (name k)))
+   :readers (fn [r] (fn [v] (list (if (namespace r) r (symbol "spat" (name r))) v)))})
 
 (defn parse-string [s] (e/parse-string s clj-defaults))
 (defn parse-string-all [s] (e/parse-string-all s clj-defaults))
 
-(defn ->list
-  "Alternative to (apply list (...)) to get concrete list"
-  [coll]
-  (PersistentList/create coll))
+(comment
+  (e/parse-string-all
+    "::a :a/b #sql/raw [1 2 3] #unknown [4]"
+    {:auto-resolve (fn [k] (if (= :current k) 'spat (name k)))
+     :readers (fn [r] (fn [v] (list (if (namespace r) r (symbol "spat" (name r))) v)))}))
 
 (defn drop-quote
   "(quote (a b c)) -> (a b c)"
@@ -104,6 +105,8 @@
   `(do (throw (ex-info "default" {:type (read-dispatch ~sexp ~form ~retval)}))
        false))
 
+(defmethod read-form :any [_sexp _form _revtal] nil)
+
 (defmethod read-form :nil [_sexp form _retval]
   `(nil? ~form))
 
@@ -122,22 +125,10 @@
 (defmethod read-form :string [sexp form _retval]
   `(.equals ^String ~sexp ~form))
 
-(defn get-simple-val [form]
-  (or (:value form)
-      (:k form)
-      (:sym form)
-      (some->> (:lines form) (str/join "\n"))))
-
-(defn get-val [form]
-  (or (get-simple-val form)
-      (:children form)))
-
-(defmethod read-form :any [_sexp _form _revtal] nil)
+(defmethod read-form :symbol [sexp form _retval]
+  `(= '~sexp ~form))
 
 (defmethod read-form :pred [sexp form retval]
-  ;; pred has to be unquoted and then quoted to keep it a simple keyword,
-  ;; not fully qualified, as it needs to be resolved in the calling namespace
-  ;; to allow for custom predicate functions
   (let [[pred bind] (str/split (name sexp) #"%-")
         pred (subs pred 1)
         pred (or (resolve (symbol "clojure.core" pred))
@@ -155,9 +146,6 @@
      (do (swap! ~retval assoc '~sexp ~form)
          true)))
 
-(defmethod read-form :symbol [sexp form _retval]
-  `(= '~sexp ~form))
-
 (defn- accrue-preds
   [sexp children-form retval]
   (keep-indexed
@@ -172,19 +160,15 @@
       (read-form item `(nth ~children-form (- (count ~children-form) ~(inc idx))) retval))
     (reverse sexp)))
 
-(defn- rest-form [sym form retval]
-  `(if-let [existing# (get @~retval '~sym)]
-     (= existing# (->list ~form))
-     (do (swap! ~retval assoc '~sym (->list ~form))
-         true)))
-
 (defn- build-rest-pred [rest-sexp start end children-form retval]
   (let [[_&& rest-sym] rest-sexp]
     (assert rest-sym "&&. needs a follow-up sym")
-    (rest-form
-      rest-sym
-      `(take (- (count ~children-form) ~(+ start end)) (drop ~start ~children-form))
-      retval)))
+    `(let [form# (take (- (count ~children-form) ~(+ start end))
+                       (drop ~start ~children-form))]
+       (if-let [existing# (get @~retval '~rest-sym)]
+         (= existing# form#)
+         (do (swap! ~retval assoc '~rest-sym form#)
+             true)))))
 
 (defmethod read-form :quote [sexp form retval]
   (let [sexp (if (seq? sexp) sexp [sexp])
@@ -192,7 +176,7 @@
         preds (accrue-preds sexp children-form retval)]
     `(let [~children-form ~form]
        (and (= 2 (count ~children-form))
-                   ~@preds))))
+            ~@preds))))
 
 (defn- read-form-seq [sexp form retval f]
   (let [children-form (gensym (str (name f) "-form-"))
@@ -217,7 +201,7 @@
             ~@preds))))
 
 (defmethod read-form :list [sexp form retval]
-  (read-form-seq sexp form retval 'list?))
+  (read-form-seq sexp form retval 'seq?))
 
 (defmethod read-form :vector [sexp form retval]
   (read-form-seq sexp form retval 'vector?))
@@ -247,8 +231,8 @@
   (let [new-form (gensym "set-new-form-")
         [simple-vals complex-vals] (reduce (fn [acc cur]
                                              (if (simple? (simple-type cur))
-                                              (update acc 0 conj cur)
-                                              (update acc 1 conj cur)))
+                                               (update acc 0 conj cur)
+                                               (update acc 1 conj cur)))
                                            [[] []]
                                            sexp)
         simple-keys-preds (map (fn [k] `(contains? ~new-form ~k)) simple-vals)
@@ -256,7 +240,7 @@
         complex-keys-preds (mapv (fn [k]
                                    `(fn [~current-child]
                                       ~(read-form k current-child retval)))
-                                complex-vals)
+                                 complex-vals)
         ]
     `(when-let [~new-form ~form]
        (and (set? ~new-form)
@@ -288,11 +272,9 @@
   (walk/postwalk
     (fn [item]
       (cond
-        (list? item)
+        (seq? item)
         (let [[front-sexp rest-sexp] (split-with #(not= '&&. %) item)]
-          (->> (concat (second rest-sexp) (drop 2 rest-sexp))
-               (concat front-sexp)
-               (->list)))
+          (concat front-sexp (second rest-sexp) (drop 2 rest-sexp)))
         (contains? smap item) (smap item)
         :else
         item))
@@ -310,6 +292,7 @@
        ~@docs
        {:name ~(str rule-name)
         :docstring ~(first docs)
+        :init-type (simple-type ~pattern)
         :pattern-raw ~pattern
         :replace-raw ~replace
         :pattern (pattern ~pattern)
@@ -486,7 +469,7 @@
   {:pattern '(-> ?arg %symbol-or-keyword-or-list?%-?form)
    :replace-fn (fn [{:syms [?form ?arg]}]
                  (if (list? ?form)
-                   (->list `(~(first ?form) ~?arg ~@(rest ?form)))
+                   `(~(first ?form) ~?arg ~@(rest ?form))
                    (list ?form ?arg)))})
 
 (defrule thread-last-no-arg
@@ -500,7 +483,7 @@
   {:pattern '(->> ?arg %symbol-or-keyword-or-list?%-?form)
    :replace-fn (fn [{:syms [?form ?arg]}]
                  (if (list? ?form)
-                   (->list (concat ?form [?arg]))
+                   (concat ?form [?arg])
                    (list ?form ?arg)))})
 
 (def threading-rules
@@ -529,7 +512,7 @@
   "(. obj method args) -> (.method obj args)"
   {:pattern '(. %symbol-not-class?%-?obj %symbol?%-?method &&. ?args)
    :replace-fn (fn [{:syms [?obj ?method ?args]}]
-                 (->list `(~(symbol (str "." ?method)) ~?obj ~@?args)))})
+                 `(~(symbol (str "." ?method)) ~?obj ~@?args))})
 
 (defn symbol-class? [sym]
   (and (symbol? sym)
@@ -543,7 +526,7 @@
   "(. Obj method args) -> (.method obj args)"
   {:pattern '(. %symbol-class?%-?class %symbol?%-?method &&. ?args)
    :replace-fn (fn [{:syms [?class ?method ?args]}]
-                 (->list `(~(symbol (str ?class "/" ?method)) ~@?args)))})
+                 `(~(symbol (str ?class "/" ?method)) ~@?args))})
 
 (def misc-rules
   [not-some-pred
@@ -687,8 +670,8 @@
    :replace '(let ?binding &&. ?exprs)})
 
 (defrule loop-do
-   {:pattern '(loop ?binding (do &&. ?exprs))
-    :replace '(loop ?binding &&. ?exprs)})
+  {:pattern '(loop ?binding (do &&. ?exprs))
+   :replace '(loop ?binding &&. ?exprs)})
 
 (defn not-else [s] (and (not= :else s)
                         (or (keyword? s)
@@ -801,6 +784,9 @@
                control-flow-rules
                equality-rules)))
 
+(def grouped-rules
+  (group-by :init-type all-rules))
+
 (defn check-rule [rule form]
   (let [pattern (:pattern rule)
         replace (or (:replace rule) (:replace-fn rule))]
@@ -830,8 +816,9 @@
     nil
     rules))
 
-(defn check-all-rules [form]
-  (check-multiple-rules all-rules form))
+(defn check-rules-for-type [form]
+  (when-let [rules (grouped-rules (simple-type form))]
+    (check-multiple-rules rules form)))
 
 (defn run!
   [proc coll]
@@ -839,7 +826,7 @@
   nil)
 
 (defn check-subforms [filename form progress]
-  (let [alt-map (try (check-all-rules form)
+  (let [alt-map (try (check-rules-for-type form)
                      (catch clojure.lang.ExceptionInfo e
                        (throw (ex-info (ex-message e)
                                        (assoc (ex-data e) :filename filename)
@@ -849,10 +836,22 @@
     (when (seqable? form)
       (run! #(check-subforms filename % progress) form))))
 
-(defn check-all-forms [^File file progress]
-  (let [parsed-file (parse-string-all (slurp file))
+(defn check-file [^File file progress]
+  (let [parsed-file (try (parse-string-all (slurp file))
+                         (catch Throwable e
+                           (prn (ex-info (ex-message e)
+                                       (assoc (ex-data e) :filename (str file))
+                                       e))))
         filename (str file)]
     (run! #(check-subforms filename % progress) parsed-file)))
+
+(defn check-directory [dir progress]
+  (->> (io/file dir)
+       (file-seq)
+       (filter #(and (.isFile ^File %)
+                     (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
+       (map #(check-file % progress))
+       doall))
 
 (defn print-find [{:keys [filename rule-name form line column alt]}]
   (printf "[:%s] %s - %s:%s" rule-name filename line column)
@@ -864,22 +863,16 @@
   (flush))
 
 (defn -main [& args]
-  (let [[dir] args
+  (let [start-time (System/currentTimeMillis)
+        [dir] args
+        _ (assert (string? dir) "A directory or file is required")
         progress (atom [])
-        start-time (System/nanoTime)
-        files (->> (io/file dir)
-                   (file-seq)
-                   (filter #(and (.isFile ^File %)
-                                 (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
-                   (sort))
-        _ (->> files
-               (pmap #(check-all-forms % progress))
-               doall)
-        end-time (System/nanoTime)]
+        _ (check-directory dir progress)
+        end-time (System/currentTimeMillis)]
     (doseq [violation (sort-by :filename @progress)]
       (print-find violation))
     (printf "Linting took %sms, %s style warnings%n"
-            (int (/ (double (- end-time start-time)) 1000000.0))
+            (int (- end-time start-time))
             (count @progress))
     (flush)
     (System/exit (count @progress))))

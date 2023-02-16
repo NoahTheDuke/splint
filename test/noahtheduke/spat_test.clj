@@ -22,7 +22,7 @@
 
 (defn check-str
   [s]
-  (:alt (spat/check-all-rules (spat/parse-string s))))
+  (:alt (spat/check-form-type-rules (spat/parse-string s))))
 
 (defexpect str-to-string-test
   '(str x)

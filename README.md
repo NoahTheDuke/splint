@@ -34,7 +34,13 @@ real    0m8.173s
 user    0m27.289s
 sys     0m0.588s
 
-$ time bb -m noahtheduke.spat ../netrunner/
+$ bbinstall io.github.noahtheduke/spat
+{:coords
+ #:git{:url "https://github.com/noahtheduke/spat",
+       :tag "v0.1",
+       :sha "7061c2c72c575876f6da32b3c146814e25fd84bd"},
+ :lib io.github.noahtheduke/spat}
+$ time spat ../netrunner/
 ...
 Linting took 16693ms, 614 style warnings
 

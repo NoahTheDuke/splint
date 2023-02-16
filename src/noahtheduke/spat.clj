@@ -3,20 +3,33 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 (ns noahtheduke.spat
+  (:refer-clojure :exclude [run!])
   (:require
-   [clj-kondo.hooks-api :as hapi]
-   [clj-kondo.impl.rewrite-clj.parser :as p]
-   [clj-kondo.impl.utils :as u]
+   [clojure.java.io :as io]
+   [clojure.pprint :as pprint]
    [clojure.string :as str]
    [clojure.walk :as walk]
-   [clojure.pprint :as pprint]
-   [clojure.java.io :as io])
+   [edamame.core :as e])
   (:import
-    (clojure.lang PersistentList)
-    (java.io File))
-  (:gen-class))
+   (clojure.lang PersistentList)
+   (java.io File)))
 
 (set! *warn-on-reflection* true)
+
+(def clj-defaults
+  {:all true
+   :quote true
+   :row-key :line
+   :col-key :column
+   :end-location false
+   :location? seq?
+   :features #{:cljs}
+   :read-cond :preserve
+   :auto-resolve (fn [x] (if (= :current x) *ns* (get (ns-aliases *ns*) x)))
+   :readers {'js (fn [v] (list 'js v))}})
+
+(defn parse-string [s] (e/parse-string s clj-defaults))
+(defn parse-string-all [s] (e/parse-string-all s clj-defaults))
 
 (defn ->list
   "Alternative to (apply list (...)) to get concrete list"
@@ -46,7 +59,7 @@
     (set? sexp) :set
     (vector? sexp) :vector
     (seq? sexp) :list
-    :else (class sexp)))
+    :else (type sexp)))
 
 (comment
   (simple-type {:a 1})
@@ -71,7 +84,6 @@
 (defmulti read-form #'read-dispatch)
 
 (defmacro pattern
-  "Must be wrapped in a function to be useful."
   [sexp]
   (let [form (gensym "form-")
         retval (gensym "retval-")
@@ -83,9 +95,9 @@
 
 (comment
   ((pattern '(loop [] (when ?test &&. ?exprs ?foo (recur))))
-   (p/parse-string "(loop [] (when (= 1 1) (prn 1) (prn 2) (foo bar) (recur)))"))
+   (parse-string "(loop [] (when (= 1 1) (prn 1) (prn 2) (foo bar) (recur)))"))
   ((pattern '(cond &&. ?pairs %not-else ?else))
-    (p/parse-string "(cond (pos? x) (inc x) :default -1)"))
+    (parse-string "`(cond (pos? x) (inc x) :default -1)"))
   ,)
 
 (defmethod read-form :default [sexp form retval]
@@ -93,25 +105,22 @@
        false))
 
 (defmethod read-form :nil [_sexp form _retval]
-  `(let [form# ~form]
-     (and (contains? form# :value)
-          (nil? (:value form#)))))
+  `(nil? ~form))
 
 (defmethod read-form :boolean [sexp form _retval]
-  `(~(if sexp 'true? 'false?) (:value ~form)))
+  `(identical? ~sexp ~form))
 
 (defmethod read-form :char [sexp form _retval]
-  `(= ~sexp (:value ~form)))
+  `(identical? ~sexp ~form))
 
 (defmethod read-form :number [sexp form _retval]
-  `(= ~sexp (:value ~form)))
+  `(or (identical? ~sexp ~form) (= ~sexp ~form)))
 
 (defmethod read-form :keyword [sexp form _retval]
-  `(identical? ~sexp (:k ~form)))
+  `(identical? ~sexp ~form))
 
 (defmethod read-form :string [sexp form _retval]
-  `(when-let [lines# (:lines ~form)]
-     (= ~(str/split-lines sexp) lines#)))
+  `(.equals ^String ~sexp ~form))
 
 (defn get-simple-val [form]
   (or (:value form)
@@ -132,21 +141,22 @@
   (let [[pred bind] (str/split (name sexp) #"%-")
         pred (subs pred 1)
         pred (or (resolve (symbol "clojure.core" pred))
-                 (resolve (symbol (or (namespace (symbol pred)) (str *ns*)) pred)))
+                 (requiring-resolve (symbol (or (namespace (symbol pred)) (str *ns*)) pred)))
         bind (when bind (symbol bind))]
-    `(let [result# (~pred (get-val ~form))]
+    `(let [form# ~form
+           result# (~pred form#)]
        (when (and result# ~(some? bind))
-         (swap! ~retval assoc '~bind (hapi/sexpr ~form)))
+         (swap! ~retval assoc '~bind form#))
        result#)))
 
 (defmethod read-form :var [sexp form retval]
   `(if-let [existing# (get @~retval '~sexp)]
-     (= existing# (hapi/sexpr ~form))
-     (do (swap! ~retval assoc '~sexp (hapi/sexpr ~form))
+     (= existing# ~form)
+     (do (swap! ~retval assoc '~sexp ~form)
          true)))
 
 (defmethod read-form :symbol [sexp form _retval]
-  `(= '~sexp (get-val ~form)))
+  `(= '~sexp ~form))
 
 (defn- accrue-preds
   [sexp children-form retval]
@@ -164,9 +174,9 @@
 
 (defn- rest-form [sym form retval]
   `(if-let [existing# (get @~retval '~sym)]
-       (= existing# (->list (map hapi/sexpr ~form)))
-       (do (swap! ~retval assoc '~sym (->list (map hapi/sexpr ~form)))
-           true)))
+     (= existing# (->list ~form))
+     (do (swap! ~retval assoc '~sym (->list ~form))
+         true)))
 
 (defn- build-rest-pred [rest-sexp start end children-form retval]
   (let [[_&& rest-sym] rest-sexp]
@@ -177,19 +187,15 @@
       retval)))
 
 (defmethod read-form :quote [sexp form retval]
-  (let [sexp (drop-quote sexp)
-        sexp (if (seq? sexp) sexp [sexp])
+  (let [sexp (if (seq? sexp) sexp [sexp])
         children-form (gensym "quote-form-")
-        preds (accrue-preds sexp children-form retval)
-        new-form (gensym "quote-new-form-")]
-    `(let [~new-form ~form]
-       (and (= :quote (:tag ~new-form))
-            (let [~children-form (vec (:children ~new-form))]
-              (and (= 1 (count ~children-form))
-                   ~@preds))))))
+        preds (accrue-preds sexp children-form retval)]
+    `(let [~children-form ~form]
+       (and (= 2 (count ~children-form))
+                   ~@preds))))
 
-(defn- read-form-seq [sexp form retval tag]
-  (let [children-form (gensym (str (name tag) "-form-"))
+(defn- read-form-seq [sexp form retval f]
+  (let [children-form (gensym (str (name f) "-form-"))
         [front-sexp rest-sexp] (split-with #(not= '&&. %) sexp)
         preds (accrue-preds front-sexp children-form retval)
         post-rest-preds (when (seq rest-sexp)
@@ -204,42 +210,32 @@
         ;; If there's a rest arg, then count of given will be less than or equal
         size-pred (if rest-pred
                     `(<= ~(- (count sexp) 2) (count ~children-form))
-                    `(= ~(count sexp) (count ~children-form)))
-        new-form (gensym (str (name tag) "-new-form-"))]
-    `(let [~new-form ~form]
-       (and (= ~tag (:tag ~new-form))
-            (let [~children-form (vec (:children ~new-form))]
-              (and ~size-pred
-                   ~@preds))))))
+                    `(= ~(count sexp) (count ~children-form)))]
+    `(let [~children-form ~form]
+       (and (~(resolve f) ~children-form)
+            ~size-pred
+            ~@preds))))
 
 (defmethod read-form :list [sexp form retval]
-  (read-form-seq sexp form retval :list))
+  (read-form-seq sexp form retval 'list?))
 
 (defmethod read-form :vector [sexp form retval]
-  (read-form-seq sexp form retval :vector))
+  (read-form-seq sexp form retval 'vector?))
 
-(def simple? #{:nil :boolean :char :number :keyword :string :symbol :token})
+(def simple? #{:nil :boolean :char :number :keyword :string :symbol})
 
 (defmethod read-form :map [sexp form retval]
   {:pre [(every? (comp simple? simple-type) (keys sexp))]}
-  (let [children-form (gensym "map-form-children-")
-        c-as-map (gensym "map-form-as-map")
+  (let [new-form (gensym "map-form-")
         simple-keys (filterv #(simple? (simple-type %)) (keys sexp))
         simple-keys-preds (->> (select-keys sexp simple-keys)
                                (mapcat (fn [[k v]]
-                                         [(list `contains? c-as-map k)
-                                          (read-form v (list `get c-as-map k) retval)])))
-        new-form (gensym "map-new-form-")]
-    `(when-let [~new-form ~form]
-       (and (= :map (:tag ~new-form))
-            (let [~children-form (vec (:children ~new-form))]
-              (and (every? #(simple? (u/tag %)) (take-nth 2 ~children-form))
-                   (let [~c-as-map (->> ~children-form
-                                        (partition 2)
-                                        (map (fn [[k# v#]] [(get-val k#) v#]))
-                                        (into {}))]
-                     (and (<= ~(count simple-keys) (count ~c-as-map))
-                          ~@simple-keys-preds))))))))
+                                         [`(contains? ~new-form ~k)
+                                          (read-form v `(~new-form ~k) retval)])))]
+    `(let [~new-form ~form]
+       (and (map? ~new-form)
+            (= ~(count simple-keys) (count ~new-form))
+            ~@simple-keys-preds))))
 
 (defn vec-remove
   "remove elem in coll
@@ -248,48 +244,45 @@
   (vec (concat (subvec coll 0 pos) (subvec coll (inc pos)))))
 
 (defmethod read-form :set [sexp form retval]
-  (let [children-form (gensym "set-form-children-")
-        simple-vals-set (gensym "set-form-simple-vals-")
+  (let [new-form (gensym "set-new-form-")
         [simple-vals complex-vals] (reduce (fn [acc cur]
                                              (if (simple? (simple-type cur))
                                               (update acc 0 conj cur)
                                               (update acc 1 conj cur)))
                                            [[] []]
                                            sexp)
-        simple-keys-preds (map (fn [k] (list `contains? simple-vals-set k)) simple-vals)
+        simple-keys-preds (map (fn [k] `(contains? ~new-form ~k)) simple-vals)
         current-child (gensym "set-current-child-")
         complex-keys-preds (mapv (fn [k]
                                    `(fn [~current-child]
                                       ~(read-form k current-child retval)))
                                 complex-vals)
-        new-form (gensym "set-new-form-")]
+        ]
     `(when-let [~new-form ~form]
-       (and (= :set (:tag ~new-form))
-            (let [~children-form (vec (:children ~new-form))]
-              (and (<= ~(count sexp) (count ~children-form))
-                   (let [~simple-vals-set (set (keep get-simple-val ~children-form))]
-                     (and (or ~(empty? simple-keys-preds)
-                              (and ~@simple-keys-preds))
-                          (or ~(empty? complex-keys-preds)
-                              ;; loop over both the predicates and the children.
-                              ;; for each predicate, compare it against each child
-                              ;; until it finds a match, and then remove the child
-                              ;; from the list of children and recur.
-                              (loop [complex-keys-preds# (seq ~complex-keys-preds)
-                                     complex-children#
-                                     (vec (for [child# ~children-form
-                                                :when (not (contains? ~simple-vals-set (get-simple-val child#)))]
-                                            child#))]
-                                (or (empty? complex-keys-preds#)
-                                    (when-let [cur-pred# (first complex-keys-preds#)]
-                                      (let [idx#
-                                            (loop [idx# 0]
-                                              (when-let [cur-child# (nth complex-children# idx# nil)]
-                                                (if (cur-pred# cur-child#)
-                                                  idx#
-                                                  (recur (inc idx#)))))]
-                                        (when idx#
-                                          (recur (next complex-keys-preds#) (vec-remove idx# complex-children#))))))))))))))))
+       (and (set? ~new-form)
+            (<= ~(count sexp) (count ~new-form))
+            (or ~(empty? simple-keys-preds)
+                (and ~@simple-keys-preds))
+            (or ~(empty? complex-keys-preds)
+                ;; loop over both the predicates and the children.
+                ;; for each predicate, compare it against each child
+                ;; until it finds a match, and then remove the child
+                ;; from the list of children and recur.
+                (loop [complex-keys-preds# (seq ~complex-keys-preds)
+                       complex-children#
+                       (vec (for [child# ~new-form
+                                  :when (not (contains? ~new-form child#))]
+                              child#))]
+                  (or (empty? complex-keys-preds#)
+                      (when-let [cur-pred# (first complex-keys-preds#)]
+                        (let [idx#
+                              (loop [idx# 0]
+                                (when-let [cur-child# (nth complex-children# idx# nil)]
+                                  (if (cur-pred# cur-child#)
+                                    idx#
+                                    (recur (inc idx#)))))]
+                          (when idx#
+                            (recur (next complex-keys-preds#) (vec-remove idx# complex-children#))))))))))))
 
 (defn postwalk-splicing-replace [smap replace-form]
   (walk/postwalk
@@ -821,21 +814,29 @@
     (fn [_ rule]
       (when-let [alt (try (check-rule rule form)
                           (catch Throwable e
-                            (prn (ex-info (ex-message e)
+                            (throw (ex-info (ex-message e)
                                           (merge {:rule-name (:name rule)
                                                   :form form
-                                                  :row (:row (meta form))}
+                                                  :line (:line (meta form))
+                                                  :column (:column (meta form))}
                                                  (ex-data e))
-                                            e))))]
-        (reduced {:rule-name (:name rule)
-                  :form form
-                  :row (:row (meta form))
-                  :alt alt})))
+                                          e))))]
+        (let [form-meta (meta form)]
+          (reduced {:rule-name (:name rule)
+                    :form form
+                    :line (:line form-meta)
+                    :column (:column form-meta)
+                    :alt alt}))))
     nil
     rules))
 
 (defn check-all-rules [form]
   (check-multiple-rules all-rules form))
+
+(defn run!
+  [proc coll]
+  (reduce (fn [_ cur] (proc cur) nil) nil coll)
+  nil)
 
 (defn check-subforms [filename form progress]
   (let [alt-map (try (check-all-rules form)
@@ -845,22 +846,18 @@
                                        e))))]
     (when alt-map
       (swap! progress conj (assoc alt-map :filename filename)))
-    (doall (map #(check-subforms filename % progress) (:children form)))
-    nil))
+    (when (seqable? form)
+      (run! #(check-subforms filename % progress) form))))
 
-(comment
-  (check-all-rules
-    (p/parse-string "(cond :else true)"))
+(defn check-all-forms [^File file progress]
+  (let [parsed-file (parse-string-all (slurp file))
+        filename (str file)]
+    (run! #(check-subforms filename % progress) parsed-file)))
 
-  (require '[criterium.core :as cc])
-  (let [form (p/parse-string "(next (first (range 10)))")]
-    (cc/quick-bench (check-all-rules form)))
-  ,)
-
-(defn print-find [{:keys [filename rule-name form row alt]}]
-  (printf "[:%s] At %s:%s" rule-name filename row)
+(defn print-find [{:keys [filename rule-name form line column alt]}]
+  (printf "[:%s] %s - %s:%s" rule-name filename line column)
   (newline)
-  (pprint/pprint (hapi/sexpr form))
+  (pprint/pprint form)
   (println "Consider using:")
   (pprint/pprint alt)
   (newline)
@@ -876,7 +873,7 @@
                                  (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
                    (sort))
         _ (->> files
-               (pmap #(check-subforms (str %) (p/parse-file-all %) progress))
+               (pmap #(check-all-forms % progress))
                doall)
         end-time (System/nanoTime)]
     (doseq [violation (sort-by :filename @progress)]

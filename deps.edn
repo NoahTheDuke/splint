@@ -1,7 +1,6 @@
 {:paths ["src" "resources"]
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
-        rewrite-clj/rewrite-clj {:mvn/version "1.1.45"}
-        clj-kondo/clj-kondo {:mvn/version "2023.01.12"}}
+        borkdude/edamame {:mvn/version "1.1.17"}}
  :aliases
  {:run {:main-opts ["-m" "noahtheduke.spat"]}
   :dev {:extra-paths ["dev"]

@@ -4,7 +4,6 @@
 
 (ns noahtheduke.spat-test
   (:require [expectations.clojure.test :refer [defexpect expect]]
-            [clj-kondo.impl.rewrite-clj.parser :as p]
             [noahtheduke.spat :as spat]))
 
 (set! *warn-on-reflection* true)
@@ -14,16 +13,16 @@
     ?exprs ((prn 1) (prn 2))
     ?foo (foo bar)}
   ((spat/pattern '(when ?test &&. ?exprs ?foo (recur)))
-   (p/parse-string "(when (= 1 1) (prn 1) (prn 2) (foo bar) (recur))")))
+   (spat/parse-string "(when (= 1 1) (prn 1) (prn 2) (foo bar) (recur))")))
 
 (defexpect quote-in-pattern
   '{}
   ((spat/pattern '(a b 'c))
-   (p/parse-string "(a b 'c)")))
+   (spat/parse-string "(a b 'c)")))
 
 (defn check-str
   [s]
-  (:alt (spat/check-all-rules (p/parse-string s))))
+  (:alt (spat/check-all-rules (spat/parse-string s))))
 
 (defexpect str-to-string-test
   '(str x)

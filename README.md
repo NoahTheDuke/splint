@@ -34,7 +34,7 @@ real    0m8.173s
 user    0m27.289s
 sys     0m0.588s
 
-$ bbinstall io.github.noahtheduke/spat
+$ bbin install io.github.noahtheduke/spat
 {:coords
  #:git{:url "https://github.com/noahtheduke/spat",
        :tag "v0.1",
@@ -48,6 +48,7 @@ real    0m17.883s
 user    0m17.700s
 sys     0m0.180s
 ```
+
 ## License
 
 Copyright © 2022 Noah Bogart

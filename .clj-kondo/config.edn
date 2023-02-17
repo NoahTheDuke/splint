@@ -1,2 +1,2 @@
-{:lint-as {noahtheduke.spat/defrule clojure.core/def}
+{:lint-as {noahtheduke.spat.rules/defrule clojure.core/def}
  :linters {:clojure-lsp/unused-public-var {:level :off}}}

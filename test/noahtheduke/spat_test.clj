@@ -4,7 +4,8 @@
 
 (ns noahtheduke.spat-test
   (:require [expectations.clojure.test :refer [defexpect expect]]
-            [noahtheduke.spat :as spat]))
+            [noahtheduke.spat :as spat]
+            [noahtheduke.spat.pattern :refer [pattern]]))
 
 (set! *warn-on-reflection* true)
 
@@ -12,17 +13,17 @@
   '{?test (= 1 1)
     ?exprs ((prn 1) (prn 2))
     ?foo (foo bar)}
-  ((spat/pattern '(when ?test &&. ?exprs ?foo (recur)))
+  ((pattern '(when ?test &&. ?exprs ?foo (recur)))
    (spat/parse-string "(when (= 1 1) (prn 1) (prn 2) (foo bar) (recur))")))
 
 (defexpect quote-in-pattern
   '{}
-  ((spat/pattern '(a b 'c))
+  ((pattern '(a b 'c))
    (spat/parse-string "(a b 'c)")))
 
 (defn check-str
   [s]
-  (:alt (spat/check-form-type-rules (spat/parse-string s))))
+  (:alt (spat/check-rules-for-type (spat/parse-string s))))
 
 (defexpect str-to-string-test
   '(str x)

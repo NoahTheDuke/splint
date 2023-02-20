@@ -7,6 +7,7 @@
    [clojure.java.io :as io]
    [clojure.pprint :as pprint]
    [clojure.string :as str]
+   [clojure.tools.cli :refer [parse-opts]]
    [edamame.core :as e]
    [noahtheduke.spat.pattern :refer [simple-type]]
    [noahtheduke.spat.rules :refer [check-rule grouped-rules]])
@@ -89,12 +90,14 @@
         filename (str file)]
     (run!! (fn [form] (check-subforms ctx filename form)) parsed-file)))
 
-(defn check-directory [ctx dir]
-  (->> (io/file dir)
-       (file-seq)
+(defn check-directories [ctx dirs]
+  (->> (map io/file dirs)
+       (mapcat file-seq)
+       (set)
        (filter #(and (.isFile ^File %)
                      (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
-       (run!! #(check-file ctx %))))
+       (pmap #(check-file ctx %))
+       (doall)))
 
 (defn print-find [{:keys [filename rule-name form line column alt]}]
   (printf "[:%s] %s - %s:%s" rule-name filename line column)
@@ -105,18 +108,64 @@
   (newline)
   (flush))
 
+(def cli-options
+  [
+   ["-h" "--help" "This message"]
+   [nil "--clj-kondo" "Output in clj-kondo format"
+    :default false]
+   ["-q" "--quiet" "Print no suggestions, only return exit code"
+    :default false]
+   ])
+
+(comment
+  (parse-opts ["--quiet" "src"] cli-options))
+
+(defn print-help
+  [summary]
+  (->> ["splint: sexpr pattern matching and idiom checking"
+        ""
+        "Usage:"
+        "  splint [options] [path...]"
+        "  splint [options] -- [path...]"
+        ""
+        "Options:"
+        summary
+        ""]
+       (str/join \newline)))
+
+(comment
+  (println (print-help (:summary (parse-opts nil cli-options))))
+  )
+
+(defn print-errors
+  [errors]
+  (str/join \newline (cons "Ran into errors:" errors)))
+
+(defn validate-args
+  [args]
+  (let [{:keys [arguments options errors summary]} (parse-opts args cli-options :in-order true)]
+    (cond
+      (:help options) {:exit-message (print-help summary) :ok true}
+      errors {:exit-message (print-errors errors)}
+      (seq arguments) {:options options
+                       :paths arguments}
+      :else {:exit-message (print-help summary) :ok true})))
+
 (defn -main [& args]
   (let [start-time (System/currentTimeMillis)
-        [dir] args
-        _ (assert (string? dir) "A directory or file is required")
-        ctx (atom {:violations []})
-        _ (check-directory ctx dir)
-        end-time (System/currentTimeMillis)
-        violations (:violations @ctx)]
-    (doseq [violation (sort-by :filename violations)]
-      (print-find violation))
-    (printf "Linting took %sms, %s style warnings%n"
-            (int (- end-time start-time))
-            (count violations))
-    (flush)
-    (System/exit (count violations))))
+        {:keys [options paths exit-message ok]} (validate-args args)]
+    (if exit-message
+      (do (when-not (:quiet options) (println exit-message))
+          (System/exit (if ok 0 1)))
+      (let [ctx (atom {:violations []})
+            _ (check-directories ctx paths)
+            end-time (System/currentTimeMillis)
+            violations (:violations @ctx)]
+        (when-not (:quiet options)
+          (doseq [violation (sort-by :filename violations)]
+            (print-find violation)))
+        (printf "Linting took %sms, %s style warnings%n"
+                (int (- end-time start-time))
+                (count violations))
+        (flush)
+        (System/exit (count violations))))))

@@ -5,7 +5,8 @@
 (ns noahtheduke.spat-test
   (:require [expectations.clojure.test :refer [defexpect expect]]
             [noahtheduke.spat :as spat]
-            [noahtheduke.spat.pattern :refer [pattern]]))
+            [noahtheduke.spat.pattern :refer [pattern]]
+            [noahtheduke.spat.rules :refer [global-rules]]))
 
 (set! *warn-on-reflection* true)
 
@@ -23,7 +24,7 @@
 
 (defn check-str
   [s]
-  (:alt (spat/check-rules-for-type (spat/parse-string s))))
+  (:alt (spat/check-rules-for-type @global-rules (spat/parse-string s))))
 
 (defexpect str-to-string-test
   '(str x)

@@ -10,7 +10,7 @@
    [clojure.tools.cli :refer [parse-opts]]
    [edamame.core :as e]
    [noahtheduke.spat.pattern :refer [simple-type]]
-   [noahtheduke.spat.rules :refer [check-rule grouped-rules]])
+   [noahtheduke.spat.rules :refer [check-rule global-rules]])
   (:import
    (java.io File))
   (:gen-class))
@@ -59,9 +59,9 @@
     nil
     rules))
 
-(defn check-rules-for-type [form]
-  (when-let [rules (grouped-rules (simple-type form))]
-    (check-multiple-rules rules form)))
+(defn check-rules-for-type [rules form]
+  (when-let [rules-for-type (rules (simple-type form))]
+    (check-multiple-rules rules-for-type form)))
 
 (defn run!!
   "Reduce over a collection purely for side effects, returning nil. Reducing function
@@ -70,8 +70,8 @@
   (reduce (fn [_ cur] (proc cur) nil) nil coll)
   nil)
 
-(defn check-subforms [ctx filename form]
-  (let [alt-map (try (check-rules-for-type form)
+(defn check-subforms [ctx rules filename form]
+  (let [alt-map (try (check-rules-for-type rules form)
                      (catch clojure.lang.ExceptionInfo e
                        (throw (ex-info (ex-message e)
                                        (assoc (ex-data e) :filename filename)
@@ -79,24 +79,22 @@
     (when alt-map
       (swap! ctx update :violations conj (assoc alt-map :filename filename)))
     (when (seqable? form)
-      (run!! (fn [fm] (check-subforms filename fm ctx)) form))))
+      (run!! (fn [fm] (check-subforms ctx rules filename fm)) form))))
 
-(defn check-file [ctx ^File file]
+(defn check-file [ctx rules ^File file]
   (let [parsed-file (try (parse-string-all (slurp file))
                          (catch Throwable e
                            (prn (ex-info (ex-message e)
                                        (assoc (ex-data e) :filename (str file))
                                        e))))
         filename (str file)]
-    (run!! (fn [form] (check-subforms ctx filename form)) parsed-file)))
+    (run!! (fn [form] (check-subforms ctx rules filename form)) parsed-file)))
 
-(defn check-directories [ctx dirs]
-  (->> (map io/file dirs)
-       (mapcat file-seq)
-       (set)
+(defn check-paths [ctx rules paths]
+  (->> (mapcat #(file-seq (io/file %)) paths)
        (filter #(and (.isFile ^File %)
                      (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
-       (pmap #(check-file ctx %))
+       (pmap #(check-file ctx rules %))
        (doall)))
 
 (defn print-find [{:keys [filename rule-name form line column alt]}]
@@ -109,13 +107,11 @@
   (flush))
 
 (def cli-options
-  [
-   ["-h" "--help" "This message"]
+  [["-h" "--help" "This message"]
    [nil "--clj-kondo" "Output in clj-kondo format"
     :default false]
    ["-q" "--quiet" "Print no suggestions, only return exit code"
-    :default false]
-   ])
+    :default false]])
 
 (comment
   (parse-opts ["--quiet" "src"] cli-options))
@@ -147,8 +143,7 @@
     (cond
       (:help options) {:exit-message (print-help summary) :ok true}
       errors {:exit-message (print-errors errors)}
-      (seq arguments) {:options options
-                       :paths arguments}
+      (seq arguments) {:options options :paths arguments}
       :else {:exit-message (print-help summary) :ok true})))
 
 (defn -main [& args]
@@ -158,7 +153,8 @@
       (do (when-not (:quiet options) (println exit-message))
           (System/exit (if ok 0 1)))
       (let [ctx (atom {:violations []})
-            _ (check-directories ctx paths)
+            rules @global-rules
+            _ (check-paths ctx rules paths)
             end-time (System/currentTimeMillis)
             violations (:violations @ctx)]
         (when-not (:quiet options)

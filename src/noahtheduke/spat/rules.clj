@@ -7,6 +7,10 @@
    [clojure.walk :as walk]
    [noahtheduke.spat.pattern :refer [pattern simple-type]]))
 
+(def global-rules
+  "All registered rules, grouped by :init-type"
+  (atom {}))
+
 (defn postwalk-splicing-replace [smap replace-form]
   (walk/postwalk
     (fn [item]
@@ -19,9 +23,12 @@
         item))
     replace-form))
 
-(defn check-rule [rule form]
-  (let [pattern (:pattern rule)
-        replace (or (:replace rule) (:replace-fn rule))]
+(defn check-rule
+  "docss"
+  [rule form]
+  (let [rule' @rule
+        pattern (:pattern rule')
+        replace (or (:replace rule') (:replace-fn rule'))]
     (when-let [result (pattern form)]
       (if replace
         (replace result)
@@ -35,19 +42,21 @@
     (assert (simple-symbol? rule-name) "defrule name cannot be namespaced")
     (assert (not (and replace replace-fn))
             "defrule cannot define both replace and replace-fn")
-    `(def ~rule-name
-       ~@docs
-       {:name ~(str rule-name)
-        :docstring ~(first docs)
-        :init-type (simple-type ~pattern)
-        :pattern-raw ~pattern
-        :replace-raw ~replace
-        :pattern (pattern ~pattern)
-        :replace ~(when replace
-                    `(fn ~(symbol (str rule-name "-replacer-fn"))
-                       [smap#]
-                       (postwalk-splicing-replace smap# ~replace)))
-        :replace-fn ~replace-fn})))
+    `(let [rule# (def ~rule-name
+                   ~@docs
+                   {:name ~(str rule-name)
+                    :docstring ~(first docs)
+                    :init-type (simple-type ~pattern)
+                    :pattern-raw ~pattern
+                    :replace-raw ~replace
+                    :pattern (pattern ~pattern)
+                    :replace ~(when replace
+                                `(fn ~(symbol (str rule-name "-replacer-fn"))
+                                   [smap#]
+                                   (postwalk-splicing-replace smap# ~replace)))
+                    :replace-fn ~replace-fn})]
+       (swap! global-rules update (simple-type ~pattern) (fnil conj []) rule#)
+       rule#)))
 
 (defrule plus-x-1
   {:pattern '(+ ?x 1)
@@ -89,18 +98,6 @@
   {:pattern '(* ?x 0)
    :replace '0})
 
-(def math-rules
-  [plus-x-1
-   plus-1-x
-   minus-x-1
-   nested-muliply
-   nested-addition
-   plus-0
-   minus-0
-   multiply-by-1
-   divide-by-1
-   multiply-by-0])
-
 (defrule str-to-string
   "(.toString) to (str)"
   {:pattern '(.toString ?x)
@@ -119,14 +116,7 @@
 (defrule str-apply-str
   "(apply str) to (str/join)"
   {:pattern '(apply str ?x)
-   :replace '(clojure.string/join ?x)}) 
-
-(def string-rules
-  "All str and clojure.string related rules"
-  [str-to-string
-   str-apply-interpose
-   str-apply-reverse
-   str-apply-str])
+   :replace '(clojure.string/join ?x)})
 
 (defrule mapcat-apply-apply
   {:pattern '(apply concat (apply map ?x ?y))
@@ -156,15 +146,6 @@
   {:pattern '(vec (filter ?pred ?coll))
    :replace '(filterv ?pred ?coll)})
 
-(def sequence-rules
-  [mapcat-apply-apply
-   mapcat-concat-map
-   filter-complement
-   filter-seq
-   filter-fn*-not-pred
-   filter-fn-not-pred
-   filter-vec-filter])
-
 (defrule first-first
   {:pattern '(first (first ?coll))
    :replace '(ffirst ?coll)})
@@ -181,12 +162,6 @@
   {:pattern '(next (first ?coll))
    :replace '(nfirst ?coll)})
 
-(def first-next-rules
-  [first-first
-   first-next
-   next-first
-   next-next])
-
 (defrule fn*-wrapper
   {:pattern '(fn* [?arg] (?fun ?arg))
    :replace '?fun})
@@ -194,10 +169,6 @@
 (defrule fn-wrapper
   {:pattern '(fn [?arg] (?fun ?arg))
    :replace '?fun})
-
-(def fn-rules
-  [fn*-wrapper
-   fn-wrapper])
 
 (defrule thread-first-no-arg
   "(-> x) to x"
@@ -232,12 +203,6 @@
                  (if (list? ?form)
                    (concat ?form [?arg])
                    (list ?form ?arg)))})
-
-(def threading-rules
-  [thread-first-no-arg
-   thread-first-1-arg
-   thread-last-no-arg
-   thread-last-1-arg])
 
 (defrule not-some-pred
   {:pattern '(not (some ?pred ?coll))
@@ -274,12 +239,6 @@
   {:pattern '(. %symbol-class?%-?class %symbol?%-?method &&. ?args)
    :replace-fn (fn [{:syms [?class ?method ?args]}]
                  `(~(symbol (str ?class "/" ?method)) ~@?args))})
-
-(def misc-rules
-  [not-some-pred
-   with-meta-f-meta
-   dot-obj-usage
-   dot-class-usage])
 
 ;;vector
 (defrule conj-vec
@@ -339,22 +298,6 @@
 (defrule dorun-map
   {:pattern '(dorun (map ?fn ?coll))
    :replace '(run! ?fn ?coll)})
-
-(def coll-rules
-  [conj-vec
-   into-vec
-   assoc-assoc-key-coll
-   assoc-assoc-coll-key
-   assoc-assoc-get
-   assoc-fn-key-coll
-   assoc-fn-coll-key
-   assoc-fn-get
-   update-in-assoc
-   not-empty?
-   when-not-empty?
-   into-set
-   take-repeatedly
-   dorun-map])
 
 (defrule if-else-nil
   {:pattern '(if ?x ?y nil)
@@ -428,25 +371,6 @@
   {:pattern '(cond &&. ?pairs %not-else ?else)
    :replace '(cond &&. ?pairs :else ?else)})
 
-(def control-flow-rules
-  [if-else-nil
-   if-nil-else
-   if-then-do
-   if-not-x-y-x
-   if-x-x-y
-   when-not-x-y
-   useless-do-x
-   if-let-else-nil
-   when-do
-   when-not-do
-   if-not-do
-   if-not-not
-   when-not-not
-   loop-empty-when
-   let-do
-   loop-do
-   cond-else])
-
 (defrule not-eq
   {:pattern '(not (= &&. ?args))
    :replace '(not= &&. ?args)})
@@ -502,35 +426,3 @@
 (defrule not-nil?
   {:pattern '(not (nil? ?x))
    :replace '(some? ?x)})
-
-(def equality-rules
-  [not-eq
-   eq-0-x
-   eq-x-0
-   eqeq-0-x
-   eqeq-x-0
-   lt-0-x
-   lt-x-0
-   gt-0-x
-   gt-x-0
-   eq-true
-   eq-false
-   eq-x-nil
-   eq-nil-x
-   not-nil?])
-
-(def all-rules
-  (vec (concat string-rules
-               sequence-rules
-               first-next-rules
-               fn-rules
-               threading-rules
-               misc-rules
-               math-rules
-               coll-rules
-               control-flow-rules
-               equality-rules)))
-
-(def grouped-rules
-  (group-by :init-type all-rules))
-

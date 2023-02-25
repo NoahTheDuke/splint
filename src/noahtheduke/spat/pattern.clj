@@ -4,7 +4,9 @@
 
 (ns noahtheduke.spat.pattern
   (:require
-   [clojure.string :as str]))
+    [clojure.string :as str]))
+
+(set! *warn-on-reflection* true)
 
 (defn drop-quote
   "(quote (a b c)) -> (a b c)"

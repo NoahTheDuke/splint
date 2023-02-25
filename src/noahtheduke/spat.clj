@@ -3,165 +3,85 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 (ns noahtheduke.spat
+  "Entry-point for spat. Loads all of the lints up front, delegates all work to library
+  functions."
+  (:gen-class)
   (:require
-   [clojure.java.io :as io]
-   [clojure.pprint :as pprint]
-   [clojure.string :as str]
-   [clojure.tools.cli :refer [parse-opts]]
-   [edamame.core :as e]
-   [noahtheduke.spat.pattern :refer [simple-type]]
-   [noahtheduke.spat.rules :refer [check-rule global-rules]])
-  (:import
-   (java.io File))
-  (:gen-class))
+    noahtheduke.spat.pattern
+    noahtheduke.spat.rules
+    [noahtheduke.spat.runner :as runner])
+  (:require
+    ;; # Rules
+    ;; Please keep this sorted
+    [noahtheduke.spat.rules.apply-str]
+    [noahtheduke.spat.rules.apply-str-interpose]
+    [noahtheduke.spat.rules.apply-str-reverse]
+    [noahtheduke.spat.rules.assoc-assoc]
+    [noahtheduke.spat.rules.assoc-fn]
+    [noahtheduke.spat.rules.cond-else]
+    [noahtheduke.spat.rules.conj-vector]
+    [noahtheduke.spat.rules.divide-by-one]
+    [noahtheduke.spat.rules.dorun-map]
+    [noahtheduke.spat.rules.dot-class-method]
+    [noahtheduke.spat.rules.dot-obj-method]
+    [noahtheduke.spat.rules.eq-false]
+    [noahtheduke.spat.rules.eq-nil]
+    [noahtheduke.spat.rules.eq-zero]
+    [noahtheduke.spat.rules.filter-complement]
+    [noahtheduke.spat.rules.filter-fn-not-pred]
+    [noahtheduke.spat.rules.filter-seq]
+    [noahtheduke.spat.rules.filter-vec-filter]
+    [noahtheduke.spat.rules.first-first]
+    [noahtheduke.spat.rules.first-next]
+    [noahtheduke.spat.rules.fn-wrapper]
+    [noahtheduke.spat.rules.helpers]
+    [noahtheduke.spat.rules.if-else-nil]
+    [noahtheduke.spat.rules.if-let-else-nil]
+    [noahtheduke.spat.rules.if-nil-else]
+    [noahtheduke.spat.rules.if-not-both]
+    [noahtheduke.spat.rules.if-not-do]
+    [noahtheduke.spat.rules.if-not-not]
+    [noahtheduke.spat.rules.if-same-truthy]
+    [noahtheduke.spat.rules.if-then-do]
+    [noahtheduke.spat.rules.into-literal]
+    [noahtheduke.spat.rules.let-do]
+    [noahtheduke.spat.rules.loop-do]
+    [noahtheduke.spat.rules.loop-empty-when]
+    [noahtheduke.spat.rules.mapcat-apply-apply]
+    [noahtheduke.spat.rules.mapcat-concat-map]
+    [noahtheduke.spat.rules.minus-one]
+    [noahtheduke.spat.rules.minus-zero]
+    [noahtheduke.spat.rules.multiply-by-one]
+    [noahtheduke.spat.rules.multiply-by-zero]
+    [noahtheduke.spat.rules.neg-checks]
+    [noahtheduke.spat.rules.nested-addition]
+    [noahtheduke.spat.rules.nested-multiply]
+    [noahtheduke.spat.rules.next-first]
+    [noahtheduke.spat.rules.next-next]
+    [noahtheduke.spat.rules.not-empty]
+    [noahtheduke.spat.rules.not-eq]
+    [noahtheduke.spat.rules.not-nil]
+    [noahtheduke.spat.rules.not-some-pred]
+    [noahtheduke.spat.rules.plus-one]
+    [noahtheduke.spat.rules.plus-zero]
+    [noahtheduke.spat.rules.pos-checks]
+    [noahtheduke.spat.rules.take-repeatedly]
+    [noahtheduke.spat.rules.thread-macro-no-arg]
+    [noahtheduke.spat.rules.thread-macro-one-arg]
+    [noahtheduke.spat.rules.tostring]
+    [noahtheduke.spat.rules.true-checks]
+    [noahtheduke.spat.rules.update-in-assoc]
+    [noahtheduke.spat.rules.useless-do]
+    [noahtheduke.spat.rules.when-do]
+    [noahtheduke.spat.rules.when-not-call]
+    [noahtheduke.spat.rules.when-not-do]
+    [noahtheduke.spat.rules.when-not-empty]
+    [noahtheduke.spat.rules.when-not-not]
+    [noahtheduke.spat.rules.with-meta]))
 
 (set! *warn-on-reflection* true)
 
-(def clj-defaults
-  {:all true
-   :quote true
-   :row-key :line
-   :col-key :column
-   :end-location false
-   :location? seq?
-   :features #{:cljs}
-   :read-cond :preserve
-   :auto-resolve (fn [k] (if (= :current k) 'spat (name k)))
-   :readers (fn [r] (fn [v] (list (if (namespace r) r (symbol "spat" (name r))) v)))})
-
-(defn parse-string [s] (e/parse-string s clj-defaults))
-(defn parse-string-all [s] (e/parse-string-all s clj-defaults))
-
-(comment
-  (e/parse-string-all
-    "::a :a/b #sql/raw [1 2 3] #unknown [4]"
-    {:auto-resolve (fn [k] (if (= :current k) 'spat (name k)))
-     :readers (fn [r] (fn [v] (list (if (namespace r) r (symbol "spat" (name r))) v)))}))
-
-(defn check-multiple-rules [rules form]
-  (reduce
-    (fn [_ rule]
-      (when-let [alt (try (check-rule rule form)
-                          (catch Throwable e
-                            (throw (ex-info (ex-message e)
-                                          (merge {:rule-name (:name rule)
-                                                  :form form
-                                                  :line (:line (meta form))
-                                                  :column (:column (meta form))}
-                                                 (ex-data e))
-                                          e))))]
-        (let [form-meta (meta form)]
-          (reduced {:rule-name (:name rule)
-                    :form form
-                    :line (:line form-meta)
-                    :column (:column form-meta)
-                    :alt alt}))))
-    nil
-    rules))
-
-(defn check-rules-for-type [rules form]
-  (when-let [rules-for-type (rules (simple-type form))]
-    (check-multiple-rules rules-for-type form)))
-
-(defn run!!
-  "Reduce over a collection purely for side effects, returning nil. Reducing function
-  returns nil to disallow using reduced in the proc."
-  [proc coll]
-  (reduce (fn [_ cur] (proc cur) nil) nil coll)
-  nil)
-
-(defn check-subforms [ctx rules filename form]
-  (let [alt-map (try (check-rules-for-type rules form)
-                     (catch clojure.lang.ExceptionInfo e
-                       (throw (ex-info (ex-message e)
-                                       (assoc (ex-data e) :filename filename)
-                                       e))))]
-    (when alt-map
-      (swap! ctx update :violations conj (assoc alt-map :filename filename)))
-    (when (seqable? form)
-      (run!! (fn [fm] (check-subforms ctx rules filename fm)) form))))
-
-(defn check-file [ctx rules ^File file]
-  (let [parsed-file (try (parse-string-all (slurp file))
-                         (catch Throwable e
-                           (prn (ex-info (ex-message e)
-                                       (assoc (ex-data e) :filename (str file))
-                                       e))))
-        filename (str file)]
-    (run!! (fn [form] (check-subforms ctx rules filename form)) parsed-file)))
-
-(defn check-paths [ctx rules paths]
-  (->> (mapcat #(file-seq (io/file %)) paths)
-       (filter #(and (.isFile ^File %)
-                     (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
-       (pmap #(check-file ctx rules %))
-       (doall)))
-
-(defn print-find [{:keys [filename rule-name form line column alt]}]
-  (printf "[:%s] %s - %s:%s" rule-name filename line column)
-  (newline)
-  (pprint/pprint form)
-  (println "Consider using:")
-  (pprint/pprint alt)
-  (newline)
-  (flush))
-
-(def cli-options
-  [["-h" "--help" "This message"]
-   [nil "--clj-kondo" "Output in clj-kondo format"
-    :default false]
-   ["-q" "--quiet" "Print no suggestions, only return exit code"
-    :default false]])
-
-(comment
-  (parse-opts ["--quiet" "src"] cli-options))
-
-(defn print-help
-  [summary]
-  (->> ["splint: sexpr pattern matching and idiom checking"
-        ""
-        "Usage:"
-        "  splint [options] [path...]"
-        "  splint [options] -- [path...]"
-        ""
-        "Options:"
-        summary
-        ""]
-       (str/join \newline)))
-
-(comment
-  (println (print-help (:summary (parse-opts nil cli-options))))
-  )
-
-(defn print-errors
-  [errors]
-  (str/join \newline (cons "Ran into errors:" errors)))
-
-(defn validate-args
-  [args]
-  (let [{:keys [arguments options errors summary]} (parse-opts args cli-options :in-order true)]
-    (cond
-      (:help options) {:exit-message (print-help summary) :ok true}
-      errors {:exit-message (print-errors errors)}
-      (seq arguments) {:options options :paths arguments}
-      :else {:exit-message (print-help summary) :ok true})))
-
-(defn -main [& args]
-  (let [start-time (System/currentTimeMillis)
-        {:keys [options paths exit-message ok]} (validate-args args)]
-    (if exit-message
-      (do (when-not (:quiet options) (println exit-message))
-          (System/exit (if ok 0 1)))
-      (let [ctx (atom {:violations []})
-            rules @global-rules
-            _ (check-paths ctx rules paths)
-            end-time (System/currentTimeMillis)
-            violations (:violations @ctx)]
-        (when-not (:quiet options)
-          (doseq [violation (sort-by :filename violations)]
-            (print-find violation)))
-        (printf "Linting took %sms, %s style warnings%n"
-                (int (- end-time start-time))
-                (count violations))
-        (flush)
-        (System/exit (count violations))))))
+(defn -main
+  "Pass-through to runner which does all the work."
+  [& args]
+  (runner/run args))

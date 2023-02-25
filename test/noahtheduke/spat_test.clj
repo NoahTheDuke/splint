@@ -4,9 +4,9 @@
 
 (ns noahtheduke.spat-test
   (:require [expectations.clojure.test :refer [defexpect expect]]
-            [noahtheduke.spat :as spat]
             [noahtheduke.spat.pattern :refer [pattern]]
-            [noahtheduke.spat.rules :refer [global-rules]]))
+            [noahtheduke.spat.rules :refer [global-rules]]
+            [noahtheduke.spat.runner :refer [parse-string check-subforms]]))
 
 (set! *warn-on-reflection* true)
 
@@ -15,16 +15,18 @@
     ?exprs ((prn 1) (prn 2))
     ?foo (foo bar)}
   ((pattern '(when ?test &&. ?exprs ?foo (recur)))
-   (spat/parse-string "(when (= 1 1) (prn 1) (prn 2) (foo bar) (recur))")))
+   (parse-string "(when (= 1 1) (prn 1) (prn 2) (foo bar) (recur))")))
 
 (defexpect quote-in-pattern
   '{}
   ((pattern '(a b 'c))
-   (spat/parse-string "(a b 'c)")))
+   (parse-string "(a b 'c)")))
 
 (defn check-str
   [s]
-  (:alt (spat/check-rules-for-type @global-rules (spat/parse-string s))))
+  (let [ctx (atom {})]
+    (check-subforms ctx @global-rules "filename.clj" (parse-string s))
+    (-> @ctx :violations first :alt)))
 
 (defexpect str-to-string-test
   '(str x)

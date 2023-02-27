@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.rules.cond-else 
+(ns noahtheduke.spat.rules.cond-else
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 

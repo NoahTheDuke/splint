@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.rules.loop-do 
+(ns noahtheduke.spat.rules.loop-do
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 

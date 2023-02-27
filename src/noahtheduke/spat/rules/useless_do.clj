@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.rules.useless-do 
+(ns noahtheduke.spat.rules.useless-do
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 

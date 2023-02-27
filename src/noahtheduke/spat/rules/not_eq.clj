@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.rules.not-eq 
+(ns noahtheduke.spat.rules.not-eq
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 

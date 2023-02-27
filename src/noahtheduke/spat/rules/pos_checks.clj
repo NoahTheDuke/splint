@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.rules.pos-checks 
+(ns noahtheduke.spat.rules.pos-checks
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 

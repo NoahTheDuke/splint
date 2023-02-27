@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.rules.when-not-empty 
+(ns noahtheduke.spat.rules.when-not-empty
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 

@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.rules.not-some-pred 
+(ns noahtheduke.spat.rules.not-some-pred
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 

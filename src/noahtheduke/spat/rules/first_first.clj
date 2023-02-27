@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.rules.first-first 
+(ns noahtheduke.spat.rules.first-first
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 

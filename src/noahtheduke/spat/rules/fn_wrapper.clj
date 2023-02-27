@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.rules.fn-wrapper 
+(ns noahtheduke.spat.rules.fn-wrapper
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 

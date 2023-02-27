@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.rules.dorun-map 
+(ns noahtheduke.spat.rules.dorun-map
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 

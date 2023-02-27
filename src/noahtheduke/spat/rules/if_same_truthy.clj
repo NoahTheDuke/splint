@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.rules.if-same-truthy 
+(ns noahtheduke.spat.rules.if-same-truthy
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 

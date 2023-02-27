@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.rules.conj-vector 
+(ns noahtheduke.spat.rules.conj-vector
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 

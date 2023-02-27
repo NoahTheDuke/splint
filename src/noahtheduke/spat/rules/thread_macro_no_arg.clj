@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.rules.thread-macro-no-arg 
+(ns noahtheduke.spat.rules.thread-macro-no-arg
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 

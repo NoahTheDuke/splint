@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.runner 
+(ns noahtheduke.spat.runner
   "Handles parsing and linting all of given files."
   (:require
    [clojure.java.io :as io]

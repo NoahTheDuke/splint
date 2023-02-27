@@ -21,9 +21,6 @@
   {:pattern '(. ?class %symbol?%-?method &&. ?args)
    :message "Intention is clearer with .method form."
    :on-match (fn [rule form {:syms [?class ?method ?args]}]
-               (prn form (pr-str ?class)
-                    (Character/isUpperCase (first (pr-str ?class)))
-                    (symbol-class? ?class))
                (when (symbol-class? ?class)
                  (let [replace-form `(~(symbol (str ?class "/" ?method)) ~@?args)]
                    (->violation rule form {:replace-form replace-form}))))})

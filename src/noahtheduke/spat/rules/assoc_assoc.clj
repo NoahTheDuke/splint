@@ -17,6 +17,6 @@
   "
   {:patterns ['(assoc ?coll ?key1 (assoc (?coll ?key1) ?key2 ?val))
               '(assoc ?coll ?key1 (assoc (?key1 ?coll) ?key2 ?val))
-              '(assoc ?coll ?key1 (assoc (get ?key1 ?coll) ?key2 ?val))]
+              '(assoc ?coll ?key1 (assoc (get ?coll ?key1) ?key2 ?val))]
    :message "Use the built-in function instead of recreating it."
    :replace '(assoc-in ?coll [?key1 ?key2] ?val)})

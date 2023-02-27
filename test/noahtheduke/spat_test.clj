@@ -261,6 +261,14 @@
   '(when x y)
   (check-str "(when x (do y))"))
 
+(defexpect let-when-test
+  '(when-let [result (some-func)] (do-stuff result))
+  (check-str "(let [result (some-func)] (when result (do-stuff result)))"))
+
+(defexpect let-if-test
+  '(if-let [result (some-func)] (do-stuff result) (other-stuff))
+  (check-str "(let [result (some-func)] (if result (do-stuff result) (other-stuff)))"))
+
 (defexpect when-not-do-test
   '(when-not x y)
   (check-str "(when-not x (do y))"))

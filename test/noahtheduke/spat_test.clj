@@ -27,7 +27,7 @@
   [s]
   (let [ctx (atom {})
         form (parse-string s)]
-    (:alt (check-subform ctx @global-rules "filename.clj" form))))
+    (:alt (check-subform ctx @global-rules form))))
 
 (defexpect str-to-string-test
   '(str x)

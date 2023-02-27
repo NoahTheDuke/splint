@@ -63,44 +63,38 @@
 (defn check-subform
   "Checks a given form against the appropriate rules, then calls `on-match` to build the
   violation map and store it in `ctx`."
-  [ctx rules filename form]
-  (let [form (if (seq (meta form))
-                (vary-meta form assoc :filename filename)
-                form)]
-    (when-let [violation (check-rules-for-type rules form)]
-      (swap! ctx update :violations conj violation)
-      violation)))
-
-(defn run!!
-  "Reduce over a collection purely for side effects, returning nil. Reducing function
-  unconditionally returns nil to disallow using reduced in the proc."
-  [proc coll]
-  (reduce (fn [_ cur] (proc cur) nil) nil coll)
-  nil)
+  [ctx rules form]
+  (when-let [violation (check-rules-for-type rules form)]
+    (swap! ctx update :violations conj violation)
+    violation))
 
 (defn check-and-recur
   "Uses `run!!` to recur into each subform."
   [ctx rules filename form]
-  (check-subform ctx rules filename form)
-  (when (seqable? form)
-    (run!! (fn [fm] (check-and-recur ctx rules filename fm)) form)))
+  (let [form (if (meta form)
+               (vary-meta form assoc :filename filename)
+               form)]
+    (check-subform ctx rules form)
+    (when (seqable? form)
+      (run! #(check-and-recur ctx rules filename %) form)
+      nil)))
 
-(defn check-file
-  "Parse the given file and then use `run!!` to check each subform."
+(defn parse-and-check-file
+  "Parse the given file and then check each subform."
   [ctx rules ^File file]
-  (let [parsed-file (try (parse-string-all (slurp file))
-                         (catch Throwable e
-                           (prn (ex-info (ex-message e)
-                                       (assoc (ex-data e) :filename (str file))
-                                       e))))
-        filename (str file)]
-    (run!! (fn [form] (check-and-recur ctx rules filename form)) parsed-file)))
+  (when-let [parsed-file
+             (try (parse-string-all (slurp file))
+                  (catch Throwable e
+                    (prn (ex-info (ex-message e)
+                                  (assoc (ex-data e) :filename (str file))
+                                  e))))]
+    (check-and-recur ctx rules (str file) parsed-file)))
 
 (defn check-paths [ctx rules paths]
   (->> (mapcat #(file-seq (io/file %)) paths)
        (filter #(and (.isFile ^File %)
                      (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
-       (pmap #(check-file ctx rules %))
+       (pmap #(parse-and-check-file ctx rules %))
        (doall)))
 
 (defn print-find [{:keys [filename rule-name form line column message alt]}]
@@ -141,18 +135,28 @@
   (str/join \newline (cons "Ran into errors:" errors)))
 
 (defn validate-args
+  [options args]
+  (if-let [error (reduce (fn [_ arg]
+                           (when (str/starts-with? arg "--")
+                             (reduced arg)))
+                         nil
+                         args)]
+    {:exit-message (print-errors [(str (pr-str error) " must come before paths")])}
+    {:options options :paths args}))
+
+(defn validate-opts
   [args]
   (let [{:keys [arguments options errors summary]}
         (cli/parse-opts args cli-options :in-order true)]
     (cond
       (:help options) {:exit-message (print-help summary) :ok true}
       errors {:exit-message (print-errors errors)}
-      (seq arguments) {:options options :paths arguments}
+      (seq arguments) (validate-args options arguments)
       :else {:exit-message (print-help summary) :ok true})))
 
 (defn run [args]
   (let [start-time (System/currentTimeMillis)
-        {:keys [options paths exit-message ok]} (validate-args args)]
+        {:keys [options paths exit-message ok]} (validate-opts args)]
     (if exit-message
       (do (when-not (:quiet options) (println exit-message))
           (System/exit (if ok 0 1)))

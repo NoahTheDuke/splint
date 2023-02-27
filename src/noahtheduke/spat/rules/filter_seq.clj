@@ -2,7 +2,7 @@
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 
-(defrule filter-complement
+(defrule filter-seq
   "Check for (filter seq coll)
 
   Examples:

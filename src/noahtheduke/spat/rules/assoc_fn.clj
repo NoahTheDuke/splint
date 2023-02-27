@@ -2,6 +2,9 @@
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 
+(defn not-assoc? [sym]
+  (not= 'assoc sym))
+
 (defrule assoc-fn
   "`assoc`-ing an update with the same key are hard to read. `update` is known and
   idiomatic.
@@ -16,8 +19,8 @@
   # good
   (update coll :a + 5)
   "
-  {:patterns ['(assoc ?coll ?key (?fn (?key ?coll) &&. ?args))
-              '(assoc ?coll ?key (?fn (?coll ?key) &&. ?args))
-              '(assoc ?coll ?key (?fn (get ?coll ?key) &&. ?args))]
+  {:patterns ['(assoc ?coll ?key (%not-assoc?%-?fn (?key ?coll) &&. ?args))
+              '(assoc ?coll ?key (%not-assoc?%-?fn (?coll ?key) &&. ?args))
+              '(assoc ?coll ?key (%not-assoc?%-?fn (get ?coll ?key) &&. ?args))]
    :message "Use the built-in function instead of recreating it."
    :replace '(update ?coll ?key ?fn &&. ?args)})

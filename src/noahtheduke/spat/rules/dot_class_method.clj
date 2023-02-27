@@ -1,6 +1,6 @@
 (ns noahtheduke.spat.rules.dot-class-method
   (:require
-   [noahtheduke.spat.rules :refer [add-violation defrule]]))
+   [noahtheduke.spat.rules :refer [->violation defrule]]))
 
 (defn symbol-class? [sym]
   (and (symbol? sym)
@@ -20,7 +20,10 @@
   (.method Obj args)"
   {:pattern '(. ?class %symbol?%-?method &&. ?args)
    :message "Intention is clearer with .method form."
-   :on-match (fn [ctx rule form {:syms [?class ?method ?args]}]
+   :on-match (fn [rule form {:syms [?class ?method ?args]}]
+               (prn form (pr-str ?class)
+                    (Character/isUpperCase (first (pr-str ?class)))
+                    (symbol-class? ?class))
                (when (symbol-class? ?class)
                  (let [replace-form `(~(symbol (str ?class "/" ?method)) ~@?args)]
-                   (add-violation ctx rule form {:replace-form replace-form}))))})
+                   (->violation rule form {:replace-form replace-form}))))})

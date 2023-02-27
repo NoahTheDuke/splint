@@ -58,11 +58,10 @@
 (defmacro pattern
   [sexp]
   (let [form (gensym "form-")
-        retval (gensym "retval-")
-        sexp (drop-quote sexp)]
+        retval (gensym "retval-")]
     `(fn [~form]
        (let [~retval (atom {})]
-         (when ~(read-form sexp form retval)
+         (when ~(read-form (drop-quote sexp) form retval)
            @~retval)))))
 
 (defmethod read-form :default [sexp form retval]

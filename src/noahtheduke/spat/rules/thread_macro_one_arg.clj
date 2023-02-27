@@ -1,12 +1,12 @@
-(ns noahtheduke.spat.rules.thread-macro-one-arg 
+(ns noahtheduke.spat.rules.thread-macro-one-arg
   (:require
-   [noahtheduke.spat.rules :refer [add-violation defrule]]
+   [noahtheduke.spat.rules :refer [->violation defrule]]
    [noahtheduke.spat.rules.helpers :refer [symbol-or-keyword-or-list?]]))
 
 (defn thread-macro? [node]
   (#{'-> '->>} node))
 
-(defrule thread-macro-one-arg 
+(defrule thread-macro-one-arg
   "Threading macros require more effort to understand so only use them with multiple
   args to help with readability.
 
@@ -28,7 +28,7 @@
   "
   {:pattern '(%thread-macro?%-?f ?arg ?form)
    :message "Intention is clearer with inlined form."
-   :on-match (fn [ctx rule form {:syms [?f ?form ?arg]}]
+   :on-match (fn [rule form {:syms [?f ?form ?arg]}]
                (when (symbol-or-keyword-or-list? ?form)
                  (let [replace-form (cond
                                       (not (list? ?form))
@@ -37,4 +37,4 @@
                                       `(~(first ?form) ~?arg ~@(rest ?form))
                                       (= '->> ?f)
                                       (concat ?form [?arg]))]
-                   (add-violation ctx rule form {:replace-form replace-form}))))})
+                   (->violation rule form {:replace-form replace-form}))))})

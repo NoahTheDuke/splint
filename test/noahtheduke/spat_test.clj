@@ -4,9 +4,10 @@
 
 (ns noahtheduke.spat-test
   (:require [expectations.clojure.test :refer [defexpect expect]]
+            [noahtheduke.spat]
             [noahtheduke.spat.pattern :refer [pattern]]
             [noahtheduke.spat.rules :refer [global-rules]]
-            [noahtheduke.spat.runner :refer [parse-string check-subforms]]))
+            [noahtheduke.spat.runner :refer [parse-string check-subform]]))
 
 (set! *warn-on-reflection* true)
 
@@ -24,9 +25,9 @@
 
 (defn check-str
   [s]
-  (let [ctx (atom {})]
-    (check-subforms ctx @global-rules "filename.clj" (parse-string s))
-    (-> @ctx :violations first :alt)))
+  (let [ctx (atom {})
+        form (parse-string s)]
+    (:alt (check-subform ctx @global-rules "filename.clj" form))))
 
 (defexpect str-to-string-test
   '(str x)
@@ -37,7 +38,7 @@
   (check-str "(. obj method 1 2 3)"))
 
 (defexpect dot-class-usage-test
-  '(Obj/method  1 2 3)
+  '(Obj/method 1 2 3)
   (check-str "(. Obj method 1 2 3)"))
 
 (defexpect str-apply-interpose-test
@@ -177,27 +178,27 @@
   (check-str "(into [] coll)"))
 
 (defexpect assoc-assoc-key-coll-test
-  '(assoc-in coll [:k0 :k1] v)
-  (check-str "(assoc coll :k0 (assoc (:k0 coll) :k1 v))"))
+  '(assoc-in coll [:k1 :k2] v)
+  (check-str "(assoc coll :k1 (assoc (:k1 coll) :k2 v))"))
 
 (defexpect assoc-assoc-coll-key-test
-  '(assoc-in coll [:k0 :k1] v)
-  (check-str "(assoc coll :k0 (assoc (coll :k0) :k1 v))"))
+  '(assoc-in coll [:k1 :k2] v)
+  (check-str "(assoc coll :k1 (assoc (coll :k1) :k2 v))"))
 
 (defexpect assoc-assoc-get-test
-  '(assoc-in coll [:k0 :k1] v)
-  (check-str "(assoc coll :k0 (assoc (get coll :k0) :k1 v))"))
+  '(assoc-in coll [:k1 :k2] v)
+  (check-str "(assoc coll :k1 (assoc (get coll :k1) :k2 v))"))
 
 (defexpect assoc-fn-key-coll-test
-  '(update-in coll [:k] f args)
+  '(update coll :k f args)
   (check-str "(assoc coll :k (f (:k coll) args))"))
 
 (defexpect assoc-fn-coll-key-test
-  '(update-in coll [:k] f args)
+  '(update coll :k f args)
   (check-str "(assoc coll :k (f (coll :k) args))"))
 
 (defexpect assoc-fn-get-test
-  '(update-in coll [:k] f args)
+  '(update coll :k f args)
   (check-str "(assoc coll :k (f (get coll :k) args))"))
 
 (defexpect update-in-assoc-test
@@ -205,7 +206,7 @@
   (check-str "(update-in coll ks assoc v)"))
 
 (defexpect not-empty?-test
-  '(not-empty x)
+  '(seq x)
   (check-str "(not (empty? x))"))
 
 (defexpect when-not-empty?-test

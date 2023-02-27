@@ -1,6 +1,6 @@
 (ns noahtheduke.spat.rules.into-literal
   (:require
-    [noahtheduke.spat.rules :refer [add-violation defrule]]))
+    [noahtheduke.spat.rules :refer [->violation defrule]]))
 
 (defn set-or-vec? [form]
   (and (or (set? form)
@@ -26,6 +26,6 @@
   "
   {:pattern '(into %set-or-vec?%-?literal ?coll)
    :message "Use the built-in function instead of recreating it."
-   :on-match (fn [ctx rule form {:syms [?literal ?coll]}]
+   :on-match (fn [rule form {:syms [?literal ?coll]}]
                (let [replace-form (list (if (set? ?literal) 'set 'vec) ?coll)]
-                 (add-violation ctx rule form {:replace-form replace-form})))})
+                 (->violation rule form {:replace-form replace-form})))})

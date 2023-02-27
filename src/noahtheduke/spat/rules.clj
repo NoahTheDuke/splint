@@ -31,39 +31,46 @@
   (let [docs (when (string? (first opts)) [(first opts)])
         opts (if (string? (first opts)) (next opts) opts)
         {pat :pattern :keys [patterns replace on-match message]} opts]
+    (assert (or pat patterns)
+            "defrule must define either :pattern or :patterns")
     (assert (not (and pat patterns))
             "defrule cannot define both :pattern and :patterns")
     (assert (not (and replace on-match))
             "defrule cannot define both :replace and :on-match")
+    (when patterns
+      (assert (apply = (map simple-type patterns))
+              "All :patterns should have the same `simple-type`"))
     `(let [rule# {:name ~(str rule-name)
                   :docstring ~@docs
-                  :init-type (simple-type ~pat)
+                  :init-type (if ~pat
+                               (simple-type ~pat)
+                               (simple-type (first ~patterns)))
                   :pattern-raw ~(or pat patterns)
                   :replace-raw ~replace
                   :message ~message
-                  :pattern (when ~pat (pattern ~pat))
-                  :patterns ~(when patterns (mapv #(pattern %) patterns))
+                  :pattern (when ~(some? pat) (pattern ~pat))
+                  :patterns (when ~(some? patterns) ~(mapv #(eval (list `pattern %)) patterns))
                   :replace ~(when replace
                               `(fn ~(symbol (str rule-name "-replacer-fn"))
                                  [binds#]
                                  (postwalk-splicing-replace binds# ~replace)))
                   :on-match ~on-match}]
-       (swap! global-rules update (simple-type ~pat) (fnil conj []) rule#)
+       (swap! global-rules assoc-in
+              [~(simple-type (or pat (first patterns))) ~(str rule-name)]
+              rule#)
        (def ~rule-name ~@docs rule#))))
 
-(defn add-violation
-  [ctx rule form {:keys [binds message replace-form] :as _opts}]
+(defn ->violation
+  [rule form {:keys [binds message replace-form] :as _opts}]
   (let [form-meta (meta form)
         message (or message (:message rule))
         alt (cond
               replace-form replace-form
-              (:replace rule) ((:replace rule) binds))
-        violation {:rule-name (:name rule)
-                   :form form
-                   :message message
-                   :line (:line form-meta)
-                   :column (:column form-meta)
-                   :filename (:filename form-meta)
-                   :alt alt}]
-    (swap! ctx update :violations conj violation)
-    true))
+              (:replace rule) ((:replace rule) binds))]
+    {:rule-name (:name rule)
+     :form form
+     :message message
+     :line (:line form-meta)
+     :column (:column form-meta)
+     :filename (:filename form-meta)
+     :alt alt}))

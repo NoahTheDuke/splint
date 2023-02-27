@@ -7,7 +7,7 @@
    [clojure.tools.cli :as cli]
    [edamame.core :as e]
    [noahtheduke.spat.pattern :refer [simple-type]]
-   [noahtheduke.spat.rules :refer [add-violation global-rules]])
+   [noahtheduke.spat.rules :refer [->violation global-rules]])
   (:import
    (java.io File)))
 
@@ -32,29 +32,44 @@
     {:auto-resolve (fn [k] (if (= :current k) 'spat (name k)))
      :readers (fn [r] (fn [v] (list (if (namespace r) r (symbol "spat" (name r))) v)))}))
 
+(defn check-pattern
+  [rule pattern form]
+  (when-let [binds (pattern form)]
+    (if-let [on-match (:on-match rule)]
+      (on-match rule form binds)
+      (->violation rule form {:binds binds}))))
+
 (defn check-rule
   [rule form]
   (if-let [pattern (:pattern rule)]
-    (pattern form)
+    (check-pattern rule pattern form)
     (let [patterns (:patterns rule)]
       (reduce
         (fn [_ pattern]
-          (when-let [result (pattern form)]
+          (when-let [result (check-pattern rule pattern form)]
             (reduced result)))
         nil
         patterns))))
 
-(defn check-multiple-rules [rules form]
-  (reduce
-    (fn [_ rule]
-      (when-let [binds (check-rule rule form)]
-        (reduced {:rule rule :binds binds})))
-    nil
-    rules))
-
 (defn check-rules-for-type [given-rules form]
   (when-let [rules-for-type (given-rules (simple-type form))]
-    (check-multiple-rules rules-for-type form)))
+    (reduce
+      (fn [_ rule]
+        (when-let [violation (check-rule rule form)]
+          (reduced violation)))
+      nil
+      (vals rules-for-type))))
+
+(defn check-subform
+  "Checks a given form against the appropriate rules, then calls `on-match` to build the
+  violation map and store it in `ctx`."
+  [ctx rules filename form]
+  (let [form (if (seq (meta form))
+                (vary-meta form assoc :filename filename)
+                form)]
+    (when-let [violation (check-rules-for-type rules form)]
+      (swap! ctx update :violations conj violation)
+      violation)))
 
 (defn run!!
   "Reduce over a collection purely for side effects, returning nil. Reducing function
@@ -63,27 +78,12 @@
   (reduce (fn [_ cur] (proc cur) nil) nil coll)
   nil)
 
-(defn on-match
-  "Executes `:on-match` from the rule, or calls `add_violation` directly."
-  [ctx rule form binds]
-  (if-let [on-match-fn (:on-match rule)]
-    (on-match-fn ctx rule form binds)
-    (add-violation ctx rule form {:binds binds})))
-
-(defn check-subforms
-  "Checks a given form against the appropriate rules, then calls `on-match` to build the
-  violation map and store it in `ctx`. Uses `run!!` to recur into each subform."
+(defn check-and-recur
+  "Uses `run!!` to recur into each subform."
   [ctx rules filename form]
-  (when-let [{:keys [rule binds]} (check-rules-for-type rules form)]
-    ;; Passing in the filename to every call is annoying. Better to just rely on the
-    ;; form itself, to treat the filename as contextual like line or column.
-    (on-match ctx rule
-              (if (seq (meta form))
-                (vary-meta form assoc :filename filename)
-                form)
-              binds))
+  (check-subform ctx rules filename form)
   (when (seqable? form)
-    (run!! (fn [fm] (check-subforms ctx rules filename fm)) form)))
+    (run!! (fn [fm] (check-and-recur ctx rules filename fm)) form)))
 
 (defn check-file
   "Parse the given file and then use `run!!` to check each subform."
@@ -94,7 +94,7 @@
                                        (assoc (ex-data e) :filename (str file))
                                        e))))
         filename (str file)]
-    (run!! (fn [form] (check-subforms ctx rules filename form)) parsed-file)))
+    (run!! (fn [form] (check-and-recur ctx rules filename form)) parsed-file)))
 
 (defn check-paths [ctx rules paths]
   (->> (mapcat #(file-seq (io/file %)) paths)

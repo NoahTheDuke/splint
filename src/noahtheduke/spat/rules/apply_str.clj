@@ -2,6 +2,11 @@
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 
+(defn not-special? [form]
+  (if (list? form)
+    (not (#{'reverse 'interpose} (first form)))
+    true))
+
 (defrule apply-str
   "Check for round-about clojure.string/reverse.
 
@@ -13,6 +18,6 @@
   # good
   (clojure.string/join x)
   "
-  {:pattern '(apply str ?x)
+  {:pattern '(apply str %not-special?%-?x)
    :message "Use the built-in function instead of recreating it."
    :replace '(clojure.string/join ?x)})

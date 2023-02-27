@@ -1,19 +1,27 @@
 (ns noahtheduke.spat.runner
   "Handles parsing and linting all of given files."
   (:require
-   [clojure.java.io :as io]
-   [clojure.pprint :as pprint]
-   [clojure.string :as str]
-   [clojure.tools.cli :as cli]
-   [edamame.core :as e]
-   [noahtheduke.spat.pattern :refer [simple-type]]
-   [noahtheduke.spat.rules :refer [->violation global-rules]])
+    [clojure.java.io :as io]
+    [clojure.pprint :as pprint]
+    [clojure.string :as str]
+    [edamame.core :as e]
+    [noahtheduke.spat.cli :refer [validate-opts]]
+    [noahtheduke.spat.pattern :refer [simple-type]]
+    [noahtheduke.spat.rules :refer [->violation global-rules]])
   (:import
-   (java.io File)))
+    (java.io File)))
+
+(set! *warn-on-reflection* true)
 
 (def clj-defaults
-  {:all true
+  {; :all true
+   :deref true
+   :fn true
    :quote true
+   :read-eval true
+   :regex true
+   :syntax-quote true
+   :var true
    :row-key :line
    :col-key :column
    :end-location false
@@ -60,8 +68,8 @@
       nil
       (vals rules-for-type))))
 
-(defn check-subform
-  "Checks a given form against the appropriate rules, then calls `on-match` to build the
+(defn check-form
+  "Checks a given form against the appropriate rules then calls `on-match` to build the
   violation map and store it in `ctx`."
   [ctx rules form]
   (when-let [violation (check-rules-for-type rules form)]
@@ -69,18 +77,18 @@
     violation))
 
 (defn check-and-recur
-  "Uses `run!!` to recur into each subform."
+  "Check a given form and then map recur over each of the form's children."
   [ctx rules filename form]
   (let [form (if (meta form)
                (vary-meta form assoc :filename filename)
                form)]
-    (check-subform ctx rules form)
+    (check-form ctx rules form)
     (when (seqable? form)
       (run! #(check-and-recur ctx rules filename %) form)
       nil)))
 
 (defn parse-and-check-file
-  "Parse the given file and then check each subform."
+  "Parse the given file and then check each form."
   [ctx rules ^File file]
   (when-let [parsed-file
              (try (parse-string-all (slurp file))
@@ -95,7 +103,7 @@
        (filter #(and (.isFile ^File %)
                      (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
        (pmap #(parse-and-check-file ctx rules %))
-       (doall)))
+       (dorun)))
 
 (defn print-find [{:keys [filename rule-name form line column message alt]}]
   (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)
@@ -106,53 +114,6 @@
     (pprint/pprint alt))
   (newline)
   (flush))
-
-(def cli-options
-  [["-h" "--help" "This message"]
-   [nil "--clj-kondo" "Output in clj-kondo format"
-    :default false]
-   ["-q" "--quiet" "Print no suggestions, only return exit code"
-    :default false]])
-
-(comment
-  (cli/parse-opts ["--quiet" "src"] cli-options :in-order true))
-
-(defn print-help
-  [summary]
-  (->> ["splint: sexpr pattern matching and idiom checking"
-        ""
-        "Usage:"
-        "  splint [options] [path...]"
-        "  splint [options] -- [path...]"
-        ""
-        "Options:"
-        summary
-        ""]
-       (str/join \newline)))
-
-(defn print-errors
-  [errors]
-  (str/join \newline (cons "Ran into errors:" errors)))
-
-(defn validate-args
-  [options args]
-  (if-let [error (reduce (fn [_ arg]
-                           (when (str/starts-with? arg "--")
-                             (reduced arg)))
-                         nil
-                         args)]
-    {:exit-message (print-errors [(str (pr-str error) " must come before paths")])}
-    {:options options :paths args}))
-
-(defn validate-opts
-  [args]
-  (let [{:keys [arguments options errors summary]}
-        (cli/parse-opts args cli-options :in-order true)]
-    (cond
-      (:help options) {:exit-message (print-help summary) :ok true}
-      errors {:exit-message (print-errors errors)}
-      (seq arguments) (validate-args options arguments)
-      :else {:exit-message (print-help summary) :ok true})))
 
 (defn run [args]
   (let [start-time (System/currentTimeMillis)

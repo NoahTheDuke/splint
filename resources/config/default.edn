@@ -1,0 +1,342 @@
+{:rules
+ {
+  lint/apply-str
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/apply-str-interpose
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/apply-str-reverse
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/assoc-assoc
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/assoc-fn
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/cond-else
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/conj-vector
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/divide-by-one
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/dorun-map
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/dot-class-method
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/dot-obj-method
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/eq-false
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/eq-nil
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/eq-zero
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/filter-complement
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/filter-fn-not-pred
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/filter-seq
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/filter-vec-filter
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/first-first
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/first-next
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/fn-wrapper
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/helpers
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/if-else-nil
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/if-let-else-nil
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/if-nil-else
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/if-not-both
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/if-not-do
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/if-not-not
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/if-same-truthy
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/if-then-do
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/into-literal
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/let-do
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/let-if
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/loop-do
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/let-when
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/loop-empty-when
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/mapcat-apply-apply
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/mapcat-concat-map
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/minus-one
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/minus-zero
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/missing-body-in-when
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/multiply-by-one
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/multiply-by-zero
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/neg-checks
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/nested-addition
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/nested-multiply
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/next-first
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/next-next
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/not-empty
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/not-eq
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/not-nil
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/not-some-pred
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/plus-one
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/plus-zero
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/pos-checks
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/take-repeatedly
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/thread-macro-no-arg
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/thread-macro-one-arg
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/tostring
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/true-checks
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/update-in-assoc
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/useless-do
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/when-do
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/when-not-call
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/when-not-do
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/when-not-empty
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/when-not-not
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/with-meta
+  {:description ""
+   :enabled true
+   :added "0.1"}
+}}

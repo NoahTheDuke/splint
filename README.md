@@ -51,6 +51,6 @@ sys     0m0.180s
 
 ## License
 
-Copyright © 2022 Noah Bogart
+Copyright © Noah Bogart
 
 Distributed under the Mozilla Public License version 2.0.

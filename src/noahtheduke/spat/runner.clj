@@ -7,7 +7,8 @@
     [edamame.core :as e]
     [noahtheduke.spat.cli :refer [validate-opts]]
     [noahtheduke.spat.pattern :refer [simple-type]]
-    [noahtheduke.spat.rules :refer [->violation global-rules]])
+    [noahtheduke.spat.rules :refer [->violation global-rules]]
+    [noahtheduke.spat.config :refer [load-config]])
   (:import
     (java.io File)))
 
@@ -57,45 +58,49 @@
         nil
         patterns))))
 
-(defn check-rules-for-type [given-rules form]
-  (when-let [rules-for-type (given-rules (simple-type form))]
-    (keep #(check-rule % form) (vals rules-for-type))))
+(defn check-rules-for-type [config rules form]
+  (when-let [rules-for-type (rules (simple-type form))]
+    (keep
+      (fn [[rule-name rule]]
+        (when (-> config rule-name :enabled)
+          (check-rule rule form)))
+      rules-for-type)))
 
 (defn check-form
   "Checks a given form against the appropriate rules then calls `on-match` to build the
   violation map and store it in `ctx`."
-  [ctx rules form]
-  (when-let [violations (check-rules-for-type rules form)]
+  [ctx config rules form]
+  (when-let [violations (check-rules-for-type config rules form)]
     (swap! ctx update :violations into violations)
     violations))
 
 (defn check-and-recur
   "Check a given form and then map recur over each of the form's children."
-  [ctx rules filename form]
+  [ctx config rules filename form]
   (let [form (if (meta form)
                (vary-meta form assoc :filename filename)
                form)]
-    (check-form ctx rules form)
+    (check-form ctx config rules form)
     (when (seqable? form)
-      (run! #(check-and-recur ctx rules filename %) form)
+      (run! #(check-and-recur ctx config rules filename %) form)
       nil)))
 
 (defn parse-and-check-file
   "Parse the given file and then check each form."
-  [ctx rules ^File file]
+  [ctx config rules ^File file]
   (when-let [parsed-file
              (try (parse-string-all (slurp file))
                   (catch Throwable e
                     (prn (ex-info (ex-message e)
                                   (assoc (ex-data e) :filename (str file))
                                   e))))]
-    (check-and-recur ctx rules (str file) parsed-file)))
+    (check-and-recur ctx config rules (str file) parsed-file)))
 
-(defn check-paths [ctx rules paths]
+(defn check-paths [ctx config rules paths]
   (->> (mapcat #(file-seq (io/file %)) paths)
        (filter #(and (.isFile ^File %)
                      (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
-       (pmap #(parse-and-check-file ctx rules %))
+       (pmap #(parse-and-check-file ctx config rules %))
        (dorun)))
 
 (defn print-clj-kondo [{:keys [filename line column message]}]
@@ -137,8 +142,9 @@
       (do (when-not (:quiet options) (println exit-message))
           (System/exit (if ok 0 1)))
       (let [ctx (atom {:violations []})
+            config (load-config)
             rules @global-rules
-            _ (check-paths ctx rules paths)
+            _ (check-paths ctx config rules paths)
             end-time (System/currentTimeMillis)
             violations (:violations @ctx)]
         (print-results options violations)

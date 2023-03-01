@@ -5,7 +5,8 @@
 (ns noahtheduke.spat.rules
   (:require
     [clojure.walk :as walk]
-    [noahtheduke.spat.pattern :refer [pattern simple-type]]))
+    [noahtheduke.spat.pattern :refer [pattern simple-type]]
+    [clojure.string :as str]))
 
 (set! *warn-on-reflection* true)
 
@@ -43,26 +44,33 @@
             "defrule must define either :replace or :on-match")
     (assert (not (and replace on-match))
             "defrule cannot define both :replace and :on-match")
-    `(let [rule# {:name ~(str rule-name)
-                  :docstring ~@docs
-                  :init-type (if ~pat
-                               (simple-type ~pat)
-                               (simple-type (first ~patterns)))
-                  :pattern-raw ~(or pat patterns)
-                  :replace-raw ~replace
-                  :message ~message
-                  :pattern (when ~(some? pat) (pattern ~pat))
-                  :patterns (when ~(some? patterns)
-                              ~(mapv #(do (list `pattern %)) patterns))
-                  :replace ~(when replace
-                              `(fn ~(symbol (str rule-name "-replacer-fn"))
-                                 [binds#]
-                                 (postwalk-splicing-replace binds# ~replace)))
-                  :on-match ~on-match}]
-       (swap! global-rules assoc-in
-              [~(simple-type (or pat (first patterns))) ~(str rule-name)]
-              rule#)
-       (def ~rule-name ~@docs rule#))))
+    (let [rule-name (str rule-name)
+          genre (-> (str *ns*)
+                    (str/split #"\.")
+                    (reverse)
+                    (second))]
+      `(let [rule# {:name ~rule-name
+                    :genre ~genre
+                    :docstring ~@docs
+                    :init-type (if ~pat
+                                 (simple-type ~pat)
+                                 (simple-type (first ~patterns)))
+                    :pattern-raw ~(or pat patterns)
+                    :replace-raw ~replace
+                    :message ~message
+                    :pattern (when ~(some? pat) (pattern ~pat))
+                    :patterns (when ~(some? patterns)
+                                ~(mapv #(do (list `pattern %)) patterns))
+                    :replace ~(when replace
+                                `(fn ~(symbol (str rule-name "-replacer-fn"))
+                                   [binds#]
+                                   (postwalk-splicing-replace binds# ~replace)))
+                    :on-match ~on-match}]
+         (swap! global-rules assoc-in
+                [~(simple-type (or pat (first patterns)))
+                 '~(symbol genre rule-name)]
+                rule#)
+         (def ~(symbol rule-name) ~@docs rule#)))))
 
 (defn ->violation
   [rule form & {:keys [binds message replace-form] :as _opts}]

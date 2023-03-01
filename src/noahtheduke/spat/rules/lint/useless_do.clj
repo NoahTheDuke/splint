@@ -2,7 +2,7 @@
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 
-(defrule useless-do-x
+(defrule useless-do
   "Examples:
 
   # bad

@@ -27,6 +27,7 @@
     [noahtheduke.spat.rules.lint.dot-obj-method]
     [noahtheduke.spat.rules.lint.eq-false]
     [noahtheduke.spat.rules.lint.eq-nil]
+    [noahtheduke.spat.rules.lint.eq-true]
     [noahtheduke.spat.rules.lint.eq-zero]
     [noahtheduke.spat.rules.lint.filter-complement]
     [noahtheduke.spat.rules.lint.filter-vec-filter]
@@ -70,7 +71,6 @@
     [noahtheduke.spat.rules.lint.thread-macro-no-arg]
     [noahtheduke.spat.rules.lint.thread-macro-one-arg]
     [noahtheduke.spat.rules.lint.tostring]
-    [noahtheduke.spat.rules.lint.true-checks]
     [noahtheduke.spat.rules.lint.update-in-assoc]
     [noahtheduke.spat.rules.lint.update-in-one-arg]
     [noahtheduke.spat.rules.lint.useless-do]
@@ -79,7 +79,7 @@
     [noahtheduke.spat.rules.lint.when-not-do]
     [noahtheduke.spat.rules.lint.when-not-empty]
     [noahtheduke.spat.rules.lint.when-not-not]
-    [noahtheduke.spat.rules.lint.with-meta]))
+    [noahtheduke.spat.rules.lint.with-meta-vary-meta]))
 
 (set! *warn-on-reflection* true)
 

@@ -1,8 +1,8 @@
-(ns noahtheduke.spat.rules.lint.with-meta
+(ns noahtheduke.spat.rules.lint.with-meta-vary-meta
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 
-(defrule with-meta-f-meta
+(defrule with-meta-vary-meta
   "`vary-meta` works like swap!, so no need to access and overwrite in two steps.
 
   Examples:

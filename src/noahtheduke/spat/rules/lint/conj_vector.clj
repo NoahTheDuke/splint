@@ -2,7 +2,7 @@
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 
-(defrule conj-vec
+(defrule conj-vector
   "`vector` is succinct and meaningful.
 
   Examples:

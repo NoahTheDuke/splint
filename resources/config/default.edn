@@ -343,4 +343,9 @@
  {:description ""
   :enabled true
   :added "0.1"}
+
+ style/new-object
+ {:description ""
+  :enabled true
+  :added "0.1"}
 }

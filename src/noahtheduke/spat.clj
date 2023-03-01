@@ -12,7 +12,8 @@
     [noahtheduke.spat.runner :as runner])
   (:require
     ;; # Rules
-    ;; Please keep this sorted
+    ;; Please keep this sorted and split by genre
+
     [noahtheduke.spat.rules.lint.apply-str]
     [noahtheduke.spat.rules.lint.apply-str-interpose]
     [noahtheduke.spat.rules.lint.apply-str-reverse]
@@ -79,7 +80,11 @@
     [noahtheduke.spat.rules.lint.when-not-do]
     [noahtheduke.spat.rules.lint.when-not-empty]
     [noahtheduke.spat.rules.lint.when-not-not]
-    [noahtheduke.spat.rules.lint.with-meta-vary-meta]))
+    [noahtheduke.spat.rules.lint.with-meta-vary-meta]
+
+    [noahtheduke.spat.rules.style.new-object] 
+
+    ))
 
 (set! *warn-on-reflection* true)
 

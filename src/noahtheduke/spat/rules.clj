@@ -27,10 +27,8 @@
     replace-form))
 
 (defmacro defrule
-  [rule-name & opts]
-  (let [docs (when (string? (first opts)) [(first opts)])
-        opts (if (string? (first opts)) (next opts) opts)
-        {pat :pattern :keys [patterns replace on-match message]} opts]
+  [rule-name docs opts]
+  (let [{pat :pattern :keys [patterns replace on-match message]} opts]
     (assert (simple-symbol? rule-name) "defrule name cannot be namespaced")
     (assert (or pat patterns)
             "defrule must define either :pattern or :patterns")
@@ -51,7 +49,7 @@
                     (second))]
       `(let [rule# {:name ~rule-name
                     :genre ~genre
-                    :docstring ~@docs
+                    :docstring ~docs
                     :init-type (if ~pat
                                  (simple-type ~pat)
                                  (simple-type (first ~patterns)))
@@ -70,7 +68,7 @@
                 [~(simple-type (or pat (first patterns)))
                  '~(symbol genre rule-name)]
                 rule#)
-         (def ~(symbol rule-name) ~@docs rule#)))))
+         (def ~(symbol rule-name) ~docs rule#)))))
 
 (defn ->violation
   [rule form & {:keys [binds message replace-form] :as _opts}]

@@ -7,9 +7,12 @@
             [noahtheduke.spat]
             [noahtheduke.spat.pattern :refer [pattern]]
             [noahtheduke.spat.rules :refer [global-rules]]
-            [noahtheduke.spat.runner :refer [parse-string check-form]]))
+            [noahtheduke.spat.runner :refer [parse-string check-form]]
+            [noahtheduke.spat.config :refer [load-config]]))
 
 (set! *warn-on-reflection* true)
+
+(def config (load-config))
 
 (defexpect multiple-rest-body
   '{?test (= 1 1)
@@ -27,7 +30,7 @@
   [s]
   (let [ctx (atom {})
         form (parse-string s)]
-    (check-form ctx @global-rules form)))
+    (check-form ctx config @global-rules form)))
 
 (defn check-alt
   [s]
@@ -376,3 +379,7 @@
 (defexpect missing-body-in-when-test
   "Missing body in when"
   (:message (first (check-str "(when true)"))))
+
+(defexpect new-object-test
+  '(java.util.ArrayList. 100)
+  (check-alt "(new java.util.ArrayList 100)"))

@@ -14,5 +14,5 @@
   (if x y z)
   "
   {:pattern '(if-not (not ?x) ?y ?z)
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `if` instead of double negation."
    :replace '(if ?x ?y ?z)})

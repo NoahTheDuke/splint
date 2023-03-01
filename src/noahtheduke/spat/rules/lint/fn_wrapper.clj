@@ -2,8 +2,8 @@
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 
-(defn fn' [node]
-  (#{'fn 'fn*} node))
+(defn fn?? [sexp]
+  (#{'fn 'fn*} sexp))
 
 (defrule fn-wrapper
   "Avoid wrapping functions in pass-through anonymous function defitions.
@@ -22,7 +22,7 @@
   # good
   (let [f even?] ...)
   "
-  {:patterns ['(%fn' [?arg] (?fun ?arg))
-              '(%fn' ([?arg] (?fun ?arg)))]
-   :message "Clojure supports first-class functions."
+  {:patterns ['(%fn?? [?arg] (?fun ?arg))
+              '(%fn?? ([?arg] (?fun ?arg)))]
+   :message "No need to wrap function. Clojure supports first-class functions."
    :replace '?fun})

@@ -16,5 +16,5 @@
   "
   {:patterns ['(= nil ?x)
               '(= ?x nil)]
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `nil?` instead of recreating it."
    :replace '(nil? ?x)})

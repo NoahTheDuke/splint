@@ -27,7 +27,6 @@
   (y x)
   "
   {:pattern '(%thread-macro?%-?f ?arg ?form)
-   :message "Intention is clearer with inlined form."
    :on-match (fn [rule form {:syms [?f ?form ?arg]}]
                (when (symbol-or-keyword-or-list? ?form)
                  (let [replace-form (cond
@@ -36,5 +35,8 @@
                                       (= '-> ?f)
                                       `(~(first ?form) ~?arg ~@(rest ?form))
                                       (= '->> ?f)
-                                      (concat ?form [?arg]))]
-                   (->violation rule form {:replace-form replace-form}))))})
+                                      (concat ?form [?arg]))
+                       message (format "Intention of `%s` is clearer with inlined form."
+                                       ?f)]
+                   (->violation rule form {:replace-form replace-form
+                                           :message message}))))})

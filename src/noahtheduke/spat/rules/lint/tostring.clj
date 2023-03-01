@@ -14,5 +14,5 @@
   (str x)
   "
   {:pattern '(.toString ?x)
-   :message "Use the built-in core function instead of interop."
+   :message "Use `str` instead of interop."
    :replace '(str ?x)})

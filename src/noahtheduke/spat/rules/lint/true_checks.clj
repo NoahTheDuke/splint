@@ -16,5 +16,5 @@
   "
   {:patterns ['(= true ?x)
               '(= ?x true)]
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `true?` instead of recreating it."
    :replace '(true? ?x)})

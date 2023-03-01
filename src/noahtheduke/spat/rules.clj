@@ -36,6 +36,7 @@
     (assert (not (and pat patterns))
             "defrule cannot define both :pattern and :patterns")
     (when patterns
+      (assert (vector? patterns) ":patterns must be in a vector")
       (assert (apply = (map simple-type patterns))
               "All :patterns should have the same `simple-type`"))
     (assert (or replace on-match)

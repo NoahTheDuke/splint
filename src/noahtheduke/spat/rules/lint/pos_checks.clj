@@ -16,5 +16,5 @@
   "
   {:patterns ['(< 0 ?x)
               '(> ?x 0)]
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `pos?` instead of recreating it."
    :replace '(pos? ?x)})

@@ -14,5 +14,5 @@
   (dec x)
   "
   {:pattern '(- ?x 1)
-   :message "Use the more specific core function."
+   :message "Use `dec` instead of recreating it."
    :replace '(dec ?x)})

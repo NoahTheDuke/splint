@@ -15,5 +15,5 @@
   (assoc-in coll [:a :b] 5)
   "
   {:pattern '(update-in ?coll ?keys assoc ?val)
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `assoc-in` instead of recreating it."
    :replace '(assoc-in ?coll ?keys ?val)})

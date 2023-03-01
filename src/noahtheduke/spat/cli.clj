@@ -26,29 +26,19 @@
     (cli/summarize specs)))
 
 (def cli-options
-  [["-h" "--help" "This message"]
-   [nil "--clj-kondo" "Output in clj-kondo format"
+  [["-h" "--help" "This message."]
+   [nil "--clj-kondo" "Output in clj-kondo format."
     :default false]
-   ["-q" "--quiet" "Print no suggestions, only return exit code"
+   [nil "--[no-]examples" "Show alternate forms when applicable. Overridden by --clj-kondo."
+    :default true]
+   ["-q" "--quiet" "Print no suggestions, only return exit code."
     :default false]])
 
 (def ^{:arglists '([args])} parse-opts
   "Parse a sequence of arg strings."
   (make-parse-opts cli-options {:in-order true :strict true}))
 
-(comment
-  (require 'user)
-  (user/bench
-    (cli/parse-opts ["--quiet" "--" "src" "--clj-kondo"] cli-options
-                    :in-order true :strict true))
-  (user/bench
-    (parse-opts ["--quiet" "src"]))
-  (= (cli/parse-opts ["--quiet" "src"] cli-options :in-order true)
-     ((make-parse-opts cli-options :in-order true) ["--quiet" "src"]))
-  (parse-opts ["--quiet" "--" "src" "--clj-kondo"])
-  ,)
-
-(def print-help
+(def help-message
   (let [lines ["splint: sexpr pattern matching and idiom checking"
                ""
                "Usage:"
@@ -81,9 +71,9 @@
 
   :ok is false if given invalid options or an option is provided after paths."
   [args]
-  (let [{:keys [arguments options errors summary]} (parse-opts args)]
+  (let [{:keys [arguments options errors]} (parse-opts args)]
     (cond
-      (:help options) {:exit-message (print-help summary) :ok true}
+      (:help options) {:exit-message help-message :ok true}
       errors {:exit-message (print-errors errors)}
       (seq arguments) (validate-paths options arguments)
-      :else {:exit-message (print-help summary) :ok true})))
+      :else {:exit-message help-message :ok true})))

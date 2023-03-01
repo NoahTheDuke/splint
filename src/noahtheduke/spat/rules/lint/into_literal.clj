@@ -25,7 +25,9 @@
   (set coll)
   "
   {:pattern '(into %set-or-vec?%-?literal ?coll)
-   :message "Use the built-in function instead of recreating it."
    :on-match (fn [rule form {:syms [?literal ?coll]}]
-               (let [replace-form (list (if (set? ?literal) 'set 'vec) ?coll)]
-                 (->violation rule form {:replace-form replace-form})))})
+               (let [replace-form (list (if (set? ?literal) 'set 'vec) ?coll)
+                     message (format "Use `%s` instead of recreating it."
+                                     (if (set? ?literal) "set" "vec"))]
+                 (->violation rule form {:replace-form replace-form
+                                         :message message})))})

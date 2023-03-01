@@ -14,5 +14,5 @@
   (or x y)
   "
   {:pattern '(if ?x ?x ?y)
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `or` instead of recreating it."
    :replace '(or ?x ?y)})

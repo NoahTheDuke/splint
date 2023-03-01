@@ -16,5 +16,5 @@
   "
   {:patterns ['(< ?x 0)
               '(> 0 ?x)]
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `neg?` instead of recreating it."
    :replace '(neg? ?x)})

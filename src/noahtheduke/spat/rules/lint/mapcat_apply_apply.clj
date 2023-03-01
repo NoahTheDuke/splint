@@ -14,5 +14,5 @@
   (mapcat x y)
   "
   {:pattern '(apply concat (apply map ?x ?y))
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `mapcat` instead of recreating it."
    :replace '(mapcat ?x ?y)})

@@ -14,5 +14,5 @@
   (when x (println :a) (println :b) :c)
   "
   {:pattern '(when ?x (do &&. ?y))
-   :message "Use the built-in function instead of recreating it."
+   :message "Unnecessary `do` in `when` body."
    :replace '(when ?x &&. ?y)})

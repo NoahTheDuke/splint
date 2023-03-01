@@ -14,5 +14,5 @@
   (fnext coll)
   "
   {:pattern '(first (next ?coll))
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `fnext` instead of recreating it."
    :replace '(fnext ?coll)})

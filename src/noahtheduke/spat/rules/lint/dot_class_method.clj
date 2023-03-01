@@ -11,15 +11,16 @@
            (Character/isUpperCase ^char (nth sym (inc idx)))))))
 
 (defrule dot-class-method
-  "Using the `.method` form maps the method call to Clojure's natural function position.
+  "Using the `Obj/staticMethod` form maps the method call to Clojure's natural function
+  position.
 
   # bad
-  (. Obj method args)
+  (. Obj staticMethod args)
 
   # good
-  (.method Obj args)"
+  (Obj/staticMethod args)"
   {:pattern '(. ?class %symbol?%-?method &&. ?args)
-   :message "Intention is clearer with .method form."
+   :message "Intention is clearer with `Obj/staticMethod` form."
    :on-match (fn [rule form {:syms [?class ?method ?args]}]
                (when (symbol-class? ?class)
                  (let [replace-form `(~(symbol (str ?class "/" ?method)) ~@?args)]

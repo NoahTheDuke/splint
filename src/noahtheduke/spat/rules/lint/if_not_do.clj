@@ -3,7 +3,7 @@
     [noahtheduke.spat.rules :refer [defrule]]))
 
 (defrule if-not-do
-  "`if-not` already defines an implicit `do`. Rely on it.
+  "`when-not` already defines an implicit `do`. Rely on it.
 
   Examples:
 
@@ -14,5 +14,5 @@
   (if-not x (println :a) (println :b) :c)
   "
   {:pattern '(if-not ?x (do &&. ?y))
-   :message "Use the built-in `do` instead of recreating it."
+   :message "Use `when-not` instead of recreating it."
    :replace '(when-not ?x &&. ?y)})

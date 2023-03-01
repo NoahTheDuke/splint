@@ -14,6 +14,6 @@
   (not= num1 num2)
   "
   {:pattern '(not (= &&. ?args))
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `not=` instead of recreating it."
    :replace '(not= &&. ?args)})
 

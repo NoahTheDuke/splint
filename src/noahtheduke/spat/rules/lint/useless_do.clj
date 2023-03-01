@@ -11,5 +11,5 @@
   # good
   coll"
   {:pattern '(do ?x)
-   :message "Unnecessary wrapper."
+   :message "Unnecessary `do`."
    :replace '?x})

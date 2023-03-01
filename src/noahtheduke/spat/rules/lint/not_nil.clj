@@ -14,5 +14,5 @@
   (some? x)
   "
   {:pattern '(not (nil? ?x))
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `some?` instead of recreating it."
    :replace '(some? ?x)})

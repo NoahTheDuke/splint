@@ -14,5 +14,5 @@
   (clojure.string/reverse x)
   "
   {:pattern '(apply str (reverse ?x))
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `clojure.string/reverse` instead of recreating it."
    :replace '(clojure.string/reverse ?x)})

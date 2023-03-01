@@ -14,5 +14,5 @@
   (run! println (range 10))
   "
   {:pattern '(dorun (map ?fn ?coll))
-   :message "Use the appropriate non-lazy function."
+   :message "Use `run!`, a non-lazy function."
    :replace '(run! ?fn ?coll)})

@@ -2,6 +2,9 @@
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 
+(defn eq? [sexp]
+  (#{'= '==} sexp))
+
 (defrule eq-zero
   "`zero?` exists so use it.
 
@@ -16,10 +19,8 @@
   # good
   (zero? num)
   "
-  {:patterns ['(= 0 ?x)
-              '(= ?x 0)
-              '(== 0 ?x)
-              '(== ?x 0)]
-   :message "Use the built-in function instead of recreating it."
+  {:patterns ['(%eq? 0 ?x)
+              '(%eq? ?x 0)]
+   :message "Use `zero?` instead of recreating it."
    :replace '(zero? ?x)})
 

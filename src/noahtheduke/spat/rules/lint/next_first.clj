@@ -14,5 +14,5 @@
   (nfirst coll)
   "
   {:pattern '(next (first ?coll))
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `nfirst` instead of recreating it."
    :replace '(nfirst ?coll)})

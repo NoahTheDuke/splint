@@ -35,10 +35,8 @@
 (defn parse-string-all [s] (e/parse-string-all s clj-defaults))
 
 (comment
-  (e/parse-string-all
-    "::a :a/b #sql/raw [1 2 3] #unknown [4]"
-    {:auto-resolve (fn [k] (if (= :current k) 'spat (name k)))
-     :readers (fn [r] (fn [v] (list (if (namespace r) r (symbol "spat" (name r))) v)))}))
+  (parse-string-all "::a :a/b #sql/raw [1 2 3] #unknown [4]")
+  (parse-string "#(not (pred? %))"))
 
 (defn check-pattern
   [rule pattern form]
@@ -61,20 +59,15 @@
 
 (defn check-rules-for-type [given-rules form]
   (when-let [rules-for-type (given-rules (simple-type form))]
-    (reduce
-      (fn [_ rule]
-        (when-let [violation (check-rule rule form)]
-          (reduced violation)))
-      nil
-      (vals rules-for-type))))
+    (keep #(check-rule % form) (vals rules-for-type))))
 
 (defn check-form
   "Checks a given form against the appropriate rules then calls `on-match` to build the
   violation map and store it in `ctx`."
   [ctx rules form]
-  (when-let [violation (check-rules-for-type rules form)]
-    (swap! ctx update :violations conj violation)
-    violation))
+  (when-let [violations (check-rules-for-type rules form)]
+    (swap! ctx update :violations into violations)
+    violations))
 
 (defn check-and-recur
   "Check a given form and then map recur over each of the form's children."
@@ -105,7 +98,12 @@
        (pmap #(parse-and-check-file ctx rules %))
        (dorun)))
 
-(defn print-find [{:keys [filename rule-name form line column message alt]}]
+(defn print-clj-kondo [{:keys [filename line column message]}]
+  (printf "%s:%s:%s: warning: %s" filename line column message)
+  (newline)
+  (flush))
+
+(defn print-find-with-alt [{:keys [filename rule-name form line column message alt]}]
   (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)
   (newline)
   (pprint/pprint form)
@@ -114,6 +112,23 @@
     (pprint/pprint alt))
   (newline)
   (flush))
+
+(defn print-find-simple [{:keys [filename rule-name form line column message]}]
+  (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)
+  (newline)
+  (pprint/pprint form)
+  (newline)
+  (flush))
+
+(defn print-results
+  [options violations]
+  (when-not (:quiet options)
+    (let [printer (cond
+                    (:clj-kondo options) print-clj-kondo
+                    (:examples options) print-find-with-alt
+                    :else print-find-simple)]
+      (doseq [violation (sort-by :filename violations)]
+        (printer violation)))))
 
 (defn run [args]
   (let [start-time (System/currentTimeMillis)
@@ -126,9 +141,7 @@
             _ (check-paths ctx rules paths)
             end-time (System/currentTimeMillis)
             violations (:violations @ctx)]
-        (when-not (:quiet options)
-          (doseq [violation (sort-by :filename violations)]
-            (print-find violation)))
+        (print-results options violations)
         (printf "Linting took %sms, %s style warnings%n"
                 (int (- end-time start-time))
                 (count violations))

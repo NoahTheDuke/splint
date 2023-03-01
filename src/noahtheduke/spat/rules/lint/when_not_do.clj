@@ -14,5 +14,5 @@
   (when-not x (println :a) (println :b) :c)
   "
   {:pattern '(when-not ?x (do &&. ?y))
-   :message "Use the built-in function instead of recreating it."
+   :message "Unnecessary `do` in `when-not` body."
    :replace '(when-not ?x &&. ?y)})

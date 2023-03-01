@@ -14,5 +14,5 @@
   (vector :a b {:c 1})
   "
   {:pattern '(conj [] &&. ?x)
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `vector` instead of recreating it."
    :replace '(vector &&. ?x)})

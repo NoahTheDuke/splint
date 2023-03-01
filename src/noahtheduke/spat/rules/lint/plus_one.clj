@@ -16,5 +16,5 @@
   "
   {:patterns ['(+ ?x 1)
               '(+ 1 ?x)]
-   :message "Use the more specific core function."
+   :message "Use `inc` instead of recreating it."
    :replace '(inc ?x)})

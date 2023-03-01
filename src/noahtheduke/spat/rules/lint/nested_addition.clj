@@ -2,6 +2,9 @@
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 
+(defn +? [sexp]
+  (#{'+ '+'} sexp))
+
 (defrule nested-addition
   "Checks for simple nested additions.
 
@@ -15,6 +18,6 @@
   (+ x y z)
   (+ x y z a)
   "
-  {:pattern '(+ ?x (+ &&. ?xs))
-   :message "Use the variadic arity."
-   :replace '(+ ?x &&. ?xs)})
+  {:pattern '(%+?%-?p ?x (?p &&. ?xs))
+   :message "Use the variadic arity of `+`."
+   :replace '(?p ?x &&. ?xs)})

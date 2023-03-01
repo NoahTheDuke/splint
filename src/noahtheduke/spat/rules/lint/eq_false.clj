@@ -16,5 +16,5 @@
   "
   {:patterns ['(= false ?x)
               '(= ?x false)]
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `false?` instead of recreating it."
    :replace '(false? ?x)})

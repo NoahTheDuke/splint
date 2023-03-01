@@ -14,5 +14,5 @@
   (clojure.string/join \",\" x)
   "
   {:pattern '(apply str (interpose ?x ?y))
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `clojure.string/join` instead of recreating it."
    :replace '(clojure.string/join ?x ?y)})

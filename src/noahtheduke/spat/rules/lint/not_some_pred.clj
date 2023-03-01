@@ -12,5 +12,5 @@
   (not-any? even? coll)
   "
   {:pattern '(not (some ?pred ?coll))
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `not-any?` instead of recreating it."
    :replace '(not-any? ?pred ?coll)})

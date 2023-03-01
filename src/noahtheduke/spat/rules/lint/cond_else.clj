@@ -19,5 +19,5 @@
   (cond (< 10 num) (println 10) (< 5 num) (println 5) :else (println 0))
   "
   {:pattern '(cond &&. ?pairs %not-else ?else)
-   :message "Use :else as the catch-all branch."
+   :message "Use `:else` as the catch-all branch."
    :replace '(cond &&. ?pairs :else ?else)})

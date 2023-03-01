@@ -14,5 +14,5 @@
   (ffirst coll)
   "
   {:pattern '(first (first ?coll))
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `ffirst` instead of recreating it."
    :replace '(ffirst ?coll)})

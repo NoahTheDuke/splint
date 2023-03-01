@@ -14,5 +14,5 @@
   (repeatedly 5 (range 10))
   "
   {:pattern '(take ?n (repeatedly ?coll))
-   :message "Rely on the arity."
+   :message "Rely on the `n` arity of `repeatedly`."
    :replace '(repeatedly ?n ?coll)})

@@ -14,5 +14,5 @@
   (while (some-func) (println 1) (println 2) (recur))
   "
   {:pattern '(loop [] (when ?test &&. ?exprs (recur)))
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `while` instead of recreating it."
    :replace '(while ?test &&. ?exprs)})

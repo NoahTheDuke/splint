@@ -22,5 +22,5 @@
   {:patterns ['(assoc ?coll ?key (%not-assoc?%-?fn (?key ?coll) &&. ?args))
               '(assoc ?coll ?key (%not-assoc?%-?fn (?coll ?key) &&. ?args))
               '(assoc ?coll ?key (%not-assoc?%-?fn (get ?coll ?key) &&. ?args))]
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `update` instead of recreating it."
    :replace '(update ?coll ?key ?fn &&. ?args)})

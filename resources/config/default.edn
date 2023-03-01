@@ -25,6 +25,11 @@
    :enabled true
    :added "0.1"}
 
+  lint/assoc-in-one-arg
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
   lint/cond-else
   {:description ""
    :enabled true
@@ -71,16 +76,6 @@
    :added "0.1"}
 
   lint/filter-complement
-  {:description ""
-   :enabled true
-   :added "0.1"}
-
-  lint/filter-fn-not-pred
-  {:description ""
-   :enabled true
-   :added "0.1"}
-
-  lint/filter-seq
   {:description ""
    :enabled true
    :added "0.1"}
@@ -301,6 +296,11 @@
    :added "0.1"}
 
   lint/update-in-assoc
+  {:description ""
+   :enabled true
+   :added "0.1"}
+
+  lint/update-in-one-arg
   {:description ""
    :enabled true
    :added "0.1"}

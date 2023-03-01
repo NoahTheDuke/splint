@@ -14,5 +14,5 @@
   (loop [] (println 1) (println 2))
   "
   {:pattern '(loop ?binding (do &&. ?exprs))
-   :message "Use the built-in `do` instead of recreating it."
+   :message "Unnecessary `do` in `loop` body."
    :replace '(loop ?binding &&. ?exprs)})

@@ -15,5 +15,5 @@
   (if-let [result (some-func)] (do-stuff result) (other-stuff))
   "
   {:pattern '(let [?result ?given] (if ?result ?truthy ?falsy))
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `if-let` instead of recreating it."
    :replace '(if-let [?result ?given] ?truthy ?falsy)})

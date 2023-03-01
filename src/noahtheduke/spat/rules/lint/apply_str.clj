@@ -18,6 +18,6 @@
   # good
   (clojure.string/join x)
   "
-  {:pattern '(apply str %not-special?%-?x)
-   :message "Use the built-in function instead of recreating it."
-   :replace '(clojure.string/join ?x)})
+  {:pattern '(apply str %not-special?%-?coll)
+   :message "Use `clojure.string/join` instead of recreating it."
+   :replace '(clojure.string/join ?coll)})

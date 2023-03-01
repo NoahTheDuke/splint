@@ -14,5 +14,5 @@
   (when x y z)
   "
   {:pattern '(when-not (not ?x) &&. ?y)
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `when` instead of double negation."
    :replace '(when ?x &&. ?y)})

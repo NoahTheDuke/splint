@@ -14,5 +14,5 @@
   (filterv pred coll)
   "
   {:pattern '(vec (filter ?pred ?coll))
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `filterv` instead of recreating it."
    :replace '(filterv ?pred ?coll)})

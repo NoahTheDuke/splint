@@ -14,5 +14,5 @@
   (when-not (some-func) :a)
   "
   {:pattern '(if ?x nil ?y)
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `when-not` instead of recreating it."
    :replace '(when-not ?x ?y)})

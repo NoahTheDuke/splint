@@ -12,5 +12,5 @@
   (let [a 1 b 2] (println a) (println b))
   "
   {:pattern '(let ?binding (do &&. ?exprs))
-   :message "Use the built-in `do` instead of recreating it."
+   :message "Unnecessary `do` in `let` body."
    :replace '(let ?binding &&. ?exprs)})

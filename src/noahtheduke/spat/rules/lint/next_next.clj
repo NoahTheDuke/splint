@@ -14,5 +14,5 @@
   (nnext coll)
   "
   {:pattern '(next (next ?coll))
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `nnext` instead of recreating it."
    :replace '(nnext ?coll)})

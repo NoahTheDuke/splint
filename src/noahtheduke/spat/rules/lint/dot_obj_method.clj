@@ -19,7 +19,7 @@
   # good
   (.method obj args)"
   {:pattern '(. ?obj %symbol?%-?method &&. ?args)
-   :message "Intention is clearer with .method form."
+   :message "Intention is clearer with `.method` form."
    :on-match (fn [rule form {:syms [?obj ?method ?args]}]
                (when (symbol-not-class? ?obj)
                  (let [replace-form `(~(symbol (str "." ?method)) ~?obj ~@?args)]

@@ -14,5 +14,5 @@
   (when-let [a 1] a)
   "
   {:pattern '(if-let ?binding ?expr nil)
-   :message "Use the built-in function instead of recreating it."
+   :message "Use `when-let` instead of recreating it."
    :replace '(when-let ?binding ?expr)})

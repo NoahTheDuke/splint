@@ -7,7 +7,7 @@
     [noahtheduke.spat.rules :refer [defrule]]))
 
 (defrule tostring
-  "Convert (.toString) to (str)
+  "Convert `(.toString)` to `(str)`.
 
   Examples:
 

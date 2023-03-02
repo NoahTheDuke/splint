@@ -7,7 +7,9 @@
     [noahtheduke.spat.rules :refer [defrule]]))
 
 (defrule useless-do
-  "Examples:
+  "A single item in a `do` is a no-op.
+
+  Examples:
 
   ; bad
   (do coll)

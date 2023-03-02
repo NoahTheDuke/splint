@@ -1023,7 +1023,7 @@ args to help with readability.
 | ------- | ----- |
 |    true |   0.1 |
 
-Convert (.toString) to (str)
+Convert `(.toString)` to `(str)`.
 
 ### Examples:
 ```clojure
@@ -1078,16 +1078,16 @@ just call `update` directly instead for performance and readability improvements
 | ------- | ----- |
 |    true |   0.1 |
 
-Examples:
+A single item in a `do` is a no-op.
 
+### Examples:
+```clojure
 ; bad
 (do coll)
 
 ; good
 coll
-
-### Examples:
-
+```
 
 ## lint/when-do
 

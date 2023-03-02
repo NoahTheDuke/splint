@@ -35,7 +35,7 @@
                               (apply min))
           dedented-lines (map #(if (str/blank? %) % (subs % min-indent)) (next lines))
           lines (str/join \newline (cons (first lines) dedented-lines))
-          [docs examples] (str/split lines #"\n\n\s*Examples:")]
+          [docs examples] (str/split lines #"Examples:")]
       (str (str/trim docs)
            \newline \newline
            "### Examples:"

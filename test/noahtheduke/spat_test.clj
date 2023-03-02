@@ -36,6 +36,10 @@
   [s]
   (:alt (first (check-str s))))
 
+(defn check-message
+  [s]
+  (:message (first (check-str s))))
+
 (defn check-all
   [s]
   (let [ctx (atom {})
@@ -193,10 +197,6 @@
   '(vec coll)
   (check-alt "(into [] coll)"))
 
-(defexpect assoc-in-one-arg-test
-  '(assoc coll :k v)
-  (check-alt "(assoc-in coll [:k] v)"))
-
 (defexpect assoc-assoc-key-coll-test
   '(assoc-in coll [:k1 :k2] v)
   (check-alt "(assoc coll :k1 (assoc (:k1 coll) :k2 v))"))
@@ -221,9 +221,15 @@
   '(update coll :k f args)
   (check-alt "(assoc coll :k (f (get coll :k) args))"))
 
-(defexpect update-in-one-arg-test
+(defexpect single-key-in-test
+  (expect '(assoc coll :k v) (check-alt "(assoc-in coll [:k] v)"))
+  (expect "Use `assoc` instead of recreating it." (check-message "(assoc-in coll [:k] v)"))
+  (expect '(get coll :k) (check-alt "(get-in coll [:k])"))
+  (expect '(get coll :k :default) (check-alt "(get-in coll [:k] :default)"))
+  (expect "Use `get` instead of recreating it." (check-message "(get-in coll [:k])"))
   (expect '(update coll :k inc) (check-alt "(update-in coll [:k] inc)"))
-  (expect '(update coll :k + 1 2 3) (check-alt "(update-in coll [:k] + 1 2 3)")))
+  (expect '(update coll :k + 1 2 3) (check-alt "(update-in coll [:k] + 1 2 3)"))
+  (expect "Use `update` instead of recreating it." (check-message "(update-in coll [:k] inc)")))
 
 (defexpect update-in-assoc-test
   '(assoc-in coll ks v)

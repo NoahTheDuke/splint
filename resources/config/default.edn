@@ -24,11 +24,6 @@
   :enabled true
   :added "0.1"}
 
- lint/assoc-in-one-arg
- {:description ""
-  :enabled true
-  :added "0.1"}
-
  lint/cond-else
  {:description ""
   :enabled true
@@ -302,11 +297,6 @@
   :enabled true
   :added "0.1"}
 
- lint/update-in-one-arg
- {:description ""
-  :enabled true
-  :added "0.1"}
-
  lint/useless-do
  {:description ""
   :enabled true
@@ -348,6 +338,11 @@
   :added "0.1"}
 
  style/new-object
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/single-key-in
  {:description ""
   :enabled true
   :added "0.1"}

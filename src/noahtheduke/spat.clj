@@ -19,7 +19,6 @@
     [noahtheduke.spat.rules.lint.apply-str-reverse]
     [noahtheduke.spat.rules.lint.assoc-assoc]
     [noahtheduke.spat.rules.lint.assoc-fn]
-    [noahtheduke.spat.rules.lint.assoc-in-one-arg]
     [noahtheduke.spat.rules.lint.cond-else]
     [noahtheduke.spat.rules.lint.conj-vector]
     [noahtheduke.spat.rules.lint.divide-by-one]
@@ -72,7 +71,6 @@
     [noahtheduke.spat.rules.lint.thread-macro-one-arg]
     [noahtheduke.spat.rules.lint.tostring]
     [noahtheduke.spat.rules.lint.update-in-assoc]
-    [noahtheduke.spat.rules.lint.update-in-one-arg]
     [noahtheduke.spat.rules.lint.useless-do]
     [noahtheduke.spat.rules.lint.when-do]
     [noahtheduke.spat.rules.lint.when-not-call]
@@ -83,6 +81,7 @@
 
     [noahtheduke.spat.rules.style.prefer-clj-math]
     [noahtheduke.spat.rules.style.new-object]
+    [noahtheduke.spat.rules.style.single-key-in]
 
     ,))
 

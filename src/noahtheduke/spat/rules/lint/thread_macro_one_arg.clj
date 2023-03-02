@@ -24,11 +24,16 @@
   (y x)
 
   ; bad
-  (-> x (y))
-  (->> x (y))
+  (-> x (y z))
 
   ; good
-  (y x)
+  (y x z)
+
+  ; bad
+  (->> x (y z))
+
+  ; good
+  (y z x)
   "
   {:pattern '(%thread-macro?%-?f ?arg ?form)
    :on-match (fn [rule form {:syms [?f ?form ?arg]}]

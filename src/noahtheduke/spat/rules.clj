@@ -81,7 +81,7 @@
         alt (cond
               replace-form replace-form
               (:replace rule) ((:replace rule) binds))]
-    {:rule-name (:name rule)
+    {:rule-name (:full-name rule)
      :form form
      :message message
      :line (:line form-meta)

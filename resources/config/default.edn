@@ -112,7 +112,8 @@
  lint/if-else-nil
  {:description ""
   :enabled true
-  :added "0.1"}
+  :added "0.1"
+  :style-ref "#when-instead-of-single-branch-if"}
 
  lint/if-let-else-nil
  {:description ""
@@ -143,12 +144,6 @@
  {:description ""
   :enabled true
   :added "0.1"}
-
- lint/if-then-do
- {:description ""
-  :enabled true
-  :added "0.1"
-  :style-ref "#when-instead-of-single-branch-if"}
 
  lint/into-literal
  {:description ""

@@ -10,13 +10,14 @@
   "`seq` returns `nil` when given an empty collection. `empty?` is implemented as
   `(not (seq coll))` so it's best and fastest to use `seq` directly.
 
-  Examples
+  Examples:
 
   ; bad
   (not (empty? coll))
 
   ; good
-  (seq coll)"
+  (seq coll)
+  "
   {:pattern '(not (empty? ?x))
    :message "`seq` is idiomatic, gotta learn to love it."
    :replace '(seq ?x)})

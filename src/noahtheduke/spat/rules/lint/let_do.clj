@@ -9,6 +9,8 @@
 (defrule let-do
   "`let` has an implicit `do`, so use it.
 
+  Examples:
+
   ; bad
   (let [a 1 b 2] (do (println a) (println b)))
 

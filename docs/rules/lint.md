@@ -185,14 +185,14 @@ x
 Using the `Obj/staticMethod` form maps the method call to Clojure's natural function
 position.
 
+### Examples:
+```clojure
 ; bad
 (. Obj staticMethod args)
 
 ; good
 (Obj/staticMethod args)
-
-### Examples:
-
+```
 
 ## lint/dot-obj-method
 
@@ -202,14 +202,14 @@ position.
 
 Using the `.method` form maps the method call to Clojure's natural function position.
 
+### Examples:
+```clojure
 ; bad
 (. obj method args)
 
 ; good
 (.method obj args)
-
-### Examples:
-
+```
 
 ## lint/eq-false
 
@@ -393,6 +393,9 @@ Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
 (when (some-func) :a)
 ```
 
+### Reference
+* https://guide.clojure.style/#when-instead-of-single-branch-if
+
 ## lint/if-let-else-nil
 
 | Enabled | Added |
@@ -495,27 +498,6 @@ Two `not`s cancel each other out.
 (or x y)
 ```
 
-## lint/if-then-do
-
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
-
-Each branch of `if` can only have one expression, so using `do` to allow for multiple
-expressions is better expressed with `when`.
-
-### Examples:
-```clojure
-; bad
-(if (some-func) (do (println 1) (println 2)))
-
-; good
-(when (some-func) (println 1) (println 2))
-```
-
-### Reference
-* https://guide.clojure.style/#when-instead-of-single-branch-if
-
 ## lint/into-literal
 
 | Enabled | Added |
@@ -547,14 +529,14 @@ expressions is better expressed with `when`.
 
 `let` has an implicit `do`, so use it.
 
+### Examples:
+```clojure
 ; bad
 (let [a 1 b 2] (do (println a) (println b)))
 
 ; good
 (let [a 1 b 2] (println a) (println b))
-
-### Examples:
-
+```
 
 ## lint/let-if
 
@@ -855,16 +837,14 @@ nnext is succinct and meaningful.
 `seq` returns `nil` when given an empty collection. `empty?` is implemented as
 `(not (seq coll))` so it's best and fastest to use `seq` directly.
 
-Examples
-
+### Examples:
+```clojure
 ; bad
 (not (empty? coll))
 
 ; good
 (seq coll)
-
-### Examples:
-
+```
 
 ## lint/not-eq
 
@@ -908,14 +888,14 @@ Examples
 
 not-any? is succinct and meaningful.
 
+### Examples:
+```clojure
 ; bad
 (not (some even? coll))
 
 ; good
 (not-any? even? coll)
-
-### Examples:
-
+```
 
 ## lint/plus-one
 
@@ -1025,11 +1005,16 @@ args to help with readability.
 (y x)
 
 ; bad
-(-> x (y))
-(->> x (y))
+(-> x (y z))
 
 ; good
-(y x)
+(y x z)
+
+; bad
+(->> x (y z))
+
+; good
+(y z x)
 ```
 
 ## lint/tostring

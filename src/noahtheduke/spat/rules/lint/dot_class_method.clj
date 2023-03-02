@@ -18,11 +18,14 @@
   "Using the `Obj/staticMethod` form maps the method call to Clojure's natural function
   position.
 
+  Examples:
+
   ; bad
   (. Obj staticMethod args)
 
   ; good
-  (Obj/staticMethod args)"
+  (Obj/staticMethod args)
+  "
   {:pattern '(. ?class %symbol?%-?method &&. ?args)
    :message "Intention is clearer with `Obj/staticMethod` form."
    :on-match (fn [rule form {:syms [?class ?method ?args]}]

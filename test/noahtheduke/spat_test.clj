@@ -125,7 +125,8 @@
 
 (defexpect thread-first-1-arg-test
   (expect '(f arg) (check-alt "(-> arg f)"))
-  (expect '(f arg) (check-alt "(-> arg (f))")))
+  (expect '(f arg) (check-alt "(-> arg (f))"))
+  (expect '(f arg 10) (check-alt "(-> arg (f 10))")))
 
 (defexpect thread-last-no-arg-test
   'x
@@ -133,7 +134,8 @@
 
 (defexpect thread-last-1-arg-test
   (expect '(form arg) (check-alt "(->> arg form)"))
-  (expect '(form arg) (check-alt "(->> arg (form))")))
+  (expect '(form arg) (check-alt "(->> arg (form))"))
+  (expect '(form 10 arg) (check-alt "(->> arg (form 10))")))
 
 (defexpect not-some-pred-test
   '(not-any? pred coll)
@@ -392,5 +394,5 @@
   (check-alt "(new java.util.ArrayList 100)"))
 
 (defexpect prefer-clj-math-test
-  (expect "clojure.math/atan"
-    (:alt (first (check-all "(Math/atan 45)")))))
+  ["clojure.math/atan"]
+  (map :alt (check-all "(Math/atan 45)")))

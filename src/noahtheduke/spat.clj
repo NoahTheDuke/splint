@@ -42,7 +42,6 @@
     [noahtheduke.spat.rules.lint.if-not-do]
     [noahtheduke.spat.rules.lint.if-not-not]
     [noahtheduke.spat.rules.lint.if-same-truthy]
-    [noahtheduke.spat.rules.lint.if-then-do]
     [noahtheduke.spat.rules.lint.into-literal]
     [noahtheduke.spat.rules.lint.let-do]
     [noahtheduke.spat.rules.lint.let-if]

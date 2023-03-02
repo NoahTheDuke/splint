@@ -9,6 +9,8 @@
 (defrule not-some-pred
   "not-any? is succinct and meaningful.
 
+  Examples:
+
   ; bad
   (not (some even? coll))
 

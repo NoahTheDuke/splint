@@ -4,7 +4,7 @@
 
 (ns noahtheduke.spat.rules.lint.if-else-nil
   (:require
-    [noahtheduke.spat.rules :refer [defrule]]))
+    [noahtheduke.spat.rules :refer [defrule ->violation]]))
 
 (defrule if-else-nil
   "Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
@@ -18,6 +18,11 @@
   (when (some-func) :a)
   "
   {:patterns ['(if ?x ?y nil)
+              '(if ?x (do &&. ?y))
               '(if ?x ?y)]
    :message "Use `when` which doesn't require specifying the else branch."
-   :replace '(when ?x ?y)})
+   :on-match (fn [rule form {:syms [?x ?y]}]
+               (let [new-form (if (sequential? ?y)
+                                (list* 'when ?x ?y)
+                                (list 'when ?x ?y))]
+                 (->violation rule form {:replace-form new-form})))})

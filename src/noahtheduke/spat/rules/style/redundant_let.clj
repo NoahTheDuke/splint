@@ -20,8 +20,8 @@
         b 2]
     (println a b))
   "
-  {:pattern '(let ?outer-bindings (let ?inner-bindings &&. ?body))
-   :message "Redundant let expression can be merged."
+  {:pattern '(let %vector?%-?outer-bindings (let %vector?%-?inner-bindings &&. ?body))
+   :message "Redundant let expressions can be merged."
    :on-match (fn [rule form {:syms [?outer-bindings ?inner-bindings ?body]}]
                (let [new-form (list* 'let
                                      (vec (concat ?outer-bindings ?inner-bindings))

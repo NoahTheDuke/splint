@@ -29,7 +29,7 @@
    :var true
    :row-key :line
    :col-key :column
-   :end-location false
+   :end-location true
    :location? seq?
    :features #{:cljs}
    :read-cond :preserve

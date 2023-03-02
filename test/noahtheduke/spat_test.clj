@@ -402,3 +402,7 @@
 (defexpect prefer-clj-math-test
   ["clojure.math/atan"]
   (map :alt (check-all "(Math/atan 45)")))
+
+(defexpect redundant-let-test
+  '(let [a 1 b 2] (println a b))
+  (check-alt "(let [a 1] (let [b 2] (println a b)))"))

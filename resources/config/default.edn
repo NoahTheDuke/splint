@@ -332,12 +332,17 @@
   :enabled true
   :added "0.1"}
 
+ style/new-object
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
  style/prefer-clj-math
  {:description ""
   :enabled true
   :added "0.1"}
 
- style/new-object
+ style/redundant-let
  {:description ""
   :enabled true
   :added "0.1"}

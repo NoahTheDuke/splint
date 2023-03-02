@@ -79,8 +79,9 @@
     [noahtheduke.spat.rules.lint.when-not-not]
     [noahtheduke.spat.rules.lint.with-meta-vary-meta]
 
-    [noahtheduke.spat.rules.style.prefer-clj-math]
     [noahtheduke.spat.rules.style.new-object]
+    [noahtheduke.spat.rules.style.prefer-clj-math]
+    [noahtheduke.spat.rules.style.redundant-let]
     [noahtheduke.spat.rules.style.single-key-in]
 
     ,))

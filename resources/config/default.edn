@@ -342,6 +342,12 @@
   :enabled true
   :added "0.1"}
 
+ style/prefer-condp
+ {:description ""
+  :enabled true
+  :added "0.1"
+  :style-ref "#condp"}
+
  style/redundant-let
  {:description ""
   :enabled true

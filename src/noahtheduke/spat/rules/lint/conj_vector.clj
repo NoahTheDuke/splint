@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (conj [] :a b {:c 1})
 
-  # good
+  ; good
   (vector :a b {:c 1})
   "
   {:pattern '(conj [] &&. ?x)

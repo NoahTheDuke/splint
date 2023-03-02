@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (first (next coll))
 
-  # good
+  ; good
   (fnext coll)
   "
   {:pattern '(first (next ?coll))

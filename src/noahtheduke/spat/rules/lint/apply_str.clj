@@ -16,10 +16,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (apply str x)
 
-  # good
+  ; good
   (clojure.string/join x)
   "
   {:pattern '(apply str %not-special?%-?coll)

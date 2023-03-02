@@ -12,10 +12,10 @@
 
   Examples
 
-  # bad
+  ; bad
   (not (empty? coll))
 
-  # good
+  ; good
   (seq coll)"
   {:pattern '(not (empty? ?x))
    :message "`seq` is idiomatic, gotta learn to love it."

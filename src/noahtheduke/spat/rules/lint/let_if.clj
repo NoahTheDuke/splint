@@ -12,10 +12,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (let [result (some-func)] (if result (do-stuff result) (other-stuff)))
 
-  # good
+  ; good
   (if-let [result (some-func)] (do-stuff result) (other-stuff))
   "
   {:pattern '(let [?result ?given] (if ?result ?truthy ?falsy))

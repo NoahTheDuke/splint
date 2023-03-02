@@ -11,11 +11,11 @@
 
   Examples:
 
-  # bad
+  ; bad
   (apply concat (map x y))
   (apply concat (map x y z))
 
-  # good
+  ; good
   (mapcat x y)
   (mapcat x y z)
   "

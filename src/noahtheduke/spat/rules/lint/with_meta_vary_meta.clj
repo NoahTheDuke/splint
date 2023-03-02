@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (with-meta x (assoc (meta x) :filename filename))
 
-  # good
+  ; good
   (vary-meta x assoc :filename filename)
   "
   {:pattern '(with-meta ?x (?f (meta ?x) &&. ?args))

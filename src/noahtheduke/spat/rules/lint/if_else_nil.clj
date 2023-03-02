@@ -11,12 +11,13 @@
 
   Examples:
 
-  # bad
+  ; bad
   (if (some-func) :a nil)
 
-  # good
+  ; good
   (when (some-func) :a)
   "
-  {:pattern '(if ?x ?y nil)
+  {:patterns ['(if ?x ?y nil)
+              '(if ?x ?y)]
    :message "Use `when` which doesn't require specifying the else branch."
    :replace '(when ?x ?y)})

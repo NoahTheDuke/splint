@@ -12,11 +12,11 @@
 
   Examples:
 
-  # bad
+  ; bad
   (update-in coll [:k] inc)
   (update-in coll [:k] + 1 2 3)
 
-  # good
+  ; good
   (update coll :k inc)
   (update coll :k + 1 2 3)
   "

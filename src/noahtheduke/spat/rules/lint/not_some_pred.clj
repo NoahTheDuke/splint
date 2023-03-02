@@ -9,10 +9,10 @@
 (defrule not-some-pred
   "not-any? is succinct and meaningful.
 
-  # bad
+  ; bad
   (not (some even? coll))
 
-  # good
+  ; good
   (not-any? even? coll)
   "
   {:pattern '(not (some ?pred ?coll))

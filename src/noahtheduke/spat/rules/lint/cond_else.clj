@@ -16,10 +16,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (cond (< 10 num) (println 10) (< 5 num) (println 5) true (println 0))
 
-  # good
+  ; good
   (cond (< 10 num) (println 10) (< 5 num) (println 5) :else (println 0))
   "
   {:pattern '(cond &&. ?pairs %not-else ?else)

@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (apply concat (apply map x y))
 
-  # good
+  ; good
   (mapcat x y)
   "
   {:pattern '(apply concat (apply map ?x ?y))

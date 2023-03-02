@@ -14,16 +14,16 @@
 
   Examples:
 
-  # bad
+  ; bad
   (fn [num] (even? num))
 
-  # good
+  ; good
   even?
 
-  # bad
+  ; bad
   (let [f (fn [num] (even? num))] ...)
 
-  # good
+  ; good
   (let [f even?] ...)
   "
   {:patterns ['(%fn?? [?arg] (?fun ?arg))

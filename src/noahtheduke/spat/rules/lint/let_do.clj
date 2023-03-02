@@ -9,10 +9,10 @@
 (defrule let-do
   "`let` has an implicit `do`, so use it.
 
-  # bad
+  ; bad
   (let [a 1 b 2] (do (println a) (println b)))
 
-  # good
+  ; good
   (let [a 1 b 2] (println a) (println b))
   "
   {:pattern '(let ?binding (do &&. ?exprs))

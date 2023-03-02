@@ -11,11 +11,11 @@
 
   Examples:
 
-  # bad
+  ; bad
   (= nil x)
   (= x nil)
 
-  # good
+  ; good
   (nil? x)
   "
   {:patterns ['(= nil ?x)

@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (not (= num1 num2))
 
-  # good
+  ; good
   (not= num1 num2)
   "
   {:pattern '(not (= &&. ?args))

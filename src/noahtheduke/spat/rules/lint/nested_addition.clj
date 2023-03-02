@@ -14,11 +14,11 @@
 
   Examples:
 
-  # bad
+  ; bad
   (+ x (+ y z))
   (+ x (+ y z a))
 
-  # good
+  ; good
   (+ x y z)
   (+ x y z a)
   "

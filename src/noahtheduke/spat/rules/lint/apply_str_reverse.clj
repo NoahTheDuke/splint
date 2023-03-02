@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (apply str (reverse x))
 
-  # good
+  ; good
   (clojure.string/reverse x)
   "
   {:pattern '(apply str (reverse ?x))

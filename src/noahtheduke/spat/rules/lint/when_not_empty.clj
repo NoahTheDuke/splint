@@ -12,10 +12,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (when-not (empty? ?x) &&. ?y)
 
-  # good
+  ; good
   (when (seq ?x) &&. ?y)
   "
   {:pattern '(when-not (empty? ?x) &&. ?y)

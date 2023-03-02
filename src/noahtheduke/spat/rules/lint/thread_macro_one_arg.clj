@@ -16,18 +16,18 @@
 
   Examples:
 
-  # bad
+  ; bad
   (-> x y)
   (->> x y)
 
-  # good
+  ; good
   (y x)
 
-  # bad
+  ; bad
   (-> x (y))
   (->> x (y))
 
-  # good
+  ; good
   (y x)
   "
   {:pattern '(%thread-macro?%-?f ?arg ?form)

@@ -14,10 +14,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (filter (complement even?) coll)
 
-  # good
+  ; good
   (remove even? coll)
   "
   {:patterns ['(filter (complement ?pred) ?coll)

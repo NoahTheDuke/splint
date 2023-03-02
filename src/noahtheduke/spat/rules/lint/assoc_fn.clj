@@ -15,12 +15,12 @@
 
   Examples:
 
-  # bad
+  ; bad
   (assoc coll :a (+ (:a coll) 5))
   (assoc coll :a (+ (coll :a) 5))
   (assoc coll :a (+ (get coll :a) 5))
 
-  # good
+  ; good
   (update coll :a + 5)
   "
   {:patterns ['(assoc ?coll ?key (%not-assoc?%-?fn (?key ?coll) &&. ?args))

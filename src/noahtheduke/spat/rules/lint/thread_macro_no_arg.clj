@@ -14,11 +14,11 @@
 
   Examples:
 
-  # bad
+  ; bad
   (-> x)
   (->> x)
 
-  # good
+  ; good
   x
   "
   {:pattern '(%thread-macro? ?x)

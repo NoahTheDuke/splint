@@ -11,11 +11,11 @@
 
   Examples:
 
-  # bad
+  ; bad
   (when true)
   (when (some-func))
 
-  # good
+  ; good
   (when true (do-stuff))
   (when (some-func) (do-stuff))
   "

@@ -16,16 +16,16 @@
 
   Examples:
 
-  # bad
+  ; bad
   (into [] coll)
 
-  # good
+  ; good
   (vec coll)
 
-  # bad
+  ; bad
   (into #{} coll)
 
-  # good
+  ; good
   (set coll)
   "
   {:pattern '(into %set-or-vec?%-?literal ?coll)

@@ -14,13 +14,13 @@
 
   Examples:
 
-  # bad
+  ; bad
   (= 0 num)
   (= num 0)
   (== 0 num)
   (== num 0)
 
-  # good
+  ; good
   (zero? num)
   "
   {:patterns ['(%eq? 0 ?x)

@@ -17,10 +17,10 @@
 (defrule dot-obj-method
   "Using the `.method` form maps the method call to Clojure's natural function position.
 
-  # bad
+  ; bad
   (. obj method args)
 
-  # good
+  ; good
   (.method obj args)"
   {:pattern '(. ?obj %symbol?%-?method &&. ?args)
    :message "Intention is clearer with `.method` form."

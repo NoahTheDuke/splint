@@ -11,11 +11,11 @@
 
   Examples:
 
-  # bad
+  ; bad
   (= false x)
   (= x false)
 
-  # good
+  ; good
   (false? x)
   "
   {:patterns ['(= false ?x)

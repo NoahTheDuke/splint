@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (when-not x (do (println :a) (println :b) :c))
 
-  # good
+  ; good
   (when-not x (println :a) (println :b) :c)
   "
   {:pattern '(when-not ?x (do &&. ?y))

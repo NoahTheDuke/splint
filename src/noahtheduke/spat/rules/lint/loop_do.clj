@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (loop [] (do (println 1) (println 2)))
 
-  # good
+  ; good
   (loop [] (println 1) (println 2))
   "
   {:pattern '(loop ?binding (do &&. ?exprs))

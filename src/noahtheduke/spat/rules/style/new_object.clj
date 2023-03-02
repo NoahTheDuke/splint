@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (new java.util.ArrayList 100)
 
-  # good
+  ; good
   (java.util.ArrayList. 100)
   "
   {:pattern '(new ?class &&. ?args)

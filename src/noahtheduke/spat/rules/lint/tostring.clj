@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (.toString x)
 
-  # good
+  ; good
   (str x)
   "
   {:pattern '(.toString ?x)

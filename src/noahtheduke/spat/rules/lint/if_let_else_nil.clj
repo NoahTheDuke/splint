@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (if-let [a 1] a nil)
 
-  # good
+  ; good
   (when-let [a 1] a)
   "
   {:pattern '(if-let ?binding ?expr nil)

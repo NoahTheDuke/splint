@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (if-not (not x) y z)
 
-  # good
+  ; good
   (if x y z)
   "
   {:pattern '(if-not (not ?x) ?y ?z)

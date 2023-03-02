@@ -9,10 +9,10 @@
 (defrule useless-do
   "Examples:
 
-  # bad
+  ; bad
   (do coll)
 
-  # good
+  ; good
   coll"
   {:pattern '(do ?x)
    :message "Unnecessary `do`."

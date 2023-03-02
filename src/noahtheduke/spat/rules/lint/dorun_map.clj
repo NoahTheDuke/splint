@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (dorun (map println (range 10)))
 
-  # good
+  ; good
   (run! println (range 10))
   "
   {:pattern '(dorun (map ?fn ?coll))

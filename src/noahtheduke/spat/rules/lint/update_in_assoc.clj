@@ -12,10 +12,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (update-in coll [:a :b] assoc 5)
 
-  # good
+  ; good
   (assoc-in coll [:a :b] 5)
   "
   {:pattern '(update-in ?coll ?keys assoc ?val)

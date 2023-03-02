@@ -9,12 +9,12 @@
 (defrule take-repeatedly
   "`repeatedly` has an arity for limiting the number of repeats with `take`.
 
-  # Examples
+  Examples:
 
-  # bad
+  ; bad
   (take 5 (repeatedly (range 10))
 
-  # good
+  ; good
   (repeatedly 5 (range 10))
   "
   {:pattern '(take ?n (repeatedly ?coll))

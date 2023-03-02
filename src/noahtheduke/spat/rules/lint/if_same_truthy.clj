@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (if x x y)
 
-  # good
+  ; good
   (or x y)
   "
   {:pattern '(if ?x ?x ?y)

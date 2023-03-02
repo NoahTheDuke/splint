@@ -147,7 +147,8 @@
  lint/if-then-do
  {:description ""
   :enabled true
-  :added "0.1"}
+  :added "0.1"
+  :style-ref "#when-instead-of-single-branch-if"}
 
  lint/into-literal
  {:description ""
@@ -162,7 +163,8 @@
  lint/let-if
  {:description ""
   :enabled true
-  :added "0.1"}
+  :added "0.1"
+  :style-ref "#if-let"}
 
  lint/loop-do
  {:description ""
@@ -172,7 +174,8 @@
  lint/let-when
  {:description ""
   :enabled true
-  :added "0.1"}
+  :added "0.1"
+  :style-ref "#when-let"}
 
  lint/loop-empty-when
  {:description ""

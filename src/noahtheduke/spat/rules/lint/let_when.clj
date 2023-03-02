@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (let [result (some-func)] (when result (do-stuff result)))
 
-  # good
+  ; good
   (when-let [result (some-func)] (do-stuff result))
   "
   {:pattern '(let [?result ?given] (when ?result &&. ?args))

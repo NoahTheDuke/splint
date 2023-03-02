@@ -11,10 +11,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (vec (filter pred coll))
 
-  # good
+  ; good
   (filterv pred coll)
   "
   {:pattern '(vec (filter ?pred ?coll))

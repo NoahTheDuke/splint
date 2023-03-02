@@ -12,10 +12,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (if (some-func) (do (println 1) (println 2)))
 
-  # good
+  ; good
   (when (some-func) (println 1) (println 2))
   "
   {:pattern '(if ?x (do &&. ?y))

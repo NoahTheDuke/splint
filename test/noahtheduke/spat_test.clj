@@ -7,7 +7,7 @@
             [noahtheduke.spat]
             [noahtheduke.spat.pattern :refer [pattern]]
             [noahtheduke.spat.rules :refer [global-rules]]
-            [noahtheduke.spat.runner :refer [parse-string check-form]]
+            [noahtheduke.spat.runner :refer [parse-string check-form check-and-recur]]
             [noahtheduke.spat.config :refer [load-config]]))
 
 (set! *warn-on-reflection* true)
@@ -35,6 +35,13 @@
 (defn check-alt
   [s]
   (:alt (first (check-str s))))
+
+(defn check-all
+  [s]
+  (let [ctx (atom {})
+        form (parse-string s)]
+    (check-and-recur ctx config @global-rules "filename" form)
+    (:violations @ctx)))
 
 (defexpect str-to-string-test
   '(str x)
@@ -377,9 +384,13 @@
   (check-alt "(not (nil? x))"))
 
 (defexpect missing-body-in-when-test
-  "Missing body in when"
-  (:message (first (check-str "(when true)"))))
+  (expect "Missing body in when"
+    (:message (first (check-str "(when true)")))))
 
 (defexpect new-object-test
   '(java.util.ArrayList. 100)
   (check-alt "(new java.util.ArrayList 100)"))
+
+(defexpect prefer-clj-math-test
+  (expect "clojure.math/atan"
+    (:alt (first (check-all "(Math/atan 45)")))))

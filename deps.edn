@@ -9,6 +9,8 @@
                      criterium/criterium {:mvn/version "0.4.6"}
                      com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.0.3"}
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.3"}}}
+  :docs {:extra-paths ["tasks"]
+         :exec-fn generate-docs/run}
   :test {:extra-paths ["test"]
          :extra-deps {lambdaisland/kaocha {:mvn/version "1.69.1069"}
                       com.github.seancorfield/expectations {:mvn/version "2.0.160"}}

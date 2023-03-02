@@ -82,9 +82,10 @@
     [noahtheduke.spat.rules.lint.when-not-not]
     [noahtheduke.spat.rules.lint.with-meta-vary-meta]
 
-    [noahtheduke.spat.rules.style.new-object] 
+    [noahtheduke.spat.rules.style.prefer-clj-math]
+    [noahtheduke.spat.rules.style.new-object]
 
-    ))
+    ,))
 
 (set! *warn-on-reflection* true)
 

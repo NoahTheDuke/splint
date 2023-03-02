@@ -1,4 +1,4 @@
-(ns tasks.generate-docs
+(ns generate-docs
   (:require
     [clojure.java.io :as io]
     [clojure.pprint :as pp]

@@ -28,7 +28,8 @@
 
 (defmacro defrule
   [rule-name docs opts]
-  (let [{pat :pattern :keys [patterns replace on-match message]} opts]
+  (let [{pat :pattern :keys [patterns replace on-match message
+                             init-type]} opts]
     (assert (simple-symbol? rule-name) "defrule name cannot be namespaced")
     (assert (or pat patterns)
             "defrule must define either :pattern or :patterns")
@@ -47,14 +48,16 @@
                     (str/split #"\.")
                     (reverse)
                     (second))
-          full-name (symbol genre rule-name)]
+          full-name (symbol genre rule-name)
+          init-type (or init-type
+                        (if pat
+                          (simple-type pat)
+                          (simple-type (first patterns))))]
       `(let [rule# {:name ~rule-name
                     :genre ~genre
                     :full-name '~full-name
                     :docstring ~docs
-                    :init-type (if ~pat
-                                 (simple-type ~pat)
-                                 (simple-type (first ~patterns)))
+                    :init-type ~init-type
                     :pattern-raw ~(or pat patterns)
                     :replace-raw ~replace
                     :message ~message
@@ -67,7 +70,7 @@
                                    (postwalk-splicing-replace binds# ~replace)))
                     :on-match ~on-match}]
          (swap! global-rules assoc-in
-                [~(simple-type (or pat (first patterns))) '~full-name]
+                [~init-type '~full-name]
                 rule#)
          (def ~(symbol rule-name) ~docs rule#)))))
 

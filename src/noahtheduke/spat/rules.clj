@@ -11,7 +11,7 @@
 (set! *warn-on-reflection* true)
 
 (def global-rules
-  "All registered rules, grouped by :init-type"
+  "All registered rules, grouped by :init-type and :genre/rule-name"
   (atom {}))
 
 (defn postwalk-splicing-replace [binds replace-form]
@@ -46,9 +46,11 @@
           genre (-> (str *ns*)
                     (str/split #"\.")
                     (reverse)
-                    (second))]
+                    (second))
+          full-name (symbol genre rule-name)]
       `(let [rule# {:name ~rule-name
                     :genre ~genre
+                    :full-name '~full-name
                     :docstring ~docs
                     :init-type (if ~pat
                                  (simple-type ~pat)
@@ -65,8 +67,7 @@
                                    (postwalk-splicing-replace binds# ~replace)))
                     :on-match ~on-match}]
          (swap! global-rules assoc-in
-                [~(simple-type (or pat (first patterns)))
-                 '~(symbol genre rule-name)]
+                [~(simple-type (or pat (first patterns))) '~full-name]
                 rule#)
          (def ~(symbol rule-name) ~docs rule#)))))
 

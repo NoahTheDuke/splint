@@ -339,6 +339,13 @@
   :enabled true
   :added "0.1"}
 
+ ;; Naming Rules
+ naming/record-name
+ {:description ""
+  :enabled true
+  :added "0.1"
+  :style-ref "#naming-protocols-records-structs-and-types"}
+
  ;; Style Rules
 
  style/new-object

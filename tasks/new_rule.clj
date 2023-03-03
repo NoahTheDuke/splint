@@ -10,7 +10,7 @@
         n (symbol n)
         genre (namespace n)
         rule-name (name n)]
-    (assert (and genre rule-name) "Gotta qualify the rule name")
+    (assert (and genre rule-name) (format "Given %s. Gotta qualify the rule name" (pr-str n)))
     (let [filename (io/file "src" "noahtheduke" "spat" "rules"
                             genre (namespace-munge (str rule-name ".clj")))]
       (io/make-parents filename)

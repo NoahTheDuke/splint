@@ -420,3 +420,11 @@
     (check-alt "(if some-val true false)"))
   (expect '(boolean (some-func a b c))
     (check-alt "(if (some-func a b c) true false)")))
+
+(defexpect record-name-test
+  (expect '(defrecord Foo [a b c])
+    (check-alt "(defrecord foo [a b c])"))
+  (expect '(defrecord FooBar [a b c])
+    (check-alt "(defrecord fooBar [a b c])"))
+  (expect '(defrecord Foo-bar [a b c])
+    (check-alt "(defrecord foo-bar [a b c])")))

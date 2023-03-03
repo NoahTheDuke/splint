@@ -79,6 +79,7 @@
     [noahtheduke.spat.rules.lint.when-not-not]
 
     [noahtheduke.spat.rules.style.new-object]
+    [noahtheduke.spat.rules.style.prefer-boolean]
     [noahtheduke.spat.rules.style.prefer-clj-math]
     [noahtheduke.spat.rules.style.prefer-condp]
     [noahtheduke.spat.rules.style.prefer-vary-meta]

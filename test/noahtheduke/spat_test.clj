@@ -414,3 +414,9 @@
     (check-alt "(cond (= 1 x) :one (= 2 x) :two (= 3 x) :three :else :big)"))
   (expect '(condp apply [2 3] = "eq" < "lt" > "gt")
     (check-alt "(cond (apply = [2 3]) \"eq\" (apply < [2 3]) \"lt\" (apply > [2 3]) \"gt\")")))
+
+(defexpect prefer-boolean-test
+  (expect '(boolean some-val)
+    (check-alt "(if some-val true false)"))
+  (expect '(boolean (some-func a b c))
+    (check-alt "(if (some-func a b c) true false)")))

@@ -339,6 +339,12 @@
   :enabled true
   :added "0.1"}
 
+ style/prefer-boolean
+ {:description ""
+  :enabled true
+  :added "0.1"
+  :style-ref "#converting-something-to-boolean"}
+
  style/prefer-clj-math
  {:description ""
   :enabled true

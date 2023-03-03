@@ -14,9 +14,9 @@
     ;; # Rules
     ;; Please keep this sorted and split by genre
 
-    [noahtheduke.spat.rules.lint.apply-str]
     [noahtheduke.spat.rules.lint.apply-str-interpose]
     [noahtheduke.spat.rules.lint.apply-str-reverse]
+    [noahtheduke.spat.rules.lint.apply-str]
     [noahtheduke.spat.rules.lint.assoc-assoc]
     [noahtheduke.spat.rules.lint.assoc-fn]
     [noahtheduke.spat.rules.lint.cond-else]
@@ -44,8 +44,8 @@
     [noahtheduke.spat.rules.lint.into-literal]
     [noahtheduke.spat.rules.lint.let-do]
     [noahtheduke.spat.rules.lint.let-if]
-    [noahtheduke.spat.rules.lint.loop-do]
     [noahtheduke.spat.rules.lint.let-when]
+    [noahtheduke.spat.rules.lint.loop-do]
     [noahtheduke.spat.rules.lint.loop-empty-when]
     [noahtheduke.spat.rules.lint.mapcat-apply-apply]
     [noahtheduke.spat.rules.lint.mapcat-concat-map]
@@ -66,8 +66,8 @@
     [noahtheduke.spat.rules.lint.plus-one]
     [noahtheduke.spat.rules.lint.plus-zero]
     [noahtheduke.spat.rules.lint.pos-checks]
+    [noahtheduke.spat.rules.lint.redundant-call]
     [noahtheduke.spat.rules.lint.take-repeatedly]
-    [noahtheduke.spat.rules.lint.thread-macro-no-arg]
     [noahtheduke.spat.rules.lint.thread-macro-one-arg]
     [noahtheduke.spat.rules.lint.tostring]
     [noahtheduke.spat.rules.lint.update-in-assoc]

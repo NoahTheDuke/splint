@@ -9,8 +9,11 @@
 
 (set! *warn-on-reflection* true)
 
+(defn read-default-config []
+  (edn/read-string (slurp (io/resource "config/default.edn"))))
+
 (def default-config
-  (delay (edn/read-string (slurp (io/resource "config/default.edn")))))
+  (delay (read-default-config)))
 
 (defn find-local-config []
   (loop [dir (.getParentFile (.getAbsoluteFile (io/file ".")))]

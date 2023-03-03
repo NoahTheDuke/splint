@@ -3,16 +3,16 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 (ns noahtheduke.spat-test
-  (:require [expectations.clojure.test :refer [defexpect expect]]
+  (:require [expectations.clojure.test :refer [defexpect expect from-each]]
             [noahtheduke.spat]
             [noahtheduke.spat.pattern :refer [pattern]]
             [noahtheduke.spat.rules :refer [global-rules]]
             [noahtheduke.spat.runner :refer [parse-string check-form check-and-recur]]
-            [noahtheduke.spat.config :refer [load-config]]))
+            [noahtheduke.spat.config :refer [read-default-config]]))
 
 (set! *warn-on-reflection* true)
 
-(def config (load-config))
+(def config (read-default-config))
 
 (defexpect multiple-rest-body
   '{?test (= 1 1)
@@ -123,18 +123,18 @@
   'f
   (check-alt "(fn [arg] (f arg))"))
 
-(defexpect thread-first-no-arg-test
-  'x
-  (check-alt "(-> x)"))
+(defexpect redundant-call-test
+  (expect 'x
+    (from-each [given ["(-> x)" "(->> x)"
+                       "(cond-> x)" "(cond->> x)"
+                       "(some-> x)" "(some->> x)"
+                       "(comp x)" "(partial x)" "(merge x)"]]
+      (check-alt given))))
 
 (defexpect thread-first-1-arg-test
   (expect '(f arg) (check-alt "(-> arg f)"))
   (expect '(f arg) (check-alt "(-> arg (f))"))
   (expect '(f arg 10) (check-alt "(-> arg (f 10))")))
-
-(defexpect thread-last-no-arg-test
-  'x
-  (check-alt "(->> x)"))
 
 (defexpect thread-last-1-arg-test
   (expect '(form arg) (check-alt "(->> arg form)"))

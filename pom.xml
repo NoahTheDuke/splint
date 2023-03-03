@@ -2,27 +2,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.noahtheduke</groupId>
-  <artifactId>spat</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
-  <name>io.github.noahtheduke/spat</name>
-  <description>FIXME: my new library.</description>
-  <url>https://github.com/noahtheduke/spat</url>
+  <artifactId>splint</artifactId>
+  <version>0.1.69</version>
+  <name>io.github.noahtheduke/splint</name>
+  <description>Lint Clojure by shape.</description>
+  <url>https://github.com/noahtheduke/splint</url>
   <licenses>
     <license>
-      <name>Eclipse Public License</name>
-      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <name>MPL 2.0</name>
+      <url>https://mozilla.org/MPL/2.0/</url>
     </license>
   </licenses>
   <developers>
     <developer>
-      <name>Noah</name>
+      <name>Noah Bogart</name>
     </developer>
   </developers>
   <scm>
-    <url>https://github.com/noahtheduke/spat</url>
-    <connection>scm:git:git://github.com/noahtheduke/spat.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/noahtheduke/spat.git</developerConnection>
-    <tag>v0.1.0-SNAPSHOT</tag>
+    <url>https://github.com/noahtheduke/splint</url>
+    <connection>scm:git:git://github.com/noahtheduke/splint.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/noahtheduke/splint.git</developerConnection>
   </scm>
   <dependencies>
     <dependency>

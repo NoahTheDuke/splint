@@ -145,7 +145,7 @@
   '(not-any? pred coll)
   (check-alt "(not (some pred coll))"))
 
-(defexpect with-meta-f-meta-test
+(defexpect prefer-vary-meta-test
   '(vary-meta x f args)
   (check-alt "(with-meta x (f (meta x) args))"))
 

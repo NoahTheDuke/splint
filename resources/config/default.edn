@@ -334,11 +334,6 @@
   :enabled true
   :added "0.1"}
 
- lint/with-meta-vary-meta
- {:description ""
-  :enabled true
-  :added "0.1"}
-
  style/new-object
  {:description ""
   :enabled true
@@ -354,6 +349,11 @@
   :enabled true
   :added "0.1"
   :style-ref "#condp"}
+
+ style/prefer-vary-meta
+ {:description ""
+  :enabled true
+  :added "0.1"}
 
  style/redundant-let
  {:description ""

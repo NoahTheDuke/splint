@@ -2,11 +2,11 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.spat.rules.lint.with-meta-vary-meta
+(ns noahtheduke.spat.rules.style.prefer-vary-meta
   (:require
     [noahtheduke.spat.rules :refer [defrule]]))
 
-(defrule with-meta-vary-meta
+(defrule prefer-vary-meta
   "`vary-meta` works like swap!, so no need to access and overwrite in two steps.
 
   Examples:

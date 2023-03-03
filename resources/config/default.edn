@@ -129,7 +129,8 @@
  lint/if-not-both
  {:description ""
   :enabled true
-  :added "0.1"}
+  :added "0.1"
+  :style-ref "#if-not"}
 
  lint/if-not-do
  {:description ""

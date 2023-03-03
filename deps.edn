@@ -9,11 +9,15 @@
                      criterium/criterium {:mvn/version "0.4.6"}
                      com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.0.3"}
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.3"}}}
-  :docs {:extra-paths ["tasks"]
-         :exec-fn generate-docs/run}
   :test {:extra-paths ["test"]
          :extra-deps {lambdaisland/kaocha {:mvn/version "1.69.1069"}
                       com.github.seancorfield/expectations {:mvn/version "2.0.160"}}
          :main-opts ["-m" "kaocha.runner"]}
   :build {:deps {io.github.clojure/tools.build {:git/tag "v0.9.2" :git/sha "fe6b140"}}
-          :ns-default build}}}
+          :ns-default build}
+  ; dev tasks
+  :gen-docs {:extra-paths ["tasks"]
+             :exec-fn generate-docs/run}
+  :new-rule {:extra-paths ["tasks"]
+             :extra-deps {selmer/selmer {:mvn/version "1.12.55"}}
+             :main-opts ["-m" "new-rule"]}}}

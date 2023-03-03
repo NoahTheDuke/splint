@@ -1,0 +1,21 @@
+(ns noahtheduke.spat.rules.{{genre}}.{{rule-name}}
+  (:require
+    [noahtheduke.spat.rules :refer [defrule ->violation]]))
+
+(defrule {{rule-name}}
+  "Docstring goes here.
+
+  Examples:
+
+  # bad
+  (+ 1 1)
+
+  # good
+  (inc 1
+  "
+  {:pattern '()
+   :message ""
+   :replace '()
+   :on-match (fn [rule form {:syms []}]
+               (let [new-form '()]
+                 (->violation rule form {:replace-form new-form})))})

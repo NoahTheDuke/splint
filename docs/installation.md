@@ -5,15 +5,15 @@ Pretty standard installation as a library.
 For Clojure CLI:
 
 ```
-:aliases {:spat {:extra-deps {noahtheduke/spat {:mvn/version "some version"}}
-                 :main-opts ["-m" "noahtheduke.spat"]}}
+:aliases {:splint {:extra-deps {noahtheduke/spat {:mvn/version "some version"}}
+                   :main-opts ["-m" "noahtheduke.splint"]}}
 ```
 
 And in Leiningen, add this to `project.clj`:
 
 ```
-:profiles {:dev {:dependencies [noahtheduke/spat "some version"]}}
-:aliases {"spat" ["run" "-m" "noahtheduke.spat"]}
+:profiles {:dev {:dependencies [noahtheduke/splint "some version"]}}
+:aliases {"splint" ["run" "-m" "noahtheduke.splint"]}
 ```
 
 ## Jar / Native

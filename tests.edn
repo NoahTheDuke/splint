@@ -9,10 +9,12 @@
   :kaocha/reporter kaocha.report.progress/report
   :kaocha/plugins [:kaocha.plugin/capture-output
                    :kaocha.plugin/filter
+                   :kaocha.plugin/hooks
                    :kaocha.plugin/print-invocations
                    :kaocha.plugin/profiling
                    :kaocha.plugin/randomize]
   :kaocha.plugin.capture-output/capture-output? true
+  :kaocha.hooks/pre-load [hooks/pre-load-hook]
   :kaocha.plugin.profiling/count 3
   :kaocha.plugin.randomize/randomize? true}
  #include "tests-user.edn"]

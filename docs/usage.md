@@ -3,7 +3,7 @@
 Running `splint` with no arguments or `--help` will print the help:
 
 ```
-$ clojure -M:spat
+$ clojure -M:splint
 splint: s-expression pattern matching and linting engine
 ...
 ```
@@ -11,5 +11,5 @@ splint: s-expression pattern matching and linting engine
 Pass in any number of files or directories to lint them:
 
 ```
-$ clojure -M:spat src/main.clj test/
+$ clojure -M:splint src/main.clj test/
 ```

@@ -11,7 +11,7 @@
         genre (namespace n)
         rule-name (name n)]
     (assert (and genre rule-name) (format "Given %s. Gotta qualify the rule name" (pr-str n)))
-    (let [filename (io/file "src" "noahtheduke" "spat" "rules"
+    (let [filename (io/file "src" "noahtheduke" "splint" "rules"
                             genre (namespace-munge (str rule-name ".clj")))]
       (io/make-parents filename)
       (println "Making new rule for" n)

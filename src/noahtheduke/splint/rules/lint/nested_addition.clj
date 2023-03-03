@@ -1,0 +1,27 @@
+; This Source Code Form is subject to the terms of the Mozilla Public
+; License, v. 2.0. If a copy of the MPL was not distributed with this
+; file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+(ns noahtheduke.splint.rules.lint.nested-addition
+  (:require
+    [noahtheduke.splint.rules :refer [defrule]]))
+
+(defn +? [sexp]
+  (#{'+ '+'} sexp))
+
+(defrule nested-addition
+  "Checks for simple nested additions.
+
+  Examples:
+
+  ; bad
+  (+ x (+ y z))
+  (+ x (+ y z a))
+
+  ; good
+  (+ x y z)
+  (+ x y z a)
+  "
+  {:pattern '(%+?%-?p ?x (?p &&. ?xs))
+   :message "Use the variadic arity of `+`."
+   :replace '(?p ?x &&. ?xs)})

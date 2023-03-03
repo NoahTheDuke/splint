@@ -4,9 +4,9 @@
     [clojure.pprint :as pp]
     [clojure.set :as set]
     [clojure.string :as str]
-    [noahtheduke.spat]
-    [noahtheduke.spat.config :refer [default-config]]
-    [noahtheduke.spat.rules :refer [global-rules]]))
+    [noahtheduke.splint]
+    [noahtheduke.splint.config :refer [default-config]]
+    [noahtheduke.splint.rules :refer [global-rules]]))
 
 (defn get-config [rule]
   (@default-config (:full-name rule)))

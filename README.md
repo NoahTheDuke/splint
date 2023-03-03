@@ -57,7 +57,7 @@ user    0m31.007s
 sys     0m0.751s
 
 $ clojure -T:build uber
-$ time java -jar target/spat-1.0.0-standalone.jar ../netrunner
+$ time java -jar target/splint-1.0.0-standalone.jar ../netrunner
 ...
 Linting took 6615ms, 614 style warnings
 
@@ -65,13 +65,13 @@ real    0m8.173s
 user    0m27.289s
 sys     0m0.588s
 
-$ bbin install io.github.noahtheduke/spat
+$ bbin install io.github.noahtheduke/splint
 {:coords
- #:git{:url "https://github.com/noahtheduke/spat",
+ #:git{:url "https://github.com/noahtheduke/splint",
        :tag "v0.1",
        :sha "7061c2c72c575876f6da32b3c146814e25fd84bd"},
- :lib io.github.noahtheduke/spat}
-$ time spat ../netrunner/
+ :lib io.github.noahtheduke/splint}
+$ time splint ../netrunner/
 ...
 Linting took 16693ms, 614 style warnings
 

@@ -17,7 +17,7 @@
 
 (defn help-message
   [summary]
-  (let [lines ["splint: sexpr pattern matching and idiom checking"
+  (let [lines ["splint: s-expression pattern matching and linting engine"
                ""
                "Usage:"
                "  splint [options] [path...]"

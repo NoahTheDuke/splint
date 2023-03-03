@@ -1,1 +1,9 @@
-{:cljdoc/languages ["clj"]}
+{:cljdoc/languages ["clj"]
+ :cljdoc.doc/tree
+ [["Home" {:file "README.md"}]
+  ["Installation" {:file "docs/installation.md"}]
+  ["Usage" {:file "docs/usage.md"}]
+  ["Configuration" {:file "docs/configuration.md"}]
+  ["Rule Documentation" {}
+   ["Lint" {:file "docs/rules/lint.md"}]
+   ["Style" {:file "docs/rules/style.md"}]]]}

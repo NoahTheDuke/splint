@@ -90,24 +90,6 @@ idiomatic.
 (update coll :a + 5)
 ```
 
-## lint/assoc-in-one-arg
-
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
-
-`assoc-in` loops over the args, calling `assoc` for each key. If given a single key,
-just call `assoc` directly instead for performance and readability improvements.
-
-### Examples:
-```clojure
-; bad
-(assoc-in coll [:k] 10)
-
-; good
-(assoc coll :k 10)
-```
-
 ## lint/cond-else
 
 | Enabled | Added |
@@ -124,6 +106,9 @@ It's nice when the default branch is consistent.
 ; good
 (cond (< 10 num) (println 10) (< 5 num) (println 5) :else (println 0))
 ```
+
+### Reference
+* https://guide.clojure.style/#else-keyword-in-cond
 
 ## lint/conj-vector
 
@@ -376,6 +361,9 @@ even?
 (let [f even?] ...)
 ```
 
+### Reference
+* https://guide.clojure.style/#no-useless-anonymous-fns
+
 ## lint/if-else-nil
 
 | Enabled | Added |
@@ -446,6 +434,9 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 ; good
 (if-not x y z)
 ```
+
+### Reference
+* https://guide.clojure.style/#if-not
 
 ## lint/if-not-do
 
@@ -863,6 +854,9 @@ nnext is succinct and meaningful.
 (not= num1 num2)
 ```
 
+### Reference
+* https://guide.clojure.style/#not-equal
+
 ## lint/not-nil?
 
 | Enabled | Added |
@@ -951,6 +945,39 @@ x
 (pos? x)
 ```
 
+## lint/redundant-call
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+A number of core functions take any number of arguments and return the arg
+if given only one. These calls are effectively no-ops, redundant, so they
+should be avoided.
+
+Current list of clojure.core functions this linter checks:
+* `->`, `->>`
+* `cond->`, `cond->>`
+* `some->`, `some->>`
+* `comp`, `partial`, `merge`
+
+### Examples:
+```clojure
+; bad
+(-> x)
+(->> x)
+(cond-> x)
+(cond->> x)
+(some-> x)
+(some->> x)
+(comp x)
+(partial x)
+(merge x)
+
+; good
+x
+```
+
 ## lint/take-repeatedly
 
 | Enabled | Added |
@@ -966,24 +993,6 @@ x
 
 ; good
 (repeatedly 5 (range 10))
-```
-
-## lint/thread-macro-no-arg
-
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
-
-Avoid wrapping vars in a threading macro.
-
-### Examples:
-```clojure
-; bad
-(-> x)
-(->> x)
-
-; good
-x
 ```
 
 ## lint/thread-macro-one-arg
@@ -1050,26 +1059,6 @@ and idiomatic.
 
 ; good
 (assoc-in coll [:a :b] 5)
-```
-
-## lint/update-in-one-arg
-
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
-
-`update-in` loops over the args, calling `update` for each key. If given a single key,
-just call `update` directly instead for performance and readability improvements.
-
-### Examples:
-```clojure
-; bad
-(update-in coll [:k] inc)
-(update-in coll [:k] + 1 2 3)
-
-; good
-(update coll :k inc)
-(update coll :k + 1 2 3)
 ```
 
 ## lint/useless-do
@@ -1173,21 +1162,4 @@ Two `not`s cancel each other out.
 
 ; good
 (when x y z)
-```
-
-## lint/with-meta-vary-meta
-
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
-
-`vary-meta` works like swap!, so no need to access and overwrite in two steps.
-
-### Examples:
-```clojure
-; bad
-(with-meta x (assoc (meta x) :filename filename))
-
-; good
-(vary-meta x assoc :filename filename)
 ```

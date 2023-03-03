@@ -6,4 +6,5 @@
   ["Configuration" {:file "docs/configuration.md"}]
   ["Rule Documentation" {}
    ["Lint" {:file "docs/rules/lint.md"}]
+   ["Naming" {:file "docs/rules/naming.md"}]
    ["Style" {:file "docs/rules/style.md"}]]]}

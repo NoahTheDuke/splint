@@ -107,12 +107,11 @@
        (pmap #(parse-and-check-file ctx config rules %))
        (dorun)))
 
-(defn print-clj-kondo [{:keys [filename line column message]}]
-  (printf "%s:%s:%s: warning: %s" filename line column message)
-  (newline)
-  (flush))
+(defn print-find-dispatch [output _violation] output)
 
-(defn print-find-with-alt [{:keys [filename rule-name form line column message alt]}]
+(defmulti print-find #'print-find-dispatch)
+
+(defmethod print-find "full" [_ {:keys [filename rule-name form line column message alt]}]
   (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)
   (newline)
   (pprint/pprint form)
@@ -122,22 +121,24 @@
   (newline)
   (flush))
 
-(defn print-find-simple [{:keys [filename rule-name form line column message]}]
+(defmethod print-find "simple" [_ {:keys [filename rule-name form line column message]}]
   (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)
   (newline)
   (pprint/pprint form)
   (newline)
   (flush))
 
+(defmethod print-find "clj-kondo" [_ {:keys [filename line column message]}]
+  (printf "%s:%s:%s: warning: %s" filename line column message)
+  (newline)
+  (flush))
+
 (defn print-results
   [options violations]
   (when-not (:quiet options)
-    (let [printer (cond
-                    (:clj-kondo options) print-clj-kondo
-                    (:examples options) print-find-with-alt
-                    :else print-find-simple)]
+    (let [printer (get-method print-find (:output options))]
       (doseq [violation (sort-by :filename violations)]
-        (printer violation)))))
+        (printer nil violation)))))
 
 (defn run [args]
   (let [start-time (System/currentTimeMillis)

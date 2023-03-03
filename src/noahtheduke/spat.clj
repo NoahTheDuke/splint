@@ -78,6 +78,7 @@
     [noahtheduke.spat.rules.lint.when-not-empty]
     [noahtheduke.spat.rules.lint.when-not-not]
 
+    [noahtheduke.spat.rules.naming.predicate]
     [noahtheduke.spat.rules.naming.record-name]
 
     [noahtheduke.spat.rules.style.new-object]

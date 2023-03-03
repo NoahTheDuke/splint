@@ -340,6 +340,12 @@
   :added "0.1"}
 
  ;; Naming Rules
+ naming/predicate
+ {:description ""
+  :enabled true
+  :added "0.1"
+  :style-ref "#naming-predicates"}
+
  naming/record-name
  {:description ""
   :enabled true

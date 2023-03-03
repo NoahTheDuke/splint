@@ -428,3 +428,10 @@
     (check-alt "(defrecord fooBar [a b c])"))
   (expect '(defrecord Foo-bar [a b c])
     (check-alt "(defrecord foo-bar [a b c])")))
+
+(defexpect predicate-test
+  (expect '(defn palindrome? [a] true)
+    (check-alt "(defn is-palindrome [a] true)"))
+  (expect '(defn palindrome? [a] true)
+    (check-alt "(defn palindrome-p [a] true)"))
+  (expect nil? (check-alt "(defn palindrome? [a] true)")))

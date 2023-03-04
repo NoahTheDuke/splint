@@ -124,8 +124,6 @@
 (defmethod print-find "simple" [_ {:keys [filename rule-name form line column message]}]
   (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)
   (newline)
-  (pprint/pprint form)
-  (newline)
   (flush))
 
 (defmethod print-find "clj-kondo" [_ {:keys [filename line column message]}]

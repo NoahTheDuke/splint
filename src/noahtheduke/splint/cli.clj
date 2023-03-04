@@ -9,9 +9,9 @@
 
 (def cli-options
   [["-h" "--help" "This message."]
-   [nil "--output FORMAT" "Output format: simple, full, json"
+   ["-o" "--output FORMAT" "Output format: simple, full, clj-kondo"
     :default "full"
-    :validate [#{"simple" "full" "json"} "Not a valid output format (simple, full, json)"]]
+    :validate [#{"simple" "full" "clj-kondo"} "Not a valid output format (simple, full, clj-kondo)"]]
    ["-q" "--quiet" "Print no suggestions, only return exit code."
     :default false]])
 

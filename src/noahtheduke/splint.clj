@@ -14,9 +14,9 @@
     ;; # Rules
     ;; Please keep this sorted and split by genre
 
+    noahtheduke.splint.rules.lint.apply-str
     noahtheduke.splint.rules.lint.apply-str-interpose
     noahtheduke.splint.rules.lint.apply-str-reverse
-    noahtheduke.splint.rules.lint.apply-str
     noahtheduke.splint.rules.lint.assoc-assoc
     noahtheduke.splint.rules.lint.assoc-fn
     noahtheduke.splint.rules.lint.conj-vector

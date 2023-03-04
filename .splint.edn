@@ -1,0 +1,3 @@
+{
+ dev/sorted-rules-require {:enabled true}
+ }

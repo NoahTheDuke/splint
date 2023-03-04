@@ -17,10 +17,16 @@
   Examples:
 
   ; bad
-  (cond (< 10 num) (println 10) (< 5 num) (println 5) true (println 0))
+  (cond
+    (< 10 num) (println 10)
+    (< 5 num) (println 5)
+    true (println 0))
 
   ; good
-  (cond (< 10 num) (println 10) (< 5 num) (println 5) :else (println 0))
+  (cond
+    (< 10 num) (println 10)
+    (< 5 num) (println 5)
+    :else (println 0))
   "
   {:pattern '(cond &&. ?pairs %not-else ?else)
    :message "Use `:else` as the catch-all branch."

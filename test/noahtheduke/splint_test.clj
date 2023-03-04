@@ -400,7 +400,7 @@
   (check-alt "(new java.util.ArrayList 100)"))
 
 (defexpect prefer-clj-math-test
-  ["clojure.math/atan"]
+  ['clojure.math/atan]
   (map :alt (check-all "(Math/atan 45)")))
 
 (defexpect redundant-let-test

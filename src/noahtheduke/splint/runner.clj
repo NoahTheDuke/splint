@@ -8,40 +8,15 @@
     [clojure.java.io :as io]
     [clojure.pprint :as pprint]
     [clojure.string :as str]
-    [edamame.core :as e]
-    [noahtheduke.splint.cli :refer [validate-opts]]
+    [noahtheduke.splint.parser :refer [parse-string-all]]
     [noahtheduke.spat.pattern :refer [simple-type]]
-    [noahtheduke.splint.rules :refer [->violation global-rules]]
-    [noahtheduke.splint.config :refer [load-config]])
+    [noahtheduke.splint.cli :refer [validate-opts]]
+    [noahtheduke.splint.config :refer [load-config]]
+    [noahtheduke.splint.rules :refer [->violation global-rules]])
   (:import
     (java.io File)))
 
 (set! *warn-on-reflection* true)
-
-(def clj-defaults
-  {; :all true
-   :deref true
-   :fn true
-   :quote true
-   :read-eval true
-   :regex true
-   :syntax-quote true
-   :var true
-   :row-key :line
-   :col-key :column
-   :end-location true
-   :location? seq?
-   :features #{:cljs}
-   :read-cond :preserve
-   :auto-resolve (fn [k] (if (= :current k) 'splint (name k)))
-   :readers (fn [r] (fn [v] (list (if (namespace r) r (symbol "splint" (name r))) v)))})
-
-(defn parse-string [s] (e/parse-string s clj-defaults))
-(defn parse-string-all [s] (e/parse-string-all s clj-defaults))
-
-(comment
-  (parse-string-all "::a :a/b #sql/raw [1 2 3] #unknown [4]")
-  (parse-string "#(not (pred? %))"))
 
 (defn check-pattern
   [rule pattern form]

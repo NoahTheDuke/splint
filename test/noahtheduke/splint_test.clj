@@ -3,28 +3,17 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 (ns noahtheduke.splint-test
-  (:require [expectations.clojure.test :refer [defexpect expect from-each]]
-            [noahtheduke.splint]
-            [noahtheduke.spat.pattern :refer [pattern]]
-            [noahtheduke.splint.rules :refer [global-rules]]
-            [noahtheduke.splint.runner :refer [parse-string check-form check-and-recur]]
-            [noahtheduke.splint.config :refer [read-default-config]]))
+  (:require
+    [expectations.clojure.test :refer [defexpect expect from-each]]
+    [noahtheduke.splint.parser :refer [parse-string]]
+    [noahtheduke.splint.config :refer [read-default-config]]
+    [noahtheduke.splint.rules :refer [global-rules]]
+    [noahtheduke.splint.runner :refer [check-form check-and-recur]]
+    noahtheduke.splint))
 
 (set! *warn-on-reflection* true)
 
 (def config (read-default-config))
-
-(defexpect multiple-rest-body
-  '{?test (= 1 1)
-    ?exprs ((prn 1) (prn 2))
-    ?foo (foo bar)}
-  ((pattern '(when ?test &&. ?exprs ?foo (recur)))
-   (parse-string "(when (= 1 1) (prn 1) (prn 2) (foo bar) (recur))")))
-
-(defexpect quote-in-pattern
-  '{}
-  ((pattern '(a b 'c))
-   (parse-string "(a b 'c)")))
 
 (defn check-str
   [s]

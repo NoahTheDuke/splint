@@ -181,7 +181,7 @@
                                           (read-form v `(~new-form ~k) retval)])))]
     `(let [~new-form ~form]
        (and (map? ~new-form)
-            (= ~(count simple-keys) (count ~new-form))
+            (<= ~(count simple-keys) (count ~new-form))
             ~@simple-keys-preds))))
 
 (defn vec-remove
@@ -218,7 +218,7 @@
                 (loop [complex-keys-preds# (seq ~complex-keys-preds)
                        complex-children#
                        (vec (for [child# ~new-form
-                                  :when (not (contains? ~new-form child#))]
+                                  :when (not (contains? ~(set simple-vals) child#))]
                               child#))]
                   (or (empty? complex-keys-preds#)
                       (when-let [cur-pred# (first complex-keys-preds#)]

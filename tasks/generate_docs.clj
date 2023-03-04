@@ -85,7 +85,7 @@
     (println "* saving" (str filename))
     (spit filename (str page \newline))))
 
-(defn run [& {:keys [genres]}]
+(defn -main [& genres]
   (when-let [genres (seq (or genres (set (keep :genre (mapcat vals (vals @global-rules))))))]
     (println "Saving genres to file")
     (run! print-genre-to-file genres)))

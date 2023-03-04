@@ -19,7 +19,7 @@
           :ns-default build}
   ; dev tasks
   :gen-docs {:extra-paths ["tasks"]
-             :exec-fn generate-docs/run}
+             :main-opts ["-m" "generate-docs"]}
   :new-rule {:extra-paths ["tasks"]
              :extra-deps {selmer/selmer {:mvn/version "1.12.55"}}
              :main-opts ["-m" "new-rule"]}}}

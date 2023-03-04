@@ -1,5 +1,31 @@
 # Style
 
+## style/cond-else
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+It's nice when the default branch is consistent.
+
+### Examples:
+```clojure
+; bad
+(cond
+  (< 10 num) (println 10)
+  (< 5 num) (println 5)
+  true (println 0))
+
+; good
+(cond
+  (< 10 num) (println 10)
+  (< 5 num) (println 5)
+  :else (println 0))
+```
+
+### Reference
+* https://guide.clojure.style/#else-keyword-in-cond
+
 ## style/new-object
 
 | Enabled | Added |

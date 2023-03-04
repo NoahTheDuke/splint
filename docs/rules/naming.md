@@ -9,7 +9,9 @@
 Functions that return a boolean should end in a question mark.
 
 Doesn't verify the kind of function, just checks for anti-patterns in the
-names.
+names. Also doesn't actually check the classic Common Lisp convention as we
+have no way to know when a function name uses a word that naturally ends in
+a 'p' (such as `map`).
 
 ### Examples:
 ```clojure

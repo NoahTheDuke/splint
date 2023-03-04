@@ -23,8 +23,8 @@
    :location? seq?
    :features #{:cljs}
    :read-cond :preserve
-   :auto-resolve (fn [k] (if (= :current k) 'splint (name k)))
-   :readers (fn [r] (fn [v] (list (if (namespace r) r (symbol "splint" (name r))) v)))})
+   :auto-resolve (fn [k] (if (= :current k) "splint-auto" (str "splint-auto" (name k))))
+   :readers (fn [r] (fn [v] (list (if (namespace r) r (symbol "splint-auto" (name r))) v)))})
 
 (defn parse-string [s] (e/parse-string s clj-defaults))
 (defn parse-string-all [s] (e/parse-string-all s clj-defaults))

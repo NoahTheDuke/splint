@@ -8,5 +8,9 @@
     [noahtheduke.splint.parser :refer [parse-string-all]]))
 
 (defexpect unknown-tagged-literals-test
-  '[(sql/raw [1 2 3]) (splint/unknown [4])]
+  '[(sql/raw [1 2 3]) (splint-auto/unknown [4])]
   (parse-string-all "#sql/raw [1 2 3] #unknown [4]"))
+
+(defexpect auto-resolve-kw-test
+  '[:splint-auto/foo :splint-autofoo/bar :foo :foo/bar]
+  (parse-string-all "::foo ::foo/bar :foo :foo/bar"))

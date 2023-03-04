@@ -1,6 +1,7 @@
 # Splint
 
-[![cljdoc badge](https://cljdoc.org/badge/noahtheduke/splint)](https://cljdoc.org/d/noahtheduke/splint)
+[![Clojars Project](https://img.shields.io/clojars/v/io.github.noahtheduke/splint.svg)](https://clojars.org/io.github.noahtheduke/splint)
+[![cljdoc badge](https://cljdoc.org/badge/io.github.noahtheduke/splint)](https://cljdoc.org/d/io.github.noahtheduke/splint)
 
 **Split** is a Clojure static code analyzer and linter. It aims to warn about many of
 the guidelines in the [Clojure Style Guide][style guide].
@@ -48,36 +49,34 @@ $ tokei ../netrunner/
  ClojureC                4         1012          850           36          126
  ClojureScript          48        12666        11649          142          875
 
-$ time clojure -M:run ../netrunner
-...
-Linting took 6943ms, 614 style warnings
+$ time clojure -M:run --quiet ../netrunner/
+Linting took 5998ms, 696 style warnings
 
-real    0m9.673s
-user    0m31.007s
-sys     0m0.751s
+real    0m10.018s
+user    1m19.278s
+sys     0m1.301s
 
 $ clojure -T:build uber
-$ time java -jar target/splint-1.0.0-standalone.jar ../netrunner
-...
-Linting took 6615ms, 614 style warnings
+$ time java -jar target/splint-0.1.69-standalone.jar --quiet ../netrunner/
+Linting took 6092ms, 696 style warnings
 
-real    0m8.173s
-user    0m27.289s
-sys     0m0.588s
+real    0m7.001s
+user    1m3.106s
+sys     0m0.805s
 
 $ bbin install io.github.noahtheduke/splint
 {:coords
  #:git{:url "https://github.com/noahtheduke/splint",
-       :tag "v0.1",
-       :sha "7061c2c72c575876f6da32b3c146814e25fd84bd"},
+       :tag "v0.1.69",
+       :sha "019d9b9a9606c7603c819ffe383d23c741682fa1"},
  :lib io.github.noahtheduke/splint}
-$ time splint ../netrunner/
 ...
-Linting took 16693ms, 614 style warnings
+$ time splint --quiet ../netrunner/
+Linting took 6690ms, 696 style warnings
 
-real    0m17.883s
-user    0m17.700s
-sys     0m0.180s
+real    0m6.804s
+user    0m45.597s
+sys     0m0.295s
 ```
 
 ## License

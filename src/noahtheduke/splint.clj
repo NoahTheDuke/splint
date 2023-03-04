@@ -1,4 +1,4 @@
-; This Source Code Form is subject to the terms of the Mozilla Public
+; This Source Code Form is subject to the terms of the Mozilla Publicsplin
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
@@ -19,7 +19,6 @@
     [noahtheduke.splint.rules.lint.apply-str]
     [noahtheduke.splint.rules.lint.assoc-assoc]
     [noahtheduke.splint.rules.lint.assoc-fn]
-    [noahtheduke.splint.rules.lint.cond-else]
     [noahtheduke.splint.rules.lint.conj-vector]
     [noahtheduke.splint.rules.lint.divide-by-one]
     [noahtheduke.splint.rules.lint.dorun-map]
@@ -81,6 +80,7 @@
     [noahtheduke.splint.rules.naming.predicate]
     [noahtheduke.splint.rules.naming.record-name]
 
+    [noahtheduke.splint.rules.style.cond-else]
     [noahtheduke.splint.rules.style.new-object]
     [noahtheduke.splint.rules.style.prefer-boolean]
     [noahtheduke.splint.rules.style.prefer-clj-math]

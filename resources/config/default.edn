@@ -32,12 +32,6 @@
   :enabled true
   :added "0.1"}
 
- lint/cond-else
- {:description ""
-  :enabled true
-  :added "0.1"
-  :style-ref "#else-keyword-in-cond"}
-
  lint/conj-vector
  {:description ""
   :enabled true
@@ -353,6 +347,12 @@
   :style-ref "#naming-protocols-records-structs-and-types"}
 
  ;; Style Rules
+
+ style/cond-else
+ {:description ""
+  :enabled true
+  :added "0.1"
+  :style-ref "#else-keyword-in-cond"}
 
  style/new-object
  {:description ""

@@ -1,4 +1,4 @@
-(ns noahtheduke.splint.rules.naming.predicate
+(ns ^:no-doc noahtheduke.splint.rules.naming.predicate
   (:require
     [noahtheduke.splint.rules :refer [defrule ->violation]]
     [clojure.string :as str]))

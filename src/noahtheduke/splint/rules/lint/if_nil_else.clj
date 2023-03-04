@@ -2,7 +2,7 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.splint.rules.lint.if-nil-else
+(ns ^:no-doc noahtheduke.splint.rules.lint.if-nil-else
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 

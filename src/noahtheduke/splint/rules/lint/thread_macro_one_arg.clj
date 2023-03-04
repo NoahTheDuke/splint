@@ -2,7 +2,7 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.splint.rules.lint.thread-macro-one-arg
+(ns ^:no-doc noahtheduke.splint.rules.lint.thread-macro-one-arg
   (:require
    [noahtheduke.splint.rules :refer [->violation defrule]]
    [noahtheduke.splint.rules.lint.helpers :refer [symbol-or-keyword-or-list?]]))

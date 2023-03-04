@@ -1,4 +1,4 @@
-(ns noahtheduke.splint.rules.naming.record-name
+(ns ^:no-doc noahtheduke.splint.rules.naming.record-name
   (:require
     [clojure.string :as str]
     [noahtheduke.splint.rules :refer [defrule ->violation]]))

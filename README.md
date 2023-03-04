@@ -41,7 +41,7 @@ only focused on code shape, not code intent or meaning.
 ## Speed comparison
 
 ```
-$ tokei ../netrunner/
+$ tokei
 ===============================================================================
  Language            Files        Lines         Code     Comments       Blanks
 ===============================================================================
@@ -49,34 +49,19 @@ $ tokei ../netrunner/
  ClojureC                4         1012          850           36          126
  ClojureScript          48        12666        11649          142          875
 
-$ time clojure -M:run --quiet ../netrunner/
-Linting took 5998ms, 696 style warnings
-
-real    0m10.018s
-user    1m19.278s
-sys     0m1.301s
-
-$ clojure -T:build uber
-$ time java -jar target/splint-0.1.69-standalone.jar --quiet ../netrunner/
-Linting took 6092ms, 696 style warnings
-
-real    0m7.001s
-user    1m3.106s
-sys     0m0.805s
-
-$ bbin install io.github.noahtheduke/splint
-{:coords
- #:git{:url "https://github.com/noahtheduke/splint",
-       :tag "v0.1.69",
-       :sha "019d9b9a9606c7603c819ffe383d23c741682fa1"},
- :lib io.github.noahtheduke/splint}
+$ time lein kibit
 ...
-$ time splint --quiet ../netrunner/
-Linting took 6690ms, 696 style warnings
+real    34m30.395s
+user    35m4.952s
+sys     0m2.995s
 
-real    0m6.804s
-user    0m45.597s
-sys     0m0.295s
+$ time splint .
+...
+Linting took 7168ms, 696 style warnings
+
+real    0m9.220s
+user    0m49.501s
+sys     0m0.321s
 ```
 
 ## License

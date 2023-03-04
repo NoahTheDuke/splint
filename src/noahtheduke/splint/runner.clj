@@ -10,7 +10,7 @@
     [clojure.string :as str]
     [edamame.core :as e]
     [noahtheduke.splint.cli :refer [validate-opts]]
-    [noahtheduke.splint.pattern :refer [simple-type]]
+    [noahtheduke.spat.pattern :refer [simple-type]]
     [noahtheduke.splint.rules :refer [->violation global-rules]]
     [noahtheduke.splint.config :refer [load-config]])
   (:import
@@ -121,7 +121,7 @@
   (newline)
   (flush))
 
-(defmethod print-find "simple" [_ {:keys [filename rule-name form line column message]}]
+(defmethod print-find "simple" [_ {:keys [filename rule-name line column message]}]
   (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)
   (newline)
   (flush))

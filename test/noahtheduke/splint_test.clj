@@ -5,7 +5,7 @@
 (ns noahtheduke.splint-test
   (:require [expectations.clojure.test :refer [defexpect expect from-each]]
             [noahtheduke.splint]
-            [noahtheduke.splint.pattern :refer [pattern]]
+            [noahtheduke.spat.pattern :refer [pattern]]
             [noahtheduke.splint.rules :refer [global-rules]]
             [noahtheduke.splint.runner :refer [parse-string check-form check-and-recur]]
             [noahtheduke.splint.config :refer [read-default-config]]))

@@ -7,7 +7,7 @@
   to library functions."
   (:gen-class)
   (:require
-    noahtheduke.splint.pattern
+    noahtheduke.spat.pattern
     noahtheduke.splint.rules
     [noahtheduke.splint.runner :as runner])
   (:require

@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules
   (:require
     [clojure.walk :as walk]
-    [noahtheduke.splint.pattern :refer [pattern simple-type]]
+    [noahtheduke.spat.pattern :refer [pattern simple-type]]
     [clojure.string :as str]))
 
 (set! *warn-on-reflection* true)

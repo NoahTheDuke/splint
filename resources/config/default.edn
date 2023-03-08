@@ -334,6 +334,13 @@
   :added "0.1"}
 
  ;; Naming Rules
+
+ naming/conversion-functions
+ {:description ""
+  :enabled true
+  :added "0.1"
+  :style-ref "#naming-conversion-functions"}
+
  naming/predicate
  {:description ""
   :enabled true

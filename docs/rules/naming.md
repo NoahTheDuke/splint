@@ -1,5 +1,25 @@
 # Naming
 
+## naming/conversion-functions
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Use `->` instead of `to` in the names of conversion functions.
+
+### Examples:
+```clojure
+# bad
+(defn f-to-c ...)
+
+# good
+(defn f->c ...)
+```
+
+### Reference
+* https://guide.clojure.style/#naming-conversion-functions
+
 ## naming/predicate
 
 | Enabled | Added |

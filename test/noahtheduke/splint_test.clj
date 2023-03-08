@@ -426,3 +426,7 @@
   (expect nil? (check-alt "(defn palindrome? [a] true)"))
   (expect '(defn palindrome? [a] true)
     (check-alt "(defn is-palindrome? [a] true)")))
+
+(defexpect conversion-functions-test
+  '(defn f->c [a] {:a a})
+  (check-alt "(defn f-to-c [a] {:a a})"))

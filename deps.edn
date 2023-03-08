@@ -9,10 +9,11 @@
                      criterium/criterium {:mvn/version "0.4.6"}
                      com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.0.3"}
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.3"}}}
-  :test {:extra-paths ["test" "classes"]
-         :extra-deps {lambdaisland/kaocha {:mvn/version "1.69.1069"}
-                      com.github.seancorfield/expectations {:mvn/version "2.0.160"}}
-         :main-opts ["-m" "kaocha.runner"]}
+  :test {:extra-paths ["test"]
+         :extra-deps {com.github.seancorfield/expectations {:mvn/version "2.0.160"}}}
+  :kaocha {:extra-paths ["classes"]
+           :extra-deps {lambdaisland/kaocha {:mvn/version "1.69.1069"}}
+           :main-opts ["-m" "kaocha.runner"]}
   :build {:deps {io.github.clojure/tools.build {:git/tag "v0.9.2"
                                                 :git/sha "fe6b140"}
                  slipset/deps-deploy {:mvn/version "0.2.0"}}

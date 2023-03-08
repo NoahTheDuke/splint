@@ -77,6 +77,7 @@
     noahtheduke.splint.rules.lint.when-not-empty
     noahtheduke.splint.rules.lint.when-not-not
 
+    noahtheduke.splint.rules.naming.conversion-functions
     noahtheduke.splint.rules.naming.predicate
     noahtheduke.splint.rules.naming.record-name
 

@@ -423,4 +423,6 @@
     (check-alt "(defn is-palindrome [a] true)"))
   (expect '(defn palindrome? [a] true)
     (check-alt "(defn palindrome-p [a] true)"))
-  (expect nil? (check-alt "(defn palindrome? [a] true)")))
+  (expect nil? (check-alt "(defn palindrome? [a] true)"))
+  (expect '(defn palindrome? [a] true)
+    (check-alt "(defn is-palindrome? [a] true)")))

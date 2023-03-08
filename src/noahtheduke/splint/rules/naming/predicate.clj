@@ -1,3 +1,7 @@
+; This Source Code Form is subject to the terms of the Mozilla Public
+; License, v. 2.0. If a copy of the MPL was not distributed with this
+; file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 (ns ^:no-doc noahtheduke.splint.rules.naming.predicate
   (:require
     [noahtheduke.splint.rules :refer [defrule ->violation]]
@@ -11,7 +15,7 @@
 (defn good-name [?name]
   (let [?name (str ?name)]
     (cond
-      (str/starts-with? ?name "is-") (str (subs ?name 3) "?")
+      (str/starts-with? ?name "is-") (str (subs ?name 3) (when-not (str/ends-with? ?name "?") "?"))
       (str/ends-with? ?name "-p") (str (subs ?name 0 (- (count ?name) 2)) "?"))))
 
 (defrule predicate

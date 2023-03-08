@@ -12,7 +12,7 @@
     [noahtheduke.spat.pattern :refer [simple-type]]
     [noahtheduke.splint.cli :refer [validate-opts]]
     [noahtheduke.splint.config :refer [load-config]]
-    [noahtheduke.splint.rules :refer [->violation global-rules]])
+    [noahtheduke.splint.rules :refer [global-rules]])
   (:import
     (java.io File)))
 
@@ -21,9 +21,8 @@
 (defn check-pattern
   [rule pattern form]
   (when-let [binds (pattern form)]
-    (if-let [on-match (:on-match rule)]
-      (on-match rule form binds)
-      (->violation rule form {:binds binds}))))
+    (let [on-match (:on-match rule)]
+      (on-match rule form binds))))
 
 (defn check-rule
   [rule form]

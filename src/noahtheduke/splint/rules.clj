@@ -26,7 +26,24 @@
         item))
     replace-form))
 
+(defn ->violation
+  [rule form & {:keys [message replace-form] :as _opts}]
+  (let [form-meta (meta form)
+        message (or message (:message rule))
+        alt replace-form]
+    {:rule-name (:full-name rule)
+     :form form
+     :message message
+     :line (:line form-meta)
+     :column (:column form-meta)
+     :filename (:filename form-meta)
+     :alt alt}))
+
 (defmacro defrule
+  "Define a new rule. Must include:
+
+  * EITHER `:pattern` or `:patterns`,
+  * EITHER `:replace` or `:on-match`"
   [rule-name docs opts]
   (let [{pat :pattern :keys [patterns replace on-match message
                              init-type]} opts]
@@ -64,27 +81,12 @@
                     :pattern (when ~(some? pat) (pattern ~pat))
                     :patterns (when ~(some? patterns)
                                 ~(mapv #(do (list `pattern %)) patterns))
-                    :replace ~(when replace
-                                `(fn ~(symbol (str rule-name "-replacer-fn"))
-                                   [binds#]
-                                   (postwalk-splicing-replace binds# ~replace)))
-                    :on-match ~on-match}]
+                    :on-match
+                    ~(or on-match
+                         `(fn [rule# form# binds#]
+                            (let [new-form# (postwalk-splicing-replace binds# ~replace)]
+                              (->violation rule# form# {:replace-form new-form#}))))}]
          (swap! global-rules assoc-in
                 [~init-type '~full-name]
                 rule#)
          (def ~(symbol rule-name) ~docs rule#)))))
-
-(defn ->violation
-  [rule form & {:keys [binds message replace-form] :as _opts}]
-  (let [form-meta (meta form)
-        message (or message (:message rule))
-        alt (cond
-              replace-form replace-form
-              (:replace rule) ((:replace rule) binds))]
-    {:rule-name (:full-name rule)
-     :form form
-     :message message
-     :line (:line form-meta)
-     :column (:column form-meta)
-     :filename (:filename form-meta)
-     :alt alt}))

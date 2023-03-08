@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule when-not-not
+(defrule lint/when-not-not
   "Two `not`s cancel each other out.
 
   Examples:

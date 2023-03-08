@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule next-next
+(defrule lint/next-next
   "nnext is succinct and meaningful.
 
   Examples:

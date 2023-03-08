@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule when-not-do
+(defrule lint/when-not-do
   "`when-not` already defines an implicit `do`. Rely on it.
 
   Examples:

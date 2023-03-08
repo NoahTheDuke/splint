@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule loop-do
+(defrule lint/loop-do
   "`loop` has an implicit `do`. Use it.
 
   Examples:

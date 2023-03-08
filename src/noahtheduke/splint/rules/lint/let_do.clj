@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule let-do
+(defrule lint/let-do
   "`let` has an implicit `do`, so use it.
 
   Examples:

@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule next-first
+(defrule lint/next-first
   "nfirst is succinct and meaningful.
 
   Examples:

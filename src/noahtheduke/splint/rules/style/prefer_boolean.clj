@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule prefer-boolean
+(defrule style/prefer-boolean
   "Use `boolean` if you must return `true` or `false` from an expression.
 
   Examples:

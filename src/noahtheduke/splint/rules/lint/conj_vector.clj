@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule conj-vector
+(defrule lint/conj-vector
   "`vector` is succinct and meaningful.
 
   Examples:

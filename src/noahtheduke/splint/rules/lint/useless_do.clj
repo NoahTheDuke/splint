@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule useless-do
+(defrule lint/useless-do
   "A single item in a `do` is a no-op.
 
   Examples:

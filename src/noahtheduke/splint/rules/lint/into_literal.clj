@@ -11,7 +11,7 @@
            (vector? form))
        (empty? form)))
 
-(defrule into-literal
+(defrule lint/into-literal
   "`vec` and `set` are succinct and meaningful.
 
   Examples:

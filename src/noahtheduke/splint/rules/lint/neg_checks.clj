@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule neg-checks
+(defrule lint/neg-checks
   "`neg?` exists so use it.
 
   Examples:

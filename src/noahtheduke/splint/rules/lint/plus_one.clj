@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule plus-one
+(defrule lint/plus-one
   "Checks for simple +1 that should use `clojure.core/inc`.
 
   Examples:

@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule let-if
+(defrule lint/let-if
   "`if-let` exists so use it. Suggestions can be wrong as there's no code-walking to
   determine if `result` binding is used in falsy branch.
 

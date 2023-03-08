@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule minus-zero
+(defrule lint/minus-zero
   "Checks for x - 0.
 
   Examples:

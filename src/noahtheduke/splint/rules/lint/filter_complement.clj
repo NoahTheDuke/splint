@@ -9,7 +9,7 @@
 (defn fn?? [sexp]
   (#{'fn 'fn*} sexp))
 
-(defrule filter-complement
+(defrule lint/filter-complement
   "Check for (filter (complement pred) coll)
 
   Examples:

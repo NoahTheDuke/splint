@@ -13,7 +13,7 @@
       comp partial
       merge} sexp))
 
-(defrule redundant-call
+(defrule lint/redundant-call
   "A number of core functions take any number of arguments and return the arg
   if given only one. These calls are effectively no-ops, redundant, so they
   should be avoided.

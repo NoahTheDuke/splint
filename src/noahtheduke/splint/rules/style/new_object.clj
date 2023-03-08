@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule ->violation]]))
 
-(defrule new-object
+(defrule style/new-object
   "`new` is discouraged for dot usage.
 
   Examples:

@@ -10,7 +10,7 @@
 (defn thread-macro? [node]
   (#{'-> '->>} node))
 
-(defrule thread-macro-one-arg
+(defrule lint/thread-macro-one-arg
   "Threading macros require more effort to understand so only use them with multiple
   args to help with readability.
 

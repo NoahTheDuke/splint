@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule not-eq
+(defrule lint/not-eq
   "`not=` exists, so use it.
 
   Examples:

@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule first-first
+(defrule lint/first-first
   "ffirst is succinct and meaningful.
 
   Examples:

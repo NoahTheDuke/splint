@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule mapcat-concat-map
+(defrule lint/mapcat-concat-map
   "Check for (apply concat (map x y z))
 
   Examples:

@@ -15,7 +15,7 @@
     get-in 'get
     update-in 'update))
 
-(defrule single-key-in
+(defrule style/single-key-in
   "`assoc-in` loops over the args, calling `assoc` for each key. If given a single key,
   just call `assoc` directly instead for performance and readability improvements.
 

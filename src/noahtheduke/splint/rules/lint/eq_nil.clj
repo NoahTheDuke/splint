@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule eq-nil
+(defrule lint/eq-nil
   "`nil?` exists so use it.
 
   Examples:

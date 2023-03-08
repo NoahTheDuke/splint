@@ -11,7 +11,7 @@
     (not (#{'reverse 'interpose} (first form)))
     true))
 
-(defrule apply-str
+(defrule lint/apply-str
   "Check for round-about clojure.string/reverse.
 
   Examples:

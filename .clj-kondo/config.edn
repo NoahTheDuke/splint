@@ -1,2 +1,3 @@
-{:lint-as {noahtheduke.splint.rules/defrule clojure.core/def}
- :linters {:clojure-lsp/unused-public-var {:level :off}}}
+{:hooks {:analyze-call {noahtheduke.splint.rules/defrule noahtheduke.splint.rules/defrule}}
+ :linters {:clojure-lsp/unused-public-var {:level :off}}
+ :output {:linter-name true}}

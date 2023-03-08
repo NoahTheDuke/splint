@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule prefer-vary-meta
+(defrule style/prefer-vary-meta
   "`vary-meta` works like swap!, so no need to access and overwrite in two steps.
 
   Examples:

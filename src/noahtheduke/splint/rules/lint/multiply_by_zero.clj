@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule multiply-by-zero
+(defrule lint/multiply-by-zero
   "Checks for (* x 0).
 
   Examples:

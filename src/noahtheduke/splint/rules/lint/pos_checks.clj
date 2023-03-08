@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule pos-checks
+(defrule lint/pos-checks
   "`pos?` exists so use it.
 
   Examples:

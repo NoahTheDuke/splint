@@ -9,7 +9,7 @@
 (defn fn?? [sexp]
   (#{'fn 'fn*} sexp))
 
-(defrule fn-wrapper
+(defrule lint/fn-wrapper
   "Avoid wrapping functions in pass-through anonymous function defitions.
 
   Examples:

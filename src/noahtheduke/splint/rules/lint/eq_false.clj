@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule eq-false
+(defrule lint/eq-false
   "`false?` exists so use it.
 
   Examples:

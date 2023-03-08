@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule let-when
+(defrule lint/let-when
   "`when-let` exists so use it.
 
   Examples:

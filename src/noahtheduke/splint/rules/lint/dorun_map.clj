@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule dorun-map
+(defrule lint/dorun-map
   "`run!` uses `reduce` which non-lazy.
 
   Examples:

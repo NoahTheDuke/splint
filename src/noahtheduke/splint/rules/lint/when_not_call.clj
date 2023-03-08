@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule when-not-call
+(defrule lint/when-not-call
   "`when-not` exists so use it lol.
 
   Examples:

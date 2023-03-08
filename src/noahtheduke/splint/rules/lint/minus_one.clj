@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule minus-one
+(defrule lint/minus-one
   "Checks for simple -1 that should use `clojure.core/dec`.
 
   Examples:

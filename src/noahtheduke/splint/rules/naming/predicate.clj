@@ -18,7 +18,7 @@
       (str/starts-with? ?name "is-") (str (subs ?name 3) (when-not (str/ends-with? ?name "?") "?"))
       (str/ends-with? ?name "-p") (str (subs ?name 0 (- (count ?name) 2)) "?"))))
 
-(defrule predicate
+(defrule naming/predicate
   "Functions that return a boolean should end in a question mark.
 
   Doesn't verify the kind of function, just checks for anti-patterns in the

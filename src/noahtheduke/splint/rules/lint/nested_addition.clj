@@ -9,7 +9,7 @@
 (defn +? [sexp]
   (#{'+ '+'} sexp))
 
-(defrule nested-addition
+(defrule lint/nested-addition
   "Checks for simple nested additions.
 
   Examples:

@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule if-same-truthy
+(defrule lint/if-same-truthy
   "`or` exists so use it lol.
 
   Examples:

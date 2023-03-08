@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule loop-empty-when
+(defrule lint/loop-empty-when
   "Empty loops with nested when can be `while`.
 
   Examples:

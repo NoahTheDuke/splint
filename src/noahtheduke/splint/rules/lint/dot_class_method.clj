@@ -14,7 +14,7 @@
            (Character/isUpperCase ^char (first sym))
            (Character/isUpperCase ^char (nth sym (inc idx)))))))
 
-(defrule dot-class-method
+(defrule lint/dot-class-method
   "Using the `Obj/staticMethod` form maps the method call to Clojure's natural function
   position.
 

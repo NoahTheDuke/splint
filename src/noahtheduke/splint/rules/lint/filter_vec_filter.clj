@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule filter-vec-filter
+(defrule lint/filter-vec-filter
   "filterv is preferable for using transients.
 
   Examples:

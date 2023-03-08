@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule apply-str-reverse
+(defrule lint/apply-str-reverse
   "Check for round-about clojure.string/reverse.
 
   Examples:

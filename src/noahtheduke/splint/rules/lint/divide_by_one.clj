@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule divide-by-one
+(defrule lint/divide-by-one
   "Checks for (/ x 1).
 
   Examples:

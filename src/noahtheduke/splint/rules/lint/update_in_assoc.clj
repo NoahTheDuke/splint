@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule update-in-assoc
+(defrule lint/update-in-assoc
   "`update-in`-ing an `assoc` with the same key are hard to read. `assoc-in` is known
   and idiomatic.
 

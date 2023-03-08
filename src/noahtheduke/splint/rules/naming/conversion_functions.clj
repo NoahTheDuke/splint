@@ -7,7 +7,7 @@
     [noahtheduke.splint.rules :refer [defrule ->violation]]
     [clojure.string :as str]))
 
-(defrule conversion-functions
+(defrule naming/conversion-functions
   "Use `->` instead of `to` in the names of conversion functions.
 
   Examples:

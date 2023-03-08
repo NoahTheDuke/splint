@@ -72,7 +72,7 @@
 (defn math? [sexp]
   (contains? Math->clj-math sexp))
 
-(defrule prefer-clj-math
+(defrule style/prefer-clj-math
   "Prefer clojure.math to interop.
 
   Examples:

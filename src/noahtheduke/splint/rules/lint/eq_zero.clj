@@ -9,7 +9,7 @@
 (defn eq? [sexp]
   (#{'= '==} sexp))
 
-(defrule eq-zero
+(defrule lint/eq-zero
   "`zero?` exists so use it.
 
   Examples:

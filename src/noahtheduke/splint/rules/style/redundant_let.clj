@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule ->violation]]))
 
-(defrule redundant-let
+(defrule style/redundant-let
   "Directly nested lets can be merged into a single let block.
 
   Examples:

@@ -11,7 +11,7 @@
        (or (keyword? form)
            (true? form))))
 
-(defrule cond-else
+(defrule style/cond-else
   "It's nice when the default branch is consistent.
 
   Examples:

@@ -37,7 +37,7 @@
                            test-exprs)]
           (list* 'condp pred-f expr test-exprs))))))
 
-(defrule prefer-condp
+(defrule style/prefer-condp
   "`cond` checking against the same value in every branch is a code smell.
 
   This rule uses the first test-expr as the template to compare against each

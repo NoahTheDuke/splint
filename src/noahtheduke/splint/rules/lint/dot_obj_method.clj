@@ -14,7 +14,7 @@
                 (Character/isUpperCase ^char (first sym))
                 (Character/isUpperCase ^char (nth sym (inc idx))))))))
 
-(defrule dot-obj-method
+(defrule lint/dot-obj-method
   "Using the `.method` form maps the method call to Clojure's natural function position.
 
   Examples:

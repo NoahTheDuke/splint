@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule tostring
+(defrule lint/tostring
   "Convert `(.toString)` to `(str)`.
 
   Examples:

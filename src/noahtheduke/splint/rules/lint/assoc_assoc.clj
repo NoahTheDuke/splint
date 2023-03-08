@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule assoc-assoc
+(defrule lint/assoc-assoc
   "Layering `assoc` calls are hard to read. `assoc-in` is known and idiomatic.
 
   Examples:

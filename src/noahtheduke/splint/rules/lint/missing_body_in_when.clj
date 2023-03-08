@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule ->violation]]))
 
-(defrule missing-body-in-when
+(defrule lint/missing-body-in-when
   "`when` calls should have at least 1 expression after the condition.
 
   Examples:

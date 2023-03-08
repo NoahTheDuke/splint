@@ -12,7 +12,7 @@
     (= (subs record-name 0 1)
        (str/lower-case (subs record-name 0 1)))))
 
-(defrule record-name
+(defrule naming/record-name
   "Records should use PascalCase.
 
   Examples:

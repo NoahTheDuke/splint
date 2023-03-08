@@ -2,7 +2,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule ->violation]]))
 
-(defrule sorted-rules-require
+(defrule dev/sorted-rules-require
   "Rules in `noahtheduke.splint` must be in sorted order."
   {:pattern '(ns noahtheduke.splint &&. ?args)
    :message "Rules in `noahtheduke.splint` must be in sorted order."

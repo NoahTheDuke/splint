@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule if-not-both
+(defrule lint/if-not-both
   "`if-not` exists, so use it.
 
   Examples:

@@ -9,7 +9,7 @@
 (defn *? [sexp]
   (#{'* '*'} sexp))
 
-(defrule nested-multiply
+(defrule lint/nested-multiply
   "Checks for simple nested multiply.
 
   Examples:

@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule not-some-pred
+(defrule lint/not-some-pred
   "not-any? is succinct and meaningful.
 
   Examples:

@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defrule apply-str-interpose
+(defrule lint/apply-str-interpose
   "Check for round-about str/join.
 
   Examples:

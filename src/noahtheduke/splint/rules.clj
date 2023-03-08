@@ -47,7 +47,7 @@
   [rule-name docs opts]
   (let [{pat :pattern :keys [patterns replace on-match message
                              init-type]} opts]
-    (assert (simple-symbol? rule-name) "defrule name cannot be namespaced")
+    (assert (qualified-symbol? rule-name) "defrule name must be namespaced")
     (assert (or pat patterns)
             "defrule must define either :pattern or :patterns")
     (assert (not (and pat patterns))
@@ -60,12 +60,9 @@
             "defrule must define either :replace or :on-match")
     (assert (not (and replace on-match))
             "defrule cannot define both :replace and :on-match")
-    (let [rule-name (str rule-name)
-          genre (-> (str *ns*)
-                    (str/split #"\.")
-                    (reverse)
-                    (second))
-          full-name (symbol genre rule-name)
+    (let [full-name rule-name
+          rule-name (name full-name)
+          genre (namespace full-name)
           init-type (or init-type
                         (if pat
                           (simple-type pat)

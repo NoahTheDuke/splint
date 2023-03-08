@@ -9,11 +9,10 @@
 
 (def cli-options
   [["-h" "--help" "This message."]
-   ["-o" "--output FORMAT" "Output format: simple, full, clj-kondo"
+   ["-o" "--output FMT" "Output format: simple, full, clj-kondo"
     :default "full"
     :validate [#{"simple" "full" "clj-kondo"} "Not a valid output format (simple, full, clj-kondo)"]]
-   ["-q" "--quiet" "Print no suggestions, only return exit code."
-    :default false]])
+   ["-q" "--quiet" "Print no suggestions, only return exit code."]])
 
 (defn help-message
   [summary]

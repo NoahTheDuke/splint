@@ -119,12 +119,12 @@
       (do (when-not (:quiet options) (println exit-message))
           (System/exit (if ok 0 1)))
       (let [ctx (atom {:violations []})
-            config (load-config)
+            config (merge (load-config) options)
             rules @global-rules
             _ (check-paths ctx config rules paths)
             end-time (System/currentTimeMillis)
             violations (:violations @ctx)]
-        (print-results options violations)
+        (print-results config violations)
         (printf "Linting took %sms, %s style warnings%n"
                 (int (- end-time start-time))
                 (count violations))

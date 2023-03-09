@@ -27,6 +27,7 @@
     replace-form))
 
 (defn ->violation
+  "Create and return a new violation map"
   [rule form & {:keys [message replace-form] :as _opts}]
   (let [form-meta (meta form)
         message (or message (:message rule))

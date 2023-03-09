@@ -4,7 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.dot-class-method
   (:require
-   [noahtheduke.splint.rules :refer [->violation defrule]]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (defn symbol-class? [sym]
   (and (symbol? sym)
@@ -31,4 +32,4 @@
    :on-match (fn [rule form {:syms [?class ?method ?args]}]
                (when (symbol-class? ?class)
                  (let [replace-form `(~(symbol (str ?class "/" ?method)) ~@?args)]
-                   (->violation rule form {:replace-form replace-form}))))})
+                   (->diagnostic rule form {:replace-form replace-form}))))})

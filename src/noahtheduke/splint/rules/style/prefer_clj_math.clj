@@ -4,7 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.prefer-clj-math
   (:require
-    [noahtheduke.splint.rules :refer [defrule ->violation]]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (def Math->clj-math
   '{IEEEremainder clojure.math/IEEE-remainder
@@ -90,4 +91,4 @@
    :message "Use the `clojure.math` function instead of interop."
    :on-match (fn [rule form {:syms [?sym]}]
                (let [new-form (Math->clj-math ?sym)]
-                 (->violation rule form {:replace-form new-form})))})
+                 (->diagnostic rule form {:replace-form new-form})))})

@@ -4,7 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.redundant-let
   (:require
-    [noahtheduke.splint.rules :refer [defrule ->violation]]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (defrule style/redundant-let
   "Directly nested lets can be merged into a single let block.
@@ -26,4 +27,4 @@
                (let [new-form (list* 'let
                                      (vec (concat ?outer-bindings ?inner-bindings))
                                      ?body)]
-                 (->violation rule form {:replace-form new-form})))})
+                 (->diagnostic rule form {:replace-form new-form})))})

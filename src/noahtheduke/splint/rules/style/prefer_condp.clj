@@ -4,9 +4,10 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.prefer-condp
   (:require
-    [noahtheduke.splint.rules :refer [defrule ->violation]]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]))
 
-(defn find-violation [?pairs]
+(defn find-issue [?pairs]
   (when (and (even? (count ?pairs))
              (< 2 (count ?pairs))
              (list? (first ?pairs))
@@ -87,7 +88,7 @@
   "
   {:pattern '(cond &&. ?pairs)
    :on-match (fn [rule form {:syms [?pairs]}]
-               (when-let [new-form (find-violation ?pairs)]
+               (when-let [new-form (find-issue ?pairs)]
                  (let [message "Prefer condp when predicate and arguments are the same"]
-                   (->violation rule form {:replace-form new-form
-                                           :message message}))))})
+                   (->diagnostic rule form {:replace-form new-form
+                                            :message message}))))})

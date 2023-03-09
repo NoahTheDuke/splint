@@ -4,7 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.naming.predicate
   (:require
-    [noahtheduke.splint.rules :refer [defrule ->violation]]
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]
     [clojure.string :as str]))
 
 (defn bad-name? [?name]
@@ -40,4 +41,4 @@
    :on-match (fn [rule form {:syms [?name ?args]}]
                (when (bad-name? ?name)
                  (let [new-form (list* 'defn (symbol (good-name ?name)) ?args)]
-                   (->violation rule form {:replace-form new-form}))))})
+                   (->diagnostic rule form {:replace-form new-form}))))})

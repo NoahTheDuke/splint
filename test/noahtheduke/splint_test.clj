@@ -34,7 +34,7 @@
   (let [ctx (atom {})
         form (parse-string s)]
     (check-and-recur ctx config @global-rules "filename" form)
-    (:violations @ctx)))
+    (:diagnostics @ctx)))
 
 (defexpect str-to-string-test
   '(str x)

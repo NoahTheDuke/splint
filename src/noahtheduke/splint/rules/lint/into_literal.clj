@@ -4,7 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.into-literal
   (:require
-    [noahtheduke.splint.rules :refer [->violation defrule]]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (defn set-or-vec? [form]
   (and (or (set? form)
@@ -33,5 +34,5 @@
                (let [replace-form (list (if (set? ?literal) 'set 'vec) ?coll)
                      message (format "Use `%s` instead of recreating it."
                                      (if (set? ?literal) "set" "vec"))]
-                 (->violation rule form {:replace-form replace-form
-                                         :message message})))})
+                 (->diagnostic rule form {:replace-form replace-form
+                                          :message message})))})

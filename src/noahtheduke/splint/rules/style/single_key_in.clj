@@ -4,7 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.single-key-in
   (:require
-    [noahtheduke.splint.rules :refer [defrule ->violation]]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (defn getter [sexp]
   (#{'assoc-in 'get-in 'update-in} sexp))
@@ -31,5 +32,5 @@
    :on-match (fn [rule form {:syms [?f ?coll ?key ?vals]}]
                (let [new-form (list* (setter ?f) ?coll ?key ?vals)
                      message (format "Use `%s` instead of recreating it." (setter ?f))]
-                 (->violation rule form {:replace-form new-form
-                                         :message message})))})
+                 (->diagnostic rule form {:replace-form new-form
+                                          :message message})))})

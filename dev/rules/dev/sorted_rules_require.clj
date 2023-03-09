@@ -1,6 +1,7 @@
 (ns rules.dev.sorted-rules-require
   (:require
-    [noahtheduke.splint.rules :refer [defrule ->violation]]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (defrule dev/sorted-rules-require
   "Rules in `noahtheduke.splint` must be in sorted order."
@@ -11,4 +12,4 @@
                                         (filter #(and (seq? %) (= :require (first %))))
                                         (last))]
                  (when (not= (next rules-require) (sort (next rules-require)))
-                   (->violation rule form))))})
+                   (->diagnostic rule form))))})

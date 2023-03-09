@@ -4,7 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.thread-macro-one-arg
   (:require
-   [noahtheduke.splint.rules :refer [->violation defrule]]
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]
    [noahtheduke.splint.rules.lint.helpers :refer [symbol-or-keyword-or-list?]]))
 
 (defn thread-macro? [node]
@@ -47,5 +48,5 @@
                                       (concat ?form [?arg]))
                        message (format "Intention of `%s` is clearer with inlined form."
                                        ?f)]
-                   (->violation rule form {:replace-form replace-form
-                                           :message message}))))})
+                   (->diagnostic rule form {:replace-form replace-form
+                                            :message message}))))})

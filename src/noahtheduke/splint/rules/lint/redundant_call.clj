@@ -4,7 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.redundant-call
   (:require
-    [noahtheduke.splint.rules :refer [defrule ->violation]]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (defn right-fn? [sexp]
   ('#{-> ->>
@@ -43,5 +44,5 @@
   {:pattern '(%right-fn?%-?the-fn ?x)
    :on-match (fn [rule form {:syms [?the-fn ?x]}]
                (let [message (format "Single-arg `%s` always returns the arg." ?the-fn)]
-                 (->violation rule form {:message message
-                                         :replace-form ?x})))})
+                 (->diagnostic rule form {:message message
+                                             :replace-form ?x})))})

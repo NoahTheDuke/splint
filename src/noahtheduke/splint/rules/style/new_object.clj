@@ -4,7 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.new-object 
   (:require
-    [noahtheduke.splint.rules :refer [defrule ->violation]]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (defrule style/new-object
   "`new` is discouraged for dot usage.
@@ -22,4 +23,4 @@
    :on-match (fn [rule form {:syms [?class ?args]}]
                (let [class-dot (symbol (str ?class "."))
                      new-form `(~class-dot ~@?args)]
-                 (->violation rule form {:replace-form new-form})))})
+                 (->diagnostic rule form {:replace-form new-form})))})

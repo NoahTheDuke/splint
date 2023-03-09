@@ -4,7 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.naming.conversion-functions
   (:require
-    [noahtheduke.splint.rules :refer [defrule ->violation]]
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]
     [clojure.string :as str]))
 
 (defrule naming/conversion-functions
@@ -23,4 +24,4 @@
    :on-match (fn [rule form {:syms [?f-name ?args]}]
                (when (str/includes? (str ?f-name) "-to-")
                  (let [new-form (list* 'defn (symbol (str/replace (str ?f-name) "-to-" "->")) ?args)]
-                   (->violation rule form {:replace-form new-form}))))})
+                   (->diagnostic rule form {:replace-form new-form}))))})

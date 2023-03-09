@@ -6,7 +6,7 @@
   (:require
     [clojure.walk :as walk]
     [noahtheduke.spat.pattern :refer [pattern simple-type]]
-    [clojure.string :as str]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]))
 
 (set! *warn-on-reflection* true)
 
@@ -25,20 +25,6 @@
         :else
         item))
     replace-form))
-
-(defn ->violation
-  "Create and return a new violation map"
-  [rule form & {:keys [message replace-form] :as _opts}]
-  (let [form-meta (meta form)
-        message (or message (:message rule))
-        alt replace-form]
-    {:rule-name (:full-name rule)
-     :form form
-     :message message
-     :line (:line form-meta)
-     :column (:column form-meta)
-     :filename (:filename form-meta)
-     :alt alt}))
 
 (defmacro defrule
   "Define a new rule. Must include:
@@ -83,7 +69,7 @@
                     ~(or on-match
                          `(fn [rule# form# binds#]
                             (let [new-form# (postwalk-splicing-replace binds# ~replace)]
-                              (->violation rule# form# {:replace-form new-form#}))))}]
+                              (->diagnostic rule# form# {:replace-form new-form#}))))}]
          (swap! global-rules assoc-in
                 [~init-type '~full-name]
                 rule#)

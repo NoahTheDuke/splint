@@ -5,7 +5,8 @@
 (ns ^:no-doc noahtheduke.splint.rules.naming.record-name
   (:require
     [clojure.string :as str]
-    [noahtheduke.splint.rules :refer [defrule ->violation]]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (defn lower-case-name? [sexp]
   (let [record-name (str sexp)]
@@ -31,4 +32,4 @@
                                          (str (subs (str/upper-case (str ?record-name)) 0 1)
                                               (subs (str ?record-name) 1)))
                        new-form (list* 'defrecord new-record-name ?args)]
-                   (->violation rule form {:replace-form new-form}))))})
+                   (->diagnostic rule form {:replace-form new-form}))))})

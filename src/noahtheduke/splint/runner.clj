@@ -46,11 +46,11 @@
 
 (defn check-form
   "Checks a given form against the appropriate rules then calls `on-match` to build the
-  violation map and store it in `ctx`."
+  diagnostic and store it in `ctx`."
   [ctx config rules form]
-  (when-let [violations (check-rules-for-type config rules form)]
-    (swap! ctx update :violations into violations)
-    violations))
+  (when-let [diagnostics (check-rules-for-type config rules form)]
+    (swap! ctx update :diagnostics into diagnostics)
+    diagnostics))
 
 (defn check-and-recur
   "Check a given form and then map recur over each of the form's children."
@@ -81,7 +81,7 @@
        (pmap #(parse-and-check-file ctx config rules %))
        (dorun)))
 
-(defn print-find-dispatch [output _violation] output)
+(defn print-find-dispatch [output _diagnostic] output)
 
 (defmulti print-find #'print-find-dispatch)
 
@@ -106,11 +106,11 @@
   (flush))
 
 (defn print-results
-  [options violations]
+  [options diagnostics]
   (when-not (:quiet options)
     (let [printer (get-method print-find (:output options))]
-      (doseq [violation (sort-by :filename violations)]
-        (printer nil violation)))))
+      (doseq [diagnostic (sort-by :filename diagnostics)]
+        (printer nil diagnostic)))))
 
 (defn run [args]
   (let [start-time (System/currentTimeMillis)
@@ -118,15 +118,15 @@
     (if exit-message
       (do (when-not (:quiet options) (println exit-message))
           (System/exit (if ok 0 1)))
-      (let [ctx (atom {:violations []})
+      (let [ctx (atom {:diagnostics []})
             config (merge (load-config) options)
             rules @global-rules
             _ (check-paths ctx config rules paths)
             end-time (System/currentTimeMillis)
-            violations (:violations @ctx)]
-        (print-results config violations)
+            diagnostics (:diagnostics @ctx)]
+        (print-results config diagnostics)
         (printf "Linting took %sms, %s style warnings%n"
                 (int (- end-time start-time))
-                (count violations))
+                (count diagnostics))
         (flush)
-        (System/exit (count violations))))))
+        (System/exit (count diagnostics))))))

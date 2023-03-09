@@ -4,7 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.missing-body-in-when
   (:require
-    [noahtheduke.splint.rules :refer [defrule ->violation]]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (defrule lint/missing-body-in-when
   "`when` calls should have at least 1 expression after the condition.
@@ -21,4 +22,4 @@
   "
   {:pattern '(when _)
    :message "Missing body in when"
-   :on-match (fn [rule form _] (->violation rule form))})
+   :on-match (fn [rule form _] (->diagnostic rule form))})

@@ -4,7 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.if-else-nil
   (:require
-    [noahtheduke.splint.rules :refer [defrule ->violation]]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (defrule lint/if-else-nil
   "Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
@@ -25,4 +26,4 @@
                (let [new-form (if (sequential? ?y)
                                 (list* 'when ?x ?y)
                                 (list 'when ?x ?y))]
-                 (->violation rule form {:replace-form new-form})))})
+                 (->diagnostic rule form {:replace-form new-form})))})

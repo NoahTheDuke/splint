@@ -36,21 +36,23 @@
         nil
         patterns))))
 
-(defn check-rules-for-type [config rules form]
-  (when-let [rules-for-type (rules (simple-type form))]
+(defn check-all-rules-of-type
+  [config rules form]
+  (when (seq rules)
     (keep
       (fn [[rule-name rule]]
         (when (-> config rule-name :enabled)
           (check-rule rule form)))
-      rules-for-type)))
+      rules)))
 
 (defn check-form
   "Checks a given form against the appropriate rules then calls `on-match` to build the
   diagnostic and store it in `ctx`."
   [ctx config rules form]
-  (when-let [diagnostics (check-rules-for-type config rules form)]
-    (swap! ctx update :diagnostics into diagnostics)
-    diagnostics))
+  (when (seq rules)
+    (when-let [diagnostics (check-all-rules-of-type config rules form)]
+      (swap! ctx update :diagnostics into diagnostics)
+      diagnostics)))
 
 (defn check-and-recur
   "Check a given form and then map recur over each of the form's children."
@@ -58,7 +60,7 @@
   (let [form (if (meta form)
                (vary-meta form assoc :filename filename)
                form)]
-    (check-form ctx config rules form)
+    (check-form ctx config (rules (simple-type form)) form)
     (when (seqable? form)
       (run! #(check-and-recur ctx config rules filename %) form)
       nil)))
@@ -72,6 +74,8 @@
                     (prn (ex-info (ex-message e)
                                   (assoc (ex-data e) :filename (str file))
                                   e))))]
+    ;; Check any full-file rules
+    (check-form ctx config (rules :file) parsed-file)
     (check-and-recur ctx config rules (str file) parsed-file)))
 
 (defn check-paths [ctx config rules paths]
@@ -120,7 +124,7 @@
           (System/exit (if ok 0 1)))
       (let [ctx (atom {:diagnostics []})
             config (merge (load-config) options)
-            rules @global-rules
+            rules (or @global-rules {})
             _ (check-paths ctx config rules paths)
             end-time (System/currentTimeMillis)
             diagnostics (:diagnostics @ctx)]

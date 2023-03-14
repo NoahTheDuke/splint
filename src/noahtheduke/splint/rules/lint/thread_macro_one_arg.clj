@@ -6,7 +6,7 @@
   (:require
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]
-   [noahtheduke.splint.rules.lint.helpers :refer [symbol-or-keyword-or-list?]]))
+   [noahtheduke.splint.rules.helpers :refer [symbol-or-keyword-or-list?]]))
 
 (defn thread-macro? [node]
   (#{'-> '->>} node))

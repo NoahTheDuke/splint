@@ -8,11 +8,9 @@
     [noahtheduke.splint.rules :refer [defrule]]))
 
 (defn right-fn? [sexp]
-  ('#{-> ->>
-      cond-> cond->>
-      some-> some->>
-      comp partial
-      merge} sexp))
+  (case sexp
+    (-> ->> cond-> cond->> some-> some->> comp partial merge) true
+    false))
 
 (defrule lint/redundant-call
   "A number of core functions take any number of arguments and return the arg

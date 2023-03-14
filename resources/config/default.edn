@@ -57,6 +57,12 @@
   :enabled true
   :added "0.1"}
 
+ lint/duplicate-field-name
+ {:description ""
+  :enabled true
+  :added "0.1"
+  :style-ref "#naming-conversion-functions"}
+
  lint/eq-false
  {:description ""
   :enabled true
@@ -102,11 +108,6 @@
   :enabled true
   :added "0.1"
   :style-ref "#no-useless-anonymous-fns"}
-
- lint/helpers
- {:description ""
-  :enabled true
-  :added "0.1"}
 
  lint/if-else-nil
  {:description ""

@@ -6,9 +6,6 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defn fn?? [sexp]
-  (#{'fn 'fn*} sexp))
-
 (defrule lint/filter-complement
   "Check for (filter (complement pred) coll)
 

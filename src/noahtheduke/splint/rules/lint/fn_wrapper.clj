@@ -6,9 +6,6 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defn fn?? [sexp]
-  (#{'fn 'fn*} sexp))
-
 (defrule lint/fn-wrapper
   "Avoid wrapping functions in pass-through anonymous function defitions.
 

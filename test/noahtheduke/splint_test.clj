@@ -7,7 +7,7 @@
     noahtheduke.splint
     [noahtheduke.spat.pattern :refer [simple-type]]
     [noahtheduke.splint.config :refer [read-default-config]]
-    [noahtheduke.splint.parser :refer [parse-string]]
+    [noahtheduke.spat.parser :refer [parse-string]]
     [noahtheduke.splint.rules :refer [global-rules]]
     [noahtheduke.splint.runner :refer [check-and-recur check-form]]))
 

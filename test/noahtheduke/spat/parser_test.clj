@@ -2,10 +2,10 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.splint.parser-test
+(ns noahtheduke.spat.parser-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.parser :refer [parse-string-all]]))
+    [noahtheduke.spat.parser :refer [parse-string-all]]))
 
 (defexpect unknown-tagged-literals-test
   '[(sql/raw [1 2 3]) (splint-auto/unknown [4])]

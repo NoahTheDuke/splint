@@ -5,7 +5,7 @@
 (ns noahtheduke.spat.pattern-test
   (:require
     [expectations.clojure.test :refer [defexpect expect from-each]]
-    [noahtheduke.splint.parser :refer [parse-string]]
+    [noahtheduke.spat.parser :refer [parse-string]]
     [noahtheduke.spat.pattern :refer [pattern]]))
 
 (defexpect match-any-test

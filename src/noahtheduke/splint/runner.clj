@@ -8,7 +8,7 @@
     [clojure.java.io :as io]
     [clojure.pprint :as pprint]
     [clojure.string :as str]
-    [noahtheduke.splint.parser :refer [parse-string-all]]
+    [noahtheduke.spat.parser :refer [parse-string-all]]
     [noahtheduke.spat.pattern :refer [simple-type]]
     [noahtheduke.splint.cli :refer [validate-opts]]
     [noahtheduke.splint.config :refer [load-config]]

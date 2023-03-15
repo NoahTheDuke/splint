@@ -24,6 +24,7 @@
     noahtheduke.splint.rules.lint.dorun-map
     noahtheduke.splint.rules.lint.dot-class-method
     noahtheduke.splint.rules.lint.dot-obj-method
+    noahtheduke.splint.rules.lint.duplicate-field-name
     noahtheduke.splint.rules.lint.eq-false
     noahtheduke.splint.rules.lint.eq-nil
     noahtheduke.splint.rules.lint.eq-true

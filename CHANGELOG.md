@@ -1,6 +1,32 @@
 # Change Log
+This changelog is loose. Versions are not semantic, merely perfunctory. Splint is not meant to be infrastructure, so don't rely on it like infrastructure; it's merely a helpful development tool.
 
 ## [Unreleased]
+Actually wrote out something of a changelog.
+
+## Added
+- The `:new-rule` task now creates a test stub in the correct test directory.
+
+### New Rules
+- `naming/conversion-functions`: Should use `x->y` instead of `x-to-y`.
+- `lint/duplicate-field-name`: `(defrecord Foo [a b a])`
+
+## Changed
+- `defrule` now requires the provided rule-name to be fully qualified, and doesn't perform any `*ns` magic to derive the genre.
+- Add support for specifying `:init-type` in `defrule` to handle symbol matching.
+- All of the `:dispatch` reader macros provided by Edamame now wrap their sexps in the appropriate `(splint/X sexp)` form, to distinguish them from the symbol forms. Aka `#(inc %)` is now rendered as `(splint/fn [%1] (inc %1))`, vs the original `(fn* ...)`, or `#'x` is now `(splint/var x)` vs `(var x)`. This allows for writing rules targeting the literal form instead of the symbol form.
+- Split all rules tests into their own matching namespaces.
+- Add `noahtheduke.splint.rules.helpers` as an autoresolving namespace so rules can use predicates defined within it without importing or qualifying.
+- Renamed errors from `violation` to `diagnostic`.
+
+## Thoughts
+I want another parser because I want access to comments. Without comments, I can't parse magic comments, meaning I can't enable or disable rules inline, only globally. That's annoying and not ideal. However, every solution I've dreamed up has some deep issue.
+
+* [Edamame](https://github.com/borkdude/edamame) is our current parser and it's extremely fast (40ms to parse `clojure/core.clj`) but it drops comments. I've forked it to try to add them, but that would mean handling them in every other part of the parser, such as syntax-quote and maps and sets, making dealing with those objects really hard. :sob:
+
+* [Rewrite-clj](https://github.com/clj-commons/rewrite-clj) only exposes comments in the zip api, meaning I have to operate on the zipper objects with zipper functions (horrible and slow). It's nice to rely on Clojure built-ins instead of `(loop [zloc zloc] (z/next* ...))` nonsense.
+
+* [parcera](https://github.com/carocad/parcera) looked promising, but the pre-processing in `parcera/ast` is slow and operating on the Java directly is deeply cumbersome. The included grammar also makes some odd choices and I don't know ANTLR4 well enough to know how to fix them (such as including the `:` in keyword strings). Additionally, if I were to switch, I would have to update/touch every existing rule.
 
 ## [v0.1.85]
 Update readme with some better writing.

@@ -6,16 +6,21 @@
     [clojure.java.io :as io]))
 
 (defn make-new-rule [{n :name}]
-  (let [template (slurp (io/file "tasks" "new_rule.tmpl"))
+  (let [rule-template (slurp (io/file "tasks" "new_rule.tmpl"))
+        test-template (slurp (io/file "tasks" "new_rule_test.tmpl"))
         n (symbol n)
         genre (namespace n)
         rule-name (name n)]
     (assert (and genre rule-name) (format "Given %s. Gotta qualify the rule name" (pr-str n)))
-    (let [filename (io/file "src" "noahtheduke" "splint" "rules"
-                            genre (namespace-munge (str rule-name ".clj")))]
-      (io/make-parents filename)
-      (println "Making new rule for" n)
-      (spit filename (render template {:genre genre :rule-name rule-name})))))
+    (println "Making new rule for" n)
+    (let [rule-filename (io/file "src" "noahtheduke" "splint" "rules"
+                                 genre (namespace-munge (str rule-name ".clj")))
+          test-filename (io/file "test" "noahtheduke" "splint" "rules"
+                                 genre (namespace-munge (str rule-name "_test.clj")))]
+      (io/make-parents rule-filename)
+      (io/make-parents test-filename)
+      (spit rule-filename (render rule-template {:genre genre :rule-name rule-name}))
+      (spit test-filename (render test-template {:genre genre :rule-name rule-name})))))
 
 (def cli-options
   [["-h" "--help" "Choose a genre and name to make a new rule"]

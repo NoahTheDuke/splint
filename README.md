@@ -3,7 +3,7 @@
 [![Clojars Project](https://img.shields.io/clojars/v/io.github.noahtheduke/splint.svg)](https://clojars.org/io.github.noahtheduke/splint)
 [![cljdoc badge](https://cljdoc.org/badge/io.github.noahtheduke/splint)](https://cljdoc.org/d/io.github.noahtheduke/splint)
 
-**Split** is a Clojure static code analyzer and linter. It aims to warn about many of
+**Splint** is a Clojure static code analyzer and linter. It aims to warn about many of
 the guidelines in the [Clojure Style Guide][style guide].
 
 [style guide]: https://guide.clojure.style

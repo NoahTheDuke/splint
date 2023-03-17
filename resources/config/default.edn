@@ -403,4 +403,8 @@
  {:description ""
   :enabled true
   :added "0.1"}
+
+ ;; Dev rules
+ dev/sorted-rules-require {:enabled true}
+
 }

@@ -31,7 +31,7 @@ I want another parser because I want access to comments. Without comments, I can
 * [parcera](https://github.com/carocad/parcera) looked promising, but the pre-processing in `parcera/ast` is slow and operating on the Java directly is deeply cumbersome. The included grammar also makes some odd choices and I don't know ANTLR4 well enough to know how to fix them (such as including the `:` in keyword strings). Additionally, if I were to switch, I would have to update/touch every existing rule.
 
 ### Followup
-After tinkering with Edamame for a bit, I've found a solution that requires minimal changes to edamame to support: `#_:splint/ignore` style directives that apply metadata to the following form: `#_{:splint/ignore [lint/plus-one]} (+ 1 x)`. This uses an existing convention and handles the issue of disabling multiple items or disabling for only a certain portion of the file.
+After tinkering with Edamame for a bit, I've found a solution that requires no changes to edamame to support: `#_:splint/disable`. This style of directive applies metadata to the following form: `#_{:splint/disable [lint/plus-one]} (+ 1 x)`. Edamame normally discard `#_`/discarded forms, so on Borkdude's recommendation, I use `str/replace` to convert it at parse-time to metadata. This uses an existing convention and handles the issue of disabling multiple items or disabling for only a certain portion of the file.
 
 ## [v0.1.85]
 Update readme with some better writing.

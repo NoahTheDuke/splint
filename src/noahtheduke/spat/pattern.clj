@@ -170,7 +170,10 @@
 (defmethod read-form :vector [sexp form retval]
   (read-form-seq sexp form retval 'vector?))
 
-(def simple? #{:nil :boolean :char :number :keyword :string :symbol})
+(defn simple? [t]
+  (case t
+    (:nil :boolean :char :number :keyword :string :symbol) true
+    false))
 
 (defmethod read-form :map [sexp form retval]
   {:pre [(every? (comp simple? simple-type) (keys sexp))]}

@@ -294,11 +294,6 @@
   :enabled true
   :added "0.1"}
 
- lint/true-checks
- {:description ""
-  :enabled true
-  :added "0.1"}
-
  lint/update-in-assoc
  {:description ""
   :enabled true

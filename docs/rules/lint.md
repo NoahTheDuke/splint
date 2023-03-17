@@ -176,6 +176,27 @@ Using the `.method` form maps the method call to Clojure's natural function posi
 (.method obj args)
 ```
 
+## lint/duplicate-field-name
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`deftype` and `defrecord` will throw errors if you define multiple fields
+with the same name, but it's good to catch these things early too.
+
+### Examples:
+```clojure
+# bad
+(defrecord Foo [a b a])
+
+# good
+(defrecord Foo [a b c])
+```
+
+### Reference
+* https://guide.clojure.style/#naming-conversion-functions
+
 ## lint/eq-false
 
 | Enabled | Added |

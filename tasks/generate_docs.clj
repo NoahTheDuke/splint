@@ -65,7 +65,7 @@
 
 (defn build-rules [genre]
   (->> genre
-       (get (group-by :genre (mapcat vals (vals @global-rules))))
+       (get (group-by :genre (vals @global-rules)))
        (sort-by :full-name)
        (map build-rule)
        (remove str/blank?)
@@ -87,6 +87,6 @@
     (spit filename (str page \newline))))
 
 (defn -main [& genres]
-  (when-let [genres (seq (or genres (set (keep :genre (mapcat vals (vals @global-rules))))))]
+  (when-let [genres (seq (or genres (set (keep :genre (vals @global-rules)))))]
     (println "Saving genres to file")
     (run! print-genre-to-file genres)))

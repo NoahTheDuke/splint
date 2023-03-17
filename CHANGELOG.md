@@ -19,6 +19,7 @@ Actually wrote out something of a changelog.
 - Split all rules tests into their own matching namespaces.
 - Add `noahtheduke.splint.rules.helpers` as an autoresolving namespace so rules can use predicates defined within it without importing or qualifying.
 - Renamed errors from `violation` to `diagnostic`.
+- Merge rules configs into rules maps at load-time.
 
 ## Fixed
 - `lint/duplicate-field-name` wasn't checking that `?fields` was a vector before calling `count` on it.

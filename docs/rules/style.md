@@ -178,6 +178,25 @@ Directly nested lets can be merged into a single let block.
   (println a b))
 ```
 
+## style/set-literal-as-fn
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Sets can be used as functions and they're converted to static items when
+they contain constants, making them fairly fast. However, they're not as fast
+as [[case]] and their meaning is less clear at first glance.
+
+### Examples:
+```clojure
+# bad
+(#{'a 'b 'c} elem)
+
+# good
+(case elem (a b c) elem nil)
+```
+
 ## style/single-key-in
 
 | Enabled | Added |

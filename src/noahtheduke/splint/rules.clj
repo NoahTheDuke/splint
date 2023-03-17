@@ -70,7 +70,5 @@
                          `(fn [rule# form# binds#]
                             (let [new-form# (postwalk-splicing-replace binds# ~replace)]
                               (->diagnostic rule# form# {:replace-form new-form#}))))}]
-         (swap! global-rules assoc-in
-                [~init-type '~full-name]
-                rule#)
+         (swap! global-rules assoc '~full-name rule#)
          (def ~(symbol rule-name) ~docs rule#)))))

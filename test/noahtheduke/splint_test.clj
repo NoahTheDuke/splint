@@ -10,20 +10,22 @@
     [noahtheduke.splint.config :refer [read-default-config]]
     [noahtheduke.spat.parser :refer [parse-string]]
     [noahtheduke.splint.rules :refer [global-rules]]
-    [noahtheduke.splint.runner :refer [check-and-recur check-form]]))
+    [noahtheduke.splint.runner :refer [check-and-recur check-form prepare-rules]]))
 
 (set! *warn-on-reflection* true)
 
 (def config (read-default-config))
 
+(def rules (prepare-rules config (or @global-rules {})))
+
 (defn rules-for-form [form]
-  (@global-rules (simple-type form)))
+  (rules (simple-type form)))
 
 (defn check-str
   [s]
   (let [ctx (atom {})
         form (parse-string s)]
-    (check-form ctx config (rules-for-form form) nil form)))
+    (check-form ctx (rules-for-form form) nil form)))
 
 (defn check-alt
   [s]
@@ -37,5 +39,5 @@
   [s]
   (let [ctx (atom {})
         form (parse-string s)]
-    (check-and-recur ctx config @global-rules "filename" nil form)
+    (check-and-recur ctx rules "filename" nil form)
     (:diagnostics @ctx)))

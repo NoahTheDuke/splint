@@ -48,63 +48,61 @@
         patterns))))
 
 (defn check-all-rules-of-type
-  [config rules parent-form form]
+  [rules parent-form form]
   (keep
-    (fn [[rule-name rule]]
-      (when (-> config rule-name :enabled)
+    (fn [[_rule-name rule]]
+      (when (-> rule :config :enabled)
         (check-rule rule parent-form form)))
     rules))
 
 (defn check-form
   "Checks a given form against the appropriate rules then calls `on-match` to build the
   diagnostic and store it in `ctx`."
-  [ctx config rules parent-form form]
+  [ctx rules parent-form form]
   (when (seq rules)
-    (when-let [diagnostics (check-all-rules-of-type config rules parent-form form)]
+    (when-let [diagnostics (check-all-rules-of-type rules parent-form form)]
       (swap! ctx update :diagnostics into diagnostics)
       diagnostics)))
 
-(defn update-config [config form]
+(defn update-rules [rules form]
   (if-let [disabled-rules (:splint/disable (meta form))]
     (if (true? disabled-rules)
       ;; disable everything
-      (update-vals config (fn [v]
-                            (prn v)
-                            (if (and (map? v)
-                                     (contains? v :enabled))
-                              (assoc v :enabled false)
-                              v)))
+      (update-vals rules (fn [rs]
+                           (update-vals rs #(assoc-in % [:config :enabled] false))))
       ;; parse list of disabled genres and specific rules
       (let [{genres true specific-rules false} (group-by simple-symbol? disabled-rules)
             genres (set (map str genres))
             specific-rules (set specific-rules)]
-        (->> config
-             (reduce-kv
-               (fn [config setting-key setting-v]
-                 (if (or (contains? genres (namespace setting-key))
-                         (contains? specific-rules setting-key))
-                   (assoc! config setting-key (assoc setting-v :enabled false))
-                   config))
-               (transient config))
-             (persistent!))))
-    config))
+        (update-vals
+          rules
+          (fn [rs]
+            (update-vals
+              rs (fn [rule]
+                   (let [genre (:genre rule)
+                         rule-name (:full-name rule)]
+                     (if (or (contains? genres genre)
+                             (contains? specific-rules rule-name))
+                       (assoc-in rule [:config :enabled] false)
+                       rule))))))))
+    rules))
 
 (defn check-and-recur
   "Check a given form and then map recur over each of the form's children."
-  [ctx config rules filename parent-form form]
+  [ctx rules filename parent-form form]
   (let [form (if (meta form)
                (vary-meta form assoc :filename filename)
                form)
-        config (update-config config form)]
-    (check-form ctx config (rules (simple-type form)) parent-form form)
+        rules (update-rules rules form)]
+    (check-form ctx (rules (simple-type form)) parent-form form)
     (when (and (seqable? form)
                (not= 'quote (first form)))
-      (run! #(check-and-recur ctx config rules filename form %) form)
+      (run! #(check-and-recur ctx rules filename form %) form)
       nil)))
 
 (defn parse-and-check-file
   "Parse the given file and then check each form."
-  [ctx config rules ^File file]
+  [ctx rules ^File file]
   (when-let [parsed-file
              (try (parse-string-all (slurp file))
                   (catch Throwable e
@@ -113,17 +111,17 @@
                                   e))))]
     (try
       ;; Check any full-file rules
-      (check-form ctx config (rules :file) nil parsed-file)
-      (check-and-recur ctx config rules (str file) nil parsed-file)
+      (check-form ctx (rules :file) nil parsed-file)
+      (check-and-recur ctx rules (str file) nil parsed-file)
       (catch clojure.lang.ExceptionInfo e
         (throw (ex-info (ex-message e) (assoc (ex-data e) :file file) (.getCause e)))))))
 
-(defn check-paths [ctx config rules paths]
+(defn check-paths [ctx rules paths]
   (try
     (->> (mapcat #(file-seq (io/file %)) paths)
          (filter #(and (.isFile ^File %)
                        (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
-         (pmap #(parse-and-check-file ctx config rules %))
+         (pmap #(parse-and-check-file ctx rules %))
          (dorun))
     (catch java.util.concurrent.ExecutionException e
       (let [cause (.getCause e)
@@ -134,6 +132,21 @@
         (flush))
       (System/exit 1))))
 
+(defn prepare-rules [config rules]
+  (->> config
+       (reduce-kv
+         (fn [rules rule-name config]
+           (if (and (map? config)
+                    (contains? config :enabled))
+             (assoc-in rules [rule-name :config] (assoc config :rule-name rule-name))
+             rules))
+         rules)
+       vals
+       (reduce
+         (fn [rules rule]
+           (assoc-in rules [(:init-type rule) (:full-name rule)] rule))
+         {})))
+
 (defn run [args]
   (let [start-time (System/currentTimeMillis)
         {:keys [options paths exit-message ok]} (validate-opts args)]
@@ -142,8 +155,8 @@
           (System/exit (if ok 0 1)))
       (let [ctx (atom {:diagnostics []})
             config (merge (load-config) options)
-            rules (or @global-rules {})
-            _ (check-paths ctx config rules paths)
+            rules (prepare-rules config (or @global-rules {}))
+            _ (check-paths ctx rules paths)
             end-time (System/currentTimeMillis)
             diagnostics (:diagnostics @ctx)]
         (print-results config diagnostics (int (- end-time start-time)))

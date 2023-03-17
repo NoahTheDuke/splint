@@ -23,6 +23,7 @@
    :dispatch {; @x
               \@ (fn [expr] (list 'splint/deref expr))
               ; `(+ 1 2)
+              ; This is a deliberate decision to not expand syntax quotes. Easier to parse/manipulate the entire tree.
               \` (fn [expr] (list 'splint/syntax-quote expr))
               \~ {; ~x unquote
                   :default (fn [expr] (list 'splint/unquote expr))

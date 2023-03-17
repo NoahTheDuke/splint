@@ -6,8 +6,10 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defn *? [sexp]
-  (#{'* '*'} sexp))
+(defn *? [form]
+  (case form
+    (* *') true
+    false))
 
 (defrule lint/nested-multiply
   "Checks for simple nested multiply.

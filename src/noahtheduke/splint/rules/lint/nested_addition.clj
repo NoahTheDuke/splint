@@ -6,8 +6,10 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defn +? [sexp]
-  (#{'+ '+'} sexp))
+(defn +? [form]
+  (case form
+    (+ +') true
+    false))
 
 (defrule lint/nested-addition
   "Checks for simple nested additions.

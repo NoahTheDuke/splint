@@ -8,7 +8,9 @@
 
 (defn not-special? [form]
   (if (list? form)
-    (not (#{'reverse 'interpose} (first form)))
+    (case (first form)
+      (reverse interpose) false
+      true)
     true))
 
 (defrule lint/apply-str

@@ -6,8 +6,10 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defn eq? [sexp]
-  (#{'= '==} sexp))
+(defn eq? [form]
+  (case form
+    (= ==) true
+    false))
 
 (defrule lint/eq-zero
   "`zero?` exists so use it.

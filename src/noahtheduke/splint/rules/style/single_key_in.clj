@@ -7,8 +7,10 @@
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
-(defn getter [sexp]
-  (#{'assoc-in 'get-in 'update-in} sexp))
+(defn getter [form]
+  (case form
+    (assoc-in get-in update-in) true
+    false))
 
 (defn setter [?f]
   (case ?f

@@ -8,8 +8,10 @@
    [noahtheduke.splint.rules :refer [defrule]]
    [noahtheduke.splint.rules.helpers :refer [symbol-or-keyword-or-list?]]))
 
-(defn thread-macro? [node]
-  (#{'-> '->>} node))
+(defn thread-macro? [form]
+  (case form
+    (-> ->>) true
+    false))
 
 (defrule lint/thread-macro-one-arg
   "Threading macros require more effort to understand so only use them with multiple

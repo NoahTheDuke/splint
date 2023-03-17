@@ -12,8 +12,10 @@
   (parse-string-all "#sql/raw [1 2 3] #unknown [4]"))
 
 (defexpect auto-resolve-kw-test
-  '[:splint-auto/foo :splint-autofoo/bar :foo :foo/bar]
-  (parse-string-all "::foo ::foo/bar :foo :foo/bar"))
+  (expect '[:splint-auto_/foo :splint-auto_foo/bar :foo :foo/bar]
+    (parse-string-all "::foo ::foo/bar :foo :foo/bar"))
+  (expect '[(ns foo (:require [clojure.set :as set])) :clojure.set/foo]
+    (parse-string-all "(ns foo (:require [clojure.set :as set])) ::set/foo")))
 
 (defexpect discard-metadata-test
   (expect {:splint/ignore true}

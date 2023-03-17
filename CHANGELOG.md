@@ -26,7 +26,12 @@ I want another parser because I want access to comments. Without comments, I can
 
 * [Rewrite-clj](https://github.com/clj-commons/rewrite-clj) only exposes comments in the zip api, meaning I have to operate on the zipper objects with zipper functions (horrible and slow). It's nice to rely on Clojure built-ins instead of `(loop [zloc zloc] (z/next* ...))` nonsense.
 
+* [clj-kondo](https://github.com/borkdude/clj-kondo) is faster than rewrite-clj and has a nicer api, but the resulting tree isn't as easy to work with as Edamame and it's slower. Originally built Spat in it and found it to be annoying to use.
+
 * [parcera](https://github.com/carocad/parcera) looked promising, but the pre-processing in `parcera/ast` is slow and operating on the Java directly is deeply cumbersome. The included grammar also makes some odd choices and I don't know ANTLR4 well enough to know how to fix them (such as including the `:` in keyword strings). Additionally, if I were to switch, I would have to update/touch every existing rule.
+
+### Followup
+After tinkering with Edamame for a bit, I've found a solution that requires minimal changes to edamame to support: `#_:splint/ignore` style directives that apply metadata to the following form: `#_{:splint/ignore [lint/plus-one]} (+ 1 x)`. This uses an existing convention and handles the issue of disabling multiple items or disabling for only a certain portion of the file.
 
 ## [v0.1.85]
 Update readme with some better writing.

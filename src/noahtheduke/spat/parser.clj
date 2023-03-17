@@ -17,7 +17,8 @@
    :location? seq?
    :features #{:cljs}
    :read-cond :preserve
-   :auto-resolve (fn [k] (if (= :current k) "splint-auto" (str "splint-auto" (name k))))
+   :auto-resolve-ns true
+   :auto-resolve (fn [k] (if (= :current k) "splint-auto_" (str "splint-auto_" (name k))))
    :readers (fn [r] (fn [v] (list (if (namespace r) r (symbol "splint-auto" (name r))) v)))
    ; All reader macros should be a splint-specific symbol wrapping the expression
    :dispatch {; @x

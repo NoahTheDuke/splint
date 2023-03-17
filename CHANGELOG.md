@@ -8,8 +8,9 @@ Actually wrote out something of a changelog.
 - The `:new-rule` task now creates a test stub in the correct test directory.
 
 ### New Rules
-- `naming/conversion-functions`: Should use `x->y` instead of `x-to-y`.
 - `lint/duplicate-field-name`: `(defrecord Foo [a b a])`
+- `naming/conversion-functions`: Should use `x->y` instead of `x-to-y`.
+- `style/set-literal-as-fn`: Should use `(case elem (a b) true false)` instead of `(#{'a 'b} elem)`
 
 ## Changed
 - `defrule` now requires the provided rule-name to be fully qualified, and doesn't perform any `*ns*` magic to derive the genre.

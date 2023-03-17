@@ -394,6 +394,11 @@
   :enabled true
   :added "0.1"}
 
+ style/set-literal-as-fn
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
  style/single-key-in
  {:description ""
   :enabled true

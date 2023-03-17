@@ -89,6 +89,7 @@
     noahtheduke.splint.rules.style.prefer-condp
     noahtheduke.splint.rules.style.prefer-vary-meta
     noahtheduke.splint.rules.style.redundant-let
+    noahtheduke.splint.rules.style.set-literal-as-fn
     noahtheduke.splint.rules.style.single-key-in
 
     ,))

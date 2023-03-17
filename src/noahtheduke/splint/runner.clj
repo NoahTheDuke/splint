@@ -6,12 +6,12 @@
   "Handles parsing and linting all of given files."
   (:require
     [clojure.java.io :as io]
-    [clojure.pprint :as pprint]
     [clojure.string :as str]
     [noahtheduke.spat.parser :refer [parse-string-all]]
     [noahtheduke.spat.pattern :refer [simple-type]]
     [noahtheduke.splint.cli :refer [validate-opts]]
     [noahtheduke.splint.config :refer [load-config]]
+    [noahtheduke.splint.printer :refer [print-results]]
     [noahtheduke.splint.rules :refer [global-rules]])
   (:import
     (java.io File)))
@@ -134,37 +134,6 @@
         (flush))
       (System/exit 1))))
 
-(defn print-find-dispatch [output _diagnostic] output)
-
-(defmulti print-find #'print-find-dispatch)
-
-(defmethod print-find "full" [_ {:keys [filename rule-name form line column message alt]}]
-  (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)
-  (newline)
-  (pprint/pprint form)
-  (when alt
-    (println "Consider using:")
-    (pprint/pprint alt))
-  (newline)
-  (flush))
-
-(defmethod print-find "simple" [_ {:keys [filename rule-name line column message]}]
-  (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)
-  (newline)
-  (flush))
-
-(defmethod print-find "clj-kondo" [_ {:keys [filename line column message]}]
-  (printf "%s:%s:%s: warning: %s" filename line column message)
-  (newline)
-  (flush))
-
-(defn print-results
-  [options diagnostics]
-  (when-not (:quiet options)
-    (let [printer (get-method print-find (:output options))]
-      (doseq [diagnostic (sort-by :filename diagnostics)]
-        (printer nil diagnostic)))))
-
 (defn run [args]
   (let [start-time (System/currentTimeMillis)
         {:keys [options paths exit-message ok]} (validate-opts args)]
@@ -177,9 +146,5 @@
             _ (check-paths ctx config rules paths)
             end-time (System/currentTimeMillis)
             diagnostics (:diagnostics @ctx)]
-        (print-results config diagnostics)
-        (printf "Linting took %sms, %s style warnings%n"
-                (int (- end-time start-time))
-                (count diagnostics))
-        (flush)
+        (print-results config diagnostics (int (- end-time start-time)))
         (System/exit (count diagnostics))))))

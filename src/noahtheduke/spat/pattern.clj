@@ -95,7 +95,7 @@
   (let [[pred bind] (str/split (name sexp) #"%-")
         pred (subs pred 1)
         pred (or (resolve (symbol "clojure.core" pred))
-                 (resolve (symbol "noahtheduke.splint.rules.helpers" pred))
+                 (requiring-resolve (symbol "noahtheduke.splint.rules.helpers" pred))
                  (requiring-resolve (symbol (or (namespace (symbol pred)) (str *ns*)) pred)))
         bind (when bind (symbol bind))]
     `(let [form# ~form

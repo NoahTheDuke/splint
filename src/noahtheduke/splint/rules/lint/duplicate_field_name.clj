@@ -19,7 +19,7 @@
   # good
   (defrecord Foo [a b c])
   "
-  {:pattern '(defrecord ?name ?fields &&. ?body)
+  {:pattern '(defrecord ?name %vector?%-?fields &&. ?body)
    :on-match (fn [rule form {:syms [?fields]}]
                (when (not= (count ?fields) (count (set ?fields)))
                  (->diagnostic rule form {:message "Duplicate field has been found"})))})

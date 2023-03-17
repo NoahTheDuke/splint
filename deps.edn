@@ -1,7 +1,7 @@
 {:paths ["src" "resources"]
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
         org.clojure/tools.cli {:mvn/version "1.0.214"}
-        io.github.noahtheduke/edamame {:git/sha "014a17ac15de2b159f7e3cb53314b3d6d559c304"}}
+        borkdude/edamame {:mvn/version "1.2.19"}}
  :aliases
  {:run {:main-opts ["-m" "noahtheduke.splint"]}
   :dev {:extra-paths ["dev"]

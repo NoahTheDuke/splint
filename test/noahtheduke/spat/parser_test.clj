@@ -18,9 +18,9 @@
     (parse-string-all "(ns foo (:require [clojure.set :as set])) ::set/foo")))
 
 (defexpect discard-metadata-test
-  (expect {:splint/ignore true}
-    (select-keys (meta (parse-string "#_:splint/ignore (foo bar)"))
-                 [:splint/ignore]))
-  (expect '{:splint/ignore lint}
-    (select-keys (meta (parse-string "#_{:splint/ignore lint} (foo bar)"))
-                 [:splint/ignore])))
+  (expect {:splint/disable true}
+    (select-keys (meta (parse-string "#_:splint/disable (foo bar)"))
+                 [:splint/disable]))
+  (expect '{:splint/disable lint}
+    (select-keys (meta (parse-string "#_{:splint/disable lint} (foo bar)"))
+                 [:splint/disable])))

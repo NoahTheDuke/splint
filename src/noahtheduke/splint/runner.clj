@@ -20,9 +20,16 @@
 
 (defn check-pattern
   [rule pattern form]
-  (when-let [binds (pattern form)]
-    (let [on-match (:on-match rule)]
-      (on-match rule form binds))))
+  (try
+    (when-let [binds (pattern form)]
+      (let [on-match (:on-match rule)]
+        (on-match rule form binds)))
+    (catch Throwable e
+      (throw (ex-info (ex-message e)
+                      {:form (if (seqable? form) (take 2 form) form)
+                       :data (ex-data e)
+                       :rule (:full-name rule)}
+                      e)))))
 
 (defn check-rule
   [rule form]
@@ -69,7 +76,7 @@
 
 (defn select-rules [rules form]
   (let [rules-for-type (rules (simple-type form))
-        ignored-rules (:splint/ignore (meta form))]
+        ignored-rules (:splint/disable (meta form))]
     (cond
       (nil? ignored-rules) rules-for-type
       (true? ignored-rules) nil
@@ -96,16 +103,28 @@
                     (prn (ex-info (ex-message e)
                                   (assoc (ex-data e) :filename (str file))
                                   e))))]
-    ;; Check any full-file rules
-    (check-form ctx config (rules :file) parsed-file)
-    (check-and-recur ctx config rules (str file) parsed-file)))
+    (try
+      ;; Check any full-file rules
+      (check-form ctx config (rules :file) parsed-file)
+      (check-and-recur ctx config rules (str file) parsed-file)
+      (catch clojure.lang.ExceptionInfo e
+        (throw (ex-info (ex-message e) (assoc (ex-data e) :file file) (.getCause e)))))))
 
 (defn check-paths [ctx config rules paths]
-  (->> (mapcat #(file-seq (io/file %)) paths)
-       (filter #(and (.isFile ^File %)
-                     (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
-       (pmap #(parse-and-check-file ctx config rules %))
-       (dorun)))
+  (try
+    (->> (mapcat #(file-seq (io/file %)) paths)
+         (filter #(and (.isFile ^File %)
+                       (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
+         (pmap #(parse-and-check-file ctx config rules %))
+         (dorun))
+    (catch java.util.concurrent.ExecutionException e
+      (let [cause (.getCause e)
+            message (ex-message cause)
+            data (ex-data cause)]
+        (printf "Splint encountered an error in %s:\n%s\nin form: %s" (:file data) message (apply list (:form data)))
+        (newline)
+        (flush))
+      (System/exit 1))))
 
 (defn print-find-dispatch [output _diagnostic] output)
 

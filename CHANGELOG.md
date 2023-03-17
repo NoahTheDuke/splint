@@ -1,7 +1,7 @@
 # Change Log
 This changelog is loose. Versions are not semantic, merely perfunctory. Splint is not meant to be infrastructure, so don't rely on it like infrastructure; it's merely a helpful development tool.
 
-## [Unreleased]
+## [v0.1.119]
 Actually wrote out something of a changelog.
 
 ## Added
@@ -83,7 +83,8 @@ Renamed to Splint! Things are really coming together now.
 ## [v0.1] - 2023-02-16
 Initial release of `spat`, announcement on Clojurian Slack and bbin installation set up. Contains working pattern matching system, a bunch of rules, and a simple runner.
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/0.1.85...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/0.1.119...HEAD
+[v0.1.85]: https://github.com/noahtheduke/splint/compare/0.1.85...0.1.119
 [v0.1.85]: https://github.com/noahtheduke/splint/compare/0.1.69...v0.1.85
 [v0.1.69]: https://github.com/noahtheduke/splint/compare/v0.1...v0.1.69
 [v0.1]: https://github.com/NoahTheDuke/splint/tree/v0.1

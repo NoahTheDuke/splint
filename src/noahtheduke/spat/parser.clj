@@ -27,7 +27,7 @@
               \~ {; ~x unquote
                   :default (fn [expr] (list 'splint/unquote expr))
                   ; ~@(map inc [1 2 3])
-                  \@ (fn [expr] (list 'splint/unquote-splice expr))}
+                  \@ (fn [expr] (list 'splint/unquote-splicing expr))}
               \# {; #'x
                   \' (fn [expr] (list 'splint/var expr))
                   ; #=(+ 1 2)
@@ -37,7 +37,7 @@
                        (let [sexp (read-fn/read-fn expr)]
                          (apply list (cons 'splint/fn (next sexp)))))
                   ; #".*"
-                  \" (fn [expr] (list 'splint/regex expr))}}})
+                  \" (fn [expr] (list 'splint/re-pattern expr))}}})
 
 (defn iobj?
   "Adapted from edamame.impl.parser."

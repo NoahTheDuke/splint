@@ -6,6 +6,9 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(defn not-assoc? [sym]
+  (not= 'assoc sym))
+
 (defrule lint/assoc-fn
   "`assoc`-ing an update with the same key are hard to read. `update` is known and
   idiomatic.

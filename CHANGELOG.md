@@ -12,12 +12,15 @@ Actually wrote out something of a changelog.
 - `lint/duplicate-field-name`: `(defrecord Foo [a b a])`
 
 ## Changed
-- `defrule` now requires the provided rule-name to be fully qualified, and doesn't perform any `*ns` magic to derive the genre.
+- `defrule` now requires the provided rule-name to be fully qualified, and doesn't perform any `*ns*` magic to derive the genre.
 - Add support for specifying `:init-type` in `defrule` to handle symbol matching.
-- All of the `:dispatch` reader macros provided by Edamame now wrap their sexps in the appropriate `(splint/X sexp)` form, to distinguish them from the symbol forms. Aka `#(inc %)` is now rendered as `(splint/fn [%1] (inc %1))`, vs the original `(fn* ...)`, or `#'x` is now `(splint/var x)` vs `(var x)`. This allows for writing rules targeting the literal form instead of the symbol form.
+- All of the `:dispatch` reader macros provided by Edamame now wrap their sexps in the appropriate `(splint/X sexp)` form, to distinguish them from the symbol forms. Aka `#(inc %)` is now rendered as `(splint/fn [%1] (inc %1))`, vs the original `(fn* ...)`, or `#'x` is now `(splint/var x)` vs `(var x)`. This allows for writing rules targeting the literal form instead of the symbol form, and requires that rule patterns rely on functions in `noahtheduke.splint.rules.helpers` to cover these alternates.
 - Split all rules tests into their own matching namespaces.
 - Add `noahtheduke.splint.rules.helpers` as an autoresolving namespace so rules can use predicates defined within it without importing or qualifying.
 - Renamed errors from `violation` to `diagnostic`.
+
+## Fixed
+- `lint/duplicate-field-name` wasn't checking that `?fields` was a vector before calling `count` on it.
 
 ## Thoughts
 I want another parser because I want access to comments. Without comments, I can't parse magic comments, meaning I can't enable or disable rules inline, only globally. That's annoying and not ideal. However, every solution I've dreamed up has some deep issue.

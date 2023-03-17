@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.redundant-call-test
   (:require
     [expectations.clojure.test :refer [defexpect expect from-each]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint-test :refer [check-all check-alt]]))
 
 (defexpect redundant-call-test
   (expect 'x
@@ -13,4 +13,6 @@
                        "(cond-> x)" "(cond->> x)"
                        "(some-> x)" "(some->> x)"
                        "(comp x)" "(partial x)" "(merge x)"]]
-      (check-alt given))))
+      (check-alt given)))
+  (expect nil? (check-all "(-> a b (merge c))"))
+  (expect nil? (check-all "(case elem (-> ->>) true false)")))

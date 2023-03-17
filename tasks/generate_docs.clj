@@ -78,6 +78,7 @@
           rule-sections]
          (str/join (str \newline \newline)))))
 
+#_{:splint/disable [naming/conversion-functions]}
 (defn print-genre-to-file [genre]
   (let [page (genre-page genre)
         filename (io/file "docs" "rules" (str genre ".md"))]

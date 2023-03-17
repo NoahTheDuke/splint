@@ -5,8 +5,13 @@
 (ns ^:no-doc noahtheduke.splint.rules.lint.thread-macro-one-arg
   (:require
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-   [noahtheduke.splint.rules :refer [defrule]]
-   [noahtheduke.splint.rules.helpers :refer [symbol-or-keyword-or-list?]]))
+   [noahtheduke.splint.rules :refer [defrule]]))
+
+(defn symbol-or-keyword-or-list? [sexp]
+  (or (symbol? sexp)
+      (keyword? sexp)
+      (list? sexp)
+      (and (sequential? sexp) (not (vector? sexp)))))
 
 (defn thread-macro? [form]
   (case form

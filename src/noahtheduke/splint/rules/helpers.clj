@@ -4,12 +4,6 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.helpers)
 
-(defn symbol-or-keyword-or-list? [sexp]
-  (or (symbol? sexp)
-      (keyword? sexp)
-      (list? sexp)
-      (and (sequential? sexp) (not (vector? sexp)))))
-
 (defn deref?? [sexp]
   (case sexp
     (deref splint/deref) true

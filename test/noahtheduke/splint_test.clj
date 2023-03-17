@@ -5,6 +5,7 @@
 (ns noahtheduke.splint-test
   (:require
     noahtheduke.splint
+    noahtheduke.splint.rules.helpers
     [noahtheduke.spat.pattern :refer [simple-type]]
     [noahtheduke.splint.config :refer [read-default-config]]
     [noahtheduke.spat.parser :refer [parse-string]]
@@ -22,7 +23,7 @@
   [s]
   (let [ctx (atom {})
         form (parse-string s)]
-    (check-form ctx config (rules-for-form form) form)))
+    (check-form ctx config (rules-for-form form) nil form)))
 
 (defn check-alt
   [s]
@@ -36,5 +37,5 @@
   [s]
   (let [ctx (atom {})
         form (parse-string s)]
-    (check-and-recur ctx config @global-rules "filename" form)
+    (check-and-recur ctx config @global-rules "filename" nil form)
     (:diagnostics @ctx)))

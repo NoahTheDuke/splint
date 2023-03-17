@@ -64,7 +64,7 @@
                     :message ~message
                     :pattern (when ~(some? pat) (pattern ~pat))
                     :patterns (when ~(some? patterns)
-                                ~(mapv #(do (list `pattern %)) patterns))
+                                ~(mapv #(list `pattern %) patterns))
                     :on-match
                     ~(or on-match
                          `(fn [rule# form# binds#]

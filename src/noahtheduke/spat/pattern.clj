@@ -226,12 +226,12 @@
                               child#))]
                   (or (empty? complex-keys-preds#)
                       (when-let [cur-pred# (first complex-keys-preds#)]
-                        (let [idx#
-                              (loop [idx# 0]
-                                (when-let [cur-child# (nth complex-children# idx# nil)]
-                                  (if (cur-pred# cur-child#)
-                                    idx#
-                                    (recur (inc idx#)))))]
-                          (when idx#
-                            (recur (next complex-keys-preds#)
-                                   (vec-remove idx# complex-children#))))))))))))
+                        (when-let [idx#
+                                   (loop [idx# 0]
+                                     (when-let [cur-child# (nth complex-children# idx# nil)]
+                                       (if (cur-pred# cur-child#)
+                                         idx#
+                                         (recur (inc idx#)))))]
+
+                          (recur (next complex-keys-preds#)
+                                 (vec-remove idx# complex-children#)))))))))))

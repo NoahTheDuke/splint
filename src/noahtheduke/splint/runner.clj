@@ -19,11 +19,15 @@
 (set! *warn-on-reflection* true)
 
 (defn check-pattern
-  [rule pattern form]
+  "Call `:pattern` on the form and if it hits, call `:on-match` on it.
+
+  Only attach `parent-form` to the metadata after `:pattern` is true, cuz
+  `parent-form` can be potentially massive."
+  [rule pattern parent-form form]
   (try
     (when-let [binds (pattern form)]
       (let [on-match (:on-match rule)]
-        (on-match rule form binds)))
+        (on-match rule (vary-meta form assoc :parent-form parent-form) binds)))
     (catch Throwable e
       (throw (ex-info (ex-message e)
                       {:form (if (seqable? form) (take 2 form) form)
@@ -32,66 +36,70 @@
                       e)))))
 
 (defn check-rule
-  [rule form]
+  [rule parent-form form]
   (if-let [pattern (:pattern rule)]
-    (check-pattern rule pattern form)
+    (check-pattern rule pattern parent-form form)
     (let [patterns (:patterns rule)]
       (reduce
         (fn [_ pattern]
-          (when-let [result (check-pattern rule pattern form)]
+          (when-let [result (check-pattern rule pattern parent-form form)]
             (reduced result)))
         nil
         patterns))))
 
 (defn check-all-rules-of-type
-  [config rules form]
+  [config rules parent-form form]
   (keep
     (fn [[rule-name rule]]
       (when (-> config rule-name :enabled)
-        (check-rule rule form)))
+        (check-rule rule parent-form form)))
     rules))
 
 (defn check-form
   "Checks a given form against the appropriate rules then calls `on-match` to build the
   diagnostic and store it in `ctx`."
-  [ctx config rules form]
+  [ctx config rules parent-form form]
   (when (seq rules)
-    (when-let [diagnostics (check-all-rules-of-type config rules form)]
+    (when-let [diagnostics (check-all-rules-of-type config rules parent-form form)]
       (swap! ctx update :diagnostics into diagnostics)
       diagnostics)))
 
-(defn filter-rules [rules ignored-rules]
-  (let [{genres true specific-rules false} (group-by simple-symbol? ignored-rules)
-        specific-rules (set specific-rules)
-        genres (set (map str genres))]
-    (->> rules
-         (reduce-kv
-           (fn [rules rule-name rule]
-             (if (or (contains? genres (:genre rule))
-                     (contains? specific-rules (:full-name rule)))
-               rules
-               (assoc! rules rule-name rule)))
-           (transient {}))
-         (persistent!))))
-
-(defn select-rules [rules form]
-  (let [rules-for-type (rules (simple-type form))
-        ignored-rules (:splint/disable (meta form))]
-    (cond
-      (nil? ignored-rules) rules-for-type
-      (true? ignored-rules) nil
-      (vector? ignored-rules) (filter-rules rules-for-type ignored-rules)
-      :else rules-for-type)))
+(defn update-config [config form]
+  (if-let [disabled-rules (:splint/disable (meta form))]
+    (if (true? disabled-rules)
+      ;; disable everything
+      (update-vals config (fn [v]
+                            (prn v)
+                            (if (and (map? v)
+                                     (contains? v :enabled))
+                              (assoc v :enabled false)
+                              v)))
+      ;; parse list of disabled genres and specific rules
+      (let [{genres true specific-rules false} (group-by simple-symbol? disabled-rules)
+            genres (set (map str genres))
+            specific-rules (set specific-rules)]
+        (->> config
+             (reduce-kv
+               (fn [config setting-key setting-v]
+                 (if (or (contains? genres (namespace setting-key))
+                         (contains? specific-rules setting-key))
+                   (assoc! config setting-key (assoc setting-v :enabled false))
+                   config))
+               (transient config))
+             (persistent!))))
+    config))
 
 (defn check-and-recur
   "Check a given form and then map recur over each of the form's children."
-  [ctx config rules filename form]
+  [ctx config rules filename parent-form form]
   (let [form (if (meta form)
                (vary-meta form assoc :filename filename)
-               form)]
-    (check-form ctx config (select-rules rules form) form)
-    (when (seqable? form)
-      (run! #(check-and-recur ctx config rules filename %) form)
+               form)
+        config (update-config config form)]
+    (check-form ctx config (rules (simple-type form)) parent-form form)
+    (when (and (seqable? form)
+               (not= 'quote (first form)))
+      (run! #(check-and-recur ctx config rules filename form %) form)
       nil)))
 
 (defn parse-and-check-file
@@ -105,8 +113,8 @@
                                   e))))]
     (try
       ;; Check any full-file rules
-      (check-form ctx config (rules :file) parsed-file)
-      (check-and-recur ctx config rules (str file) parsed-file)
+      (check-form ctx config (rules :file) nil parsed-file)
+      (check-and-recur ctx config rules (str file) nil parsed-file)
       (catch clojure.lang.ExceptionInfo e
         (throw (ex-info (ex-message e) (assoc (ex-data e) :file file) (.getCause e)))))))
 

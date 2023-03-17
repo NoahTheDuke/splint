@@ -33,7 +33,7 @@
                   \' (fn [expr] (list 'splint/var expr))
                   ; #=(+ 1 2)
                   \= (fn [expr] (list 'splint/read-eval expr))
-                  \_ :splint/ignore
+                  \_ (fn [_expr] :splint/ignore)
                   ; #()
                   \( (fn [expr]
                        (let [sexp (read-fn/read-fn expr)]

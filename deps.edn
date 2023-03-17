@@ -1,15 +1,14 @@
 {:paths ["src" "resources"]
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
         org.clojure/tools.cli {:mvn/version "1.0.214"}
-        borkdude/edamame {:mvn/version "1.1.17"}}
+        io.github.noahtheduke/edamame {:git/sha "014a17ac15de2b159f7e3cb53314b3d6d559c304"}}
  :aliases
  {:run {:main-opts ["-m" "noahtheduke.splint"]}
   :dev {:extra-paths ["dev"]
         :extra-deps {org.clojure/tools.namespace {:mvn/version "1.3.0"}
                      criterium/criterium {:mvn/version "0.4.6"}
                      com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.0.3"}
-                     com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.3"}}
-        :replace-deps {borkdude/edamame {:local/root "../edamame"}}}
+                     com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.3"}}}
   :test {:extra-paths ["test"]
          :extra-deps {com.github.seancorfield/expectations {:mvn/version "2.0.160"}}}
   :kaocha {:extra-paths ["classes"]

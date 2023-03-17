@@ -38,12 +38,11 @@
 
 (defn check-all-rules-of-type
   [config rules form]
-  (when (seq rules)
-    (keep
-      (fn [[rule-name rule]]
-        (when (-> config rule-name :enabled)
-          (check-rule rule form)))
-      rules)))
+  (keep
+    (fn [[rule-name rule]]
+      (when (-> config rule-name :enabled)
+        (check-rule rule form)))
+    rules))
 
 (defn check-form
   "Checks a given form against the appropriate rules then calls `on-match` to build the
@@ -54,13 +53,36 @@
       (swap! ctx update :diagnostics into diagnostics)
       diagnostics)))
 
+(defn filter-rules [rules ignored-rules]
+  (let [{genres true specific-rules false} (group-by simple-symbol? ignored-rules)
+        specific-rules (set specific-rules)
+        genres (set (map str genres))]
+    (->> rules
+         (reduce-kv
+           (fn [rules rule-name rule]
+             (if (or (contains? genres (:genre rule))
+                     (contains? specific-rules (:full-name rule)))
+               rules
+               (assoc! rules rule-name rule)))
+           (transient {}))
+         (persistent!))))
+
+(defn select-rules [rules form]
+  (let [rules-for-type (rules (simple-type form))
+        ignored-rules (:splint/ignore (meta form))]
+    (cond
+      (nil? ignored-rules) rules-for-type
+      (true? ignored-rules) nil
+      (vector? ignored-rules) (filter-rules rules-for-type ignored-rules)
+      :else rules-for-type)))
+
 (defn check-and-recur
   "Check a given form and then map recur over each of the form's children."
   [ctx config rules filename form]
   (let [form (if (meta form)
                (vary-meta form assoc :filename filename)
                form)]
-    (check-form ctx config (rules (simple-type form)) form)
+    (check-form ctx config (select-rules rules form) form)
     (when (seqable? form)
       (run! #(check-and-recur ctx config rules filename %) form)
       nil)))

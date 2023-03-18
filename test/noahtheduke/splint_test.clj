@@ -16,10 +16,11 @@
 
 (def config (read-default-config))
 
-(def rules (prepare-rules config (or @global-rules {})))
+(defn make-rules []
+  (prepare-rules config (or @global-rules {})))
 
 (defn rules-for-form [form]
-  (rules (simple-type form)))
+  ((make-rules) (simple-type form)))
 
 (defn check-str
   [s]
@@ -39,5 +40,5 @@
   [s]
   (let [ctx (atom {})
         form (parse-string s)]
-    (check-and-recur ctx rules "filename" nil form)
+    (check-and-recur ctx (make-rules) "filename" nil form)
     (:diagnostics @ctx)))

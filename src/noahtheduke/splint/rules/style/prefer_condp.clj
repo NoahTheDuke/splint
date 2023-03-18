@@ -9,34 +9,36 @@
 
 (defn find-issue [?pairs]
   (when (and (even? (count ?pairs))
-             (< 2 (count ?pairs))
              (list? (first ?pairs))
              (= 3 (count (first ?pairs))))
-    (let [[test-expr] ?pairs
-          [pred-f _ expr] test-expr
-          all-pairs (partition 2 ?pairs)
+    (let [all-pairs (partition 2 ?pairs)
           last-pred-f (first (last all-pairs))
           default? (or (keyword? last-pred-f)
-                       (true? last-pred-f))
-          ;; trim final pred if it's a keyword or `true`
-          all-pairs (if default?
-                      (butlast all-pairs)
-                      all-pairs)
-          test-exprs
-          (reduce
-            (fn [acc [cur-pred cur-branch]]
-              (if (and (list? cur-pred)
-                       (= pred-f (first cur-pred))
-                       (= expr (last cur-pred)))
-                (conj acc (second cur-pred) cur-branch)
-                (reduced nil)))
-            []
-            all-pairs)]
-      (when test-exprs ; short circuit
-        (let [test-exprs (if default?
-                           (conj test-exprs (last ?pairs))
-                           test-exprs)]
-          (list* 'condp pred-f expr test-exprs))))))
+                       (true? last-pred-f))]
+      (when (if default?
+              (< 2 (count all-pairs))
+              (< 1 (count all-pairs)))
+        (let [[test-expr] ?pairs
+              [pred-f _ expr] test-expr
+              ;; trim final pred if it's a keyword or `true`
+              all-pairs (if default?
+                          (butlast all-pairs)
+                          all-pairs)
+              test-exprs
+              (reduce
+                (fn [acc [cur-pred cur-branch]]
+                  (if (and (list? cur-pred)
+                           (= pred-f (first cur-pred))
+                           (= expr (last cur-pred)))
+                    (conj acc (second cur-pred) cur-branch)
+                    (reduced nil)))
+                []
+                all-pairs)]
+          (when test-exprs ; short circuit
+            (let [test-exprs (if default?
+                               (conj test-exprs (last ?pairs))
+                               test-exprs)]
+              (list* 'condp pred-f expr test-exprs))))))))
 
 (defrule style/prefer-condp
   "`cond` checking against the same value in every branch is a code smell.

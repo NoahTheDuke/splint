@@ -13,4 +13,6 @@
   (expect '(case elem (nil 1 :b c) elem nil)
     (check-alt "(#{nil 1 :b 'c} elem)"))
   (expect nil?
-    (check-alt "(#{'a 'b 'c (1 2 3)} elem)")))
+    (check-alt "(#{'a 'b c} elem)"))
+  (expect nil?
+    (check-alt "(#{'a 'b 'c '(1 2 3)} elem)")))

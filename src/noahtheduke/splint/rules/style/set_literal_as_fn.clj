@@ -4,9 +4,24 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.set-literal-as-fn
   (:require
-    [noahtheduke.spat.pattern :refer [simple-type drop-quote simple?]]
+    [noahtheduke.spat.pattern :refer [simple-type drop-quote]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
+
+(defn literal-or-quote?
+  "Almost everything in spat.pattern/simple? but quoted symbols
+  because sets treat symbols as vars.
+  #{'a 'b} is good, #{'a b} is bad because b means 'some val'."
+  [form]
+  (or (case (simple-type form)
+        (:nil :boolean :char :number :keyword :string) true
+        false)
+      (and (seqable? form)
+           (= 2 (count form))
+           (= 'quote (first form))
+           (case (simple-type (second form))
+             (:nil :boolean :char :number :keyword :string :symbol) true
+             false))))
 
 (defrule style/set-literal-as-fn
   "Sets can be used as functions and they're converted to static items when
@@ -24,7 +39,11 @@
   {:pattern '(%set?%-?sfn ?elem)
    :message "Prefer `case` to set literal with constant members."
    :on-match (fn [rule form {:syms [?sfn ?elem]}]
-               (let [?sfn (map drop-quote ?sfn)]
-                 (when (every? #(simple? (simple-type %)) ?sfn)
-                   (let [new-form (list 'case ?elem (apply list (sort-by str ?sfn)) ?elem nil)]
-                     (->diagnostic rule form {:replace-form new-form})))))})
+               (when (and (not (list? ?elem))
+                          (every? literal-or-quote? ?sfn))
+                 (let [case-lst (->> ?sfn
+                                     (map drop-quote)
+                                     (sort-by str)
+                                     (apply list))
+                       new-form (list 'case ?elem case-lst ?elem nil)]
+                   (->diagnostic rule form {:replace-form new-form}))))})

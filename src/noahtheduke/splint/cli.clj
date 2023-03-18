@@ -12,9 +12,9 @@
    ["-o" "--output FMT" "Output format: simple, full, clj-kondo"
     :default "full"
     :validate [#{"simple" "full" "clj-kondo"} "Not a valid output format (simple, full, clj-kondo)"]]
+   ["-q" "--quiet" "Print no suggestions, only return exit code."]
    [nil "--[no-]parallel" "Run Splint in parallel."
-    :default true]
-   ["-q" "--quiet" "Print no suggestions, only return exit code."]])
+    :default true]])
 
 (defn help-message
   [summary]

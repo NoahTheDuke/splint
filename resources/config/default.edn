@@ -357,6 +357,11 @@
   :added "0.1"
   :style-ref "#else-keyword-in-cond"}
 
+ style/def-fn
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
  style/new-object
  {:description ""
   :enabled true

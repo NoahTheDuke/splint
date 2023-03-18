@@ -1,6 +1,11 @@
 # Change Log
 This changelog is loose. Versions are not semantic, merely perfunctory. Splint is not meant to be infrastructure, so don't rely on it like infrastructure; it's merely a helpful development tool.
 
+## [Unreleased]
+
+## New Rules
+- `style/def-fn`: Prefer `(let [z f] (defn x [y] (z y)))` over `(def x (let [z f] (fn [y] (z y))))`
+
 ## [v0.1.119]
 Actually wrote out something of a changelog.
 

@@ -1,6 +1,6 @@
 # Configuration
 
-`splint` has lots of configuration, just lots and lots. They can be defined in a `.splint.edn` file at the root of the project.
+Splint has lots of configuration. They can be defined in a `.splint.edn` file at the root of the project.
 
 The format of the file is that any of the cli options can be added here, and all rules must be fully-qualified with their settings in a map as the key:
 
@@ -8,6 +8,10 @@ The format of the file is that any of the cli options can be added here, and all
 {quiet true
  lint/eq-nil {:enabled false}}
 ```
+
+Some rules have specific options or styles that can be set. These are detailed in the full rule pages.
+
+## Inline
 
 Inline, a single rule can be disabled in the following form with `#_:splint/disable`:
 

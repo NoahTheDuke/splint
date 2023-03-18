@@ -5,7 +5,8 @@
 (ns noahtheduke.splint.config
   (:require
     [clojure.edn :as edn]
-    [clojure.java.io :as io]))
+    [clojure.java.io :as io]
+    [clojure.set :as set]))
 
 (set! *warn-on-reflection* true)
 
@@ -33,6 +34,11 @@
             (merge-with reconcile-keys result latter))]
     (reduce reconcile-maps {} maps)))
 
-(defn load-config []
-  (let [local (find-local-config)]
-    (deep-merge @default-config local)))
+(defn load-config [options]
+  (let [local (find-local-config)
+        merged (deep-merge @default-config local)]
+    (-> merged
+        (set/rename-keys {'output :output
+                          'parallel :parallel
+                          'quiet :quiet})
+        (merge options))))

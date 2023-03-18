@@ -118,13 +118,25 @@
       (catch clojure.lang.ExceptionInfo e
         (throw (ex-info (ex-message e) (assoc (ex-data e) :file file) (.getCause e)))))))
 
+(defn check-paths-parallel [ctx rules paths]
+  (->> (mapcat #(file-seq (io/file %)) paths)
+       (filter #(and (.isFile ^File %)
+                     (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
+       (pmap #(parse-and-check-file ctx rules %))
+       (dorun)))
+
+(defn check-paths-single [ctx rules paths]
+  (let [xf (comp (mapcat #(file-seq (io/file %)))
+                 (filter #(and (.isFile ^File %)
+                               (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
+                 (map #(parse-and-check-file ctx rules %)))]
+    (sequence xf paths)))
+
 (defn check-paths [ctx rules paths]
   (try
-    (->> (mapcat #(file-seq (io/file %)) paths)
-         (filter #(and (.isFile ^File %)
-                       (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
-         (pmap #(parse-and-check-file ctx rules %))
-         (dorun))
+    (if (-> @ctx :options :parallel)
+      (check-paths-parallel ctx rules paths)
+      (check-paths-single ctx rules paths))
     (catch java.util.concurrent.ExecutionException e
       (let [cause (.getCause e)
             message (ex-message cause)
@@ -155,11 +167,15 @@
     (if exit-message
       (do (when-not (:quiet options) (println exit-message))
           (System/exit (if ok 0 1)))
-      (let [ctx (atom {:diagnostics []})
-            config (merge (load-config) options)
+      (let [config (load-config options)
             rules (prepare-rules config (or @global-rules {}))
+            ctx (atom {:diagnostics []
+                       :options {:help (:help config)
+                                 :output (:output config)
+                                 :parallel (:parallel config)
+                                 :quiet (:quiet config)}})
             _ (check-paths ctx rules paths)
             end-time (System/currentTimeMillis)
             diagnostics (:diagnostics @ctx)]
-        (print-results config diagnostics (int (- end-time start-time)))
+        (print-results (:options @ctx) diagnostics (int (- end-time start-time)))
         (System/exit (count diagnostics))))))

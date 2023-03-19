@@ -21,6 +21,6 @@
   (expect {:splint/disable true}
     (select-keys (meta (parse-string "#_:splint/disable (foo bar)"))
                  [:splint/disable]))
-  (expect '{:splint/disable lint}
-    (select-keys (meta (parse-string "#_{:splint/disable lint} (foo bar)"))
+  (expect '{:splint/disable [lint]}
+    (select-keys (meta (parse-string "#_{:splint/disable [lint]} (foo bar)"))
                  [:splint/disable])))

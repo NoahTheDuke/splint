@@ -28,7 +28,8 @@
              (cond
                (identical? uneval :splint/disable)
                (with-meta next {:splint/disable true})
-               (seq (:splint/disable uneval))
+               (and (seqable? (:splint/disable uneval))
+                    (seq (:splint/disable uneval)))
                (with-meta next {:splint/disable (seq (:splint/disable uneval))})
                :else
                next))

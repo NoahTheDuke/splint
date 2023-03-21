@@ -70,6 +70,7 @@
     noahtheduke.splint.rules.lint.take-repeatedly
     noahtheduke.splint.rules.lint.thread-macro-one-arg
     noahtheduke.splint.rules.lint.tostring
+    noahtheduke.splint.rules.lint.try-splicing
     noahtheduke.splint.rules.lint.update-in-assoc
     noahtheduke.splint.rules.lint.useless-do
     noahtheduke.splint.rules.lint.when-do

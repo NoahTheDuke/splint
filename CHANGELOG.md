@@ -5,6 +5,7 @@ This changelog is loose. Versions are not semantic, merely perfunctory. Splint i
 
 ## New Rules
 - `style/def-fn`: Prefer `(let [z f] (defn x [y] (z y)))` over `(def x (let [z f] (fn [y] (z y))))`
+- `lint/try-splicing`: Prefer `` `(try (do ~@body) (finally ...))`` over `` `(try ~@body (finally ...))``.
 
 ## [v0.1.119]
 Actually wrote out something of a changelog.

@@ -3,6 +3,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### Fixed
+
+- Run linting over syntax-quoted forms again.
+
 ## [v1.0]
 
 ### Added

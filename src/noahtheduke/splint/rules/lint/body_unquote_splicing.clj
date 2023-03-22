@@ -40,6 +40,7 @@
   "
   {:patterns ['(%only-body%-?f (splint/unquote-splicing ?body))
               '(%init-arg%-?f ?init-arg (splint/unquote-splicing ?body))]
+   :message "Wrap ~@/unquote-splicing in `(let [res# (do ...)] res#)` to avoid unhygenic macro expansion."
    :on-match (fn [rule form {:syms [?f ?init-arg ?body]}]
                (let [new-form (if ?init-arg
                                 (init-arg-new-form ?f ?init-arg ?body)

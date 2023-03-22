@@ -96,9 +96,7 @@
         rules (update-rules rules form)]
     (check-form ctx (rules (simple-type form)) parent-form form)
     (when (and (seqable? form)
-               (case (first form)
-                 (quote splint/syntax-quote) false
-                 true))
+               (not= 'quote (first form)))
       (run! #(check-and-recur ctx rules filename form %) form)
       nil)))
 

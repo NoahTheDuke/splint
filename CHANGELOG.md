@@ -3,6 +3,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+## [v1.0.1]
+
 ### Fixed
 
 - Run linting over syntax-quoted forms again.

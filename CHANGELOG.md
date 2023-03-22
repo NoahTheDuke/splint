@@ -13,10 +13,21 @@ This changelog is loose. Versions are not semantic, merely perfunctory. Splint i
 - `lint/try-splicing`: Prefer `(try (do ~@body) (finally ...))` over `(try ~@body (finally ...))`.
 - `lint/body-unquote-splicing`: Prefer `(binding [max mymax] (let [res# (do ~@body)] res#))` over `(binding [max mymax] ~@body)`.
 
+### Changed
+
+- Added `--parallel` and `--no-parallel` for running splint in parallel or not. Defaults to `true`.
+- No longer run linting over quoted or syntax-quoted forms.
+
+### Fixed
+
+- `naming/record-name`: Added `:message`.
+- `style/prefer-condp`: Only runs if given more than 1 predicate branch.
+- `style/set-literal-as-fn`: Allow quoted symbols in sets.
+
 ## [v0.1.119]
 Actually wrote out something of a changelog.
 
-## Added
+### Added
 
 - The `:new-rule` task now creates a test stub in the correct test directory.
 
@@ -26,7 +37,7 @@ Actually wrote out something of a changelog.
 - `naming/conversion-functions`: Should use `x->y` instead of `x-to-y`.
 - `style/set-literal-as-fn`: Should use `(case elem (a b) true false)` instead of `(#{'a 'b} elem)`
 
-## Changed
+### Changed
 
 - `defrule` now requires the provided rule-name to be fully qualified, and doesn't perform any `*ns*` magic to derive the genre.
 - Add support for specifying `:init-type` in `defrule` to handle symbol matching.
@@ -36,11 +47,11 @@ Actually wrote out something of a changelog.
 - Renamed errors from `violation` to `diagnostic`.
 - Merge rules configs into rules maps at load-time.
 
-## Fixed
+### Fixed
 
 - `lint/duplicate-field-name` wasn't checking that `?fields` was a vector before calling `count` on it.
 
-## Thoughts
+### Thoughts
 I want another parser because I want access to comments. Without comments, I can't parse magic comments, meaning I can't enable or disable rules inline, only globally. That's annoying and not ideal. However, every solution I've dreamed up has some deep issue.
 
 - [Edamame](https://github.com/borkdude/edamame) is our current parser and it's extremely fast (40ms to parse `clojure/core.clj`) but it drops comments. I've forked it to try to add them, but that would mean handling them in every other part of the parser, such as syntax-quote and maps and sets, making dealing with those objects really hard. :sob:

@@ -4,11 +4,12 @@
 
 (ns build
   (:require
+    [clojure.string :as str]
     [clojure.tools.build.api :as b]
     [deps-deploy.deps-deploy :as dd]))
 
 (def lib 'io.github.noahtheduke/splint)
-(def version (format "0.1.%s" (b/git-count-revs nil)))
+(def version (str/trim (slurp "./resources/SPLINT_VERSION")))
 (def class-dir "classes")
 
 (defn compile- [opts]
@@ -22,7 +23,7 @@
 (defn run-tests "Run all the tests." [opts]
   (compile- opts)
   (println "Running tests")
-  (let [basis (b/create-basis {:aliases [:test :kaocha]})
+  (let [basis (b/create-basis {:aliases [:dev :test :kaocha]})
         cmd (b/java-command
               {:basis      basis
                :main      'clojure.main

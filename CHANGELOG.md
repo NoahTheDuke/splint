@@ -17,6 +17,8 @@ This changelog is loose. Versions are not semantic, merely perfunctory. Splint i
 
 - Added `--parallel` and `--no-parallel` for running splint in parallel or not. Defaults to `true`.
 - No longer run linting over quoted or syntax-quoted forms.
+- Rely on [edamame][edamame]'s newly built-in `:uneval` config option for `:splint/disable`.
+- Move version from `build.clj` to `resources/SPLINT_VERSION`.
 
 ### Fixed
 

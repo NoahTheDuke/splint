@@ -5,7 +5,8 @@ This changelog is loose. Versions are not semantic, merely perfunctory. Splint i
 
 ## New Rules
 - `style/def-fn`: Prefer `(let [z f] (defn x [y] (z y)))` over `(def x (let [z f] (fn [y] (z y))))`
-- `lint/try-splicing`: Prefer `` `(try (do ~@body) (finally ...))`` over `` `(try ~@body (finally ...))``.
+- `lint/try-splicing`: Prefer `(try (do ~@body) (finally ...))` over `(try ~@body (finally ...))`.
+- `lint/body-unquote-splicing`: Prefer `(binding [max mymax] (let [res# (do ~@body)] res#))` over `(binding [max mymax] ~@body)`.
 
 ## [v0.1.119]
 Actually wrote out something of a changelog.

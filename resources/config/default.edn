@@ -32,6 +32,12 @@
   :enabled true
   :added "0.1"}
 
+ lint/body-unquote-splicing
+ {:description "Using unquote-splicing on a body in a macro can lead to subtly broken code that's hard to debug."
+  :enabled true
+  :added "0.1"
+  :link "https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"}
+
  lint/conj-vector
  {:description ""
   :enabled true

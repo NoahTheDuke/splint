@@ -19,6 +19,7 @@
     noahtheduke.splint.rules.lint.apply-str-reverse
     noahtheduke.splint.rules.lint.assoc-assoc
     noahtheduke.splint.rules.lint.assoc-fn
+    noahtheduke.splint.rules.lint.body-unquote-splicing
     noahtheduke.splint.rules.lint.conj-vector
     noahtheduke.splint.rules.lint.divide-by-one
     noahtheduke.splint.rules.lint.dorun-map
@@ -84,6 +85,7 @@
     noahtheduke.splint.rules.naming.record-name
 
     noahtheduke.splint.rules.style.cond-else
+    noahtheduke.splint.rules.style.def-fn
     noahtheduke.splint.rules.style.new-object
     noahtheduke.splint.rules.style.prefer-boolean
     noahtheduke.splint.rules.style.prefer-clj-math

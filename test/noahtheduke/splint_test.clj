@@ -14,13 +14,15 @@
 
 (set! *warn-on-reflection* true)
 
-(def config (read-default-config))
-
 (defn make-rules []
-  (prepare-rules config (or @global-rules {})))
+  (prepare-rules (read-default-config)
+                 (or @global-rules {})))
+
+(def rules (atom {}))
+(reset! rules (make-rules))
 
 (defn rules-for-form [form]
-  ((make-rules) (simple-type form)))
+  (@rules (simple-type form)))
 
 (defn check-str
   [s]
@@ -40,5 +42,5 @@
   [s]
   (let [ctx (atom {})
         form (parse-string s)]
-    (check-and-recur ctx (make-rules) "filename" nil form)
+    (check-and-recur ctx @rules "filename" nil form)
     (:diagnostics @ctx)))

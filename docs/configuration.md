@@ -56,11 +56,11 @@ A single rule can be disabled in the following form with `#_:splint/disable`:
 
 Entire genres of rules and specific rules can be disabled in the same manner by using the map form:
 
-```text
+```clojure
 #_{:splint/disable [style lint/plus-one]} (do (+ 1 x))
 ````
 
-This will disable all `style` rules and the specific `lint/plus-one` rule in the following form. The inline rule doesn't apply to any further forms, so there's no need for a `#_:splint/enable`, like in other linters.
+This will disable all `style` rules and the specific `lint/plus-one` rule in the following form. The inline rule doesn't apply to any further forms, so there's no need for a `#_:splint/enable` like in other linters.
 
 ## Merging options
 

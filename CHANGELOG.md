@@ -1,11 +1,13 @@
 # Change Log
-This changelog is loose. Versions are not semantic, merely perfunctory. Splint is not meant to be infrastructure, so don't rely on it like infrastructure; it's merely a helpful development tool.
+This changelog is loose. Versions are not semantic, they are incremental. Splint is not meant to be infrastructure, so don't rely on it like infrastructure; it is a helpful development tool.
 
 ## [Unreleased]
 
+## [v1.0]
+
 ### Added
 
-- Used markdownlint to pretty up the markdown in the repo. Will do my best to keep up with it.
+- Use markdownlint to pretty up the markdown in the repo. Will do my best to keep up with it.
 
 ### New Rules
 
@@ -15,14 +17,14 @@ This changelog is loose. Versions are not semantic, merely perfunctory. Splint i
 
 ### Changed
 
-- Added `--parallel` and `--no-parallel` for running splint in parallel or not. Defaults to `true`.
+- Add `--parallel` and `--no-parallel` for running splint in parallel or not. Defaults to `true`.
 - No longer run linting over quoted or syntax-quoted forms.
 - Rely on [edamame][edamame]'s newly built-in `:uneval` config option for `:splint/disable`.
 - Move version from `build.clj` to `resources/SPLINT_VERSION`.
 
 ### Fixed
 
-- `naming/record-name`: Added `:message`.
+- `naming/record-name`: Add `:message`.
 - `style/prefer-condp`: Only runs if given more than 1 predicate branch.
 - `style/set-literal-as-fn`: Allow quoted symbols in sets.
 
@@ -32,6 +34,7 @@ Actually wrote out something of a changelog.
 ### Added
 
 - The `:new-rule` task now creates a test stub in the correct test directory.
+- `#_:splint/disable` is treated as metadata on the following form and disables all rules. `#_{:splint/disable []}` can take genres of rules (`[lint]`) and/or specific rules (`[lint/loop-do]`) and disables those rules. See below (Thoughts and Followup) for discussion and [Configuration](./docs/configuration.md) for more details.
 
 ### New Rules
 
@@ -56,7 +59,7 @@ Actually wrote out something of a changelog.
 ### Thoughts
 I want another parser because I want access to comments. Without comments, I can't parse magic comments, meaning I can't enable or disable rules inline, only globally. That's annoying and not ideal. However, every solution I've dreamed up has some deep issue.
 
-- [Edamame](https://github.com/borkdude/edamame) is our current parser and it's extremely fast (40ms to parse `clojure/core.clj`) but it drops comments. I've forked it to try to add them, but that would mean handling them in every other part of the parser, such as syntax-quote and maps and sets, making dealing with those objects really hard. :sob:
+- [Edamame][edamame] is our current parser and it's extremely fast (40ms to parse `clojure/core.clj`) but it drops comments. I've forked it to try to add them, but that would mean handling them in every other part of the parser, such as syntax-quote and maps and sets, making dealing with those objects really hard. :sob:
 
 - [Rewrite-clj](https://github.com/clj-commons/rewrite-clj) only exposes comments in the zip api, meaning I have to operate on the zipper objects with zipper functions (horrible and slow). It's nice to rely on Clojure built-ins instead of `(loop [zloc zloc] (z/next* ...))` nonsense.
 
@@ -65,7 +68,7 @@ I want another parser because I want access to comments. Without comments, I can
 - [parcera](https://github.com/carocad/parcera) looked promising, but the pre-processing in `parcera/ast` is slow and operating on the Java directly is deeply cumbersome. The included grammar also makes some odd choices and I don't know ANTLR4 well enough to know how to fix them (such as including the `:` in keyword strings). Additionally, if I were to switch, I would have to update/touch every existing rule.
 
 ### Followup
-After tinkering with Edamame for a bit, I've found a solution that requires no changes to edamame to support: `#_:splint/disable`. This style of directive applies metadata to the following form: `#_{:splint/disable [lint/plus-one]} (+ 1 x)`. Edamame normally discard `#_`/discarded forms, so on Borkdude's recommendation, I use `str/replace` to convert it at parse-time to metadata. This uses an existing convention and handles the issue of disabling multiple items or disabling for only a certain portion of the file.
+After tinkering with Edamame for a bit, I've found a solution that requires no changes to [edamame][edamame] to support: `#_:splint/disable`. This style of directive applies metadata to the following form: `#_{:splint/disable [lint/plus-one]} (+ 1 x)`. Edamame normally discard `#_`/discarded forms, so on Borkdude's recommendation, I use `str/replace` to convert it at parse-time to metadata. This uses an existing convention and handles the issue of disabling multiple items or disabling for only a certain portion of the file.
 
 ## [v0.1.85]
 Update readme with some better writing.
@@ -117,7 +120,11 @@ Renamed to Splint! Things are really coming together now.
 ## [v0.1] - 2023-02-16
 Initial release of `spat`, announcement on Clojurian Slack and bbin installation set up. Contains working pattern matching system, a bunch of rules, and a simple runner.
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/0.1.119...HEAD
-[v0.1.85]: https://github.com/noahtheduke/splint/compare/0.1.85...0.1.119
+[edamame]: https://github.com/borkdude/edamame
+
+[Unreleased]: https://github.com/noahtheduke/splint/compare/1.0...HEAD
+[v1.0]: https://github.com/noahtheduke/splint/compare/0.1.119...1.0
+[v0.1.119]: https://github.com/noahtheduke/splint/compare/0.1.85...0.1.119
+[v0.1.85]: https://github.com/noahtheduke/splint/compare/v0.1.69...v0.1.85
 [v0.1.69]: https://github.com/noahtheduke/splint/compare/v0.1...v0.1.69
 [v0.1]: https://github.com/NoahTheDuke/splint/tree/v0.1

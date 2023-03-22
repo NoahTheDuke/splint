@@ -115,6 +115,10 @@ a `do` to force it into 'expression position'.
 `(binding [max mymax] (let [res# (do ~@body)] res#))
 ```
 
+### Reference
+
+* [https://blog.ambrosebs.com/2022/09/08/break-your-macros.html]
+
 ## lint/conj-vector
 
 | Enabled | Added |
@@ -1147,6 +1151,10 @@ to force it into 'expression position'.
 # good
 `(try (do ~@body) (finally :true))
 ```
+
+### Reference
+
+* [https://blog.ambrosebs.com/2022/09/08/break-your-macros.html]
 
 ## lint/update-in-assoc
 

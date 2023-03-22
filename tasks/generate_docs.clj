@@ -38,8 +38,8 @@
           [docs examples] (str/split lines #"Examples:")]
       (str (str/trim docs)
            \newline \newline
-           "### Examples:"
-           \newline
+           "### Examples"
+           \newline \newline
            (when examples
              (str "```clojure"
                   \newline
@@ -51,9 +51,8 @@
   (let [config (get-config rule)]
     (when-let [style-ref (:style-ref config)]
       (str "### Reference"
-           \newline
-           "* https://guide.clojure.style/"
-           style-ref))))
+           \newline \newline
+           "* [https://guide.clojure.style/" style-ref "]"))))
 
 (defn build-rule [rule]
   (->> [(str "## " (:full-name rule))

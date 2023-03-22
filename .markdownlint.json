@@ -1,0 +1,6 @@
+{
+  "default": true,
+  "blanks-around-headers": { "lines_below": 0 },
+  "line_length": false,
+  "no-duplicate-header": { "siblings_only": true }
+}

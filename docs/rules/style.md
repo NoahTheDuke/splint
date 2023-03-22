@@ -8,7 +8,8 @@
 
 It's nice when the default branch is consistent.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (cond
@@ -24,7 +25,38 @@ It's nice when the default branch is consistent.
 ```
 
 ### Reference
-* https://guide.clojure.style/#else-keyword-in-cond
+
+* [https://guide.clojure.style/#else-keyword-in-cond]
+
+## style/def-fn
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`(defn [])` is preferable over `(def (fn []))`. Extrapolate to closures.
+
+### Examples
+
+```clojure
+# bad
+(def check-inclusion
+  (let [allowed #{:a :b :c}]
+    (fn [i] (contains? allowed i))))
+
+# good
+(let [allowed #{:a :b :c}]
+  (defn check-inclusion [i]
+    (contains? allowed i)))
+
+# bad
+(def some-func
+  (fn [i] (+ i 100)))
+
+# good
+(defn some-func [i]
+  (+ i 100))
+```
 
 ## style/new-object
 
@@ -34,7 +66,8 @@ It's nice when the default branch is consistent.
 
 `new` is discouraged for dot usage.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (new java.util.ArrayList 100)
@@ -51,7 +84,8 @@ It's nice when the default branch is consistent.
 
 Use `boolean` if you must return `true` or `false` from an expression.
 
-### Examples:
+### Examples
+
 ```clojure
 # bad
 (if some-val true false)
@@ -63,7 +97,8 @@ Use `boolean` if you must return `true` or `false` from an expression.
 ```
 
 ### Reference
-* https://guide.clojure.style/#converting-something-to-boolean
+
+* [https://guide.clojure.style/#converting-something-to-boolean]
 
 ## style/prefer-clj-math
 
@@ -73,7 +108,8 @@ Use `boolean` if you must return `true` or `false` from an expression.
 
 Prefer clojure.math to interop.
 
-### Examples:
+### Examples
+
 ```clojure
 # bad
 Math/PI
@@ -107,7 +143,8 @@ other test-expr. It has a number of conditions it checks as it runs:
 Provided all of that is true, then the middle arguments of the test-exprs are
 gathered and rendered into a `condp`.
 
-### Examples:
+### Examples
+
 ```clojure
 # bad
 (cond
@@ -139,7 +176,8 @@ gathered and rendered into a `condp`.
 ```
 
 ### Reference
-* https://guide.clojure.style/#condp
+
+* [https://guide.clojure.style/#condp]
 
 ## style/prefer-vary-meta
 
@@ -149,7 +187,8 @@ gathered and rendered into a `condp`.
 
 `vary-meta` works like swap!, so no need to access and overwrite in two steps.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (with-meta x (assoc (meta x) :filename filename))
@@ -166,7 +205,8 @@ gathered and rendered into a `condp`.
 
 Directly nested lets can be merged into a single let block.
 
-### Examples:
+### Examples
+
 ```clojure
 # bad
 (let [a 1]
@@ -188,7 +228,8 @@ Sets can be used as functions and they're converted to static items when
 they contain constants, making them fairly fast. However, they're not as fast
 as [[case]] and their meaning is less clear at first glance.
 
-### Examples:
+### Examples
+
 ```clojure
 # bad
 (#{'a 'b 'c} elem)
@@ -206,7 +247,8 @@ as [[case]] and their meaning is less clear at first glance.
 `assoc-in` loops over the args, calling `assoc` for each key. If given a single key,
 just call `assoc` directly instead for performance and readability improvements.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (assoc-in coll [:k] 10)

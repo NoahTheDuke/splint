@@ -25,6 +25,7 @@
   should be avoided.
 
   Current list of clojure.core functions this linter checks:
+
   * `->`, `->>`
   * `cond->`, `cond->>`
   * `some->`, `some->>`

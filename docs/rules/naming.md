@@ -8,7 +8,8 @@
 
 Use `->` instead of `to` in the names of conversion functions.
 
-### Examples:
+### Examples
+
 ```clojure
 # bad
 (defn f-to-c ...)
@@ -18,7 +19,8 @@ Use `->` instead of `to` in the names of conversion functions.
 ```
 
 ### Reference
-* https://guide.clojure.style/#naming-conversion-functions
+
+* [https://guide.clojure.style/#naming-conversion-functions]
 
 ## naming/predicate
 
@@ -33,7 +35,8 @@ names. Also doesn't actually check the classic Common Lisp convention as we
 have no way to know when a function name uses a word that naturally ends in
 a 'p' (such as `map`).
 
-### Examples:
+### Examples
+
 ```clojure
 # bad
 (defn palindrome-p ...)
@@ -44,7 +47,8 @@ a 'p' (such as `map`).
 ```
 
 ### Reference
-* https://guide.clojure.style/#naming-predicates
+
+* [https://guide.clojure.style/#naming-predicates]
 
 ## naming/record-name
 
@@ -54,7 +58,8 @@ a 'p' (such as `map`).
 
 Records should use PascalCase.
 
-### Examples:
+### Examples
+
 ```clojure
 # bad
 (defrecord foo [a b c])
@@ -64,4 +69,5 @@ Records should use PascalCase.
 ```
 
 ### Reference
-* https://guide.clojure.style/#naming-protocols-records-structs-and-types
+
+* [https://guide.clojure.style/#naming-protocols-records-structs-and-types]

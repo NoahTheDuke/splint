@@ -4,14 +4,14 @@ Pretty standard installation as a library.
 
 For Clojure CLI:
 
-```
+```clojure
 :aliases {:splint {:extra-deps {noahtheduke/splint {:mvn/version "some version"}}
                    :main-opts ["-m" "noahtheduke.splint"]}}
 ```
 
 And in Leiningen, add this to `project.clj`:
 
-```
+```clojure
 :profiles {:dev {:dependencies [noahtheduke/splint "some version"]}}
 :aliases {"splint" ["run" "-m" "noahtheduke.splint"]}
 ```
@@ -23,7 +23,7 @@ out.
 
 In the meantime, it runs fast on babashka and can be installed using `bbin`:
 
-```
+```text
 $ bbin install io.github.noahtheduke/splint
 {:coords
  #:git{:url "https://github.com/noahtheduke/splint",

@@ -8,7 +8,8 @@
 
 Check for round-about clojure.string/reverse.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (apply str x)
@@ -25,7 +26,8 @@ Check for round-about clojure.string/reverse.
 
 Check for round-about str/join.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (apply str (interpose "," x))
@@ -42,7 +44,8 @@ Check for round-about str/join.
 
 Check for round-about clojure.string/reverse.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (apply str (reverse x))
@@ -59,7 +62,8 @@ Check for round-about clojure.string/reverse.
 
 Layering `assoc` calls are hard to read. `assoc-in` is known and idiomatic.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (assoc coll :key1 (assoc (:key2 coll) :key2 new-val))
@@ -79,7 +83,8 @@ Layering `assoc` calls are hard to read. `assoc-in` is known and idiomatic.
 `assoc`-ing an update with the same key are hard to read. `update` is known and
 idiomatic.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (assoc coll :a (+ (:a coll) 5))
@@ -90,6 +95,26 @@ idiomatic.
 (update coll :a + 5)
 ```
 
+## lint/body-unquote-splicing
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+A macro that nests an `unquote-splicing` in a macro with a `& body` can lead
+to subtle hard to debug errors. Better to wrap the `unquote-splicing` in
+a `do` to force it into 'expression position'.
+
+### Examples
+
+```clojure
+# bad
+`(binding [max mymax] ~@body)
+
+# good
+`(binding [max mymax] (let [res# (do ~@body)] res#))
+```
+
 ## lint/conj-vector
 
 | Enabled | Added |
@@ -98,7 +123,8 @@ idiomatic.
 
 `vector` is succinct and meaningful.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (conj [] :a b {:c 1})
@@ -115,7 +141,8 @@ idiomatic.
 
 Checks for (/ x 1).
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (/ x 1)
@@ -132,7 +159,8 @@ x
 
 `run!` uses `reduce` which non-lazy.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (dorun (map println (range 10)))
@@ -150,7 +178,8 @@ x
 Using the `Obj/staticMethod` form maps the method call to Clojure's natural function
 position.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (. Obj staticMethod args)
@@ -167,7 +196,8 @@ position.
 
 Using the `.method` form maps the method call to Clojure's natural function position.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (. obj method args)
@@ -185,7 +215,8 @@ Using the `.method` form maps the method call to Clojure's natural function posi
 `deftype` and `defrecord` will throw errors if you define multiple fields
 with the same name, but it's good to catch these things early too.
 
-### Examples:
+### Examples
+
 ```clojure
 # bad
 (defrecord Foo [a b a])
@@ -195,7 +226,8 @@ with the same name, but it's good to catch these things early too.
 ```
 
 ### Reference
-* https://guide.clojure.style/#naming-conversion-functions
+
+* [https://guide.clojure.style/#naming-conversion-functions]
 
 ## lint/eq-false
 
@@ -205,7 +237,8 @@ with the same name, but it's good to catch these things early too.
 
 `false?` exists so use it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (= false x)
@@ -223,7 +256,8 @@ with the same name, but it's good to catch these things early too.
 
 `nil?` exists so use it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (= nil x)
@@ -241,7 +275,8 @@ with the same name, but it's good to catch these things early too.
 
 `true?` exists so use it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (= true x)
@@ -259,7 +294,8 @@ with the same name, but it's good to catch these things early too.
 
 `zero?` exists so use it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (= 0 num)
@@ -279,7 +315,8 @@ with the same name, but it's good to catch these things early too.
 
 Check for (filter (complement pred) coll)
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (filter (complement even?) coll)
@@ -296,7 +333,8 @@ Check for (filter (complement pred) coll)
 
 filterv is preferable for using transients.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (vec (filter pred coll))
@@ -313,7 +351,8 @@ filterv is preferable for using transients.
 
 ffirst is succinct and meaningful.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (first (first coll))
@@ -330,7 +369,8 @@ ffirst is succinct and meaningful.
 
 fnext is succinct and meaningful.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (first (next coll))
@@ -347,7 +387,8 @@ fnext is succinct and meaningful.
 
 Avoid wrapping functions in pass-through anonymous function defitions.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (fn [num] (even? num))
@@ -363,7 +404,8 @@ even?
 ```
 
 ### Reference
-* https://guide.clojure.style/#no-useless-anonymous-fns
+
+* [https://guide.clojure.style/#no-useless-anonymous-fns]
 
 ## lint/if-else-nil
 
@@ -373,7 +415,8 @@ even?
 
 Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (if (some-func) :a nil)
@@ -383,7 +426,8 @@ Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
 ```
 
 ### Reference
-* https://guide.clojure.style/#when-instead-of-single-branch-if
+
+* [https://guide.clojure.style/#when-instead-of-single-branch-if]
 
 ## lint/if-let-else-nil
 
@@ -393,7 +437,8 @@ Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
 
 Idiomatic `if-let` defines both branches. `when-let` returns `nil` in the else branch.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (if-let [a 1] a nil)
@@ -410,7 +455,8 @@ Idiomatic `if-let` defines both branches. `when-let` returns `nil` in the else b
 
 Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy branch.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (if (some-func) nil :a)
@@ -427,7 +473,8 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 
 `if-not` exists, so use it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (if (not x) y z)
@@ -437,7 +484,8 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 ```
 
 ### Reference
-* https://guide.clojure.style/#if-not
+
+* [https://guide.clojure.style/#if-not]
 
 ## lint/if-not-do
 
@@ -447,7 +495,8 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 
 `when-not` already defines an implicit `do`. Rely on it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (if-not x (do (println :a) (println :b) :c))
@@ -464,7 +513,8 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 
 Two `not`s cancel each other out.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (if-not (not x) y z)
@@ -481,7 +531,8 @@ Two `not`s cancel each other out.
 
 `or` exists so use it lol.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (if x x y)
@@ -498,7 +549,8 @@ Two `not`s cancel each other out.
 
 `vec` and `set` are succinct and meaningful.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (into [] coll)
@@ -521,7 +573,8 @@ Two `not`s cancel each other out.
 
 `let` has an implicit `do`, so use it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (let [a 1 b 2] (do (println a) (println b)))
@@ -539,7 +592,8 @@ Two `not`s cancel each other out.
 `if-let` exists so use it. Suggestions can be wrong as there's no code-walking to
 determine if `result` binding is used in falsy branch.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (let [result (some-func)] (if result (do-stuff result) (other-stuff)))
@@ -549,7 +603,8 @@ determine if `result` binding is used in falsy branch.
 ```
 
 ### Reference
-* https://guide.clojure.style/#if-let
+
+* [https://guide.clojure.style/#if-let]
 
 ## lint/let-when
 
@@ -559,7 +614,8 @@ determine if `result` binding is used in falsy branch.
 
 `when-let` exists so use it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (let [result (some-func)] (when result (do-stuff result)))
@@ -569,7 +625,8 @@ determine if `result` binding is used in falsy branch.
 ```
 
 ### Reference
-* https://guide.clojure.style/#when-let
+
+* [https://guide.clojure.style/#when-let]
 
 ## lint/loop-do
 
@@ -579,7 +636,8 @@ determine if `result` binding is used in falsy branch.
 
 `loop` has an implicit `do`. Use it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (loop [] (do (println 1) (println 2)))
@@ -596,7 +654,8 @@ determine if `result` binding is used in falsy branch.
 
 Empty loops with nested when can be `while`.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (loop [] (when (some-func) (println 1) (println 2) (recur)))
@@ -613,7 +672,8 @@ Empty loops with nested when can be `while`.
 
 Check for (apply concat (apply map x y))
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (apply concat (apply map x y))
@@ -630,7 +690,8 @@ Check for (apply concat (apply map x y))
 
 Check for (apply concat (map x y z))
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (apply concat (map x y))
@@ -649,7 +710,8 @@ Check for (apply concat (map x y z))
 
 Checks for simple -1 that should use `clojure.core/dec`.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (- x 1)
@@ -666,7 +728,8 @@ Checks for simple -1 that should use `clojure.core/dec`.
 
 Checks for x - 0.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (- x 0)
@@ -683,7 +746,8 @@ x
 
 `when` calls should have at least 1 expression after the condition.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (when true)
@@ -702,7 +766,8 @@ x
 
 Checks for (* x 1).
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (* x 1)
@@ -720,7 +785,8 @@ x
 
 Checks for (* x 0).
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (* x 0)
@@ -738,7 +804,8 @@ Checks for (* x 0).
 
 `neg?` exists so use it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (< num 0)
@@ -756,7 +823,8 @@ Checks for (* x 0).
 
 Checks for simple nested additions.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (+ x (+ y z))
@@ -775,7 +843,8 @@ Checks for simple nested additions.
 
 Checks for simple nested multiply.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (* x (* y z))
@@ -794,7 +863,8 @@ Checks for simple nested multiply.
 
 nfirst is succinct and meaningful.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (next (first coll))
@@ -811,7 +881,8 @@ nfirst is succinct and meaningful.
 
 nnext is succinct and meaningful.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (next (next coll))
@@ -829,7 +900,8 @@ nnext is succinct and meaningful.
 `seq` returns `nil` when given an empty collection. `empty?` is implemented as
 `(not (seq coll))` so it's best and fastest to use `seq` directly.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (not (empty? coll))
@@ -846,7 +918,8 @@ nnext is succinct and meaningful.
 
 `not=` exists, so use it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (not (= num1 num2))
@@ -856,7 +929,8 @@ nnext is succinct and meaningful.
 ```
 
 ### Reference
-* https://guide.clojure.style/#not-equal
+
+* [https://guide.clojure.style/#not-equal]
 
 ## lint/not-nil?
 
@@ -866,7 +940,8 @@ nnext is succinct and meaningful.
 
 `some?` exists so use it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (not (nil? x))
@@ -883,7 +958,8 @@ nnext is succinct and meaningful.
 
 not-any? is succinct and meaningful.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (not (some even? coll))
@@ -900,7 +976,8 @@ not-any? is succinct and meaningful.
 
 Checks for simple +1 that should use `clojure.core/inc`.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (+ x 1)
@@ -918,7 +995,8 @@ Checks for simple +1 that should use `clojure.core/inc`.
 
 Checks for x + 0.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (+ x 0)
@@ -936,7 +1014,8 @@ x
 
 `pos?` exists so use it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (< 0 num)
@@ -957,12 +1036,14 @@ if given only one. These calls are effectively no-ops, redundant, so they
 should be avoided.
 
 Current list of clojure.core functions this linter checks:
+
 * `->`, `->>`
 * `cond->`, `cond->>`
 * `some->`, `some->>`
 * `comp`, `partial`, `merge`
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (-> x)
@@ -987,7 +1068,8 @@ x
 
 `repeatedly` has an arity for limiting the number of repeats with `take`.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (take 5 (repeatedly (range 10))
@@ -1005,7 +1087,8 @@ x
 Threading macros require more effort to understand so only use them with multiple
 args to help with readability.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (-> x y)
@@ -1035,13 +1118,34 @@ args to help with readability.
 
 Convert `(.toString)` to `(str)`.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (.toString x)
 
 ; good
 (str x)
+```
+
+## lint/try-splicing
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+A macro that wraps a splicing unquote in a try-catch or try-finally can lead
+to subtle hard to debug errors. Better to wrap the splicing unquote in a `do`
+to force it into 'expression position'.
+
+### Examples
+
+```clojure
+# bad
+`(try ~@body (finally :true))
+
+# good
+`(try (do ~@body) (finally :true))
 ```
 
 ## lint/update-in-assoc
@@ -1053,7 +1157,8 @@ Convert `(.toString)` to `(str)`.
 `update-in`-ing an `assoc` with the same key are hard to read. `assoc-in` is known
 and idiomatic.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (update-in coll [:a :b] assoc 5)
@@ -1070,7 +1175,8 @@ and idiomatic.
 
 A single item in a `do` is a no-op.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (do coll)
@@ -1087,7 +1193,8 @@ coll
 
 `when` already defines an implicit `do`. Rely on it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (when x (do (println :a) (println :b) :c))
@@ -1104,7 +1211,8 @@ coll
 
 `when-not` exists so use it lol.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (when (not x) :a :b :c)
@@ -1121,7 +1229,8 @@ coll
 
 `when-not` already defines an implicit `do`. Rely on it.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (when-not x (do (println :a) (println :b) :c))
@@ -1139,7 +1248,8 @@ coll
 `seq` returns `nil` when given an empty collection. `empty?` is implemented as
 `(not (seq coll))` so it's best and fastest to use `seq` directly.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (when-not (empty? ?x) &&. ?y)
@@ -1156,7 +1266,8 @@ coll
 
 Two `not`s cancel each other out.
 
-### Examples:
+### Examples
+
 ```clojure
 ; bad
 (when-not (not x) y z)

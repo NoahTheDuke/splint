@@ -5,12 +5,7 @@
 (ns noahtheduke.spat.parser
   (:require
     [edamame.core :as e]
-    [edamame.impl.read-fn :as read-fn]
-    [noahtheduke.spat.edamame-ext]))
-
-;; Remove once babashka updates edamame >= v1.2.19
-(require '[edamame.impl.ns-parser])
-(intern 'edamame.core 'parse-ns-form edamame.impl.ns-parser/parse-ns-form)
+    [edamame.impl.read-fn :as read-fn]))
 
 (set! *warn-on-reflection* true)
 

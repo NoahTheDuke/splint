@@ -122,9 +122,9 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/1.0...HEAD
-[v1.0]: https://github.com/noahtheduke/splint/compare/0.1.119...1.0
-[v0.1.119]: https://github.com/noahtheduke/splint/compare/0.1.85...0.1.119
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.0...HEAD
+[v1.0]: https://github.com/noahtheduke/splint/compare/v0.1.119...v1.0
+[v0.1.119]: https://github.com/noahtheduke/splint/compare/0.1.85...v0.1.119
 [v0.1.85]: https://github.com/noahtheduke/splint/compare/v0.1.69...v0.1.85
 [v0.1.69]: https://github.com/noahtheduke/splint/compare/v0.1...v0.1.69
 [v0.1]: https://github.com/NoahTheDuke/splint/tree/v0.1

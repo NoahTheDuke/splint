@@ -5,13 +5,13 @@
 (ns noahtheduke.splint.rules
   (:require
     [clojure.walk :as walk]
-    [noahtheduke.spat.pattern :refer [pattern simple-type]]
+    [noahtheduke.spat.pattern :as p]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]))
 
 (set! *warn-on-reflection* true)
 
 (def global-rules
-  "All registered rules, grouped by :init-type and :genre/rule-name"
+  "All registered rules, grouped by :init-type and full-name"
   (atom {}))
 
 (defn postwalk-splicing-replace [binds replace-form]
@@ -32,16 +32,15 @@
   * EITHER `:pattern` or `:patterns`,
   * EITHER `:replace` or `:on-match`"
   [rule-name docs opts]
-  (let [{pat :pattern :keys [patterns replace on-match message
-                             init-type]} opts]
+  (let [{:keys [pattern patterns replace on-match message init-type]} opts]
     (assert (qualified-symbol? rule-name) "defrule name must be namespaced")
-    (assert (or pat patterns)
+    (assert (or pattern patterns)
             "defrule must define either :pattern or :patterns")
-    (assert (not (and pat patterns))
+    (assert (not (and pattern patterns))
             "defrule cannot define both :pattern and :patterns")
     (when patterns
       (assert (vector? patterns) ":patterns must be in a vector")
-      (assert (apply = (map simple-type patterns))
+      (assert (apply = (map p/simple-type patterns))
               "All :patterns should have the same `simple-type`"))
     (assert (or replace on-match)
             "defrule must define either :replace or :on-match")
@@ -51,20 +50,20 @@
           rule-name (name full-name)
           genre (namespace full-name)
           init-type (or init-type
-                        (if pat
-                          (simple-type pat)
-                          (simple-type (first patterns))))]
+                        (if pattern
+                          (p/simple-type pattern)
+                          (p/simple-type (first patterns))))]
       `(let [rule# {:name ~rule-name
                     :genre ~genre
                     :full-name '~full-name
                     :docstring ~docs
                     :init-type ~init-type
-                    :pattern-raw ~(or pat patterns)
+                    :pattern-raw ~(or pattern patterns)
                     :replace-raw ~replace
                     :message ~message
-                    :pattern (when ~(some? pat) (pattern ~pat))
+                    :pattern (when ~(some? pattern) (p/pattern ~pattern))
                     :patterns (when ~(some? patterns)
-                                ~(mapv #(list `pattern %) patterns))
+                                ~(mapv #(list `p/pattern %) patterns))
                     :on-match
                     ~(or on-match
                          `(fn [rule# form# binds#]

@@ -35,7 +35,7 @@
  lint/body-unquote-splicing
  {:description "Using unquote-splicing on a body in a macro can lead to subtly broken code that's hard to debug."
   :enabled true
-  :added "0.1"
+  :added "1.0"
   :link "https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"}
 
  lint/conj-vector
@@ -303,7 +303,7 @@
  lint/try-splicing
  {:description "Using unquote-splicing in a try in a macro can lead to subtly broken code that's hard to debug."
   :enabled true
-  :added "0.1"
+  :added "1.0"
   :link "https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"}
 
  lint/update-in-assoc
@@ -372,7 +372,7 @@
  style/def-fn
  {:description ""
   :enabled true
-  :added "0.1"}
+  :added "1.0"}
 
  style/new-object
  {:description ""

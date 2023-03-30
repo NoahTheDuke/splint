@@ -6,17 +6,17 @@
   "Namespace for all Diagnostics-related functionality.
 
   A Diagnostic is an instance of a match of a rule's pattern in a given
-  analyzed code.")
+  analyzed code. It has the following definition:
+
+  (defrecord Diagnostic [rule-name form message alt line column filename])")
 
 (defrecord Diagnostic [rule-name form message alt line column filename])
 
 (defn ->diagnostic
-  "Create and return a new diagnostic"
+  "Create and return a new diagnostic."
   ([rule form] (->diagnostic rule form nil))
-  ([rule form opts]
-   (let [message (:message opts)
-         replace-form (:replace-form opts)
-         form-meta (meta form)
+  ([rule form {:keys [replace-form message] :as _opts}]
+   (let [form-meta (meta form)
          message (or message (:message rule))]
      (->Diagnostic
        (:full-name rule)

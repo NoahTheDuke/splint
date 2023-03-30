@@ -9,14 +9,30 @@
 (set! *warn-on-reflection* true)
 
 (defn drop-quote
-  "(quote (a b c)) -> (a b c)"
+  "Convert (quote (a b c)) to (a b c)."
   [sexp]
   (if (and (seq? sexp)
            (= 'quote (first sexp)))
     (fnext sexp)
     sexp))
 
-(defn simple-type [sexp]
+(defn simple-type
+  "Because Clojure doesn't have this built-in, we must do it the slow way: take
+  an object and return a keyword representing that object:
+
+  nil -> :nil
+  true/false -> :boolean
+  \c -> :char
+  1 -> :number
+  :hello -> :keyword
+  \"hello\" -> :string
+  hello -> :symbol
+  {:a :b} -> :map
+  #{:a :b} -> :set
+  [:a :b] -> :vector
+  (1 2 3) -> :list
+  anything else -> (type sexp)"
+  [sexp]
   (cond
     ; literals
     (nil? sexp) :nil
@@ -37,7 +53,11 @@
   (simple-type {:a 1})
   (simple-type (Object.)))
 
-(defn read-dispatch [sexp _form _retval]
+(defn read-dispatch
+  "Same as [[simple-type]] except that :symbol and :list provide hints about
+  their contents: :symbol can be refined to :pred, :var, and :rest, and :list
+  can be refined to :quote."
+  [sexp _form _retval]
   (let [type (simple-type sexp)]
     (case type
       :symbol (let [s-name (name sexp)]
@@ -53,7 +73,13 @@
       ;; else
       type)))
 
-(defmulti read-form #'read-dispatch)
+(defmulti read-form
+  "Parse a provided pattern s-expression into a syntax-quoted form that checks
+  each element and sub-element of the form as a whole predicate. Makes
+  semi-smart decisions about using let-bindings to avoid re-accessing the same
+  value multiple times, adding type hints to rely on interop, and handles the
+  complexities of the pattern DLS."
+  #'read-dispatch)
 
 (defmacro pattern
   [sexp]

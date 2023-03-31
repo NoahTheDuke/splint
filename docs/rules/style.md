@@ -32,7 +32,7 @@ It's nice when the default branch is consistent.
 
 | Enabled | Added |
 | ------- | ----- |
-|    true |   0.1 |
+|    true |   1.0 |
 
 `(defn [])` is preferable over `(def (fn []))`. Extrapolate to closures.
 

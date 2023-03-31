@@ -3,6 +3,15 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+## [v1.1.1]
+
+### Changed
+
+- Update Rule Documentation.
+- Include new documentation in cljdoc.edn
+
+## [v1.1.0]
+
 ### Added
 
 - Write documentation for rules and patterns.

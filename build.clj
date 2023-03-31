@@ -46,9 +46,15 @@
          :uber-file (format "target/%s-%s-standalone.jar" (name lib) version)
          :main 'noahtheduke.splint))
 
+(defn jar [opts]
+  (let [opts (make-opts opts)]
+    (b/copy-dir {:src-dirs ["src" "resources"]
+                 :target-dir class-dir})
+    (b/compile-clj opts)
+    (b/jar opts)))
+
 (defn uber [opts]
   (let [opts (make-opts opts)]
-    (b/delete {:path "target"})
     (b/copy-dir {:src-dirs ["src" "resources"]
                  :target-dir class-dir})
     (b/compile-clj opts)
@@ -57,9 +63,7 @@
 (defn deploy [opts]
   (let [opts (make-opts opts)]
     (b/write-pom opts)
-    (b/copy-dir {:src-dirs ["src" "resources"]
-                 :target-dir class-dir})
-    (b/jar opts)
+    (jar opts)
     (dd/deploy {:installer :remote
                 :artifact (b/resolve-path (:jar-file opts))
                 :pom-file (b/pom-path opts)})))

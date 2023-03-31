@@ -20,6 +20,7 @@
   "Because Clojure doesn't have this built-in, we must do it the slow way: take
   an object and return a keyword representing that object:
 
+  ```clojure
   nil -> :nil
   true/false -> :boolean
   \\c -> :char
@@ -31,7 +32,9 @@
   #{:a :b} -> :set
   [:a :b] -> :vector
   (1 2 3) -> :list
-  anything else -> (type sexp)"
+  :else -> (type sexp)
+  ```
+  "
   [sexp]
   (cond
     ; literals

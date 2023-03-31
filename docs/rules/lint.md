@@ -99,7 +99,7 @@ idiomatic.
 
 | Enabled | Added |
 | ------- | ----- |
-|    true |   0.1 |
+|    true |   1.0 |
 
 A macro that nests an `unquote-splicing` in a macro with a `& body` can lead
 to subtle hard to debug errors. Better to wrap the `unquote-splicing` in
@@ -1136,7 +1136,7 @@ Convert `(.toString)` to `(str)`.
 
 | Enabled | Added |
 | ------- | ----- |
-|    true |   0.1 |
+|    true |   1.0 |
 
 A macro that wraps a splicing unquote in a try-catch or try-finally can lead
 to subtle hard to debug errors. Better to wrap the splicing unquote in a `do`

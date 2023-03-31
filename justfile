@@ -14,4 +14,5 @@ export CLOJARS_USERNAME := "noahtheduke"
 export CLOJARS_PASSWORD := `cat ../clojars.txt`
 
 deploy:
-    @clojure -T:build deploy
+    clojure -T:build uber
+    clojure -T:build deploy

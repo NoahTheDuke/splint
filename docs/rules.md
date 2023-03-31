@@ -54,7 +54,7 @@ For example, `style/style/set-literal-as-fn`:
 
 The rule name has two major requirements: either a `:pattern` form or a `:patterns` vector of forms, and either a `:replace` pattern or an `:on-match` function.
 
-Patterns are described in detail in [Patterns](patterns.md), but to give a brief overview, they are quoted literals or quoted collections that are compiled into functions that return `nil` if no match is found or a map (empty if no bindings are used or full of symbol-to-bound value pairs if bindings are used). Literals are matched with `=`, collection literals (lists, vectors, maps, and sets) have their type and size checked and then each expected internal is matched the same way. Any symbol that starts with a question-mark is treated as a binding.
+Patterns are described in detail in [Patterns](patterns.md), but to give a brief overview, they are quoted forms that are compiled into functions that return `nil` if no match is found or a map (empty if no bindings are used or full of symbol-to-bound value pairs if bindings are used). Literals are matched with `=`, collection literals (lists, vectors, maps, and sets) have their type and size checked and then each expected internal is matched the same way. Any symbol that starts with a question-mark is treated as a binding.
 
 For example, if you want to match on an `if` that has `nil` in the else branch, you would write `'(if ?pred ?truthy nil)`. This is converted into a function that checks (in this order): The form is a list. The list is 4 elements long. The first element is the symbol `'if`. The second element can be any value and is bound to the symbol `?pred`. The third element can be any value and is bound to the symbol `?truthy?`. The fourth element is `nil`.
 

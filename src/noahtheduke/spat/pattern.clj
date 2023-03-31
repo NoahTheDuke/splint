@@ -22,7 +22,7 @@
 
   nil -> :nil
   true/false -> :boolean
-  \c -> :char
+  \\c -> :char
   1 -> :number
   :hello -> :keyword
   \"hello\" -> :string
@@ -55,23 +55,31 @@
 
 (defn read-dispatch
   "Same as [[simple-type]] except that :symbol and :list provide hints about
-  their contents: :symbol can be refined to :pred, :var, and :rest, and :list
-  can be refined to :quote."
+  their contents: :symbol can be refined to :pred, :binding, and :rest, and :list
+  can be refined to :quote. A refinement can be skipped by adding the metadata
+  `:spat/lit`."
   [sexp _form _retval]
   (let [type (simple-type sexp)]
-    (case type
-      :symbol (let [s-name (name sexp)]
-                (cond
-                  (= '_ sexp) :any
-                  (= \% (first s-name)) :pred
-                  (= \? (first s-name)) :var
-                  (= "&&." (subs s-name 0 (min (count s-name) 3))) :rest
-                  :else :symbol))
-      :list (if (= 'quote (first sexp))
-              :quote
-              :list)
-      ;; else
-      type)))
+    (if (:spat/lit (meta sexp))
+      type
+      (case type
+        :symbol (let [s-name (name sexp)]
+                  (cond
+                    (= '_ sexp) :any
+                    (= \% (first s-name)) :pred
+                    (= \? (first s-name)) :binding
+                    (= "&&." (subs s-name 0 (min (count s-name) 3))) :rest
+                    :else :symbol))
+        :list (if (= 'quote (first sexp))
+                :quote
+                :list)
+        ;; else
+        type))))
+
+(comment
+  (read-dispatch (quote _) nil nil)
+  (read-dispatch (quote ^:spat/lit _) nil nil)
+  (read-dispatch (quote ^:spat/lit &&.) nil nil))
 
 (defmulti read-form
   "Parse a provided pattern s-expression into a syntax-quoted form that checks
@@ -108,6 +116,11 @@
 (defmethod read-form :number [sexp form _retval]
   `(or (identical? ~sexp ~form) (= ~sexp ~form)))
 
+(comment
+  (= 1 1N)
+  (identical? 1 1N)
+  (= 1 0x1))
+
 (defmethod read-form :keyword [sexp form _retval]
   `(identical? ~sexp ~form))
 
@@ -120,9 +133,9 @@
 (defmethod read-form :pred [sexp form retval]
   (let [[pred bind] (str/split (name sexp) #"%-")
         pred (subs pred 1)
-        pred (or (resolve (symbol "clojure.core" pred))
-                 (requiring-resolve (symbol "noahtheduke.splint.rules.helpers" pred))
-                 (requiring-resolve (symbol (or (namespace (symbol pred)) (str *ns*)) pred)))
+        pred (or (requiring-resolve (symbol (or (namespace (symbol pred)) (str *ns*)) pred))
+                 (requiring-resolve (symbol "clojure.core" pred))
+                 (requiring-resolve (symbol "noahtheduke.splint.rules.helpers" pred)))
         bind (when bind (symbol bind))]
     `(let [form# ~form
            result# (~pred form#)]
@@ -130,7 +143,7 @@
          (swap! ~retval assoc '~bind form#))
        result#)))
 
-(defmethod read-form :var [sexp form retval]
+(defmethod read-form :binding [sexp form retval]
   `(if-let [existing# (get @~retval '~sexp)]
      (= existing# ~form)
      (do (swap! ~retval assoc '~sexp ~form)
@@ -143,6 +156,14 @@
       (read-form item `(nth ~children-form ~idx) retval))
     sexp))
 
+(defmethod read-form :quote [sexp form retval]
+  (let [sexp (if (seq? sexp) sexp [sexp])
+        children-form (gensym "quote-form-")
+        preds (accrue-preds sexp children-form retval)]
+    `(let [~children-form ~form]
+       (and (= 2 (count ~children-form))
+            ~@preds))))
+
 (defn- accrue-preds-backward
   [sexp children-form retval]
   (keep-indexed
@@ -152,21 +173,14 @@
 
 (defn- build-rest-pred [rest-sexp start end children-form retval]
   (let [[_&& rest-sym] rest-sexp]
-    (assert rest-sym "&&. needs a follow-up sym")
+    (assert rest-sym "&&. needs a follow-up binding symbol")
+    (assert (= \? (first (name rest-sym))) "&&. binding sym must start with ?")
     `(let [form# (take (- (count ~children-form) ~(+ start end))
                        (drop ~start ~children-form))]
        (if-let [existing# (get @~retval '~rest-sym)]
          (= existing# form#)
          (do (swap! ~retval assoc '~rest-sym form#)
              true)))))
-
-(defmethod read-form :quote [sexp form retval]
-  (let [sexp (if (seq? sexp) sexp [sexp])
-        children-form (gensym "quote-form-")
-        preds (accrue-preds sexp children-form retval)]
-    `(let [~children-form ~form]
-       (and (= 2 (count ~children-form))
-            ~@preds))))
 
 (defn- read-form-seq [sexp form retval f]
   (let [children-form (gensym (str (name f) "-form-"))
@@ -196,15 +210,17 @@
 (defmethod read-form :vector [sexp form retval]
   (read-form-seq sexp form retval 'vector?))
 
-(defn simple? [t]
+(defn non-coll?
+  "Is a given simple-type a non-collection?"
+  [t]
   (case t
     (:nil :boolean :char :number :keyword :string :symbol) true
     false))
 
 (defmethod read-form :map [sexp form retval]
-  {:pre [(every? (comp simple? simple-type) (keys sexp))]}
+  {:pre [(every? (comp non-coll? simple-type) (keys sexp))]}
   (let [new-form (gensym "map-form-")
-        simple-keys (filterv #(simple? (simple-type %)) (keys sexp))
+        simple-keys (filterv #(non-coll? (simple-type %)) (keys sexp))
         simple-keys-preds (->> (select-keys sexp simple-keys)
                                (mapcat (fn [[k v]]
                                          [`(contains? ~new-form ~k)
@@ -223,7 +239,7 @@
 (defmethod read-form :set [sexp form retval]
   (let [new-form (gensym "set-new-form-")
         [simple-vals complex-vals] (reduce (fn [acc cur]
-                                             (if (simple? (simple-type cur))
+                                             (if (non-coll? (simple-type cur))
                                                (update acc 0 conj cur)
                                                (update acc 1 conj cur)))
                                            [[] []]

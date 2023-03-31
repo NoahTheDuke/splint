@@ -3,6 +3,18 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### Added
+
+- Write documentation for rules and patterns.
+- Write docstrings for a bunch of `noahtheduke.spat.pattern` functions.
+- Include outside links in config in rules docs.
+- Check `:spat/lit` metadata to treat special symbols in pattern DSL as their literal values.
+
+### Changed
+
+- Attempt to resolve predicates in calling namespace first, then in `clojure.core`, then in `noahtheduke.splint.rules.helpers`.
+- Rename read-dispatch type from `:var` to `:binding`.
+
 ## [v1.0.1]
 
 ### Fixed
@@ -128,7 +140,8 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.0...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.0.1...HEAD
+[v1.0.1]: https://github.com/noahtheduke/splint/compare/v1.0...v1.0.1
 [v1.0]: https://github.com/noahtheduke/splint/compare/v0.1.119...v1.0
 [v0.1.119]: https://github.com/noahtheduke/splint/compare/0.1.85...v0.1.119
 [v0.1.85]: https://github.com/noahtheduke/splint/compare/v0.1.69...v0.1.85

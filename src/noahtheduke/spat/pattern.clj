@@ -51,7 +51,8 @@
 
 (comment
   (simple-type {:a 1})
-  (simple-type (Object.)))
+  (simple-type (Object.))
+  (simple-type `(1 2 3)))
 
 (defn read-dispatch
   "Same as [[simple-type]] except that :symbol and :list provide hints about
@@ -82,14 +83,19 @@
   (read-dispatch (quote ^:spat/lit &&.) nil nil))
 
 (defmulti read-form
-  "Parse a provided pattern s-expression into a syntax-quoted form that checks
-  each element and sub-element of the form as a whole predicate. Makes
-  semi-smart decisions about using let-bindings to avoid re-accessing the same
-  value multiple times, adding type hints to rely on interop, and handles the
-  complexities of the pattern DLS."
+  "Implementation of the main logic of [[pattern]]. Requires form and retval
+  symbols to be provided to allow for recursion."
   #'read-dispatch)
 
 (defmacro pattern
+  "Parse a provided pattern s-expression into a function that checks each
+  element and sub-element of the form as a whole predicate. Makes semi-smart
+  decisions about using let-bindings to avoid re-accessing the same value
+  multiple times, adding type hints to rely on interop, and handles the
+  complexities of the pattern DLS.
+
+  Returns a map or `nil`. If the provided pattern uses bindings, the map will
+  have the bindings as keys."
   [sexp]
   (let [form (gensym "form-")
         retval (gensym "retval-")]

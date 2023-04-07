@@ -11,7 +11,6 @@ new-rule arg:
     @clojure -M:new-rule -n {{arg}}
 
 deploy:
-    export CLOJARS_USERNAME := "noahtheduke"
-    export CLOJARS_PASSWORD := `cat ../clojars.txt`
     clojure -T:build uber
-    clojure -T:build deploy
+    env CLOJARS_USERNAME="noahtheduke" CLOJARS_PASSWORD=`cat ../clojars.txt` \
+        clojure -T:build deploy

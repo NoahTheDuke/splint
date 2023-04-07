@@ -66,7 +66,7 @@
                                 ~(mapv #(list `p/pattern %) patterns))
                     :on-match
                     ~(or on-match
-                         `(fn [rule# form# binds#]
+                         `(fn [ctx# rule# form# binds#]
                             (let [new-form# (postwalk-splicing-replace binds# ~replace)]
                               (->diagnostic rule# form# {:replace-form new-form#}))))}]
          (swap! global-rules assoc '~full-name rule#)

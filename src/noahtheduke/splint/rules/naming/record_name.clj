@@ -26,7 +26,7 @@
   "
   {:pattern '(defrecord ?record-name &&. ?args)
    :message "Records should start with an uppercase letter."
-   :on-match (fn [rule form {:syms [?record-name ?args]}]
+   :on-match (fn [ctx rule form {:syms [?record-name ?args]}]
                (when (lower-case-name? ?record-name)
                  (let [new-record-name (symbol
                                          (str (subs (str/upper-case (str ?record-name)) 0 1)

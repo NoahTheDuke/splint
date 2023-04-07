@@ -89,6 +89,6 @@
   {:pattern '%math?%-?sym
    :init-type :symbol
    :message "Use the `clojure.math` function instead of interop."
-   :on-match (fn [rule form {:syms [?sym]}]
+   :on-match (fn [ctx rule form {:syms [?sym]}]
                (let [new-form (Math->clj-math ?sym)]
                  (->diagnostic rule form {:replace-form new-form})))})

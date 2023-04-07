@@ -32,7 +32,7 @@
   "
   {:patterns ['(def ?name &&. ?args (fn &&. ?fn-body))
               '(def ?name &&. ?args (let ?binds (fn &&. ?fn-body)))]
-   :on-match (fn [rule form {:syms [?name ?args ?binds ?fn-body]}]
+   :on-match (fn [ctx rule form {:syms [?name ?args ?binds ?fn-body]}]
                (let [new-form (if ?binds
                                 (list 'let ?binds (list* 'defn ?name (concat ?args ?fn-body)))
                                 (list* 'defn ?name (concat ?args ?fn-body)))

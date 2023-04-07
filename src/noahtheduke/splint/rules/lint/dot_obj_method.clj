@@ -28,7 +28,7 @@
   "
   {:pattern '(. ?obj %symbol?%-?method &&. ?args)
    :message "Intention is clearer with `.method` form."
-   :on-match (fn [rule form {:syms [?obj ?method ?args]}]
+   :on-match (fn [ctx rule form {:syms [?obj ?method ?args]}]
                (when (symbol-not-class? ?obj)
                  (let [replace-form `(~(symbol (str "." ?method)) ~?obj ~@?args)]
                    (->diagnostic rule form {:replace-form replace-form}))))})

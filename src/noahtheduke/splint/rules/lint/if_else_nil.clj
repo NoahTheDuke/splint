@@ -22,7 +22,7 @@
               '(if ?x (do &&. ?y))
               '(if ?x ?y)]
    :message "Use `when` which doesn't require specifying the else branch."
-   :on-match (fn [rule form {:syms [?x ?y]}]
+   :on-match (fn [ctx rule form {:syms [?x ?y]}]
                (let [new-form (if (sequential? ?y)
                                 (list* 'when ?x ?y)
                                 (list 'when ?x ?y))]

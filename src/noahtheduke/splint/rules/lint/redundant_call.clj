@@ -48,7 +48,7 @@
   x
   "
   {:pattern '(%right-fn?%-?the-fn ?x)
-   :on-match (fn [rule form {:syms [?the-fn ?x]}]
+   :on-match (fn [ctx rule form {:syms [?the-fn ?x]}]
                (when-not (check-parent form)
                  (let [message (format "Single-arg `%s` always returns the arg." ?the-fn)]
                    (->diagnostic rule form {:message message

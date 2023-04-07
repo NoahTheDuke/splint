@@ -20,7 +20,7 @@
   "
   {:pattern '(new ?class &&. ?args)
    :message "dot creation is preferred."
-   :on-match (fn [rule form {:syms [?class ?args]}]
+   :on-match (fn [ctx rule form {:syms [?class ?args]}]
                (let [class-dot (symbol (str ?class "."))
                      new-form `(~class-dot ~@?args)]
                  (->diagnostic rule form {:replace-form new-form})))})

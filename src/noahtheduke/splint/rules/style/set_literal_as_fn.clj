@@ -38,7 +38,7 @@
   "
   {:pattern '(%set?%-?sfn ?elem)
    :message "Prefer `case` to set literal with constant members."
-   :on-match (fn [rule form {:syms [?sfn ?elem]}]
+   :on-match (fn [ctx rule form {:syms [?sfn ?elem]}]
                (when (and (not (list? ?elem))
                           (every? literal-or-quote? ?sfn))
                  (let [case-lst (->> ?sfn

@@ -23,11 +23,11 @@
 
   Only attach `parent-form` to the metadata after `:pattern` is true, cuz
   `parent-form` can be potentially massive."
-  [rule pattern parent-form form]
+  [ctx rule pattern parent-form form]
   (try
     (when-let [binds (pattern form)]
       (let [on-match (:on-match rule)]
-        (on-match rule (vary-meta form assoc :parent-form parent-form) binds)))
+        (on-match ctx rule (vary-meta form assoc :parent-form parent-form) binds)))
     (catch Throwable e
       (throw (ex-info (ex-message e)
                       {:form (if (seqable? form) (take 2 form) form)
@@ -36,23 +36,23 @@
                       e)))))
 
 (defn check-rule
-  [rule parent-form form]
+  [ctx rule parent-form form]
   (if-let [pattern (:pattern rule)]
-    (check-pattern rule pattern parent-form form)
+    (check-pattern ctx rule pattern parent-form form)
     (let [patterns (:patterns rule)]
       (reduce
         (fn [_ pattern]
-          (when-let [result (check-pattern rule pattern parent-form form)]
+          (when-let [result (check-pattern ctx rule pattern parent-form form)]
             (reduced result)))
         nil
         patterns))))
 
 (defn check-all-rules-of-type
-  [rules parent-form form]
+  [ctx rules parent-form form]
   (keep
     (fn [[_rule-name rule]]
       (when (-> rule :config :enabled)
-        (check-rule rule parent-form form)))
+        (check-rule ctx rule parent-form form)))
     rules))
 
 (defn check-form
@@ -60,7 +60,7 @@
   diagnostic and store it in `ctx`."
   [ctx rules parent-form form]
   (when (seq rules)
-    (when-let [diagnostics (check-all-rules-of-type rules parent-form form)]
+    (when-let [diagnostics (check-all-rules-of-type ctx rules parent-form form)]
       (swap! ctx update :diagnostics into diagnostics)
       diagnostics)))
 

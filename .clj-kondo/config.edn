@@ -1,3 +1,4 @@
 {:hooks {:analyze-call {noahtheduke.splint.rules/defrule hooks.noahtheduke.splint.rules/defrule}}
+ :config-in-call {noahtheduke.splint.rules/defrule {:linters {:unused-binding {:level :off}}}}
  :linters {:clojure-lsp/unused-public-var {:level :off}}
  :output {:linter-name true}}

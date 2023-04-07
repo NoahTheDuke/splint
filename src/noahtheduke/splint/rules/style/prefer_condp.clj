@@ -89,7 +89,7 @@
     :big)
   "
   {:pattern '(cond &&. ?pairs)
-   :on-match (fn [rule form {:syms [?pairs]}]
+   :on-match (fn [ctx rule form {:syms [?pairs]}]
                (when-let [new-form (find-issue ?pairs)]
                  (let [message "Prefer condp when predicate and arguments are the same"]
                    (->diagnostic rule form {:replace-form new-form

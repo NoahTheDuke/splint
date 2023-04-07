@@ -21,7 +21,7 @@
   "
   {:pattern '(defn ?f-name &&. ?args)
    :message "Use `->` instead of `to` in the names of conversion functions."
-   :on-match (fn [rule form {:syms [?f-name ?args]}]
+   :on-match (fn [ctx rule form {:syms [?f-name ?args]}]
                (when (str/includes? (str ?f-name) "-to-")
                  (let [new-form (list* 'defn (symbol (str/replace (str ?f-name) "-to-" "->")) ?args)]
                    (->diagnostic rule form {:replace-form new-form}))))})

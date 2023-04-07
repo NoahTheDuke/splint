@@ -44,7 +44,7 @@
   (y z x)
   "
   {:pattern '(%thread-macro?%-?f ?arg ?form)
-   :on-match (fn [rule form {:syms [?f ?form ?arg]}]
+   :on-match (fn [ctx rule form {:syms [?f ?form ?arg]}]
                (when (symbol-or-keyword-or-list? ?form)
                  (let [replace-form (cond
                                       (not (list? ?form))

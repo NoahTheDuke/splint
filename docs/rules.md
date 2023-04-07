@@ -66,7 +66,7 @@ A simple replacement pattern is defined with `:replace`. This can be a quoted fo
 
 For example, if the pattern `'(if ?pred ?truthy nil)` matches, then the replacement could be `'(when ?pred ?truthy)`, which would insert the values that `?pred` and `truthy` matched on into the replacement form.
 
-To handle more complex replacement logic, use `:on-match`. It must be a function that accepts 3 arguments: the currently matched rule object, the current form that is being evaluated, and the bindings map from the pattern. Unlike the limited DSL available in the patterns, this is regular Clojure and can perform any action one likes.
+To handle more complex replacement logic, use `:on-match`. It must be a function that accepts 4 arguments: the context object (`ctx`), the currently matched rule object, the current form that is being evaluated, and the bindings map from the pattern. Unlike the limited DSL available in the patterns, this is regular Clojure and can perform any action one likes.
 
 If `:on-match` returns a [Diagnostic], then the diagnostic is stored in the context. The helper function [`->diagnostic`] takes the rule and form to point to the right spot in the code, and can optionally take a map with `:replace-form` and `:message` keys to set the diagnostic's reported alternative form and to override the rule's message object with a more specific message to print in all diagnostics.
 

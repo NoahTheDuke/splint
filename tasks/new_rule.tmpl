@@ -21,6 +21,6 @@
   {:pattern '()
    :message ""
    :replace '()
-   :on-match (fn [rule form {:syms []}]
+   :on-match (fn [ctx rule form {:syms []}]
                (let [new-form '()]
                  (->diagnostic rule form {:replace-form new-form})))})

@@ -31,7 +31,7 @@
   (assoc coll :k 10)
   "
   {:pattern '(%getter%-?f ?coll [?key] &&. ?vals)
-   :on-match (fn [rule form {:syms [?f ?coll ?key ?vals]}]
+   :on-match (fn [ctx rule form {:syms [?f ?coll ?key ?vals]}]
                (let [new-form (list* (setter ?f) ?coll ?key ?vals)
                      message (format "Use `%s` instead of recreating it." (setter ?f))]
                  (->diagnostic rule form {:replace-form new-form

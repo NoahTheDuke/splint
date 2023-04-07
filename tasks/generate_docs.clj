@@ -49,14 +49,14 @@
 
 (defn render-reference [rule]
   (let [config (get-config rule)
-        style-ref (:style-ref config)
+        guide-ref (:guide-ref config)
         outside-link (:link config)]
-    (when (or style-ref outside-link)
+    (when (or guide-ref outside-link)
       (str "### Reference"
            \newline \newline
-           (when style-ref
-             (format "* [https://guide.clojure.style/%s]" style-ref))
-           (when (and style-ref outside-link)
+           (when guide-ref
+             (format "* [https://guide.clojure.style/%s]" guide-ref))
+           (when (and guide-ref outside-link)
              \newline)
            (when outside-link
              (format "* [%s]" outside-link))))))

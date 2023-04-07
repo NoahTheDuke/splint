@@ -42,19 +42,19 @@
  {:description ""
   :enabled true
   :added "0.1"
-  :style-ref "#naming-conversion-functions"}
+  :guide-ref "#naming-conversion-functions"}
 
  lint/fn-wrapper
  {:description ""
   :enabled true
   :added "0.1"
-  :style-ref "#no-useless-anonymous-fns"}
+  :guide-ref "#no-useless-anonymous-fns"}
 
  lint/if-else-nil
  {:description ""
   :enabled true
   :added "0.1"
-  :style-ref "#when-instead-of-single-branch-if"}
+  :guide-ref "#when-instead-of-single-branch-if"}
 
  lint/if-let-else-nil
  {:description ""
@@ -70,7 +70,7 @@
  {:description ""
   :enabled true
   :added "0.1"
-  :style-ref "#if-not"}
+  :guide-ref "#if-not"}
 
  lint/if-not-do
  {:description ""
@@ -96,13 +96,13 @@
  {:description ""
   :enabled true
   :added "0.1"
-  :style-ref "#if-let"}
+  :guide-ref "#if-let"}
 
  lint/let-when
  {:description ""
   :enabled true
   :added "0.1"
-  :style-ref "#when-let"}
+  :guide-ref "#when-let"}
 
  lint/loop-do
  {:description ""
@@ -151,19 +151,19 @@
  {:description ""
   :enabled true
   :added "0.1"
-  :style-ref "#naming-conversion-functions"}
+  :guide-ref "#naming-conversion-functions"}
 
  naming/predicate
  {:description ""
   :enabled true
   :added "0.1"
-  :style-ref "#naming-predicates"}
+  :guide-ref "#naming-predicates"}
 
  naming/record-name
  {:description ""
   :enabled true
   :added "0.1"
-  :style-ref "#naming-protocols-records-structs-and-types"}
+  :guide-ref "#naming-protocols-records-structs-and-types"}
 
  style/apply-str
  {:description ""
@@ -191,7 +191,7 @@
  {:description ""
   :enabled true
   :added "0.1"
-  :style-ref "#else-keyword-in-cond"}
+  :guide-ref "#else-keyword-in-cond"}
 
  style/conj-vector
  {:description ""
@@ -312,7 +312,7 @@
  {:description ""
   :enabled true
   :added "0.1"
-  :style-ref "#not-equal"}
+  :guide-ref "#not-equal"}
 
  style/not-nil?
  {:description ""
@@ -343,7 +343,7 @@
  {:description ""
   :enabled true
   :added "0.1"
-  :style-ref "#converting-something-to-boolean"}
+  :guide-ref "#converting-something-to-boolean"}
 
  style/prefer-clj-math
  {:description ""
@@ -354,7 +354,7 @@
  {:description ""
   :enabled true
   :added "0.1"
-  :style-ref "#condp"}
+  :guide-ref "#condp"}
 
  style/prefer-vary-meta
  {:description ""

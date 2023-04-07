@@ -1,5 +1,79 @@
 # Style
 
+## style/apply-str
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Check for round-about clojure.string/reverse.
+
+### Examples
+
+```clojure
+; bad
+(apply str x)
+
+; good
+(clojure.string/join x)
+```
+
+## style/apply-str-interpose
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Check for round-about str/join.
+
+### Examples
+
+```clojure
+; bad
+(apply str (interpose "," x))
+
+; good
+(clojure.string/join "," x)
+```
+
+## style/apply-str-reverse
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Check for round-about clojure.string/reverse.
+
+### Examples
+
+```clojure
+; bad
+(apply str (reverse x))
+
+; good
+(clojure.string/reverse x)
+```
+
+## style/assoc-assoc
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Layering `assoc` calls are hard to read. `assoc-in` is known and idiomatic.
+
+### Examples
+
+```clojure
+; bad
+(assoc coll :key1 (assoc (:key2 coll) :key2 new-val))
+(assoc coll :key1 (assoc (coll :key2) :key2 new-val))
+(assoc coll :key1 (assoc (get coll :key2) :key2 new-val))
+
+; good
+(assoc-in coll [:key1 :key2] new-val)
+```
+
 ## style/cond-else
 
 | Enabled | Added |
@@ -27,6 +101,24 @@ It's nice when the default branch is consistent.
 ### Reference
 
 * [https://guide.clojure.style/#else-keyword-in-cond]
+
+## style/conj-vector
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`vector` is succinct and meaningful.
+
+### Examples
+
+```clojure
+; bad
+(conj [] :a b {:c 1})
+
+; good
+(vector :a b {:c 1})
+```
 
 ## style/def-fn
 
@@ -58,6 +150,345 @@ It's nice when the default branch is consistent.
   (+ i 100))
 ```
 
+## style/eq-false
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`false?` exists so use it.
+
+### Examples
+
+```clojure
+; bad
+(= false x)
+(= x false)
+
+; good
+(false? x)
+```
+
+## style/eq-nil
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`nil?` exists so use it.
+
+### Examples
+
+```clojure
+; bad
+(= nil x)
+(= x nil)
+
+; good
+(nil? x)
+```
+
+## style/eq-true
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`true?` exists so use it.
+
+### Examples
+
+```clojure
+; bad
+(= true x)
+(= x true)
+
+; good
+(true? x)
+```
+
+## style/eq-zero
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`zero?` exists so use it.
+
+### Examples
+
+```clojure
+; bad
+(= 0 num)
+(= num 0)
+(== 0 num)
+(== num 0)
+
+; good
+(zero? num)
+```
+
+## style/filter-complement
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Check for (filter (complement pred) coll)
+
+### Examples
+
+```clojure
+; bad
+(filter (complement even?) coll)
+
+; good
+(remove even? coll)
+```
+
+## style/filter-vec-filterv
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+filterv is preferable for using transients.
+
+### Examples
+
+```clojure
+; bad
+(vec (filter pred coll))
+
+; good
+(filterv pred coll)
+```
+
+## style/first-first
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+ffirst is succinct and meaningful.
+
+### Examples
+
+```clojure
+; bad
+(first (first coll))
+
+; good
+(ffirst coll)
+```
+
+## style/first-next
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+fnext is succinct and meaningful.
+
+### Examples
+
+```clojure
+; bad
+(first (next coll))
+
+; good
+(fnext coll)
+```
+
+## style/let-do
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`let` has an implicit `do`, so use it.
+
+### Examples
+
+```clojure
+; bad
+(let [a 1 b 2] (do (println a) (println b)))
+
+; good
+(let [a 1 b 2] (println a) (println b))
+```
+
+## style/mapcat-apply-apply
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Check for (apply concat (apply map x y))
+
+### Examples
+
+```clojure
+; bad
+(apply concat (apply map x y))
+
+; good
+(mapcat x y)
+```
+
+## style/mapcat-concat-map
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Check for (apply concat (map x y z))
+
+### Examples
+
+```clojure
+; bad
+(apply concat (map x y))
+(apply concat (map x y z))
+
+; good
+(mapcat x y)
+(mapcat x y z)
+```
+
+## style/minus-one
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Checks for simple -1 that should use `clojure.core/dec`.
+
+### Examples
+
+```clojure
+; bad
+(- x 1)
+
+; good
+(dec x)
+```
+
+## style/minus-zero
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Checks for x - 0.
+
+### Examples
+
+```clojure
+; bad
+(- x 0)
+
+; good
+x
+```
+
+## style/multiply-by-one
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Checks for (* x 1).
+
+### Examples
+
+```clojure
+; bad
+(* x 1)
+(* 1 x)
+
+; good
+x
+```
+
+## style/multiply-by-zero
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Checks for (* x 0).
+
+### Examples
+
+```clojure
+; bad
+(* x 0)
+(* 0 x)
+
+; good
+0
+```
+
+## style/neg-checks
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`neg?` exists so use it.
+
+### Examples
+
+```clojure
+; bad
+(< num 0)
+(> 0 num)
+
+; good
+(neg? num)
+```
+
+## style/nested-addition
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Checks for simple nested additions.
+
+### Examples
+
+```clojure
+; bad
+(+ x (+ y z))
+(+ x (+ y z a))
+
+; good
+(+ x y z)
+(+ x y z a)
+```
+
+## style/nested-multiply
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Checks for simple nested multiply.
+
+### Examples
+
+```clojure
+; bad
+(* x (* y z))
+(* x (* y z a))
+
+; good
+(* x y z)
+(* x y z a)
+```
+
 ## style/new-object
 
 | Enabled | Added |
@@ -74,6 +505,157 @@ It's nice when the default branch is consistent.
 
 ; good
 (java.util.ArrayList. 100)
+```
+
+## style/next-first
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+nfirst is succinct and meaningful.
+
+### Examples
+
+```clojure
+; bad
+(next (first coll))
+
+; good
+(nfirst coll)
+```
+
+## style/next-next
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+nnext is succinct and meaningful.
+
+### Examples
+
+```clojure
+; bad
+(next (next coll))
+
+; good
+(nnext coll)
+```
+
+## style/not-eq
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`not=` exists, so use it.
+
+### Examples
+
+```clojure
+; bad
+(not (= num1 num2))
+
+; good
+(not= num1 num2)
+```
+
+### Reference
+
+* [https://guide.clojure.style/#not-equal]
+
+## style/not-nil?
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`some?` exists so use it.
+
+### Examples
+
+```clojure
+; bad
+(not (nil? x))
+
+; good
+(some? x)
+```
+
+## style/not-some-pred
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+not-any? is succinct and meaningful.
+
+### Examples
+
+```clojure
+; bad
+(not (some even? coll))
+
+; good
+(not-any? even? coll)
+```
+
+## style/plus-one
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Checks for simple +1 that should use `clojure.core/inc`.
+
+### Examples
+
+```clojure
+; bad
+(+ x 1)
+(+ 1 x)
+
+; good
+(inc x)
+```
+
+## style/plus-zero
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Checks for x + 0.
+
+### Examples
+
+```clojure
+; bad
+(+ x 0)
+(+ 0 x)
+
+; good
+x
+```
+
+## style/pos-checks
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`pos?` exists so use it.
+
+### Examples
+
+```clojure
+; bad
+(< 0 num)
+(> num 0)
+
+; good
+(pos? num)
 ```
 
 ## style/prefer-boolean
@@ -255,4 +837,150 @@ just call `assoc` directly instead for performance and readability improvements.
 
 ; good
 (assoc coll :k 10)
+```
+
+## style/tostring
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Convert `(.toString)` to `(str)`.
+
+### Examples
+
+```clojure
+; bad
+(.toString x)
+
+; good
+(str x)
+```
+
+## style/update-in-assoc
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`update-in`-ing an `assoc` with the same key are hard to read. `assoc-in` is known
+and idiomatic.
+
+### Examples
+
+```clojure
+; bad
+(update-in coll [:a :b] assoc 5)
+
+; good
+(assoc-in coll [:a :b] 5)
+```
+
+## style/useless-do
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+A single item in a `do` is a no-op.
+
+### Examples
+
+```clojure
+; bad
+(do coll)
+
+; good
+coll
+```
+
+## style/when-do
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`when` already defines an implicit `do`. Rely on it.
+
+### Examples
+
+```clojure
+; bad
+(when x (do (println :a) (println :b) :c))
+
+; good
+(when x (println :a) (println :b) :c)
+```
+
+## style/when-not-call
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`when-not` exists so use it lol.
+
+### Examples
+
+```clojure
+; bad
+(when (not x) :a :b :c)
+
+; good
+(when-not x :a :b :c)
+```
+
+## style/when-not-do
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`when-not` already defines an implicit `do`. Rely on it.
+
+### Examples
+
+```clojure
+; bad
+(when-not x (do (println :a) (println :b) :c))
+
+; good
+(when-not x (println :a) (println :b) :c)
+```
+
+## style/when-not-empty?
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+`seq` returns `nil` when given an empty collection. `empty?` is implemented as
+`(not (seq coll))` so it's best and fastest to use `seq` directly.
+
+### Examples
+
+```clojure
+; bad
+(when-not (empty? ?x) &&. ?y)
+
+; good
+(when (seq ?x) &&. ?y)
+```
+
+## style/when-not-not
+
+| Enabled | Added |
+| ------- | ----- |
+|    true |   0.1 |
+
+Two `not`s cancel each other out.
+
+### Examples
+
+```clojure
+; bad
+(when-not (not x) y z)
+
+; good
+(when x y z)
 ```

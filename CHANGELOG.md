@@ -7,6 +7,49 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Add `markdown` output: Same text as `full` but with a fancy horizontal bar, header, and code blocks.
 
+### Changed
+
+- Moved a lot of rules from `lint` to `style` genre:
+  - `apply-str`
+  - `apply-str-interpose`
+  - `apply-str-reverse`
+  - `assoc-assoc`
+  - `conj-vector`
+  - `eq-false`
+  - `eq-nil`
+  - `eq-true`
+  - `eq-zero`
+  - `filter-complement`
+  - `filter-vec-filterv`
+  - `first-first`
+  - `first-next`
+  - `let-do`
+  - `mapcat-apply-apply`
+  - `mapcat-concat-map`
+  - `minus-one`
+  - `minus-zero`
+  - `multiply-by-one`
+  - `multiply-by-zero`
+  - `neg-checks`
+  - `nested-addition`
+  - `nested-multiply`
+  - `next-first`
+  - `next-next`
+  - `not-eq`
+  - `not-nil`
+  - `not-some-pred`
+  - `plus-one`
+  - `plus-zero`
+  - `pos-checks`
+  - `tostring`
+  - `update-in-assoc`
+  - `useless-do`
+  - `when-do`
+  - `when-not-call`
+  - `when-not-do`
+  - `when-not-empty`
+  - `when-not-not`
+
 ## [v1.1.1]
 
 ### Changed

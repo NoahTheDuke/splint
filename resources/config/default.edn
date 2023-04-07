@@ -7,26 +7,6 @@
 
  ;; Lint Rules
 
- lint/apply-str
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/apply-str-interpose
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/apply-str-reverse
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/assoc-assoc
- {:description ""
-  :enabled true
-  :added "0.1"}
-
  lint/assoc-fn
  {:description ""
   :enabled true
@@ -37,11 +17,6 @@
   :enabled true
   :added "1.0"
   :link "https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"}
-
- lint/conj-vector
- {:description ""
-  :enabled true
-  :added "0.1"}
 
  lint/divide-by-one
  {:description ""
@@ -68,46 +43,6 @@
   :enabled true
   :added "0.1"
   :style-ref "#naming-conversion-functions"}
-
- lint/eq-false
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/eq-nil
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/eq-true
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/eq-zero
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/filter-complement
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/filter-vec-filter
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/first-first
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/first-next
- {:description ""
-  :enabled true
-  :added "0.1"}
 
  lint/fn-wrapper
  {:description ""
@@ -157,11 +92,6 @@
   :enabled true
   :added "0.1"}
 
- lint/let-do
- {:description ""
-  :enabled true
-  :added "0.1"}
-
  lint/let-if
  {:description ""
   :enabled true
@@ -184,98 +114,12 @@
   :enabled true
   :added "0.1"}
 
- lint/mapcat-apply-apply
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/mapcat-concat-map
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/minus-one
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/minus-zero
- {:description ""
-  :enabled true
-  :added "0.1"}
-
  lint/missing-body-in-when
  {:description ""
   :enabled true
   :added "0.1"}
 
- lint/multiply-by-one
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/multiply-by-zero
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/neg-checks
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/nested-addition
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/nested-multiply
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/next-first
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/next-next
- {:description ""
-  :enabled true
-  :added "0.1"}
-
  lint/not-empty?
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/not-eq
- {:description ""
-  :enabled true
-  :added "0.1"
-  :style-ref "#not-equal"}
-
- lint/not-nil?
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/not-some-pred
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/plus-one
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/plus-zero
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/pos-checks
  {:description ""
   :enabled true
   :added "0.1"}
@@ -295,51 +139,11 @@
   :enabled true
   :added "0.1"}
 
- lint/tostring
- {:description ""
-  :enabled true
-  :added "0.1"}
-
  lint/try-splicing
  {:description "Using unquote-splicing in a try in a macro can lead to subtly broken code that's hard to debug."
   :enabled true
   :added "1.0"
   :link "https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"}
-
- lint/update-in-assoc
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/useless-do
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/when-do
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/when-not-call
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/when-not-do
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/when-not-empty?
- {:description ""
-  :enabled true
-  :added "0.1"}
-
- lint/when-not-not
- {:description ""
-  :enabled true
-  :added "0.1"}
 
  ;; Naming Rules
 
@@ -361,6 +165,26 @@
   :added "0.1"
   :style-ref "#naming-protocols-records-structs-and-types"}
 
+ style/apply-str
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/apply-str-interpose
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/apply-str-reverse
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/assoc-assoc
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
  ;; Style Rules
 
  style/cond-else
@@ -369,12 +193,148 @@
   :added "0.1"
   :style-ref "#else-keyword-in-cond"}
 
+ style/conj-vector
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
  style/def-fn
  {:description ""
   :enabled true
   :added "1.0"}
 
+ style/eq-false
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/eq-nil
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/eq-true
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/eq-zero
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/filter-complement
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/filter-vec-filterv
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/first-first
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/first-next
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/let-do
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/mapcat-apply-apply
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/mapcat-concat-map
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/minus-one
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/minus-zero
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/multiply-by-one
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/multiply-by-zero
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/neg-checks
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/nested-addition
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/nested-multiply
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
  style/new-object
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/next-first
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/next-next
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/not-eq
+ {:description ""
+  :enabled true
+  :added "0.1"
+  :style-ref "#not-equal"}
+
+ style/not-nil?
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/not-some-pred
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/plus-one
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/plus-zero
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/pos-checks
  {:description ""
   :enabled true
   :added "0.1"}
@@ -412,6 +372,46 @@
   :added "0.1"}
 
  style/single-key-in
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/tostring
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/update-in-assoc
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/useless-do
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/when-do
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/when-not-call
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/when-not-do
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/when-not-empty?
+ {:description ""
+  :enabled true
+  :added "0.1"}
+
+ style/when-not-not
  {:description ""
   :enabled true
   :added "0.1"}

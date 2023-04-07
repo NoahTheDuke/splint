@@ -1,9 +1,9 @@
 (ns generate-docs
   (:require
     [clojure.java.io :as io]
-    [clojure.pprint :as pp]
     [clojure.set :as set]
     [clojure.string :as str]
+    [doric.core :refer [table]]
     [noahtheduke.splint]
     [noahtheduke.splint.config :refer [default-config]]
     [noahtheduke.splint.rules :refer [global-rules]]))
@@ -12,20 +12,24 @@
   (@default-config (:full-name rule)))
 
 (defn print-table
-  ([ks maps] (print-table ks (vals ks) maps))
-  ([rename-ks headers maps]
-   (-> (->> maps
-            (map #(set/rename-keys % rename-ks))
-            (pp/print-table headers)
-            (with-out-str))
-       (str/replace "-+-" " | ")
-       (str/replace "|-" "| ")
-       (str/replace "-|" " |")
-       (str/trim))))
+  [headers maps]
+  (-> (table headers maps)
+      (str/split-lines)
+      (rest)
+      (butlast)
+      (->> (str/join "\n"))
+      (str/replace "-+-" " | ")
+      (str/replace "|-" "| ")
+      (str/replace "-|" " |")
+      (str/trim)))
 
 (defn render-details
   [rule]
-  (print-table {:enabled "Enabled" :added "Added"} [(get-config rule)]))
+  (let [headers [{:name :enabled :title "Enabled by default" :align :left}
+                 {:name :added :title "Version Added" :align :left}
+                 {:name :updated :title "Version Updated" :align :left}]]
+   (print-table headers
+                [(get-config rule)])))
 
 (defn render-docstring [rule]
   (when-let [docstring (:docstring rule)]
@@ -64,8 +68,9 @@
                                   (str/join ", "))}]
         (str "### Configurable Attributes"
              \newline \newline
-             (print-table {:name "Name" :default "Default" :options "Options"}
-                          ["Name" "Default" "Options"]
+             (print-table [{:name :name :title "Name" :align :left}
+                           {:name :default :title "Default" :align :left}
+                           {:name :options :title "Options" :align :left}]
                           [config]))))))
 
 (defn render-reference [rule]
@@ -80,7 +85,7 @@
            (when (and guide-ref outside-link)
              \newline)
            (when outside-link
-             (format "* [%s]" outside-link))))))
+             (format "* <%s>" outside-link))))))
 
 (defn build-rule [rule]
   (->> [(str "## " (:full-name rule))
@@ -100,11 +105,9 @@
        (str/join (str \newline \newline))))
 
 (defn genre-page [genre]
-  (let [page-title (str "# " (str/capitalize genre))
-        rule-sections (build-rules genre)]
-    (->> [page-title
-          rule-sections]
-         (str/join (str \newline \newline)))))
+  (->> [(str "# " (str/capitalize genre))
+        (build-rules genre)]
+         (str/join (str \newline \newline))))
 
 #_{:splint/disable [naming/conversion-functions]}
 (defn print-genre-to-file [genre]

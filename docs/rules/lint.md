@@ -2,9 +2,9 @@
 
 ## lint/assoc-fn
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 `assoc`-ing an update with the same key are hard to read. `update` is known and
 idiomatic.
@@ -23,9 +23,9 @@ idiomatic.
 
 ## lint/body-unquote-splicing
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   1.0 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 1.0           | 1.0             |
 
 A macro that nests an `unquote-splicing` in a macro with a `& body` can lead
 to subtle hard to debug errors. Better to wrap the `unquote-splicing` in
@@ -43,13 +43,13 @@ a `do` to force it into 'expression position'.
 
 ### Reference
 
-* [https://blog.ambrosebs.com/2022/09/08/break-your-macros.html]
+* <https://blog.ambrosebs.com/2022/09/08/break-your-macros.html>
 
 ## lint/divide-by-one
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 Checks for (/ x 1).
 
@@ -65,9 +65,9 @@ x
 
 ## lint/dorun-map
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 `run!` uses `reduce` which non-lazy.
 
@@ -83,9 +83,9 @@ x
 
 ## lint/dot-class-method
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 Using the `Obj/staticMethod` form maps the method call to Clojure's natural function
 position.
@@ -102,9 +102,9 @@ position.
 
 ## lint/dot-obj-method
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 Using the `.method` form maps the method call to Clojure's natural function position.
 
@@ -120,9 +120,9 @@ Using the `.method` form maps the method call to Clojure's natural function posi
 
 ## lint/duplicate-field-name
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1.119       | 0.1.119         |
 
 `deftype` and `defrecord` will throw errors if you define multiple fields
 with the same name, but it's good to catch these things early too.
@@ -143,9 +143,9 @@ with the same name, but it's good to catch these things early too.
 
 ## lint/fn-wrapper
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 Avoid wrapping functions in pass-through anonymous function defitions.
 
@@ -171,9 +171,9 @@ even?
 
 ## lint/if-else-nil
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
 
@@ -193,9 +193,9 @@ Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
 
 ## lint/if-let-else-nil
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 Idiomatic `if-let` defines both branches. `when-let` returns `nil` in the else branch.
 
@@ -211,9 +211,9 @@ Idiomatic `if-let` defines both branches. `when-let` returns `nil` in the else b
 
 ## lint/if-nil-else
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy branch.
 
@@ -229,9 +229,9 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 
 ## lint/if-not-both
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 `if-not` exists, so use it.
 
@@ -251,9 +251,9 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 
 ## lint/if-not-do
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 `when-not` already defines an implicit `do`. Rely on it.
 
@@ -269,9 +269,9 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 
 ## lint/if-not-not
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 Two `not`s cancel each other out.
 
@@ -287,9 +287,9 @@ Two `not`s cancel each other out.
 
 ## lint/if-same-truthy
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 `or` exists so use it lol.
 
@@ -305,9 +305,9 @@ Two `not`s cancel each other out.
 
 ## lint/into-literal
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 `vec` and `set` are succinct and meaningful.
 
@@ -329,9 +329,9 @@ Two `not`s cancel each other out.
 
 ## lint/let-if
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1.69        | 0.1.69          |
 
 `if-let` exists so use it. Suggestions can be wrong as there's no code-walking to
 determine if `result` binding is used in falsy branch.
@@ -352,9 +352,9 @@ determine if `result` binding is used in falsy branch.
 
 ## lint/let-when
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1.69        | 0.1.69          |
 
 `when-let` exists so use it.
 
@@ -374,9 +374,9 @@ determine if `result` binding is used in falsy branch.
 
 ## lint/loop-do
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 `loop` has an implicit `do`. Use it.
 
@@ -392,9 +392,9 @@ determine if `result` binding is used in falsy branch.
 
 ## lint/loop-empty-when
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 Empty loops with nested when can be `while`.
 
@@ -410,9 +410,9 @@ Empty loops with nested when can be `while`.
 
 ## lint/missing-body-in-when
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1.69        | 0.1.69          |
 
 `when` calls should have at least 1 expression after the condition.
 
@@ -430,9 +430,9 @@ Empty loops with nested when can be `while`.
 
 ## lint/not-empty?
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 1.2.0           |
 
 `seq` returns `nil` when given an empty collection. `empty?` is implemented as
 `(not (seq coll))` so it's best and fastest to use `seq` directly.
@@ -452,9 +452,9 @@ Empty loops with nested when can be `while`.
 
 ### Configurable Attributes
 
-|         Name | Default |              Options |
+| Name         | Default | Options              |
 | ------------ | ------- | -------------------- |
-| Chosen Style |  `:seq` | `:seq`, `:not-empty` |
+| Chosen Style | `:seq`  | `:seq`, `:not-empty` |
 
 ### Reference
 
@@ -462,9 +462,9 @@ Empty loops with nested when can be `while`.
 
 ## lint/redundant-call
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 A number of core functions take any number of arguments and return the arg
 if given only one. These calls are effectively no-ops, redundant, so they
@@ -497,9 +497,9 @@ x
 
 ## lint/take-repeatedly
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 `repeatedly` has an arity for limiting the number of repeats with `take`.
 
@@ -515,9 +515,9 @@ x
 
 ## lint/thread-macro-one-arg
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1           | 0.1             |
 
 Threading macros require more effort to understand so only use them with multiple
 args to help with readability.
@@ -547,9 +547,9 @@ args to help with readability.
 
 ## lint/try-splicing
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   1.0 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 1.0           | 1.0             |
 
 A macro that wraps a splicing unquote in a try-catch or try-finally can lead
 to subtle hard to debug errors. Better to wrap the splicing unquote in a `do`
@@ -567,4 +567,4 @@ to force it into 'expression position'.
 
 ### Reference
 
-* [https://blog.ambrosebs.com/2022/09/08/break-your-macros.html]
+* <https://blog.ambrosebs.com/2022/09/08/break-your-macros.html>

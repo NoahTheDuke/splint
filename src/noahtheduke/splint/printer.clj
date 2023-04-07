@@ -29,7 +29,7 @@
 (defmethod print-find "markdown" [_ {:keys [filename rule-name form line column message alt]}]
   (println "----")
   (newline)
-  (printf "##### %s:%s:%s [%s]" filename line column rule-name)
+  (printf "#### %s:%s:%s [%s]" filename line column rule-name)
   (newline)
   (newline)
   (println message)

@@ -36,27 +36,28 @@ test/clj/game/core/say_test.clj:18:15: warning: Use `zero?` instead of recreatin
 **markdown:**
 Same as `full` but formatted to produce markdown, with the location and rule name in a header and the code wrapped in code blocks:
 
-    ----
+`````markdown
+----
 
-    ##### ../netrunner/test/clj/game/core/say_test.clj:82:15 [lint/eq-zero]
+#### test/clj/game/core/say_test.clj:82:15 [lint/eq-zero]
 
-    Use `zero?` instead of recreating it.
+Use `zero?` instead of recreating it.
 
-    ```clojure
-    (= 0 (get-counters (refresh pb) :advancement))
-    ```
+```clojure
+(= 0 (get-counters (refresh pb) :advancement))
+```
 
-    Consider using:
+Consider using:
 
-    ```clojure
-    (zero? (get-counters (refresh pb) :advancement))
-    ```
+```clojure
+(zero? (get-counters (refresh pb) :advancement))
+`````
 
 which renders to:
 
 ----
 
-##### ../netrunner/test/clj/game/core/say_test.clj:82:15 [lint/eq-zero]
+#### test/clj/game/core/say_test.clj:82:15 [lint/eq-zero]
 
 Use `zero?` instead of recreating it.
 

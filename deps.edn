@@ -20,6 +20,7 @@
           :ns-default build}
   ; dev tasks
   :gen-docs {:extra-paths ["tasks"]
+             :extra-deps {doric/doric {:mvn/version "0.9.0"}}
              :main-opts ["-m" "generate-docs"]}
   :new-rule {:extra-paths ["tasks"]
              :extra-deps {selmer/selmer {:mvn/version "1.12.55"}}

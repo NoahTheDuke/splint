@@ -2,9 +2,9 @@
 
 ## naming/conversion-functions
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1.94        | 0.1.94          |
 
 Use `->` instead of `to` in the names of conversion functions.
 
@@ -24,9 +24,9 @@ Use `->` instead of `to` in the names of conversion functions.
 
 ## naming/predicate
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1.69        | 0.1.94          |
 
 Functions that return a boolean should end in a question mark.
 
@@ -52,9 +52,9 @@ a 'p' (such as `map`).
 
 ## naming/record-name
 
-| Enabled | Added |
-| ------- | ----- |
-|    true |   0.1 |
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 0.1.69        | 1.0             |
 
 Records should use PascalCase.
 

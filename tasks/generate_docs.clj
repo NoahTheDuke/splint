@@ -101,6 +101,7 @@
        (get (group-by :genre (vals @global-rules)))
        (sort-by :full-name)
        (map build-rule)
+       (interpose "---")
        (remove str/blank?)
        (str/join (str \newline \newline))))
 

@@ -22,6 +22,8 @@ Use `->` instead of `to` in the names of conversion functions.
 
 * [https://guide.clojure.style/#naming-conversion-functions]
 
+---
+
 ## naming/predicate
 
 | Enabled by default | Version Added | Version Updated |
@@ -49,6 +51,8 @@ a 'p' (such as `map`).
 ### Reference
 
 * [https://guide.clojure.style/#naming-predicates]
+
+---
 
 ## naming/record-name
 

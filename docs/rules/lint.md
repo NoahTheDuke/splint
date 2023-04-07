@@ -21,6 +21,8 @@ idiomatic.
 (update coll :a + 5)
 ```
 
+---
+
 ## lint/body-unquote-splicing
 
 | Enabled by default | Version Added | Version Updated |
@@ -45,13 +47,15 @@ a `do` to force it into 'expression position'.
 
 * <https://blog.ambrosebs.com/2022/09/08/break-your-macros.html>
 
+---
+
 ## lint/divide-by-one
 
 | Enabled by default | Version Added | Version Updated |
 | ------------------ | ------------- | --------------- |
 | true               | 0.1           | 0.1             |
 
-Checks for (/ x 1).
+Checks for `(/ x 1)`.
 
 ### Examples
 
@@ -62,6 +66,8 @@ Checks for (/ x 1).
 ; good
 x
 ```
+
+---
 
 ## lint/dorun-map
 
@@ -83,6 +89,8 @@ x
 (run! println (range 10))
 ```
 
+---
+
 ## lint/dot-class-method
 
 | Enabled by default | Version Added | Version Updated |
@@ -102,6 +110,8 @@ position.
 (Obj/staticMethod args)
 ```
 
+---
+
 ## lint/dot-obj-method
 
 | Enabled by default | Version Added | Version Updated |
@@ -119,6 +129,8 @@ Using the `.method` form maps the method call to Clojure's natural function posi
 ; good
 (.method obj args)
 ```
+
+---
 
 ## lint/duplicate-field-name
 
@@ -142,6 +154,8 @@ with the same name, but it's good to catch these things early too.
 ### Reference
 
 * [https://guide.clojure.style/#naming-conversion-functions]
+
+---
 
 ## lint/fn-wrapper
 
@@ -171,6 +185,8 @@ even?
 
 * [https://guide.clojure.style/#no-useless-anonymous-fns]
 
+---
+
 ## lint/if-else-nil
 
 | Enabled by default | Version Added | Version Updated |
@@ -193,6 +209,8 @@ Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
 
 * [https://guide.clojure.style/#when-instead-of-single-branch-if]
 
+---
+
 ## lint/if-let-else-nil
 
 | Enabled by default | Version Added | Version Updated |
@@ -211,6 +229,8 @@ Idiomatic `if-let` defines both branches. `when-let` returns `nil` in the else b
 (when-let [a 1] a)
 ```
 
+---
+
 ## lint/if-nil-else
 
 | Enabled by default | Version Added | Version Updated |
@@ -228,6 +248,8 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 ; good
 (when-not (some-func) :a)
 ```
+
+---
 
 ## lint/if-not-both
 
@@ -251,6 +273,8 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 
 * [https://guide.clojure.style/#if-not]
 
+---
+
 ## lint/if-not-do
 
 | Enabled by default | Version Added | Version Updated |
@@ -268,6 +292,8 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 ; good
 (if-not x (println :a) (println :b) :c)
 ```
+
+---
 
 ## lint/if-not-not
 
@@ -287,6 +313,8 @@ Two `not`s cancel each other out.
 (if x y z)
 ```
 
+---
+
 ## lint/if-same-truthy
 
 | Enabled by default | Version Added | Version Updated |
@@ -304,6 +332,8 @@ Two `not`s cancel each other out.
 ; good
 (or x y)
 ```
+
+---
 
 ## lint/into-literal
 
@@ -329,6 +359,8 @@ Two `not`s cancel each other out.
 (set coll)
 ```
 
+---
+
 ## lint/let-if
 
 | Enabled by default | Version Added | Version Updated |
@@ -352,6 +384,8 @@ determine if `result` binding is used in falsy branch.
 
 * [https://guide.clojure.style/#if-let]
 
+---
+
 ## lint/let-when
 
 | Enabled by default | Version Added | Version Updated |
@@ -374,6 +408,8 @@ determine if `result` binding is used in falsy branch.
 
 * [https://guide.clojure.style/#when-let]
 
+---
+
 ## lint/loop-do
 
 | Enabled by default | Version Added | Version Updated |
@@ -392,6 +428,8 @@ determine if `result` binding is used in falsy branch.
 (loop [] (println 1) (println 2))
 ```
 
+---
+
 ## lint/loop-empty-when
 
 | Enabled by default | Version Added | Version Updated |
@@ -409,6 +447,8 @@ Empty loops with nested when can be `while`.
 ; good
 (while (some-func) (println 1) (println 2) (recur))
 ```
+
+---
 
 ## lint/missing-body-in-when
 
@@ -429,6 +469,8 @@ Empty loops with nested when can be `while`.
 (when true (do-stuff))
 (when (some-func) (do-stuff))
 ```
+
+---
 
 ## lint/not-empty?
 
@@ -461,6 +503,8 @@ Empty loops with nested when can be `while`.
 ### Reference
 
 * [https://guide.clojure.style/#nil-punning]
+
+---
 
 ## lint/redundant-call
 
@@ -497,6 +541,8 @@ Current list of clojure.core functions this linter checks:
 x
 ```
 
+---
+
 ## lint/take-repeatedly
 
 | Enabled by default | Version Added | Version Updated |
@@ -514,6 +560,8 @@ x
 ; good
 (repeatedly 5 (range 10))
 ```
+
+---
 
 ## lint/thread-macro-one-arg
 
@@ -546,6 +594,8 @@ args to help with readability.
 ; good
 (y z x)
 ```
+
+---
 
 ## lint/try-splicing
 

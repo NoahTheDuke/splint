@@ -18,6 +18,8 @@ Check for round-about clojure.string/reverse.
 (clojure.string/join x)
 ```
 
+---
+
 ## style/apply-str-interpose
 
 | Enabled by default | Version Added | Version Updated |
@@ -36,6 +38,8 @@ Check for round-about str/join.
 (clojure.string/join "," x)
 ```
 
+---
+
 ## style/apply-str-reverse
 
 | Enabled by default | Version Added | Version Updated |
@@ -53,6 +57,8 @@ Check for round-about clojure.string/reverse.
 ; good
 (clojure.string/reverse x)
 ```
+
+---
 
 ## style/assoc-assoc
 
@@ -73,6 +79,8 @@ Layering `assoc` calls are hard to read. `assoc-in` is known and idiomatic.
 ; good
 (assoc-in coll [:key1 :key2] new-val)
 ```
+
+---
 
 ## style/cond-else
 
@@ -102,6 +110,8 @@ It's nice when the default branch is consistent.
 
 * [https://guide.clojure.style/#else-keyword-in-cond]
 
+---
+
 ## style/conj-vector
 
 | Enabled by default | Version Added | Version Updated |
@@ -119,6 +129,8 @@ It's nice when the default branch is consistent.
 ; good
 (vector :a b {:c 1})
 ```
+
+---
 
 ## style/def-fn
 
@@ -150,6 +162,8 @@ It's nice when the default branch is consistent.
   (+ i 100))
 ```
 
+---
+
 ## style/eq-false
 
 | Enabled by default | Version Added | Version Updated |
@@ -168,6 +182,8 @@ It's nice when the default branch is consistent.
 ; good
 (false? x)
 ```
+
+---
 
 ## style/eq-nil
 
@@ -188,6 +204,8 @@ It's nice when the default branch is consistent.
 (nil? x)
 ```
 
+---
+
 ## style/eq-true
 
 | Enabled by default | Version Added | Version Updated |
@@ -206,6 +224,8 @@ It's nice when the default branch is consistent.
 ; good
 (true? x)
 ```
+
+---
 
 ## style/eq-zero
 
@@ -228,6 +248,8 @@ It's nice when the default branch is consistent.
 (zero? num)
 ```
 
+---
+
 ## style/filter-complement
 
 | Enabled by default | Version Added | Version Updated |
@@ -245,6 +267,8 @@ Check for (filter (complement pred) coll)
 ; good
 (remove even? coll)
 ```
+
+---
 
 ## style/filter-vec-filterv
 
@@ -264,6 +288,8 @@ filterv is preferable for using transients.
 (filterv pred coll)
 ```
 
+---
+
 ## style/first-first
 
 | Enabled by default | Version Added | Version Updated |
@@ -281,6 +307,8 @@ ffirst is succinct and meaningful.
 ; good
 (ffirst coll)
 ```
+
+---
 
 ## style/first-next
 
@@ -300,6 +328,8 @@ fnext is succinct and meaningful.
 (fnext coll)
 ```
 
+---
+
 ## style/let-do
 
 | Enabled by default | Version Added | Version Updated |
@@ -318,6 +348,8 @@ fnext is succinct and meaningful.
 (let [a 1 b 2] (println a) (println b))
 ```
 
+---
+
 ## style/mapcat-apply-apply
 
 | Enabled by default | Version Added | Version Updated |
@@ -335,6 +367,8 @@ Check for (apply concat (apply map x y))
 ; good
 (mapcat x y)
 ```
+
+---
 
 ## style/mapcat-concat-map
 
@@ -356,6 +390,8 @@ Check for (apply concat (map x y z))
 (mapcat x y z)
 ```
 
+---
+
 ## style/minus-one
 
 | Enabled by default | Version Added | Version Updated |
@@ -374,6 +410,8 @@ Checks for simple -1 that should use `clojure.core/dec`.
 (dec x)
 ```
 
+---
+
 ## style/minus-zero
 
 | Enabled by default | Version Added | Version Updated |
@@ -391,6 +429,8 @@ Checks for x - 0.
 ; good
 x
 ```
+
+---
 
 ## style/multiply-by-one
 
@@ -411,6 +451,8 @@ Checks for (* x 1).
 x
 ```
 
+---
+
 ## style/multiply-by-zero
 
 | Enabled by default | Version Added | Version Updated |
@@ -430,6 +472,8 @@ Checks for (* x 0).
 0
 ```
 
+---
+
 ## style/neg-checks
 
 | Enabled by default | Version Added | Version Updated |
@@ -448,6 +492,8 @@ Checks for (* x 0).
 ; good
 (neg? num)
 ```
+
+---
 
 ## style/nested-addition
 
@@ -469,6 +515,8 @@ Checks for simple nested additions.
 (+ x y z a)
 ```
 
+---
+
 ## style/nested-multiply
 
 | Enabled by default | Version Added | Version Updated |
@@ -489,6 +537,8 @@ Checks for simple nested multiply.
 (* x y z a)
 ```
 
+---
+
 ## style/new-object
 
 | Enabled by default | Version Added | Version Updated |
@@ -506,6 +556,8 @@ Checks for simple nested multiply.
 ; good
 (java.util.ArrayList. 100)
 ```
+
+---
 
 ## style/next-first
 
@@ -525,6 +577,8 @@ nfirst is succinct and meaningful.
 (nfirst coll)
 ```
 
+---
+
 ## style/next-next
 
 | Enabled by default | Version Added | Version Updated |
@@ -542,6 +596,8 @@ nnext is succinct and meaningful.
 ; good
 (nnext coll)
 ```
+
+---
 
 ## style/not-eq
 
@@ -565,6 +621,8 @@ nnext is succinct and meaningful.
 
 * [https://guide.clojure.style/#not-equal]
 
+---
+
 ## style/not-nil?
 
 | Enabled by default | Version Added | Version Updated |
@@ -583,6 +641,8 @@ nnext is succinct and meaningful.
 (some? x)
 ```
 
+---
+
 ## style/not-some-pred
 
 | Enabled by default | Version Added | Version Updated |
@@ -600,6 +660,8 @@ not-any? is succinct and meaningful.
 ; good
 (not-any? even? coll)
 ```
+
+---
 
 ## style/plus-one
 
@@ -620,6 +682,8 @@ Checks for simple +1 that should use `clojure.core/inc`.
 (inc x)
 ```
 
+---
+
 ## style/plus-zero
 
 | Enabled by default | Version Added | Version Updated |
@@ -639,6 +703,8 @@ Checks for x + 0.
 x
 ```
 
+---
+
 ## style/pos-checks
 
 | Enabled by default | Version Added | Version Updated |
@@ -657,6 +723,8 @@ x
 ; good
 (pos? num)
 ```
+
+---
 
 ## style/prefer-boolean
 
@@ -682,6 +750,8 @@ Use `boolean` if you must return `true` or `false` from an expression.
 
 * [https://guide.clojure.style/#converting-something-to-boolean]
 
+---
+
 ## style/prefer-clj-math
 
 | Enabled by default | Version Added | Version Updated |
@@ -705,6 +775,8 @@ clojure.math/PI
 ### Reference
 
 * [https://guide.clojure.style/#prefer-clojure-math-over-interop]
+
+---
 
 ## style/prefer-condp
 
@@ -765,6 +837,8 @@ gathered and rendered into a `condp`.
 
 * [https://guide.clojure.style/#condp]
 
+---
+
 ## style/prefer-vary-meta
 
 | Enabled by default | Version Added | Version Updated |
@@ -782,6 +856,8 @@ gathered and rendered into a `condp`.
 ; good
 (vary-meta x assoc :filename filename)
 ```
+
+---
 
 ## style/redundant-let
 
@@ -804,6 +880,8 @@ Directly nested lets can be merged into a single let block.
   (println a b))
 ```
 
+---
+
 ## style/set-literal-as-fn
 
 | Enabled by default | Version Added | Version Updated |
@@ -824,6 +902,8 @@ as [[case]] and their meaning is less clear at first glance.
 (case elem (a b c) elem nil)
 ```
 
+---
+
 ## style/single-key-in
 
 | Enabled by default | Version Added | Version Updated |
@@ -843,6 +923,8 @@ just call `assoc` directly instead for performance and readability improvements.
 (assoc coll :k 10)
 ```
 
+---
+
 ## style/tostring
 
 | Enabled by default | Version Added | Version Updated |
@@ -860,6 +942,8 @@ Convert `(.toString)` to `(str)`.
 ; good
 (str x)
 ```
+
+---
 
 ## style/update-in-assoc
 
@@ -880,6 +964,8 @@ and idiomatic.
 (assoc-in coll [:a :b] 5)
 ```
 
+---
+
 ## style/useless-do
 
 | Enabled by default | Version Added | Version Updated |
@@ -897,6 +983,8 @@ A single item in a `do` is a no-op.
 ; good
 coll
 ```
+
+---
 
 ## style/when-do
 
@@ -916,6 +1004,8 @@ coll
 (when x (println :a) (println :b) :c)
 ```
 
+---
+
 ## style/when-not-call
 
 | Enabled by default | Version Added | Version Updated |
@@ -933,6 +1023,8 @@ coll
 ; good
 (when-not x :a :b :c)
 ```
+
+---
 
 ## style/when-not-do
 
@@ -952,6 +1044,8 @@ coll
 (when-not x (println :a) (println :b) :c)
 ```
 
+---
+
 ## style/when-not-empty?
 
 | Enabled by default | Version Added | Version Updated |
@@ -970,6 +1064,8 @@ coll
 ; good
 (when (seq ?x) &&. ?y)
 ```
+
+---
 
 ## style/when-not-not
 

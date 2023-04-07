@@ -6,6 +6,19 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Added
 
 - `lint/thread-macro-one-arg` supports `:inline` and `:avoid-collections` styles.
+- `:updated` field in configuration edn, show in rule docs.
+- `:guide-ref` for `style/prefer-clj-math`.
+- Interpose `<hr>` between each rule's docs.
+
+### Changed
+
+- Clarify docstring for `lint/dorun-map`.
+
+### Fixed
+
+- Left align contents of tables in rule docs.
+- Correctly render bare links in rule docs.
+- Correctly export clojars info in `deploy` justfile recipe.
 
 ## [v1.2.0]
 

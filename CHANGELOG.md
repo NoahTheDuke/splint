@@ -3,6 +3,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### Added
+
+- Add `markdown` output: Same text as `full` but with a fancy horizontal bar, header, and code blocks.
+
 ## [v1.1.1]
 
 ### Changed

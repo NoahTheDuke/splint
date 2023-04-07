@@ -3,21 +3,21 @@
 ## Command-line options
 
 * `-h`, `--help`: Print the command line options.
-* `-o`, `--output FMT`: Output format: `simple`, `full`, `clj-kondo`. Defaults to `full`.
+* `-o`, `--output FMT`: Output format: `simple`, `full`, `clj-kondo`, `markdown`. Defaults to `full`.
 * `-q`, `--quiet`: Print no suggestions, only return exit code.
 * `--[no-]parallel`: Run Splint in parallel. Defaults to `true`.
 
 ### Output styles
 
 **simple:**
-A description of the file path, line and column within the file, the name of the rule, and the message of the rule.
+Prints the filepath and location within the file, the name of the rule, and the message of the rule.
 
 ```text
 test/clj/game/core/say_test.clj:18:15 [lint/eq-zero] - Use `zero?` instead of recreating it.
 ```
 
 **full:**
-A description of the file path, line and column within the file, the name of the rule, and the message of the rule. And then the existing form and the suggested/replaced form demonstrating the necessary change.
+Prints the filepath and location within the file, the name of the rule, and the message of the rule. Then prints the existing form and the suggested/replaced form demonstrating the necessary change.
 
 ```text
 test/clj/game/core/say_test.clj:18:15 [lint/eq-zero] - Use `zero?` instead of recreating it.
@@ -27,10 +27,47 @@ Consider using:
 ```
 
 **clj-kondo:**
-A description of the file path, line and column within the file, the word `warning`, and the message of the rule.
+Prints the filepath and location within the file, the word `warning`, and the message of the rule.
 
 ```text
 test/clj/game/core/say_test.clj:18:15: warning: Use `zero?` instead of recreating it.
+```
+
+**markdown:**
+Same as `full` but formatted to produce markdown, with the location and rule name in a header and the code wrapped in code blocks:
+
+    ----
+
+    ##### ../netrunner/test/clj/game/core/say_test.clj:82:15 [lint/eq-zero]
+
+    Use `zero?` instead of recreating it.
+
+    ```clojure
+    (= 0 (get-counters (refresh pb) :advancement))
+    ```
+
+    Consider using:
+
+    ```clojure
+    (zero? (get-counters (refresh pb) :advancement))
+    ```
+
+which renders to:
+
+----
+
+##### ../netrunner/test/clj/game/core/say_test.clj:82:15 [lint/eq-zero]
+
+Use `zero?` instead of recreating it.
+
+```clojure
+(= 0 (get-counters (refresh pb) :advancement))
+```
+
+Consider using:
+
+```clojure
+(zero? (get-counters (refresh pb) :advancement))
 ```
 
 ## Configuration file

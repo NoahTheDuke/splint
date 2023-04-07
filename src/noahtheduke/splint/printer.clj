@@ -26,6 +26,27 @@
   (newline)
   (flush))
 
+(defmethod print-find "markdown" [_ {:keys [filename rule-name form line column message alt]}]
+  (println "----")
+  (newline)
+  (printf "##### %s:%s:%s [%s]" filename line column rule-name)
+  (newline)
+  (newline)
+  (println message)
+  (newline)
+  (println "```clojure")
+  (pprint/pprint form)
+  (println "```")
+  (newline)
+  (when alt
+    (println "Consider using:")
+    (newline)
+    (println "```clojure")
+    (pprint/pprint alt)
+    (println "```")
+    (newline))
+  (flush))
+
 (defn print-results
   [options diagnostics total-time]
   (when-not (:quiet options)

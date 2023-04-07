@@ -9,9 +9,10 @@
 
 (def cli-options
   [["-h" "--help" "This message."]
-   ["-o" "--output FMT" "Output format: simple, full, clj-kondo"
+   ["-o" "--output FMT" "Output format: simple, full, clj-kondo, markdown"
     :default "full"
-    :validate [#{"simple" "full" "clj-kondo"} "Not a valid output format (simple, full, clj-kondo)"]]
+    :validate [#{"simple" "full" "clj-kondo" "markdown"}
+               "Not a valid output format (simple, full, clj-kondo, markdown)"]]
    ["-q" "--quiet" "Print no suggestions, only return exit code."]
    [nil "--[no-]parallel" "Run Splint in parallel."
     :default true]])

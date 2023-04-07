@@ -10,9 +10,8 @@ test *args:
 new-rule arg:
     @clojure -M:new-rule -n {{arg}}
 
-export CLOJARS_USERNAME := "noahtheduke"
-export CLOJARS_PASSWORD := `cat ../clojars.txt`
-
 deploy:
+    export CLOJARS_USERNAME := "noahtheduke"
+    export CLOJARS_PASSWORD := `cat ../clojars.txt`
     clojure -T:build uber
     clojure -T:build deploy

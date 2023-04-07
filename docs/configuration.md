@@ -78,7 +78,8 @@ The format of the file is an `edn` map. Keys must be symbols and any rules confi
 
 ```clojure
 {parallel true
- lint/eq-nil {:enabled false}}
+ lint/eq-nil {:enabled false}
+ lint/not-empty? {:chosen-style :not-empty}
 ```
 
 Some rules have specific options or styles that can be set. These are detailed in the full rule pages.

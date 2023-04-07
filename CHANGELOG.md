@@ -5,7 +5,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ### Added
 
-- Add `markdown` output: Same text as `full` but with a fancy horizontal bar, header, and code blocks.
+- `markdown` output: Same text as `full` but with a fancy horizontal bar, header, and code blocks.
+- `:chosen-style` allows for rules to have configuration and different "styles". The first supported is `lint/not-empty?` showing either `seq` or `not-empty`.
 
 ### Changed
 

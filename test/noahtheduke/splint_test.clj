@@ -7,40 +7,42 @@
     noahtheduke.splint
     noahtheduke.splint.rules.helpers
     [noahtheduke.spat.pattern :refer [simple-type]]
-    [noahtheduke.splint.config :refer [read-default-config]]
+    [noahtheduke.splint.config :refer [read-default-config deep-merge]]
     [noahtheduke.spat.parser :refer [parse-string]]
     [noahtheduke.splint.rules :refer [global-rules]]
-    [noahtheduke.splint.runner :refer [check-and-recur check-form prepare-rules]]))
+    [noahtheduke.splint.runner :refer [check-and-recur check-form prepare-context prepare-rules]]))
 
 (set! *warn-on-reflection* true)
 
-(defn make-rules []
-  (prepare-rules (read-default-config)
-                 (or @global-rules {})))
-
-(def rules (atom {}))
-(reset! rules (make-rules))
-
-(defn rules-for-form [form]
-  (@rules (simple-type form)))
+(defn make-rules
+  ([] (make-rules nil))
+  ([test-config]
+   (prepare-rules (deep-merge (read-default-config) test-config)
+                  (or @global-rules {}))))
 
 (defn check-str
-  [s]
-  (let [ctx (atom {})
-        form (parse-string s)]
-    (check-form ctx (rules-for-form form) nil form)))
+  ([s] (check-str s nil))
+  ([s config]
+   (let [rules (make-rules config)
+         ctx (prepare-context rules nil)
+         form (parse-string s)]
+     (seq (:diagnostics (check-form ctx (rules (simple-type form)) nil form))))))
 
 (defn check-alt
-  [s]
-  (:alt (first (check-str s))))
+  ([s] (check-alt s nil))
+  ([s config]
+   (:alt (first (check-str s config)))))
 
 (defn check-message
-  [s]
-  (:message (first (check-str s))))
+  ([s] (check-message s nil))
+  ([s config]
+   (:message (first (check-str s config)))))
 
 (defn check-all
-  [s]
-  (let [ctx (atom {})
-        form (parse-string s)]
-    (check-and-recur ctx @rules "filename" nil form)
-    (:diagnostics @ctx)))
+  ([s] (check-all s nil))
+  ([s config]
+   (let [rules (make-rules config)
+         ctx (prepare-context rules nil)
+         form (parse-string s)]
+     (check-and-recur ctx rules "filename" nil form)
+     (seq @(:diagnostics ctx)))))

@@ -61,8 +61,7 @@
   [ctx rules parent-form form]
   (when (seq rules)
     (when-let [diagnostics (check-all-rules-of-type ctx rules parent-form form)]
-      (swap! ctx update :diagnostics into diagnostics)
-      diagnostics)))
+      (update ctx :diagnostics swap! into diagnostics))))
 
 (defn update-rules [rules form]
   (if-let [disabled-rules (:splint/disable (meta form))]
@@ -132,7 +131,7 @@
 
 (defn check-paths [ctx rules paths]
   (try
-    (if (-> @ctx :options :parallel)
+    (if (-> ctx :options :parallel)
       (check-paths-parallel ctx rules paths)
       (check-paths-single ctx rules paths))
     (catch java.util.concurrent.ExecutionException e
@@ -159,6 +158,14 @@
            (assoc-in rules [(:init-type rule) (:full-name rule)] rule))
          {})))
 
+(defn prepare-context [rules config]
+  (-> rules
+      (assoc :diagnostics (atom []))
+      (assoc :options {:help (:help config)
+                       :output (:output config)
+                       :parallel (:parallel config)
+                       :quiet (:quiet config)})))
+
 (defn run [args]
   (let [start-time (System/currentTimeMillis)
         {:keys [options paths exit-message ok]} (validate-opts args)]
@@ -167,13 +174,9 @@
           (System/exit (if ok 0 1)))
       (let [config (load-config options)
             rules (prepare-rules config (or @global-rules {}))
-            ctx (atom {:diagnostics []
-                       :options {:help (:help config)
-                                 :output (:output config)
-                                 :parallel (:parallel config)
-                                 :quiet (:quiet config)}})
+            ctx (prepare-context rules config)
             _ (check-paths ctx rules paths)
             end-time (System/currentTimeMillis)
-            diagnostics (:diagnostics @ctx)]
-        (print-results (:options @ctx) diagnostics (int (- end-time start-time)))
+            diagnostics @(:diagnostics ctx)]
+        (print-results (:options ctx) diagnostics (int (- end-time start-time)))
         (System/exit (count diagnostics))))))

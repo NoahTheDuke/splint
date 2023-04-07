@@ -10,3 +10,7 @@
 (defexpect not-empty?-test
   '(seq x)
   (check-alt "(not (empty? x))"))
+
+(defexpect not-empty?-not-empty-style-test
+  '(not-empty x)
+  (check-alt "(not (empty? x))" '{lint/not-empty? {:chosen-style :not-empty}}))

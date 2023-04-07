@@ -42,3 +42,8 @@
                           'parallel :parallel
                           'quiet :quiet})
         (merge options))))
+
+(defn get-config [ctx rule]
+  (let [full-name (:full-name rule)
+        init-type (:init-type rule)]
+    (-> ctx init-type full-name :config)))

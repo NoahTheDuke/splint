@@ -443,9 +443,22 @@ Empty loops with nested when can be `while`.
 ; bad
 (not (empty? coll))
 
-; good
+; good (chosen style :seq (default))
 (seq coll)
+
+; good (chosen style :not-empty)
+(not-empty coll)
 ```
+
+### Configurable Attributes
+
+|         Name | Default |              Options |
+| ------------ | ------- | -------------------- |
+| Chosen Style |  `:seq` | `:seq`, `:not-empty` |
+
+### Reference
+
+* [https://guide.clojure.style/#nil-punning]
 
 ## lint/redundant-call
 

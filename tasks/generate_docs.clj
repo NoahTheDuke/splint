@@ -11,15 +11,17 @@
 (defn get-config [rule]
   (@default-config (:full-name rule)))
 
-(defn print-table [ks maps]
-  (-> (->> maps
-           (map #(set/rename-keys % ks))
-           (pp/print-table (vals ks))
-           (with-out-str))
-      (str/replace "-+-" " | ")
-      (str/replace "|-" "| ")
-      (str/replace "-|" " |")
-      (str/trim)))
+(defn print-table
+  ([ks maps] (print-table ks (vals ks) maps))
+  ([rename-ks headers maps]
+   (-> (->> maps
+            (map #(set/rename-keys % rename-ks))
+            (pp/print-table headers)
+            (with-out-str))
+       (str/replace "-+-" " | ")
+       (str/replace "|-" "| ")
+       (str/replace "-|" " |")
+       (str/trim))))
 
 (defn render-details
   [rule]
@@ -47,6 +49,25 @@
                   \newline
                   "```"))))))
 
+(defn render-configuration [rule]
+  (let [config (get-config rule)
+        chosen-style (:chosen-style config)
+        supported-style (:supported-styles config)]
+    (when (and (or chosen-style supported-style)
+               (not (and chosen-style supported-style)))
+      (throw (ex-info "Need both chosen-style and supported-style" {:rule (:full-name rule)})))
+    (when (and chosen-style supported-style)
+      (let [config {:name "Chosen Style"
+                    :default (str "`" chosen-style "`")
+                    :options (->> supported-style
+                                  (map #(str "`" % "`"))
+                                  (str/join ", "))}]
+        (str "### Configurable Attributes"
+             \newline \newline
+             (print-table {:name "Name" :default "Default" :options "Options"}
+                          ["Name" "Default" "Options"]
+                          [config]))))))
+
 (defn render-reference [rule]
   (let [config (get-config rule)
         guide-ref (:guide-ref config)
@@ -65,6 +86,7 @@
   (->> [(str "## " (:full-name rule))
         (render-details rule)
         (render-docstring rule)
+        (render-configuration rule)
         (render-reference rule)]
        (remove str/blank?)
        (str/join (str \newline \newline))))

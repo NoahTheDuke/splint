@@ -120,9 +120,12 @@
   :added "0.1"}
 
  lint/not-empty?
- {:description ""
+ {:description "Looks for (not (empty?)) which matters for nil-punning."
   :enabled true
-  :added "0.1"}
+  :added "0.1"
+  :chosen-style :seq
+  :supported-styles [:seq :not-empty]
+  :guide-ref "#nil-punning"}
 
  lint/redundant-call
  {:description ""

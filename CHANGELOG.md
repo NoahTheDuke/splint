@@ -3,6 +3,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+## [v1.2.1]
+
 ### Added
 
 - `lint/thread-macro-one-arg` supports `:inline` and `:avoid-collections` styles.
@@ -222,7 +224,8 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.2.1...HEAD
+[v1.2.1]: https://github.com/noahtheduke/splint/compare/v1.2.0...v1.2.1
 [v1.2.0]: https://github.com/noahtheduke/splint/compare/v1.1.1...v1.2.0
 [v1.1.1]: https://github.com/noahtheduke/splint/compare/v1.1.0...v1.1.1
 [v1.1.0]: https://github.com/noahtheduke/splint/compare/v1.0...v1.1.0

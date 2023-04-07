@@ -30,7 +30,7 @@
  {:description ""
   :enabled true
   :added "0.1"
-  :updated "0.1"}
+  :updated "1.2.1"}
 
  lint/dot-class-method
  {:description ""
@@ -165,7 +165,7 @@
  {:description ""
   :enabled true
   :added "0.1"
-  :updated "<<next>>"
+  :updated "1.2.1"
   :chosen-style :inline
   :supported-styles [:inline :avoid-collections]}
 

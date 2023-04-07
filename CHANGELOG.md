@@ -10,7 +10,9 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ### Changed
 
-- Moved a lot of rules from `lint` to `style` genre:
+- `ctx` is no longer an atom, but a plain map. The `:diagnostics` entry is now the atom.
+- `splint.runner/check-form` returns the entire updated `ctx` object instead of just the diagnostics. (I'm not entirely sure that's reasonable, but it's easily changed.)
+- Move a lot of rules from `lint` to `style` genre:
   - `apply-str`
   - `apply-str-interpose`
   - `apply-str-reverse`
@@ -50,6 +52,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
   - `when-not-do`
   - `when-not-empty`
   - `when-not-not`
+
+### Breaking
+
+- Add `ctx` as first argument to `:on-match` functions to pass in config to rules. Update functions in `splint.runner` as necessary.
 
 ## [v1.1.1]
 
@@ -197,7 +203,9 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.1.1...HEAD
+[v1.1.1]: https://github.com/noahtheduke/splint/compare/v1.1.0...v1.1.1
+[v1.1.0]: https://github.com/noahtheduke/splint/compare/v1.0...v1.1.0
 [v1.0.1]: https://github.com/noahtheduke/splint/compare/v1.0...v1.0.1
 [v1.0]: https://github.com/noahtheduke/splint/compare/v0.1.119...v1.0
 [v0.1.119]: https://github.com/noahtheduke/splint/compare/0.1.85...v0.1.119

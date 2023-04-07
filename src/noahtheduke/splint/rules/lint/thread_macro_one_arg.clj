@@ -4,8 +4,10 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.thread-macro-one-arg
   (:require
-   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-   [noahtheduke.splint.rules :refer [defrule]]))
+    [noahtheduke.spat.pattern :refer [non-coll? simple-type]]
+    [noahtheduke.splint.config :refer [get-config]]
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (defn symbol-or-keyword-or-list? [sexp]
   (or (symbol? sexp)
@@ -17,6 +19,21 @@
   (case form
     (-> ->>) true
     false))
+
+(defn make-form [?f ?arg ?form]
+  (cond
+    (not (list? ?form))
+    (list ?form ?arg)
+    (= '-> ?f)
+    `(~(first ?form) ~?arg ~@(rest ?form))
+    (= '->> ?f)
+    (concat ?form [?arg])))
+
+(defn make-diagnostic [rule form ?f ?arg ?form]
+  (let [replace-form (make-form ?f ?arg ?form)
+        message (format "Intention of `%s` is clearer with inlined form." ?f)]
+    (->diagnostic rule form {:replace-form replace-form
+                             :message message})))
 
 (defrule lint/thread-macro-one-arg
   "Threading macros require more effort to understand so only use them with multiple
@@ -44,16 +61,9 @@
   (y z x)
   "
   {:pattern '(%thread-macro?%-?f ?arg ?form)
-   :on-match (fn [ctx rule form {:syms [?f ?form ?arg]}]
+   :on-match (fn [ctx rule form {:syms [?f ?arg ?form]}]
                (when (symbol-or-keyword-or-list? ?form)
-                 (let [replace-form (cond
-                                      (not (list? ?form))
-                                      (list ?form ?arg)
-                                      (= '-> ?f)
-                                      `(~(first ?form) ~?arg ~@(rest ?form))
-                                      (= '->> ?f)
-                                      (concat ?form [?arg]))
-                       message (format "Intention of `%s` is clearer with inlined form."
-                                       ?f)]
-                   (->diagnostic rule form {:replace-form replace-form
-                                            :message message}))))})
+                 (condp = (:chosen-style (get-config ctx rule))
+                   :inline (make-diagnostic rule form ?f ?arg ?form)
+                   :avoid-collections (when (non-coll? (simple-type ?arg))
+                                        (make-diagnostic rule form ?f ?arg ?form)))))})

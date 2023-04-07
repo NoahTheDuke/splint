@@ -16,3 +16,25 @@
   (expect '(form arg) (check-alt "(->> arg form)"))
   (expect '(form arg) (check-alt "(->> arg (form))"))
   (expect '(form 10 arg) (check-alt "(->> arg (form 10))")))
+
+(defexpect thread-style-inline-test
+  (let [config '{lint/thread-macro-one-arg {:chosen-style :inline}}]
+      (expect '(form arg) (check-alt "(-> arg form)" config))
+      (expect '(form [arg]) (check-alt "(-> [arg] form)" config))
+      (expect '(form {:a arg}) (check-alt "(-> {:a arg} form)" config))
+      (expect '(form #{arg}) (check-alt "(-> #{arg} form)" config))
+      (expect '(form arg) (check-alt "(->> arg form)" config))
+      (expect '(form [arg]) (check-alt "(->> [arg] form)" config))
+      (expect '(form {:a arg}) (check-alt "(->> {:a arg} form)" config))
+      (expect '(form #{arg}) (check-alt "(->> #{arg} form)" config))))
+
+(defexpect thread-style-avoid-collections-test
+  (let [config '{lint/thread-macro-one-arg {:chosen-style :avoid-collections}}]
+    (expect '(form arg) (check-alt "(-> arg form)" config))
+    (expect nil? (check-alt "(-> [arg] form)" config))
+    (expect nil? (check-alt "(-> {:a arg} form)" config))
+    (expect nil? (check-alt "(-> #{arg} form)" config))
+    (expect '(form arg) (check-alt "(->> arg form)" config))
+    (expect nil? (check-alt "(->> [arg] form)" config))
+    (expect nil? (check-alt "(->> {:a arg} form)" config))
+    (expect nil? (check-alt "(->> #{arg} form)" config))))

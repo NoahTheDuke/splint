@@ -3,6 +3,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### Added
+
+- `lint/thread-macro-one-arg` supports `:inline` and `:avoid-collections` styles.
+
 ## [v1.2.0]
 
 ### Added

@@ -61,7 +61,7 @@
                (not (and chosen-style supported-style)))
       (throw (ex-info "Need both chosen-style and supported-style" {:rule (:full-name rule)})))
     (when (and chosen-style supported-style)
-      (let [config {:name "Chosen Style"
+      (let [config {:name "`:chosen-style`"
                     :default (str "`" chosen-style "`")
                     :options (->> supported-style
                                   (map #(str "`" % "`"))

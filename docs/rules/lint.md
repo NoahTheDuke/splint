@@ -496,9 +496,9 @@ Empty loops with nested when can be `while`.
 
 ### Configurable Attributes
 
-| Name         | Default | Options              |
-| ------------ | ------- | -------------------- |
-| Chosen Style | `:seq`  | `:seq`, `:not-empty` |
+| Name            | Default | Options              |
+| --------------- | ------- | -------------------- |
+| `:chosen-style` | `:seq`  | `:seq`, `:not-empty` |
 
 ### Reference
 
@@ -594,6 +594,12 @@ args to help with readability.
 ; good
 (y z x)
 ```
+
+### Configurable Attributes
+
+| Name            | Default   | Options                         |
+| --------------- | --------- | ------------------------------- |
+| `:chosen-style` | `:inline` | `:inline`, `:avoid-collections` |
 
 ---
 

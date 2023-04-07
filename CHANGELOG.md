@@ -3,6 +3,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+## [v1.2.0]
+
 ### Added
 
 - `markdown` output: Same text as `full` but with a fancy horizontal bar, header, and code blocks.
@@ -203,7 +205,8 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.2.0...HEAD
+[v1.2.0]: https://github.com/noahtheduke/splint/compare/v1.1.1...v1.2.0
 [v1.1.1]: https://github.com/noahtheduke/splint/compare/v1.1.0...v1.1.1
 [v1.1.0]: https://github.com/noahtheduke/splint/compare/v1.0...v1.1.0
 [v1.0.1]: https://github.com/noahtheduke/splint/compare/v1.0...v1.0.1

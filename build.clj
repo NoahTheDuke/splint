@@ -12,27 +12,6 @@
 (def version (str/trim (slurp "./resources/SPLINT_VERSION")))
 (def class-dir "classes")
 
-(defn compile- [opts]
-  (println "Compiling" lib)
-  (b/delete {:path "classes"})
-  (let [basis (b/create-basis {:aliases [:dev]})]
-    (b/compile-clj {:basis basis
-                    :class-dir class-dir}))
-  opts)
-
-(defn run-tests "Run all the tests." [opts]
-  (compile- opts)
-  (println "Running tests")
-  (let [basis (b/create-basis {:aliases [:dev :test :kaocha]})
-        cmd (b/java-command
-              {:basis      basis
-               :main      'clojure.main
-               :main-args ["-m" "kaocha.runner"]})
-        {:keys [exit]} (b/process cmd)]
-    (if (pos? exit)
-      (System/exit exit)
-      opts)))
-
 (defn make-opts [opts]
   (assoc opts
          :lib lib

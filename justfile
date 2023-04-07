@@ -5,8 +5,7 @@ repl:
     clojure -M:dev:test:repl/rebel
 
 test *args:
-    rm -rf classes
-    clojure -M:dev:test:kaocha {{args}}
+    clojure -M:dev:test:runner {{args}}
 
 new-rule arg:
     @clojure -M:new-rule -n {{arg}}

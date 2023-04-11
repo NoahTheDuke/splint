@@ -5,14 +5,14 @@ Pretty standard installation as a library.
 For Clojure CLI:
 
 ```clojure
-:aliases {:splint {:extra-deps {noahtheduke/splint {:mvn/version "some version"}}
+:aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "some version"}}
                    :main-opts ["-m" "noahtheduke.splint"]}}
 ```
 
 And in Leiningen, add this to `project.clj`:
 
 ```clojure
-:profiles {:dev {:dependencies [noahtheduke/splint "some version"]}}
+:profiles {:dev {:dependencies [io.github.noahtheduke/splint "some version"]}}
 :aliases {"splint" ["run" "-m" "noahtheduke.splint"]}
 ```
 

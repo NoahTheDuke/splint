@@ -3,6 +3,12 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### Fixed
+
+- Differentiate between `&&.` rest args and parsed lists in `:on-match` handlers by attaching `:noahtheduke.spat.pattern/rest` metadata to bound rest args.
+- Bump `edamame` to v1.3.21 to handle `#:: {:a 1}` auto-resolved namespaced maps with spaces between the colons and the map literal.
+- Use correct url in install docs. (Thanks [@dpassen][])
+
 ## [v1.2.1]
 
 ### Added

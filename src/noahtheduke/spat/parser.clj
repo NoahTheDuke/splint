@@ -5,27 +5,51 @@
 (ns noahtheduke.spat.parser
   (:require
     [edamame.core :as e]
-    [edamame.impl.read-fn :as read-fn]))
+    [edamame.impl.read-fn :as read-fn]
+    [noahtheduke.spat.ns-parser :refer [derive-aliases]]))
 
 (set! *warn-on-reflection* true)
 
-(defn make-edamame-opts []
+(defn- parse-ns [obj]
+  (when (list? obj)
+    (case (first obj)
+      ns {:name (second obj)
+          :aliases (derive-aliases obj)}
+      in-ns {:name (second obj)}
+      ; else
+      nil)))
+
+
+
+(defn make-edamame-opts [ns-state]
   {:all true
    :row-key :line
    :col-key :column
    :end-location true
    :features #{:cljs}
-   :read-cond :preserve
+   :read-cond :allow
    :readers (fn [r] (fn [v] (list (if (namespace r) r (symbol "splint-auto" (name r))) v)))
-   :auto-resolve-ns true
-   :auto-resolve (fn [k] (if (= :current k) "splint-auto_" (str "splint-auto_" (name k))))
+   :auto-resolve (fn auto-resolve [ns-str]
+                   (if-let [resolved-ns (@ns-state ns-str)]
+                     resolved-ns
+                     (if (= :current ns-str)
+                       "splint-auto_"
+                       (str "splint-auto_" (name ns-str)))))
+   :postprocess (fn postprocess [{:keys [obj loc]}]
+                  (when-let [ns-parsed (parse-ns obj)]
+                    (reset! ns-state (assoc (:aliases ns-parsed) :current (:name ns-parsed))))
+                  ;; Gotta apply location data here as using `:postprocess` skips automatic
+                  ;; location data
+                  (if (e/iobj? obj)
+                    (vary-meta obj merge loc)
+                    obj))
    :uneval (fn [{:keys [uneval next]}]
              (cond
                (identical? uneval :splint/disable)
-               (with-meta next {:splint/disable true})
+               (vary-meta next assoc :splint/disable true)
                (and (seqable? (:splint/disable uneval))
                     (seq (:splint/disable uneval)))
-               (with-meta next {:splint/disable (seq (:splint/disable uneval))})
+               (vary-meta next assoc :splint/disable (seq (:splint/disable uneval)))
                :else
                next))
    ; All reader macros should be a splint-specific symbol wrapping the expression
@@ -49,5 +73,10 @@
                   ; #".*"
                   \" (fn [expr] (list 'splint/re-pattern expr))}}})
 
-(defn parse-string [s] (e/parse-string s (make-edamame-opts)))
-(defn parse-string-all [s] (e/parse-string-all s (make-edamame-opts)))
+(defn parse-string
+  ([s] (parse-string s (atom {})))
+  ([s ns-state] (e/parse-string s (make-edamame-opts ns-state))))
+
+(defn parse-string-all
+  ([s] (parse-string-all s (atom {})))
+  ([s ns-state] (e/parse-string-all s (make-edamame-opts ns-state))))

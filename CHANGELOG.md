@@ -3,6 +3,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+## [v1.2.2]
+
 ### Fixed
 
 - Differentiate between `&&.` rest args and parsed lists in `:on-match` handlers by attaching `:noahtheduke.spat.pattern/rest` metadata to bound rest args.
@@ -230,7 +232,8 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.2.2...HEAD
+[v1.2.2]: https://github.com/noahtheduke/splint/compare/v1.2.1...v1.2.2
 [v1.2.1]: https://github.com/noahtheduke/splint/compare/v1.2.0...v1.2.1
 [v1.2.0]: https://github.com/noahtheduke/splint/compare/v1.1.1...v1.2.0
 [v1.1.1]: https://github.com/noahtheduke/splint/compare/v1.1.0...v1.1.1

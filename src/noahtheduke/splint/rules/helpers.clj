@@ -2,7 +2,16 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns ^:no-doc noahtheduke.splint.rules.helpers)
+(ns noahtheduke.splint.rules.helpers
+  "Functions available by default in patterns.")
+
+(defn rest-arg?
+  "There's no good way to tell the difference between the pattern
+  `'(if ?x ?y nil)` and `'(if ?x (do &&. ?y))` if `?y` is a list.
+
+  Instead, attach metadata to the captured rest arg and look for it in rules."
+  [sexp]
+  (:noahtheduke.spat.pattern/rest (meta sexp)))
 
 (defn deref?? [sexp]
   (case sexp

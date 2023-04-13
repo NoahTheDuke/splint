@@ -11,3 +11,6 @@
   (expect '(when x y) (check-alt "(if x y nil)"))
   (expect '(when x y) (check-alt "(if x (do y))"))
   (expect nil? (check-alt "(if x \"y\" \"z\")")))
+
+(defexpect rest-arg-list-test
+  (expect '(when x (if y (z a b c))) (check-alt "(if x (if y (z a b c)))")))

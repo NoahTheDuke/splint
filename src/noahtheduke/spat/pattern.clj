@@ -188,7 +188,7 @@
                        (drop ~start ~children-form))]
        (if-let [existing# (get @~retval '~rest-sym)]
          (= existing# form#)
-         (do (swap! ~retval assoc '~rest-sym form#)
+         (do (swap! ~retval assoc '~rest-sym (vary-meta form# assoc ::rest true))
              true)))))
 
 (defn- read-form-seq [sexp form retval f]

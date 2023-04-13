@@ -5,7 +5,8 @@
 (ns ^:no-doc noahtheduke.splint.rules.lint.if-else-nil
   (:require
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+    [noahtheduke.splint.rules :refer [defrule]]
+    [noahtheduke.splint.rules.helpers :refer [rest-arg?]]))
 
 (defrule lint/if-else-nil
   "Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
@@ -23,7 +24,7 @@
               '(if ?x ?y)]
    :message "Use `when` which doesn't require specifying the else branch."
    :on-match (fn [ctx rule form {:syms [?x ?y]}]
-               (let [new-form (if (sequential? ?y)
+               (let [new-form (if (rest-arg? ?y)
                                 (list* 'when ?x ?y)
                                 (list 'when ?x ?y))]
                  (->diagnostic rule form {:replace-form new-form})))})

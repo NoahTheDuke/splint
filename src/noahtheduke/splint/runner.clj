@@ -105,9 +105,9 @@
   (when-let [parsed-file
              (try (parse-string-all (slurp file))
                   (catch Throwable e
-                    (prn (ex-info (ex-message e)
-                                  (assoc (ex-data e) :filename (str file))
-                                  e))))]
+                    (throw (ex-info (ex-message e)
+                                    (assoc (ex-data e) :file file)
+                                    e))))]
     (try
       ;; Check any full-file rules
       (check-form ctx (rules :file) nil parsed-file)
@@ -136,10 +136,18 @@
       (check-paths-single ctx rules paths))
     (catch java.util.concurrent.ExecutionException e
       (let [cause (.getCause e)
-            message (ex-message cause)
-            data (ex-data cause)]
-        (printf "Splint encountered an error in %s:\n%s\nin form: %s" (:file data) message (apply list (:form data)))
-        (newline)
+            message (str/trim (ex-message cause))
+            data (ex-data cause)
+            error-msg (format "Splint encountered an error in %s: %s"
+                              (str (:file data)
+                                   (when (:line data)
+                                     (str ":" (:line data)))
+                                   (when (:column data)
+                                     (str ":" (:column data)))
+                                   (when (:form data)
+                                     (str "\nin form: " (apply list (:form data)))))
+                              message)]
+        (println error-msg)
         (flush))
       (System/exit 1))))
 

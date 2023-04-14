@@ -6,38 +6,40 @@
   (:require
     [edamame.core :as e]
     [edamame.impl.read-fn :as read-fn]
-    [noahtheduke.spat.ns-parser :refer [derive-aliases]]))
+    [noahtheduke.spat.ns-parser :refer [derive-aliases unquote-if-quoted]]))
 
 (set! *warn-on-reflection* true)
 
 (defn- parse-ns [obj]
   (when (list? obj)
     (case (first obj)
-      ns {:name (second obj)
+      ns {:current (second obj)
           :aliases (derive-aliases obj)}
-      in-ns {:name (second obj)}
+      in-ns {:current (unquote-if-quoted (second obj))}
+      (alias require use) {:aliases (derive-aliases obj)}
       ; else
       nil)))
-
-
 
 (defn make-edamame-opts [ns-state]
   {:all true
    :row-key :line
    :col-key :column
    :end-location true
-   :features #{:cljs}
+   :features #{:clj :cljs}
    :read-cond :allow
-   :readers (fn [r] (fn [v] (list (if (namespace r) r (symbol "splint-auto" (name r))) v)))
+   :readers (fn reader [r] (fn reader-value [v] (list 'splint/tagged-literal (list r v))))
    :auto-resolve (fn auto-resolve [ns-str]
                    (if-let [resolved-ns (@ns-state ns-str)]
                      resolved-ns
                      (if (= :current ns-str)
-                       "splint-auto_"
-                       (str "splint-auto_" (name ns-str)))))
+                       "splint-auto-current_"
+                       (str "splint-auto-alias_" (name ns-str)))))
    :postprocess (fn postprocess [{:keys [obj loc]}]
-                  (when-let [ns-parsed (parse-ns obj)]
-                    (reset! ns-state (assoc (:aliases ns-parsed) :current (:name ns-parsed))))
+                  (when-let [{:keys [current aliases]} (parse-ns obj)]
+                    (when current
+                      (reset! ns-state {:current current}))
+                    (when aliases
+                      (swap! ns-state (fnil merge {}) aliases)))
                   ;; Gotta apply location data here as using `:postprocess` skips automatic
                   ;; location data
                   (if (e/iobj? obj)

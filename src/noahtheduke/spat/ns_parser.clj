@@ -6,10 +6,13 @@
 
 (defmulti derive-aliases first :default 'ns)
 
+(defn quoted? [form]
+  (and (seq? form)
+       (= 'quote (first form))))
+
 (defn unquote-if-quoted
   [form]
-  (if (and (seq? form)
-           (= 'quote (first form)))
+  (if (quoted? form)
     (second form)
     form))
 
@@ -93,8 +96,8 @@
 
 (defmethod derive-aliases 'alias
   [[_ alias namespace-sym]]
-  ;; Remove quotes
-  {(second alias) (second namespace-sym)})
+  (when (and (quoted? alias) (quoted? namespace-sym))
+    {(second alias) (second namespace-sym)}))
 
 (comment
   (derive-aliases
@@ -111,4 +114,8 @@
     '(require
       [clojure.string :refer [join] :as-alias str]
       ["react-dom" :refer [cool-stuff] :as react-dom]
-      :reload-all)))
+      :reload-all))
+  (derive-aliases
+    '(alias 'asdf 'qwer.qwer))
+  (derive-aliases
+    '(alias asdf qwer.qwer)))

@@ -16,7 +16,7 @@
       ns {:current (second obj)
           :aliases (derive-aliases obj)}
       in-ns {:current (unquote-if-quoted (second obj))}
-      (alias require use) {:aliases (derive-aliases obj)}
+      (alias require use import) {:aliases (derive-aliases obj)}
       ; else
       nil)))
 

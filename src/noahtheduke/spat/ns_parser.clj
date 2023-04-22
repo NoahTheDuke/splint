@@ -99,9 +99,30 @@
   (when (and (quoted? alias) (quoted? namespace-sym))
     {(second alias) (second namespace-sym)}))
 
+(defmethod derive-aliases 'import
+  [[_ & args]]
+  {:aliases (reduce
+              (fn [acc cur]
+                (cond
+                  (symbol? cur)
+                  (assoc acc cur cur)
+                  (seq? cur)
+                  (let [prefix (first cur)
+                        aliases (rest cur)]
+                    (reduce
+                      (fn [acc alias']
+                        (let [full-name (symbol (str prefix "." alias'))]
+                         (-> acc
+                            (assoc alias' full-name)
+                            (assoc full-name full-name))))
+                      acc
+                      aliases))
+                  :else acc))
+              {} args)})
+
 (comment
   (derive-aliases
-    '(ns noahtheduke.spat.ns-parser 
+    '(ns noahtheduke.spat.ns-parser
        (:use [clojure.set :as-alias set])
        (:use [clojure.edn :as edn])
        (:require
@@ -118,4 +139,7 @@
   (derive-aliases
     '(alias 'asdf 'qwer.qwer))
   (derive-aliases
-    '(alias asdf qwer.qwer)))
+    '(alias asdf qwer.qwer))
+  (derive-aliases
+    '(import a b.c (d.e.f) (g.h i j k)))
+  )

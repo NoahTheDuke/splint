@@ -150,7 +150,7 @@
   (let [[pred bind] (str/split (name sexp) #"%-")
         pred (subs pred 1)
         pred (or (requiring-resolve (symbol (or (namespace (symbol pred)) (str *ns*)) pred))
-                 (requiring-resolve (symbol "clojure.core" pred))
+                 (resolve (symbol "clojure.core" pred))
                  (requiring-resolve (symbol "noahtheduke.splint.rules.helpers" pred)))
         bind (when bind (symbol bind))]
     `(let [form# ~form

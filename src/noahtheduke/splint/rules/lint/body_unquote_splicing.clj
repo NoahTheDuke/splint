@@ -7,6 +7,8 @@
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defn only-body [sexp]
   (case sexp
     (delay dosync future lazy-cat lazy-seq pvalues with-loading-context) true

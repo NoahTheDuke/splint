@@ -7,6 +7,8 @@
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defn find-issue [?pairs]
   (when (and (even? (count ?pairs))
              (list? (first ?pairs))

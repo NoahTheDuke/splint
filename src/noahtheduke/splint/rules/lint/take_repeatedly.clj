@@ -6,6 +6,8 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defrule lint/take-repeatedly
   "`repeatedly` has an arity for limiting the number of repeats with `take`.
 

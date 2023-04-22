@@ -6,6 +6,8 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defrule lint/if-not-do
   "`when-not` already defines an implicit `do`. Rely on it.
 

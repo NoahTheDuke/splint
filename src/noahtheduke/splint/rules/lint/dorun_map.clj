@@ -6,6 +6,8 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defrule lint/dorun-map
   "`map` is lazy, which carries a performance and memory cost. `dorun` uses `seq` iteration to realize the entire sequence, returning `nil`. This style of iteration also carries a performance and memory cost. `dorun` is intended for more complex sequences, whereas a simple `map` can be accomplished with `reduce` + `conj`.
 

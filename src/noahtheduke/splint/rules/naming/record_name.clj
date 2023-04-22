@@ -8,6 +8,8 @@
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defn lower-case-name? [sexp]
   (let [record-name (str sexp)]
     (= (subs record-name 0 1)

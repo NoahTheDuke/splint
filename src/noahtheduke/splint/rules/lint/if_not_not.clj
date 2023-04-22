@@ -6,6 +6,8 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defrule lint/if-not-not
   "Two `not`s cancel each other out.
 

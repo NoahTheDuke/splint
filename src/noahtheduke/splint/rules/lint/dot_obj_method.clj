@@ -7,6 +7,8 @@
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defn symbol-not-class? [sym]
   (and (symbol? sym)
        (let [sym (pr-str sym)

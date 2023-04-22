@@ -8,6 +8,8 @@
     [noahtheduke.splint.rules :refer [defrule]]
     [noahtheduke.splint.rules.helpers :refer [rest-arg?]]))
 
+(set! *warn-on-reflection* true)
+
 (defrule lint/if-else-nil
   "Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
 

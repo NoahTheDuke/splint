@@ -6,6 +6,8 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defrule lint/if-nil-else
   "Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy branch.
 

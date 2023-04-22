@@ -7,6 +7,8 @@
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defrule lint/duplicate-field-name
   "`deftype` and `defrecord` will throw errors if you define multiple fields
   with the same name, but it's good to catch these things early too.

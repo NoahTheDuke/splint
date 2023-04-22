@@ -7,6 +7,8 @@
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (def Math->clj-math
   '{IEEEremainder clojure.math/IEEE-remainder
     addExact clojure.math/add-exact

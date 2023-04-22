@@ -6,6 +6,8 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defrule style/assoc-assoc
   "Layering `assoc` calls are hard to read. `assoc-in` is known and idiomatic.
 

@@ -6,6 +6,8 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defrule lint/try-splicing
   "A macro that wraps a splicing unquote in a try-catch or try-finally can lead
   to subtle hard to debug errors. Better to wrap the splicing unquote in a `do`

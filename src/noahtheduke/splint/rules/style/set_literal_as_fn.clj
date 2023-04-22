@@ -8,6 +8,8 @@
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defn literal-or-quote?
   "Almost everything in spat.pattern/simple? but quoted symbols
   because sets treat symbols as vars.

@@ -6,6 +6,8 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defrule style/when-not-empty?
   "`seq` returns `nil` when given an empty collection. `empty?` is implemented as
   `(not (seq coll))` so it's best and fastest to use `seq` directly.

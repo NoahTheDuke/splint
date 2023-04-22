@@ -8,6 +8,8 @@
     [noahtheduke.splint.rules :refer [defrule]]
     [clojure.string :as str]))
 
+(set! *warn-on-reflection* true)
+
 (defrule naming/conversion-functions
   "Use `->` instead of `to` in the names of conversion functions.
 

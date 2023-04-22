@@ -6,6 +6,8 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defrule lint/fn-wrapper
   "Avoid wrapping functions in pass-through anonymous function defitions.
 

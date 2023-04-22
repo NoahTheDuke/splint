@@ -8,6 +8,8 @@
     [noahtheduke.splint.rules :refer [defrule]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]))
 
+(set! *warn-on-reflection* true)
+
 (defn seq-diagnostic [rule form {:syms [?x]}]
   (->diagnostic rule form
                 {:message "`seq` is idiomatic, gotta learn to love it."

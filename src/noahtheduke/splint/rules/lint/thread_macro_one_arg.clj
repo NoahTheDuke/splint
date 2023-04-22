@@ -9,6 +9,8 @@
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defn symbol-or-keyword-or-list? [sexp]
   (or (symbol? sexp)
       (keyword? sexp)

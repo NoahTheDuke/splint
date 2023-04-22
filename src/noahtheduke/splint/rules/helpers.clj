@@ -5,6 +5,8 @@
 (ns noahtheduke.splint.rules.helpers
   "Functions available by default in patterns.")
 
+(set! *warn-on-reflection* true)
+
 (defn rest-arg?
   "There's no good way to tell the difference between the pattern
   `'(if ?x ?y nil)` and `'(if ?x (do &&. ?y))` if `?y` is a list.

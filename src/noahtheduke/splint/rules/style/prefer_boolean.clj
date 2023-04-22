@@ -6,6 +6,8 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defrule style/prefer-boolean
   "Use `boolean` if you must return `true` or `false` from an expression.
 

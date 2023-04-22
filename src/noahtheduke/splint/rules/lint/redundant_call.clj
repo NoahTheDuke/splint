@@ -7,6 +7,8 @@
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defn right-fn? [sexp]
   (case sexp
     (-> ->> cond-> cond->> some-> some->> comp partial merge) true

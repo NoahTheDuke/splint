@@ -8,6 +8,8 @@
     [noahtheduke.splint.rules :refer [defrule]]
     [clojure.string :as str]))
 
+(set! *warn-on-reflection* true)
+
 (defn bad-name? [?name]
   (let [?name (str ?name)]
     (or (str/starts-with? ?name "is-")

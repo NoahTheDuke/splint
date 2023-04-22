@@ -49,10 +49,16 @@
 
 (defn check-all-rules-of-type
   [ctx rules parent-form form]
-  (keep
-    (fn [[_rule-name rule]]
-      (when (-> rule :config :enabled)
-        (check-rule ctx rule parent-form form)))
+  (reduce
+    (fn [acc rule-entry]
+      (let [rule (val rule-entry)]
+        (if (-> rule :config :enabled)
+          (let [result (check-rule ctx rule parent-form form)]
+            (if (some? result)
+              (conj acc result)
+              acc))
+          acc)))
+    nil
     rules))
 
 (defn check-form
@@ -64,14 +70,14 @@
       (update ctx :diagnostics swap! into diagnostics))))
 
 (defn update-rules [rules form]
-  (if-let [disabled-rules (:splint/disable (meta form))]
+  (if-let [disabled-rules (some-> form meta :splint/disable)]
     (if (true? disabled-rules)
       ;; disable everything
       (update-vals rules (fn [rs]
                            (update-vals rs #(assoc-in % [:config :enabled] false))))
       ;; parse list of disabled genres and specific rules
       (let [{genres true specific-rules false} (group-by simple-symbol? disabled-rules)
-            genres (set (map str genres))
+            genres (into #{} (map str) genres)
             specific-rules (set specific-rules)]
         (update-vals
           rules

@@ -8,6 +8,20 @@
     [noahtheduke.spat.parser :refer [parse-string]]
     [noahtheduke.spat.pattern :as sut]))
 
+(defexpect simple-type-test
+  (doseq [[input t] '[[nil :nil]
+                      [true :boolean]
+                      [1 :number]
+                      ["a" :string]
+                      [:a :keyword]
+                      [a :symbol]
+                      [(1 2 3) :list]
+                      [[1 2 3] :vector]
+                      [{1 2} :map]
+                      [#{1 2 3} :set]
+                      [#"asdf" java.util.regex.Pattern]]]
+    (expect (sut/simple-type input) t)))
+
 (defexpect read-dispatch-test
   (expecting "simple types"
     (doseq [[input t] '[[nil :nil]
@@ -21,18 +35,19 @@
                         [{1 2} :map]
                         [#{1 2 3} :set]]]
       (expect (sut/read-dispatch input nil nil) t)))
-  (expecting ":symbol refinements"
-    (expect (sut/read-dispatch '_ nil nil) :any)
-    (expect (sut/read-dispatch '^:spat/lit _ nil nil) :symbol)
-    (expect (sut/read-dispatch '%asdf nil nil) :pred)
-    (expect (sut/read-dispatch '^:spat/lit %asdf nil nil) :symbol)
-    (expect (sut/read-dispatch '?asdf nil nil) :binding)
-    (expect (sut/read-dispatch '^:spat/lit ?asdf nil nil) :symbol)
-    (expect (sut/read-dispatch '&&. nil nil) :rest)
-    (expect (sut/read-dispatch '^:spat/lit &&. nil nil) :symbol))
-  (expecting ":list refinements")
-  (expect (sut/read-dispatch '(quote 1) nil nil) :quote)
-  (expect (sut/read-dispatch '^:spat/lit (quote 1) nil nil) :list))
+  (expecting "refinements"
+    (doseq [[input t] [['_ :any]
+                       ['%asdf :pred]
+                       ['?asdf :binding]
+                       ['&&. :rest]
+                       ['&asdf :symbol]
+                       ['asdf :symbol]]]
+      (expect t (sut/read-dispatch input nil nil))
+      (expect :symbol (sut/read-dispatch (vary-meta input assoc :spat/lit true) nil nil)))
+    (doseq [[input t] [['(quote (1 2 3)) :quote]
+                       ['(1 2 3) :list]]]
+      (expect t (sut/read-dispatch input nil nil))
+      (expect :list (sut/read-dispatch (vary-meta input assoc :spat/lit true) nil nil)))))
 
 (defexpect match-any-test
   (expect {}

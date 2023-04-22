@@ -16,41 +16,43 @@
     (fnext sexp)
     sexp))
 
-(defn simple-type
-  "Because Clojure doesn't have this built-in, we must do it the slow way: take
-  an object and return a keyword representing that object:
+(defprotocol SexpType
+  (simple-type
+    [sexp]
+    "Because Clojure doesn't have this built-in, we must do it the slow way: take
+    an object and return a keyword representing that object:
 
-  ```clojure
-  nil -> :nil
-  true/false -> :boolean
-  \\c -> :char
-  1 -> :number
-  :hello -> :keyword
-  \"hello\" -> :string
-  hello -> :symbol
-  {:a :b} -> :map
-  #{:a :b} -> :set
-  [:a :b] -> :vector
-  (1 2 3) -> :list
-  :else -> (type sexp)
-  ```
-  "
-  [sexp]
-  (cond
-    ; literals
-    (nil? sexp) :nil
-    (boolean? sexp) :boolean
-    (char? sexp) :char
-    (number? sexp) :number
-    (keyword? sexp) :keyword
-    (string? sexp) :string
-    (symbol? sexp) :symbol
-    ; reader macros
-    (map? sexp) :map
-    (set? sexp) :set
-    (vector? sexp) :vector
-    (seq? sexp) :list
-    :else (type sexp)))
+    ```clojure
+    nil -> :nil
+    true/false -> :boolean
+    \\c -> :char
+    1 -> :number
+    :hello -> :keyword
+    \"hello\" -> :string
+    hello -> :symbol
+    {:a :b} -> :map
+    #{:a :b} -> :set
+    [:a :b] -> :vector
+    (1 2 3) -> :list
+    :else -> (type sexp)
+    ```"))
+
+(extend-protocol SexpType
+  ; literals
+  nil (simple-type [_sexp] :nil)
+  Boolean (simple-type [_sexp] :boolean)
+  Character (simple-type [_sexp] :char)
+  Number (simple-type [_sexp] :number)
+  String (simple-type [_sexp] :string)
+  clojure.lang.Keyword (simple-type [_sexp] :keyword)
+  clojure.lang.Symbol (simple-type [_sexp] :symbol)
+  ; reader macros
+  clojure.lang.IPersistentMap (simple-type [_sexp] :map)
+  clojure.lang.IPersistentSet (simple-type [_sexp] :set)
+  clojure.lang.IPersistentVector (simple-type [_sexp] :vector)
+  clojure.lang.ISeq (simple-type [_sexp] :list)
+  ; else
+  Object (simple-type [sexp] (symbol (pr-str (type sexp)))))
 
 (comment
   (simple-type {:a 1})
@@ -64,16 +66,21 @@
   `:spat/lit`."
   [sexp _form _retval]
   (let [type (simple-type sexp)]
-    (if (:spat/lit (meta sexp))
+    (if (some-> sexp meta :spat/lit)
       type
       (case type
-        :symbol (let [s-name (name sexp)]
-                  (cond
-                    (= '_ sexp) :any
-                    (= \% (first s-name)) :pred
-                    (= \? (first s-name)) :binding
-                    (= "&&." (subs s-name 0 (min (count s-name) 3))) :rest
-                    :else :symbol))
+        :symbol (if (= '_ sexp)
+                  :any
+                  (let [s-name (name sexp)
+                        char0 (.charAt s-name 0)]
+                    (case char0
+                      \% :pred
+                      \? :binding
+                      \& (if (= "&." (.substring s-name 1 (min (.length s-name) 3)))
+                           :rest
+                           :symbol)
+                      ; else
+                      :symbol)))
         :list (if (= 'quote (first sexp))
                 :quote
                 :list)
@@ -103,7 +110,7 @@
   (let [form (gensym "form-")
         retval (gensym "retval-")]
     `(fn [~form]
-       (let [~retval (atom {})]
+       (let [~retval (volatile! {})]
          (when ~(read-form (drop-quote sexp) form retval)
            @~retval)))))
 
@@ -149,13 +156,13 @@
     `(let [form# ~form
            result# (~pred form#)]
        (when (and result# ~(some? bind))
-         (swap! ~retval assoc '~bind form#))
+         (vswap! ~retval assoc '~bind form#))
        result#)))
 
 (defmethod read-form :binding [sexp form retval]
   `(if-let [existing# (get @~retval '~sexp)]
      (= existing# ~form)
-     (do (swap! ~retval assoc '~sexp ~form)
+     (do (vswap! ~retval assoc '~sexp ~form)
          true)))
 
 (defn- accrue-preds
@@ -188,7 +195,7 @@
                        (drop ~start ~children-form))]
        (if-let [existing# (get @~retval '~rest-sym)]
          (= existing# form#)
-         (do (swap! ~retval assoc '~rest-sym (vary-meta form# assoc ::rest true))
+         (do (vswap! ~retval assoc '~rest-sym (vary-meta form# assoc ::rest true))
              true)))))
 
 (defn- read-form-seq [sexp form retval f]

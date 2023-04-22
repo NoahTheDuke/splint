@@ -9,6 +9,12 @@
                      criterium/criterium {:mvn/version "0.4.6"}
                      com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.0.3"}
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}}}
+  :flow {:classpath-overrides {org.clojure/clojure nil} ;; for disabling the official compiler
+         :extra-deps {com.github.jpmonettas/clojure {:mvn/version "RELEASE"}
+                      com.github.jpmonettas/flow-storm-dbg {:mvn/version "RELEASE"}}
+         :jvm-opts ["-Dclojure.storm.traceEnable=true"
+                    "-Dclojure.storm.instrumentEnable=true"
+                    "-Dclojure.storm.instrumentOnlyPrefixes=user,noahtheduke"]}
   :test {:extra-paths ["test"]
          :extra-deps {com.github.seancorfield/expectations {:mvn/version "2.0.160"}}}
   :runner {:extra-deps {io.github.cognitect-labs/test-runner {:git/tag "v0.5.1"

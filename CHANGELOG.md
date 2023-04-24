@@ -3,13 +3,31 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### Added
+
+- `*warn-on-reflection* to all rules and rule template.
+- Use `:spat/import-ns` metadata as way to track when a symbol has been imported.
+
+### Changed
+
+- Various performance enhancements:
+  - Use protocols in `noahtheduke.spat.pattern/simple-type` for performance.
+  - Use `volatile` instead of `atom` for bindings in `noahtheduke.spat.pattern`.
+  - Switch `keep` to `reduce` to avoid seq and laziness manipulation.
+  - Use `some->` where appropriate for short-circuiting.
+
+### Fixed
+
+- Fix [#2](https://github.com/NoahTheDuke/splint/issues/2), false positive on interop fn-wrappers.
+- Lots of small namespace parsing fixes.
+
 ## [v1.2.2]
 
 ### Fixed
 
 - Differentiate between `&&.` rest args and parsed lists in `:on-match` handlers by attaching `:noahtheduke.spat.pattern/rest` metadata to bound rest args.
 - Bump `edamame` to v1.3.21 to handle `#:: {:a 1}` auto-resolved namespaced maps with spaces between the colons and the map literal.
-- Use correct url in install docs. (Thanks [@dpassen][])
+- Use correct url in install docs. (Thanks [@dpassen](https://github.com/dpassen))
 
 ## [v1.2.1]
 

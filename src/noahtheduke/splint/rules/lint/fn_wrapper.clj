@@ -11,8 +11,9 @@
 (set! *warn-on-reflection* true)
 
 (defn interop? [sexp]
-  (or (some->> sexp namespace symbol default-import?)
-      (some->> sexp meta :spat/import-ns)))
+  (and (symbol? sexp)
+       (or (some->> sexp namespace symbol default-import?)
+           (some->> sexp meta :spat/import-ns))))
 
 (defrule lint/fn-wrapper
   "Avoid wrapping functions in pass-through anonymous function defitions.

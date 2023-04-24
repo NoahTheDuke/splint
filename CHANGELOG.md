@@ -1,6 +1,14 @@
 # Change Log
 This changelog is loose. Versions are not semantic, they are incremental. Splint is not meant to be infrastructure, so don't rely on it like infrastructure; it is a helpful development tool.
 
+## [Unreleased]
+
+## [1.2.4]
+
+### Fixed
+
+- Parsing bug in `lint/fn-wrapper` introduced in v1.2.3.
+
 ## [1.2.3]
 
 ### Added

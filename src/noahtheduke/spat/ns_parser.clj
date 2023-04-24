@@ -16,6 +16,29 @@
     (second form)
     form))
 
+(defn parse-imports [args]
+  (reduce
+    (fn [acc cur]
+      (cond
+        (symbol? cur)
+        (assoc acc cur cur)
+        (seq? cur)
+        (let [prefix (first cur)
+              aliases (rest cur)]
+          (reduce
+            (fn [acc alias_]
+              (let [full-name (symbol (str prefix "." alias_))]
+                (-> acc
+                    (assoc alias_ full-name)
+                    (assoc full-name full-name))))
+            acc aliases))
+        :else acc))
+    {} args))
+
+(defmethod derive-aliases 'import
+  [[_ & args]]
+  {:imports (parse-imports args)})
+
 (defn- prefix-spec?
   "Returns true if form represents a libspec prefix list like
   (prefix name1 name1) or [com.example.prefix [name1 :as name1]]"
@@ -45,8 +68,7 @@
            (= 1 (count form)))))
 
 (defn- deps-from-libspec
-  "A slight modification from clojure.tools.namespace.parse/deps-from-libspec,
-  in which aliases are captured as metadata."
+  "A modification from clojure.tools.namespace.parse/deps-from-libspec."
   [prefix form]
   (cond (prefix-spec? form)
         (mapcat (fn [f] (deps-from-libspec
@@ -76,70 +98,49 @@
        (filter :alias)
        (into {} (map (fn [dep] [(:alias dep) (:ns dep)])))))
 
-(defmethod derive-aliases 'ns
-  [[_ _ns & references]]
-  (->> references
-       (remove #(or (string? %) (map? %)))
-       (group-by #(-> % first name keyword))
-       ((juxt :require :require-macros :use))
-       (apply concat)
-       (keep #(-> % next derive-aliases-from-deps))
-       (apply merge)))
-
 (defmethod derive-aliases 'require
   [deps]
-  (derive-aliases-from-deps (next deps)))
+  {:aliases (derive-aliases-from-deps (next deps))})
 
 (defmethod derive-aliases 'use
   [deps]
-  (derive-aliases-from-deps (next deps)))
+  {:aliases (derive-aliases-from-deps (next deps))})
+
+(defmethod derive-aliases 'ns
+  [[_ ns_ & references]]
+  (let [libspecs (->> references
+                      (filter sequential?)
+                      (group-by #(-> % first name keyword)))]
+   {:current (unquote-if-quoted ns_)
+    :aliases (->> libspecs
+                  ((juxt :require :require-macros :use))
+                  (apply concat)
+                  (keep #(-> % next derive-aliases-from-deps))
+                  (apply merge))
+    :imports (->> (:import libspecs)
+                  (map parse-imports)
+                  (apply merge-with into))}))
+
+(defmethod derive-aliases 'in-ns
+  [[_ ns_]]
+  {:current (unquote-if-quoted ns_)})
 
 (defmethod derive-aliases 'alias
   [[_ alias namespace-sym]]
   (when (and (quoted? alias) (quoted? namespace-sym))
-    {(second alias) (second namespace-sym)}))
+    {:aliases {(second alias) (second namespace-sym)}}))
 
-(defmethod derive-aliases 'import
-  [[_ & args]]
-  {:aliases (reduce
-              (fn [acc cur]
-                (cond
-                  (symbol? cur)
-                  (assoc acc cur cur)
-                  (seq? cur)
-                  (let [prefix (first cur)
-                        aliases (rest cur)]
-                    (reduce
-                      (fn [acc alias']
-                        (let [full-name (symbol (str prefix "." alias'))]
-                         (-> acc
-                            (assoc alias' full-name)
-                            (assoc full-name full-name))))
-                      acc
-                      aliases))
-                  :else acc))
-              {} args)})
+(defmethod derive-aliases 'refer
+  [_args]
+  nil)
 
-(comment
-  (derive-aliases
-    '(ns noahtheduke.spat.ns-parser
-       (:use [clojure.set :as-alias set])
-       (:use [clojure.edn :as edn])
-       (:require
-         [clojure.string :refer [join] :as-alias str]
-         ["react-dom" :refer [cool-stuff] :as react-dom]
-         :reload-all)
-       (:require
-         [clojure.zip :reload :all :as z])))
-  (derive-aliases
-    '(require
-      [clojure.string :refer [join] :as-alias str]
-      ["react-dom" :refer [cool-stuff] :as react-dom]
-      :reload-all))
-  (derive-aliases
-    '(alias 'asdf 'qwer.qwer))
-  (derive-aliases
-    '(alias asdf qwer.qwer))
-  (derive-aliases
-    '(import a b.c (d.e.f) (g.h i j k)))
-  )
+(defmethod derive-aliases 'refer-clojure
+  [_args]
+  nil)
+
+(defn parse-ns [obj]
+  (when (list? obj)
+    (case (first obj)
+      (alias import in-ns ns require use) (derive-aliases obj)
+      ; else
+      nil)))

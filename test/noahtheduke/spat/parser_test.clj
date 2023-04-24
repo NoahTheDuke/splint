@@ -4,7 +4,7 @@
 
 (ns noahtheduke.spat.parser-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect from-each]]
+    [expectations.clojure.test :refer [defexpect expect]]
     [noahtheduke.spat.parser :as parser :refer [parse-string parse-string-all]]))
 
 (defexpect unknown-tagged-literals-test
@@ -25,50 +25,3 @@
   (expect '{:splint/disable [lint]}
     (select-keys (meta (parse-string "#_{:splint/disable [lint]} (foo bar)"))
                  [:splint/disable])))
-
-(defexpect parse-ns-test
-  (let [parse-ns @#'parser/parse-ns]
-    (expect
-      '{:current noahtheduke.spat.ns-parser
-        :aliases {str clojure.string
-                  react-dom "react-dom"
-                  z clojure.zip
-                  set clojure.set
-                  edn clojure.edn}}
-      (parse-ns
-        '(ns noahtheduke.spat.ns-parser
-           (:use [clojure.set :as-alias set])
-           (:use [clojure.edn :as edn])
-           (:require
-             [clojure.string :refer [join] :as-alias str]
-             ["react-dom" :refer [cool-stuff] :as react-dom]
-             :reload-all)
-           (:require
-             [clojure.zip :reload :all :as z]))))
-    (expect
-      '{:aliases {str clojure.string
-                  react-dom "react-dom"}}
-      (parse-ns
-        '(require
-           [clojure.string :refer [join] :as-alias str]
-           ["react-dom" :refer [cool-stuff] :as react-dom]
-           :reload-all)))
-    (expect
-      '{:aliases {str clojure.string
-                  react-dom "react-dom"}}
-      (parse-ns
-        '(use
-           [clojure.string :refer [join] :as-alias str]
-           ["react-dom" :refer [cool-stuff] :as react-dom]
-           :reload-all)))
-    (expect
-      '{:current noahtheduke.spat.parser}
-      (parse-ns '(in-ns 'noahtheduke.spat.parser)))
-    (expect
-      '{:aliases {asdf qwer.qwer}}
-      (parse-ns '(alias 'asdf 'qwer.qwer)))
-    (expect '{:aliases nil}
-      (from-each [input ['(alias a b)
-                         '(alias 'a b)
-                         '(alias a 'b)]]
-        (parse-ns input)))))

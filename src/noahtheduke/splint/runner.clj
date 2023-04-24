@@ -135,26 +135,33 @@
                  (map #(parse-and-check-file ctx rules %)))]
     (sequence xf paths)))
 
+(defn- print-runner-error [^java.lang.Throwable e]
+  (let [cause (.getCause e)
+        message (str/trim (ex-message cause))
+        data (ex-data cause)
+        error-msg (format "Splint encountered an error in %s: %s\n%s"
+                          (str (:file data)
+                               (when (:line data)
+                                 (str ":" (:line data)))
+                               (when (:column data)
+                                 (str ":" (:column data)))
+                               (when (:form data)
+                                 (str "\nin form: " (apply list (:form data)))))
+                          message
+                          (str/join "\n" (.getStackTrace e)))]
+    (println error-msg)
+    (flush)))
+
 (defn check-paths [ctx rules paths]
   (try
     (if (-> ctx :options :parallel)
       (check-paths-parallel ctx rules paths)
       (check-paths-single ctx rules paths))
     (catch java.util.concurrent.ExecutionException e
-      (let [cause (.getCause e)
-            message (str/trim (ex-message cause))
-            data (ex-data cause)
-            error-msg (format "Splint encountered an error in %s: %s"
-                              (str (:file data)
-                                   (when (:line data)
-                                     (str ":" (:line data)))
-                                   (when (:column data)
-                                     (str ":" (:column data)))
-                                   (when (:form data)
-                                     (str "\nin form: " (apply list (:form data)))))
-                              message)]
-        (println error-msg)
-        (flush))
+      (print-runner-error (.getCause e))
+      (System/exit 1))
+    (catch Throwable e
+      (print-runner-error e)
       (System/exit 1))))
 
 (defn prepare-rules [config rules]

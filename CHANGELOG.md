@@ -1,7 +1,7 @@
 # Change Log
 This changelog is loose. Versions are not semantic, they are incremental. Splint is not meant to be infrastructure, so don't rely on it like infrastructure; it is a helpful development tool.
 
-## [Unreleased]
+## [1.2.3]
 
 ### Added
 
@@ -250,7 +250,8 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.2.2...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.2.3...HEAD
+[v1.2.3]: https://github.com/noahtheduke/splint/compare/v1.2.2...v1.2.3
 [v1.2.2]: https://github.com/noahtheduke/splint/compare/v1.2.1...v1.2.2
 [v1.2.1]: https://github.com/noahtheduke/splint/compare/v1.2.0...v1.2.1
 [v1.2.0]: https://github.com/noahtheduke/splint/compare/v1.1.1...v1.2.0

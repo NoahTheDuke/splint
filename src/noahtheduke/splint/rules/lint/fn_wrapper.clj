@@ -4,9 +4,15 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.fn-wrapper
   (:require
-    [noahtheduke.splint.rules :refer [defrule]]))
+    [noahtheduke.splint.rules :refer [defrule]]
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules.helpers :refer [default-import?]]))
 
 (set! *warn-on-reflection* true)
+
+(defn interop? [sexp]
+  (or (some->> sexp namespace symbol default-import?)
+      (some->> sexp meta :spat/import-ns)))
 
 (defrule lint/fn-wrapper
   "Avoid wrapping functions in pass-through anonymous function defitions.
@@ -27,5 +33,7 @@
   "
   {:patterns ['(%fn?? [?arg] (?fun ?arg))
               '(%fn?? ([?arg] (?fun ?arg)))]
-   :message "No need to wrap function. Clojure supports first-class functions."
-   :replace '?fun})
+   :on-match (fn [ctx rule form {:syms [?fun ?args]}]
+               (when-not (interop? ?fun)
+                 (->diagnostic rule form {:replace-form ?fun
+                                          :message "No need to wrap function. Clojure supports first-class functions."})))})

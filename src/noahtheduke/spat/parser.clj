@@ -10,6 +10,13 @@
 
 (set! *warn-on-reflection* true)
 
+(defn attach-import-meta [ns-state obj]
+  (if-let [ns_ (and (symbol? obj) (some-> obj namespace symbol))]
+    (if-let [fqns (get-in @ns-state [:imports ns_])]
+      (vary-meta obj assoc :spat/import-ns fqns)
+      obj)
+    obj))
+
 (defn make-edamame-opts [ns-state]
   {:all true
    :row-key :line
@@ -35,7 +42,8 @@
                   ;; Gotta apply location data here as using `:postprocess` skips automatic
                   ;; location data
                   (if (e/iobj? obj)
-                    (vary-meta obj merge loc)
+                    (->> (vary-meta obj merge loc)
+                         (attach-import-meta ns-state))
                     obj))
    :uneval (fn [{:keys [uneval next]}]
              (cond

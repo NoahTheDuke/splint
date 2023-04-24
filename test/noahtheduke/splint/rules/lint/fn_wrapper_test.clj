@@ -5,9 +5,13 @@
 (ns noahtheduke.splint.rules.lint.fn-wrapper-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint-test :refer [check-alt check-all]]))
 
 (defexpect fn-wrapper-test
   (expect 'f (check-alt "(fn* [arg] (f arg))"))
   (expect 'f (check-alt "(fn [arg] (f arg))"))
   (expect 'f (check-alt "#(f %)")))
+
+(defexpect interop-static-test
+  (expect nil (check-alt "#(Integer/parseInt %)"))
+  (expect nil (check-all "(do (import (java.util.regex Pattern)) #(Pattern/compile %))")))

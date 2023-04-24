@@ -17,23 +17,25 @@
     form))
 
 (defn parse-imports [args]
-  (reduce
-    (fn [acc cur]
-      (cond
-        (symbol? cur)
-        (assoc acc cur cur)
-        (seq? cur)
-        (let [prefix (first cur)
-              aliases (rest cur)]
-          (reduce
-            (fn [acc alias_]
-              (let [full-name (symbol (str prefix "." alias_))]
-                (-> acc
-                    (assoc alias_ full-name)
-                    (assoc full-name full-name))))
-            acc aliases))
-        :else acc))
-    {} args))
+  (persistent!
+    (reduce
+      (fn [acc cur]
+        (cond
+          (symbol? cur)
+          (assoc! acc cur cur)
+          (seq? cur)
+          (let [prefix (first cur)
+                aliases (rest cur)]
+            (reduce
+              (fn [acc alias_]
+                (let [full-name (symbol (str prefix "." alias_))]
+                  (-> acc
+                      (assoc! alias_ full-name)
+                      (assoc! full-name full-name))))
+              acc aliases))
+          :else acc))
+      (transient {})
+      args)))
 
 (defmethod derive-aliases 'import
   [[_ & args]]

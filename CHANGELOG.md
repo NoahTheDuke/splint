@@ -3,6 +3,13 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+## [v1.3.2]
+
+### Fixed
+
+- Babashka compatibility
+- Set up Github CI
+
 ## [v1.3.1]
 
 ### Fixed
@@ -274,7 +281,8 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.3.1...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.3.2...HEAD
+[v1.3.2]: https://github.com/noahtheduke/splint/compare/v1.3.1...v1.3.2
 [v1.3.1]: https://github.com/noahtheduke/splint/compare/v1.3.0...v1.3.1
 [v1.3.0]: https://github.com/noahtheduke/splint/compare/v1.2.4...v1.3.0
 [v1.2.4]: https://github.com/noahtheduke/splint/compare/v1.2.3...v1.2.4

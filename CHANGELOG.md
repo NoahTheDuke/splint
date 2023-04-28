@@ -6,6 +6,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### New Rules
 
 - `naming/single-segment-namespace`: Prefer `(ns foo.bar)` to `(ns foo)`.
+- `naming/conventional-aliases`: Prefer idiomatic aliases for core libraries (`[clojure.string :as str]` to `[clojure.string :as string]`).
 
 ## [1.2.4]
 

@@ -1,6 +1,6 @@
 (ns noahtheduke.splint.printer 
   (:require
-    [clojure.pprint :as pprint]))
+    [clojure.pprint :as pp]))
 
 (defn print-find-dispatch [output _diagnostic] output)
 
@@ -9,10 +9,10 @@
 (defmethod print-find "full" [_ {:keys [filename rule-name form line column message alt]}]
   (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)
   (newline)
-  (pprint/pprint form)
+  (pp/pprint form)
   (when alt
     (println "Consider using:")
-    (pprint/pprint alt))
+    (pp/pprint alt))
   (newline)
   (flush))
 
@@ -35,14 +35,14 @@
   (println message)
   (newline)
   (println "```clojure")
-  (pprint/pprint form)
+  (pp/pprint form)
   (println "```")
   (newline)
   (when alt
     (println "Consider using:")
     (newline)
     (println "```clojure")
-    (pprint/pprint alt)
+    (pp/pprint alt)
     (println "```")
     (newline))
   (flush))

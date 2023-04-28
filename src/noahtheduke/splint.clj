@@ -43,6 +43,7 @@
     noahtheduke.splint.rules.lint.thread-macro-one-arg
     noahtheduke.splint.rules.lint.try-splicing
 
+    noahtheduke.splint.rules.naming.conventional-aliases
     noahtheduke.splint.rules.naming.conversion-functions
     noahtheduke.splint.rules.naming.predicate
     noahtheduke.splint.rules.naming.single-segment-namespace

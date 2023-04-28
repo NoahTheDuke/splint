@@ -2,19 +2,15 @@
 ; Kibit: Copyright © 2012 Jonas Enlund, ELP 1.0
 ; Modifications licensed under ELP 1.0
 
-(ns noahtheduke.spat.ns-parser)
+(ns noahtheduke.spat.ns-parser
+  (:require
+    [noahtheduke.spat.pattern :refer [drop-quote]]))
 
 (defmulti derive-aliases first :default 'ns)
 
 (defn quoted? [form]
   (and (seq? form)
        (= 'quote (first form))))
-
-(defn unquote-if-quoted
-  [form]
-  (if (quoted? form)
-    (second form)
-    form))
 
 (defn parse-imports [args]
   (persistent!
@@ -69,7 +65,7 @@
        (or (keyword? (second form))  ; vector like ["foo" :as f]
            (= 1 (count form)))))
 
-(defn- deps-from-libspec
+(defn deps-from-libspec
   "A modification from clojure.tools.namespace.parse/deps-from-libspec."
   [prefix form]
   (cond (prefix-spec? form)
@@ -96,7 +92,7 @@
   is the clojure.lang.Symbol that represents the namespace that the alias refers to."
   [deps]
   (->> deps
-       (mapcat #(deps-from-libspec nil (unquote-if-quoted %)))
+       (mapcat #(deps-from-libspec nil (drop-quote %)))
        (filter :alias)
        (into {} (map (fn [dep] [(:alias dep) (:ns dep)])))))
 
@@ -113,7 +109,7 @@
   (let [libspecs (->> references
                       (filter sequential?)
                       (group-by #(-> % first name keyword)))]
-   {:current (unquote-if-quoted ns_)
+   {:current (drop-quote ns_)
     :aliases (->> libspecs
                   ((juxt :require :require-macros :use))
                   (apply concat)
@@ -125,7 +121,7 @@
 
 (defmethod derive-aliases 'in-ns
   [[_ ns_]]
-  {:current (unquote-if-quoted ns_)})
+  {:current (drop-quote ns_)})
 
 (defmethod derive-aliases 'alias
   [[_ alias namespace-sym]]

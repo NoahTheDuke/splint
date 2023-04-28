@@ -187,6 +187,13 @@
 
  ;; Naming Rules
 
+ naming/conventional-aliases
+ {:description "Prefer idiomatic aliases to alternatives."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"
+  :guide-ref "#use-idiomatic-namespace-aliases"}
+
  naming/conversion-functions
  {:description ""
   :enabled true

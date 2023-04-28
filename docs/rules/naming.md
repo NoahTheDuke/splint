@@ -20,7 +20,7 @@ Through community and core practices over the years, various core libraries have
 
 ### Reference
 
-* [https://guide.clojure.style/#use-idiomatic-namespace-aliases]
+* https://guide.clojure.style/#use-idiomatic-namespace-aliases
 
 ---
 
@@ -44,7 +44,7 @@ Use `->` instead of `to` in the names of conversion functions.
 
 ### Reference
 
-* [https://guide.clojure.style/#naming-conversion-functions]
+* https://guide.clojure.style/#naming-conversion-functions
 
 ---
 
@@ -70,7 +70,7 @@ Use lisp-case for function and variable names. (Replacement is generated with `c
 
 ### Reference
 
-* [https://guide.clojure.style/#naming-functions-and-variables]
+* https://guide.clojure.style/#naming-functions-and-variables
 
 ---
 
@@ -100,7 +100,7 @@ a 'p' (such as `map`).
 
 ### Reference
 
-* [https://guide.clojure.style/#naming-predicates]
+* https://guide.clojure.style/#naming-predicates
 
 ---
 
@@ -124,7 +124,7 @@ Records should use PascalCase.
 
 ### Reference
 
-* [https://guide.clojure.style/#naming-protocols-records-structs-and-types]
+* https://guide.clojure.style/#naming-protocols-records-structs-and-types
 
 ---
 
@@ -148,4 +148,4 @@ Namespaces exist to disambiguate names. Using a single segment namespace puts yo
 
 ### Reference
 
-* [https://guide.clojure.style/#no-single-segment-namespaces]
+* https://guide.clojure.style/#no-single-segment-namespaces

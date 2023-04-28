@@ -81,7 +81,7 @@
       (str "### Reference"
            \newline \newline
            (when guide-ref
-             (format "* [https://guide.clojure.style/%s]" guide-ref))
+             (format "* https://guide.clojure.style/%s" guide-ref))
            (when (and guide-ref outside-link)
              \newline)
            (when outside-link

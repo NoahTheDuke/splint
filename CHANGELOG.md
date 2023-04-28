@@ -3,6 +3,14 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+## [v1.3.1]
+
+### Fixed
+
+- Links in docs for style guide.
+
+## [v1.3.0]
+
 ### New Rules
 
 - `naming/single-segment-namespace`: Prefer `(ns foo.bar)` to `(ns foo)`.
@@ -11,13 +19,13 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - `naming/lisp-case`: Prefer kebab-case over other cases for top-level definitions. Relies on [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).
 - `style/multiple-arity-order`: Function definitions should have multiple arities sorted fewest arguments to most: `(defn foo ([a] 1) ([a b] 2) ([a b & more] 3))`
 
-## [1.2.4]
+## [v1.2.4]
 
 ### Fixed
 
 - Parsing bug in `lint/fn-wrapper` introduced in v1.2.3.
 
-## [1.2.3]
+## [v1.2.3]
 
 ### Added
 
@@ -266,7 +274,10 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.2.3...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.3.1...HEAD
+[v1.3.1]: https://github.com/noahtheduke/splint/compare/v1.3.0...v1.3.1
+[v1.3.0]: https://github.com/noahtheduke/splint/compare/v1.2.4...v1.3.0
+[v1.2.4]: https://github.com/noahtheduke/splint/compare/v1.2.3...v1.2.4
 [v1.2.3]: https://github.com/noahtheduke/splint/compare/v1.2.2...v1.2.3
 [v1.2.2]: https://github.com/noahtheduke/splint/compare/v1.2.1...v1.2.2
 [v1.2.1]: https://github.com/noahtheduke/splint/compare/v1.2.0...v1.2.1

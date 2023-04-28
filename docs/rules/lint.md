@@ -153,7 +153,7 @@ with the same name, but it's good to catch these things early too.
 
 ### Reference
 
-* [https://guide.clojure.style/#naming-conversion-functions]
+* https://guide.clojure.style/#naming-conversion-functions
 
 ---
 
@@ -183,7 +183,7 @@ even?
 
 ### Reference
 
-* [https://guide.clojure.style/#no-useless-anonymous-fns]
+* https://guide.clojure.style/#no-useless-anonymous-fns
 
 ---
 
@@ -207,7 +207,7 @@ Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
 
 ### Reference
 
-* [https://guide.clojure.style/#when-instead-of-single-branch-if]
+* https://guide.clojure.style/#when-instead-of-single-branch-if
 
 ---
 
@@ -271,7 +271,7 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 
 ### Reference
 
-* [https://guide.clojure.style/#if-not]
+* https://guide.clojure.style/#if-not
 
 ---
 
@@ -382,7 +382,7 @@ determine if `result` binding is used in falsy branch.
 
 ### Reference
 
-* [https://guide.clojure.style/#if-let]
+* https://guide.clojure.style/#if-let
 
 ---
 
@@ -406,7 +406,7 @@ determine if `result` binding is used in falsy branch.
 
 ### Reference
 
-* [https://guide.clojure.style/#when-let]
+* https://guide.clojure.style/#when-let
 
 ---
 
@@ -502,7 +502,7 @@ Empty loops with nested when can be `while`.
 
 ### Reference
 
-* [https://guide.clojure.style/#nil-punning]
+* https://guide.clojure.style/#nil-punning
 
 ---
 
@@ -538,7 +538,7 @@ In the `ns` form prefer `:require :as` over `:require :refer` over `:require :re
 
 ### Reference
 
-* [https://guide.clojure.style/#prefer-require-over-use]
+* https://guide.clojure.style/#prefer-require-over-use
 
 ---
 

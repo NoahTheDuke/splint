@@ -108,7 +108,7 @@ It's nice when the default branch is consistent.
 
 ### Reference
 
-* [https://guide.clojure.style/#else-keyword-in-cond]
+* https://guide.clojure.style/#else-keyword-in-cond
 
 ---
 
@@ -458,7 +458,7 @@ Sort the arities of a function from fewest to most arguments.
 
 ### Reference
 
-* [https://guide.clojure.style/#multiple-arity-order]
+* https://guide.clojure.style/#multiple-arity-order
 
 ---
 
@@ -649,7 +649,7 @@ nnext is succinct and meaningful.
 
 ### Reference
 
-* [https://guide.clojure.style/#not-equal]
+* https://guide.clojure.style/#not-equal
 
 ---
 
@@ -778,7 +778,7 @@ Use `boolean` if you must return `true` or `false` from an expression.
 
 ### Reference
 
-* [https://guide.clojure.style/#converting-something-to-boolean]
+* https://guide.clojure.style/#converting-something-to-boolean
 
 ---
 
@@ -804,7 +804,7 @@ clojure.math/PI
 
 ### Reference
 
-* [https://guide.clojure.style/#prefer-clojure-math-over-interop]
+* https://guide.clojure.style/#prefer-clojure-math-over-interop
 
 ---
 
@@ -865,7 +865,7 @@ gathered and rendered into a `condp`.
 
 ### Reference
 
-* [https://guide.clojure.style/#condp]
+* https://guide.clojure.style/#condp
 
 ---
 

@@ -37,6 +37,7 @@
     noahtheduke.splint.rules.lint.loop-empty-when
     noahtheduke.splint.rules.lint.missing-body-in-when
     noahtheduke.splint.rules.lint.not-empty
+    noahtheduke.splint.rules.lint.prefer-require-over-use
     noahtheduke.splint.rules.lint.redundant-call
     noahtheduke.splint.rules.lint.take-repeatedly
     noahtheduke.splint.rules.lint.thread-macro-one-arg

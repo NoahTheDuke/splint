@@ -149,6 +149,15 @@
   :supported-styles [:seq :not-empty]
   :guide-ref "#nil-punning"}
 
+ lint/prefer-require-over-use
+ {:description "Use is considered deprecated."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"
+  :chosen-style :as
+  :supported-styles [:as :refer :all]
+  :guide-ref "#prefer-require-over-use"}
+
  lint/redundant-call
  {:description ""
   :enabled true

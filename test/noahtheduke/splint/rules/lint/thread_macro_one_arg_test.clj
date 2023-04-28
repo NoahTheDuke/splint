@@ -19,14 +19,14 @@
 
 (defexpect thread-style-inline-test
   (let [config '{lint/thread-macro-one-arg {:chosen-style :inline}}]
-      (expect '(form arg) (check-alt "(-> arg form)" config))
-      (expect '(form [arg]) (check-alt "(-> [arg] form)" config))
-      (expect '(form {:a arg}) (check-alt "(-> {:a arg} form)" config))
-      (expect '(form #{arg}) (check-alt "(-> #{arg} form)" config))
-      (expect '(form arg) (check-alt "(->> arg form)" config))
-      (expect '(form [arg]) (check-alt "(->> [arg] form)" config))
-      (expect '(form {:a arg}) (check-alt "(->> {:a arg} form)" config))
-      (expect '(form #{arg}) (check-alt "(->> #{arg} form)" config))))
+    (expect '(form arg) (check-alt "(-> arg form)" config))
+    (expect '(form [arg]) (check-alt "(-> [arg] form)" config))
+    (expect '(form {:a arg}) (check-alt "(-> {:a arg} form)" config))
+    (expect '(form #{arg}) (check-alt "(-> #{arg} form)" config))
+    (expect '(form arg) (check-alt "(->> arg form)" config))
+    (expect '(form [arg]) (check-alt "(->> [arg] form)" config))
+    (expect '(form {:a arg}) (check-alt "(->> {:a arg} form)" config))
+    (expect '(form #{arg}) (check-alt "(->> #{arg} form)" config))))
 
 (defexpect thread-style-avoid-collections-test
   (let [config '{lint/thread-macro-one-arg {:chosen-style :avoid-collections}}]

@@ -23,7 +23,7 @@
         (cond
           (symbol? cur)
           (assoc! acc cur cur)
-          (seq? cur)
+          (sequential? cur)
           (let [prefix (first cur)
                 aliases (rest cur)]
             (reduce

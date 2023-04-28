@@ -55,7 +55,9 @@
         (if (-> rule :config :enabled)
           (let [result (check-rule ctx rule parent-form form)]
             (if (some? result)
-              (conj acc result)
+              (if (sequential? result)
+                (into acc result)
+                (conj acc result))
               acc))
           acc)))
     nil

@@ -4,20 +4,14 @@
 
 (ns noahtheduke.splint.self-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect in]]
-    [noahtheduke.splint.runner :as splint]))
-
-(defmacro with-out-str-data-map
-  [& body]
-  `(let [s# (java.io.StringWriter.)]
-     (binding [*out* s#]
-       (let [r# (do ~@body)]
-         {:result r#
-          :str (str s#)}))))
+    [expectations.clojure.test :refer [defexpect expect]]
+    [matcher-combinators.test]
+    [noahtheduke.splint.runner :as splint]
+    [noahtheduke.splint.test-helpers :refer [with-out-str-data-map]]))
 
 (defexpect dogfooding-test
-  (expect {:diagnostics []
-           :exit 0}
-    (in (-> (splint/run ["--quiet" "--no-parallel" "dev" "src" "test"])
-            (with-out-str-data-map)
-            (:result)))))
+  (expect
+    (match? {:result {:diagnostics []
+                      :exit 0}}
+            (-> (splint/run ["--quiet" "--no-parallel" "dev" "src" "test"])
+                (with-out-str-data-map)))))

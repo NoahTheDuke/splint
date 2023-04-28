@@ -6,6 +6,7 @@
   (:require
     noahtheduke.splint
     noahtheduke.splint.rules.helpers
+    matcher-combinators.test
     [noahtheduke.spat.pattern :refer [simple-type]]
     [noahtheduke.splint.config :refer [read-default-config deep-merge]]
     [noahtheduke.spat.parser :refer [parse-string]]
@@ -46,3 +47,14 @@
          form (parse-string s)]
      (check-and-recur ctx rules "filename" nil form)
      (seq @(:diagnostics ctx)))))
+
+(defmacro with-out-str-data-map
+  "Evaluates exprs in a context in which *out* is bound to a fresh
+  StringWriter. Returns the result of the body and the string created by any
+  nested printing calls in a map under the respective keys :result and :str."
+  [& body]
+  `(let [s# (java.io.StringWriter.)]
+     (binding [*out* s#]
+       (let [r# (do ~@body)]
+         {:result r#
+          :str (str s#)}))))

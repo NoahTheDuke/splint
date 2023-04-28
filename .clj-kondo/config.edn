@@ -1,4 +1,8 @@
 {:hooks {:analyze-call {noahtheduke.splint.rules/defrule hooks.noahtheduke.splint.rules/defrule}}
  :config-in-call {noahtheduke.splint.rules/defrule {:linters {:unused-binding {:level :off}}}}
- :linters {:clojure-lsp/unused-public-var {:level :off}}
+ :linters {:clojure-lsp/unused-public-var {:level :off}
+           :unresolved-symbol
+           {:exclude [(cljs.test/is [match? thrown-match?])
+                      (clojure.test/is [match? thrown-match?])
+                      (expectations.clojure.test/expect [match? thrown-match?])]}}
  :output {:linter-name true}}

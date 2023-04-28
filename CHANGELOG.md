@@ -6,8 +6,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### New Rules
 
 - `naming/single-segment-namespace`: Prefer `(ns foo.bar)` to `(ns foo)`.
+- `lint/prefer-require-over-use`: Prefer `(:require [clojure.string ...])` to `(:use clojure.string)`. Accepts different styles in the replacement form: `:as`, `:refer [...]` and `:refer :all`.
 - `naming/conventional-aliases`: Prefer idiomatic aliases for core libraries (`[clojure.string :as str]` to `[clojure.string :as string]`).
 - `naming/lisp-case`: Prefer kebab-case over other cases for top-level definitions. Relies on [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).
+- `style/multiple-arity-order`: Function definitions should have multiple arities sorted fewest arguments to most: `(defn foo ([a] 1) ([a b] 2) ([a b & more] 3))`
 
 ## [1.2.4]
 

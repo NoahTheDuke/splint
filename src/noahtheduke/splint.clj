@@ -70,6 +70,7 @@
     noahtheduke.splint.rules.style.mapcat-concat-map
     noahtheduke.splint.rules.style.minus-one
     noahtheduke.splint.rules.style.minus-zero
+    noahtheduke.splint.rules.style.multiple-arity-order
     noahtheduke.splint.rules.style.multiply-by-one
     noahtheduke.splint.rules.style.multiply-by-zero
     noahtheduke.splint.rules.style.neg-checks

@@ -46,6 +46,11 @@
     (fn fn* splint/fn) true
     false))
 
+(defn defn?? [sexp]
+  (case sexp
+    (defn defn-) true
+    false))
+
 (defn re-pattern?? [sexp]
   (case sexp
     (re-pattern splint/re-pattern) true
@@ -249,3 +254,23 @@
 
 (defn default-import? [sexp]
   (built-in-classes sexp))
+
+(defn parse-defn
+  "Adapted from clojure.core"
+  [fname fdecl]
+  (let [m {:splint/name fname}
+        m (if (string? (first fdecl))
+            (assoc m :doc (first fdecl))
+            m)
+        fdecl (if (string? (first fdecl)) (next fdecl) fdecl)
+        m (if (map? (first fdecl))
+            (conj m (first fdecl))
+            m)
+        fdecl (if (map? (first fdecl)) (next fdecl) fdecl)
+        fdecl (if (vector? (first fdecl))
+               (list fdecl)
+               fdecl)
+        m (assoc m :arities fdecl)
+        m (conj {:arglists (#'clojure.core/sigs fdecl)} m)
+        m (conj (if (meta fname) (meta fname) {}) m)]
+    m))

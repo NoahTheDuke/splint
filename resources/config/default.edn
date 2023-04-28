@@ -352,6 +352,13 @@
   :added "0.1"
   :updated "1.2.0"}
 
+ style/multiple-arity-order
+ {:description "Sort the arities of functions from fewest to most arguments."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"
+  :guide-ref "#multiple-arity-order"}
+
  style/multiply-by-one
  {:description ""
   :enabled true

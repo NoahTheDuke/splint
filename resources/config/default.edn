@@ -152,8 +152,8 @@
  lint/prefer-require-over-use
  {:description "Use is considered deprecated."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.3.0"
+  :updated "1.3.0"
   :chosen-style :as
   :supported-styles [:as :refer :all]
   :guide-ref "#prefer-require-over-use"}
@@ -190,8 +190,8 @@
  naming/conventional-aliases
  {:description "Prefer idiomatic aliases to alternatives."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.3.0"
+  :updated "1.3.0"
   :guide-ref "#use-idiomatic-namespace-aliases"}
 
  naming/conversion-functions
@@ -204,8 +204,8 @@
  naming/lisp-case
  {:description "Prefer kebab-case to CapitalCase or camelCase or snake_case."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.3.0"
+  :updated "1.3.0"
   :guide-ref "#naming-functions-and-variables"}
 
  naming/predicate
@@ -218,8 +218,8 @@
  naming/single-segment-namespace
  {:description "Avoid single-segment namespaces."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.3.0"
+  :updated "1.3.0"
   :guide-ref "#no-single-segment-namespaces"}
 
  naming/record-name
@@ -355,8 +355,8 @@
  style/multiple-arity-order
  {:description "Sort the arities of functions from fewest to most arguments."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.3.0"
+  :updated "1.3.0"
   :guide-ref "#multiple-arity-order"}
 
  style/multiply-by-one

@@ -432,6 +432,36 @@ x
 
 ---
 
+## style/multiple-arity-order
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 1.3.0         | 1.3.0           |
+
+Sort the arities of a function from fewest to most arguments.
+
+### Examples
+
+```clojure
+# bad
+(defn foo
+  ([x] (foo x 1))
+  ([x y & more] (reduce foo (+ x y) more))
+  ([x y] (+ x y)))
+
+# good
+(defn foo
+  ([x] (foo x 1))
+  ([x y] (+ x y))
+  ([x y & more] (reduce foo (+ x y) more)))
+```
+
+### Reference
+
+* [https://guide.clojure.style/#multiple-arity-order]
+
+---
+
 ## style/multiply-by-one
 
 | Enabled by default | Version Added | Version Updated |

@@ -73,7 +73,7 @@ x
 
 | Enabled by default | Version Added | Version Updated |
 | ------------------ | ------------- | --------------- |
-| true               | 0.1           | 0.1             |
+| true               | 0.1           | 1.2.1           |
 
 `map` is lazy, which carries a performance and memory cost. `dorun` uses `seq` iteration to realize the entire sequence, returning `nil`. This style of iteration also carries a performance and memory cost. `dorun` is intended for more complex sequences, whereas a simple `map` can be accomplished with `reduce` + `conj`.
 
@@ -506,6 +506,42 @@ Empty loops with nested when can be `while`.
 
 ---
 
+## lint/prefer-require-over-use
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 1.3.0         | 1.3.0           |
+
+In the `ns` form prefer `:require :as` over `:require :refer` over `:require :refer :all`. Prefer `:require` over `:use`; the latter form should be considered deprecated for new code.
+
+### Examples
+
+```clojure
+# bad
+(ns examples.ns
+  (:use clojure.zip))
+
+# good
+(ns examples.ns
+  (:require [clojure.zip :as zip]))
+(ns examples.ns
+  (:require [clojure.zip :refer [lefts rights]]))
+(ns examples.ns
+  (:require [clojure.zip :refer :all]))
+```
+
+### Configurable Attributes
+
+| Name            | Default | Options                 |
+| --------------- | ------- | ----------------------- |
+| `:chosen-style` | `:as`   | `:as`, `:refer`, `:all` |
+
+### Reference
+
+* [https://guide.clojure.style/#prefer-require-over-use]
+
+---
+
 ## lint/redundant-call
 
 | Enabled by default | Version Added | Version Updated |
@@ -567,7 +603,7 @@ x
 
 | Enabled by default | Version Added | Version Updated |
 | ------------------ | ------------- | --------------- |
-| true               | 0.1           | 0.1             |
+| true               | 0.1           | 1.2.1           |
 
 Threading macros require more effort to understand so only use them with multiple
 args to help with readability.

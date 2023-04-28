@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.plus-one-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect plus-x-1-test
   (expect '(inc x) (check-alt "(+ x 1)"))

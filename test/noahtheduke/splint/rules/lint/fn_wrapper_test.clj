@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.fn-wrapper-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt check-all]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt check-all]]))
 
 (defexpect fn-wrapper-test
   (expect 'f (check-alt "(fn* [arg] (f arg))"))

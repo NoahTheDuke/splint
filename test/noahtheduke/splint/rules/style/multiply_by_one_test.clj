@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.multiply-by-one-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect multiply-by-1-test
   (expect 'x (check-alt "(* x 1)"))

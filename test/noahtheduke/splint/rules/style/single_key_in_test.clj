@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.single-key-in-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt check-message]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt check-message]]))
 
 (defexpect single-key-in-test
   (expect '(assoc coll :k v) (check-alt "(assoc-in coll [:k] v)"))

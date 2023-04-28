@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.duplicate-field-name-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-str]]))
+    [noahtheduke.splint.test-helpers :refer [check-str]]))
 
 (defexpect duplicate-field-name-test
   '"Duplicate field has been found"

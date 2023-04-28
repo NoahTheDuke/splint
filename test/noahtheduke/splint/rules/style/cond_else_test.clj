@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.cond-else-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect cond-else-test
   (expect '(cond (pos? x) (inc x) :else -1)

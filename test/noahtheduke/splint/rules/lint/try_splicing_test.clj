@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.try-splicing-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect try-splicing-test
   (expect '(try (do (splint/unquote-splicing body)) (finally :true))

@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.body-unquote-splicing-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect only-body-test
   (doseq [input '[delay dosync future lazy-cat lazy-seq pvalues

@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.when-not-empty-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect when-not-empty?-test
   (expect '(when (seq x) y) (check-alt "(when-not (empty? x) y)"))

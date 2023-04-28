@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.redundant-call-test
   (:require
     [expectations.clojure.test :refer [defexpect expect from-each]]
-    [noahtheduke.splint-test :refer [check-all check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-all check-alt]]))
 
 (defexpect redundant-call-test
   (expect 'x

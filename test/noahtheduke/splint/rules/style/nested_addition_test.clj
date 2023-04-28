@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.nested-addition-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect nested-addition-test
   (expect '(+ x y z) (check-alt "(+ x (+ y z))"))

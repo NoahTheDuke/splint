@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.eq-zero-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect eq-0-x-test
   '(zero? x)

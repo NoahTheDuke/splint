@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.prefer-boolean-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect prefer-boolean-test
   (expect '(boolean some-val)

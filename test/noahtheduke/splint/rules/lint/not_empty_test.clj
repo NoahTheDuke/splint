@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.not-empty-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect not-empty?-test
   '(seq x)

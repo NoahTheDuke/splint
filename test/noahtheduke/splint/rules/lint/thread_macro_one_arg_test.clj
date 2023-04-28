@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.thread-macro-one-arg-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect thread-first-1-arg-test
   (expect '(form arg) (check-alt "(-> arg form)"))

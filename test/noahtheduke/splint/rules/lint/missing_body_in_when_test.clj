@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.missing-body-in-when-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-str]]))
+    [noahtheduke.splint.test-helpers :refer [check-str]]))
 
 (defexpect missing-body-in-when-test
   (expect "Missing body in when"

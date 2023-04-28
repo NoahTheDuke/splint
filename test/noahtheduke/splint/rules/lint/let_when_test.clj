@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.let-when-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect let-when-test
   '(when-let [result (some-func)] (do-stuff result))

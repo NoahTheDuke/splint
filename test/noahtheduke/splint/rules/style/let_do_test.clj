@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.let-do-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect let-do-test
   '(let [a 1 b 2] (prn a b))

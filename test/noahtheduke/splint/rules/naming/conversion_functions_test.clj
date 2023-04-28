@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.naming.conversion-functions-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect conversion-functions-test
   '(defn f->c [a] {:a a})

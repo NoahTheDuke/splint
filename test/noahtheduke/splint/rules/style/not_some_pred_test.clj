@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.not-some-pred-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect not-some-pred-test
   '(not-any? pred coll)

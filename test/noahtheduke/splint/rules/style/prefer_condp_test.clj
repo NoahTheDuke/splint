@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.prefer-condp-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect prefer-condp-test
   (expect '(condp = x 1 :one 2 :two 3 :three 4 :four)

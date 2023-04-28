@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.naming.lisp-case-test
   (:require
     [expectations.clojure.test :refer [defexpect expect from-each]]
-    [noahtheduke.splint-test :refer [check-alt check-all]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt check-all]]))
 
 (defexpect lisp-case-test
   (expect '(def some-var 1)

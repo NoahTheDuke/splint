@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.naming.single-segment-namespace-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt check-message]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt check-message]]))
 
 (defexpect single-segment-namespace-test
   (expect nil? (check-alt "(ns simple)"))

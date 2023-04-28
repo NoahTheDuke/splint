@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.prefer-vary-meta-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect prefer-vary-meta-test
   '(vary-meta x f args)

@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.when-not-call-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect when-not-x-y-test
   '(when-not x y)

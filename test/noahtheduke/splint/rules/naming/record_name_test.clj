@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.naming.record-name-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect record-name-test
   (expect '(defrecord Foo [a b c])

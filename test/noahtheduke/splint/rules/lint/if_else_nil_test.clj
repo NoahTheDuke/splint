@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.if-else-nil-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect if-else-nil-test
   (expect '(when x y) (check-alt "(if x y nil)"))

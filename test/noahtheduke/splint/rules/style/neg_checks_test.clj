@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.neg-checks-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect lt-x-0-test
   '(neg? x)

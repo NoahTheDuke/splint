@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.naming.conventional-aliases-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-all]]))
+    [noahtheduke.splint.test-helpers :refer [check-all]]))
 
 (defexpect conventional-aliases-test
   #_(expect '(:require [clojure.string :as str])

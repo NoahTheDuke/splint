@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.eq-true-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect eq-true-test
   (expect '(true? x) (check-alt "(= true x)"))

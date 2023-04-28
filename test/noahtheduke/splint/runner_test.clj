@@ -1,7 +1,7 @@
 (ns noahtheduke.splint.runner-test 
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-all]]))
+    [noahtheduke.splint.test-helpers :refer [check-all]]))
 
 (defexpect ignore-rules-test
   (expect nil?

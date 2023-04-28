@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.def-fn-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect def-let-fn-test
   (expect '(let [allowed #{:a :b :c}] (defn check-inclusion [i] (contains? allowed i)))

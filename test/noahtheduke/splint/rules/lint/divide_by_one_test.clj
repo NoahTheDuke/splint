@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.divide-by-one-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect divide-by-1-test
   'x

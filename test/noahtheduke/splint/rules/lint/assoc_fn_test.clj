@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.assoc-fn-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect assoc-fn-key-coll-test
   '(update coll :k f args)

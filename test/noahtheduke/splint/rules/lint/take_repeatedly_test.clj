@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.take-repeatedly-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect take-repeatedly-test
   '(repeatedly n coll)

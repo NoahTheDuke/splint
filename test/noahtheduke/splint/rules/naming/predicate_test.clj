@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.naming.predicate-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect predicate-test
   (expect '(defn palindrome? [a] true)

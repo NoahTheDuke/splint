@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.dot-class-method-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect dot-class-usage-test
   '(Obj/method 1 2 3)

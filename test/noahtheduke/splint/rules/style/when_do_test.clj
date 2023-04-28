@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.when-do-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect when-do-test
   (expect '(when x y) (check-alt "(when x (do y))"))

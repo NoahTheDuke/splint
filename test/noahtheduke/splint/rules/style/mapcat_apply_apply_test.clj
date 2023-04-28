@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.mapcat-apply-apply-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect mapcat-apply-apply-test
   '(mapcat x y)

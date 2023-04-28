@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.lint.prefer-require-over-use-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint-test :refer [check-message]]))
+    [noahtheduke.splint.test-helpers :refer [check-message]]))
 
 (defexpect prefer-require-over-use-test
   (let [config '{lint/prefer-require-over-use {:chosen-style :as}}]

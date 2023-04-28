@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.style.next-first-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint-test :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect next-first-test
   '(nfirst coll)

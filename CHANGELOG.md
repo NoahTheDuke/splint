@@ -3,6 +3,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### New Rules
+
+- `naming/single-segment-namespace`: Prefer `(ns foo.bar)` to `(ns foo)`.
+
 ## [1.2.4]
 
 ### Fixed
@@ -13,7 +17,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ### Added
 
-- `*warn-on-reflection* to all rules and rule template.
+- `*warn-on-reflection*` to all rules and rule template.
 - Use `:spat/import-ns` metadata as way to track when a symbol has been imported.
 
 ### Changed

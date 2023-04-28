@@ -44,6 +44,7 @@
 
     noahtheduke.splint.rules.naming.conversion-functions
     noahtheduke.splint.rules.naming.predicate
+    noahtheduke.splint.rules.naming.single-segment-namespace
     noahtheduke.splint.rules.naming.record-name
 
     noahtheduke.splint.rules.style.apply-str

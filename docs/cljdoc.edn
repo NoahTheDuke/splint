@@ -9,4 +9,5 @@
   ["Rule Documentation" {}
    ["Lint" {:file "docs/rules/lint.md"}]
    ["Naming" {:file "docs/rules/naming.md"}]
-   ["Style" {:file "docs/rules/style.md"}]]]}
+   ["Style" {:file "docs/rules/style.md"}]]
+  ["Changelog" {:file "CHANGELOG.md"}]]}

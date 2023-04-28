@@ -255,6 +255,29 @@
 (defn default-import? [sexp]
   (built-in-classes sexp))
 
+(defn- sigs
+  "Adapted from clojure.core/sigs"
+  [fdecl]
+  (let [asig 
+        (fn [fdecl]
+          (let [arglist (first fdecl)
+                ;elide implicit macro args
+                arglist (if (= '&form (first arglist)) 
+                          (subvec arglist 2 (count arglist))
+                          arglist)
+                body (next fdecl)]
+            (if (map? (first body))
+              (if (next body)
+                (with-meta arglist (conj (or (meta arglist) {}) (first body)))
+                arglist)
+              arglist)))]
+    (if (seq? (first fdecl))
+      (loop [ret [] fdecls fdecl]
+        (if fdecls
+          (recur (conj ret (asig (first fdecls))) (next fdecls))
+          (seq ret)))
+      (list (asig fdecl)))))
+
 (defn parse-defn
   "Adapted from clojure.core"
   [fname fdecl]
@@ -271,6 +294,6 @@
                (list fdecl)
                fdecl)
         m (assoc m :arities fdecl)
-        m (conj {:arglists (#'clojure.core/sigs fdecl)} m)
-        m (conj (if (meta fname) (meta fname) {}) m)]
+        m (conj {:arglists (sigs fdecl)} m)
+        m (conj (or (meta fname) {}) m)]
     m))

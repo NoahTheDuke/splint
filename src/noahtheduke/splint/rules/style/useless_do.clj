@@ -8,6 +8,11 @@
 
 (set! *warn-on-reflection* true)
 
+(defn not-unquote-splicing [sexp]
+  (if (sequential? sexp)
+    (not= 'splint/unquote-splicing (first sexp))
+    true))
+
 (defrule style/useless-do
   "A single item in a `do` is a no-op.
 
@@ -18,6 +23,6 @@
 
   ; good
   coll"
-  {:pattern '(do ?x)
+  {:pattern '(do %not-unquote-splicing%-?x)
    :message "Unnecessary `do`."
    :replace '?x})

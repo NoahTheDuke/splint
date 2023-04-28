@@ -194,12 +194,15 @@
         {:keys [options paths exit-message ok]} (validate-opts args)]
     (if exit-message
       (do (when-not (:quiet options) (println exit-message))
-          (System/exit (if ok 0 1)))
+          {:exit (if ok 0 1)})
       (let [config (load-config options)
             rules (prepare-rules config (or @global-rules {}))
             ctx (prepare-context rules config)
             _ (check-paths ctx rules paths)
             end-time (System/currentTimeMillis)
-            diagnostics @(:diagnostics ctx)]
-        (print-results (:options ctx) diagnostics (int (- end-time start-time)))
-        (System/exit (count diagnostics))))))
+            diagnostics @(:diagnostics ctx)
+            total-time (int (- end-time start-time))]
+        (print-results (:options ctx) diagnostics total-time)
+        {:diagnostics diagnostics
+         :total-time total-time
+         :exit (count diagnostics)}))))

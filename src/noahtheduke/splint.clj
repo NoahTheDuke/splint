@@ -107,4 +107,5 @@
 (defn -main
   "Pass-through to runner which does all the work."
   [& args]
-  (runner/run args))
+  (let [{:keys [exit]} (runner/run args)]
+    (System/exit (or exit 0))))

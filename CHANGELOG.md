@@ -7,6 +7,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - `naming/single-segment-namespace`: Prefer `(ns foo.bar)` to `(ns foo)`.
 - `naming/conventional-aliases`: Prefer idiomatic aliases for core libraries (`[clojure.string :as str]` to `[clojure.string :as string]`).
+- `naming/lisp-case`: Prefer kebab-case over other cases for top-level definitions. Relies on [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).
 
 ## [1.2.4]
 

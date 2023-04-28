@@ -201,6 +201,13 @@
   :updated "0.1.94"
   :guide-ref "#naming-conversion-functions"}
 
+ naming/lisp-case
+ {:description "Prefer kebab-case to CapitalCase or camelCase or snake_case."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"
+  :guide-ref "#naming-functions-and-variables"}
+
  naming/predicate
  {:description ""
   :enabled true

@@ -7,13 +7,32 @@ flow-storm:
 repl arg="":
     clojure -M:dev:test{{arg}}:repl/rebel
 
-test *args:
+@test *args:
     clojure -M:dev:test:runner {{args}}
 
-new-rule arg:
-    @clojure -M:new-rule -n {{arg}}
+@new-rule arg:
+    clojure -M:new-rule -n {{arg}}
 
-deploy:
+@gen-docs:
+    clojure -M:gen-docs
+
+# Set version, change all instances of <<next>> to version
+@set-version version:
+    echo '{{version}}' > resources/SPLINT_VERSION
+    fd '.(clj|edn|md)' . -x sd '<<next>>' '{{version}}' {}
+
+# Builds the uberjar, builds the jar, sends the jar to clojars
+@deploy:
+    echo 'Building uber'
     clojure -T:build uber
-    env CLOJARS_USERNAME="noahtheduke" CLOJARS_PASSWORD=`cat ../clojars.txt` \
+    echo 'Deploying to clojars'
+    env CLOJARS_USERNAME='noahtheduke' CLOJARS_PASSWORD=`cat ../clojars.txt` \
         clojure -T:build deploy
+
+@update-and-deploy version:
+    echo 'Running tests'
+    capture=`just test`
+    echo 'Setting new version {{version}}'
+    just set-version {{version}}
+    just gen-docs
+    just deploy

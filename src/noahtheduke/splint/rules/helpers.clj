@@ -279,7 +279,7 @@
       (list (asig fdecl)))))
 
 (defn parse-defn
-  "Adapted from clojure.core"
+  "Adapted from clojure.core but returns `nil` if given an improperly formed defn."
   [fname fdecl]
   (let [m {:splint/name fname}
         m (if (string? (first fdecl))

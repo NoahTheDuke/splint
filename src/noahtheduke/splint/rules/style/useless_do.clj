@@ -4,17 +4,14 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.useless-do
   (:require
-    [noahtheduke.splint.rules :refer [defrule]]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]
+    [noahtheduke.splint.rules.helpers :refer [unquote-splicing??]]))
 
 (set! *warn-on-reflection* true)
 
-(defn not-unquote-splicing [sexp]
-  (if (sequential? sexp)
-    (not= 'splint/unquote-splicing (first sexp))
-    true))
-
 (defrule style/useless-do
-  "A single item in a `do` is a no-op.
+  "A single item in a `do` is a no-op. However, it is sometimes necessary to wrap expressions in `do`s to avoid issues, so `do` surrounding `~@something` will be skipped as well as `#(do something)`.
 
   Examples:
 
@@ -22,7 +19,17 @@
   (do coll)
 
   ; good
-  coll"
-  {:pattern '(do %not-unquote-splicing%-?x)
+  coll
+
+  ; skipped
+  (do ~@body)
+  #(do [%1 %2])
+  "
+  {:pattern '(do ?x)
    :message "Unnecessary `do`."
-   :replace '?x})
+   :on-match (fn [ctx rule form {:syms [?x]}]
+               (when-not (unquote-splicing?? ?x)
+                 (let [parent-form (:parent-form (meta form))]
+                   (when-not (and (sequential? parent-form)
+                                  (= 'splint/fn (first parent-form)))
+                     (->diagnostic rule form {:replace-form ?x})))))})

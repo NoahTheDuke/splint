@@ -4,9 +4,10 @@
 
 (ns noahtheduke.splint.rules.style.useless-do-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
+    [expectations.clojure.test :refer [defexpect expect]]
     [noahtheduke.splint.test-helpers :refer [check-alt]]))
 
 (defexpect useless-do-x-test
-  'x
-  (check-alt "(do x)"))
+  (expect 'x (check-alt "(do x)"))
+  (expect nil? (check-alt "#(do [%1 %2])"))
+  (expect nil? (check-alt "(do ~@body)")))

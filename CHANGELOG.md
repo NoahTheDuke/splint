@@ -7,6 +7,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Fix "Don't know how to create ISeq from: clojure.lang.Symbol" error in `splint.rules.helpers.parse-defn` when trying to parse ill-formed function definitions.
 - "Fix" error messages. Honestly, I'm not great at these so I'm not entirely sure how to best display this stuff.
+- Skip `#(do [%1 %2])` in `style/useless-do`, add docstring note about it.
 
 ## [v1.3.2]
 

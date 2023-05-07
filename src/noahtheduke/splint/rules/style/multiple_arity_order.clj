@@ -30,7 +30,7 @@
   {:pattern '(%defn??%-?defn ?name &&. ?args)
    :message "defn arities should be sorted fewest to most arguments."
    :on-match (fn [ctx rule form {:syms [?defn ?name ?args]}]
-               (let [defn-form (parse-defn ?name ?args)]
+               (when-let [defn-form (parse-defn ?name ?args)]
                  (when (not= (:arglists defn-form)
                              (sort-by count (:arglists defn-form)))
                    (let [new-arities (sort-by (comp count first) (:arities defn-form))

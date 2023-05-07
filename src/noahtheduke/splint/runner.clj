@@ -121,7 +121,7 @@
       (check-form ctx (rules :file) nil parsed-file)
       (check-and-recur ctx rules (str file) nil parsed-file)
       (catch clojure.lang.ExceptionInfo e
-        (throw (ex-info (ex-message e) (assoc (ex-data e) :file file) (.getCause e)))))))
+        (throw (ex-info (ex-message e) (assoc (ex-data e) :file file) e))))))
 
 (defn check-paths-parallel [ctx rules paths]
   (->> (mapcat #(file-seq (io/file %)) paths)
@@ -138,9 +138,8 @@
     (sequence xf paths)))
 
 (defn- print-runner-error [^java.lang.Throwable e]
-  (let [cause (.getCause e)
-        message (str/trim (ex-message cause))
-        data (ex-data cause)
+  (let [message (str/trim (ex-message e))
+        data (ex-data e)
         error-msg (format "Splint encountered an error in %s: %s\n%s"
                           (str (:file data)
                                (when (:line data)
@@ -148,7 +147,9 @@
                                (when (:column data)
                                  (str ":" (:column data)))
                                (when (:form data)
-                                 (str "\nin form: " (apply list (:form data)))))
+                                 (str " in form " (if (seq? (:form data))
+                                                    (apply list (:form data))
+                                                    (:form data)))))
                           message
                           (str/join "\n" (.getStackTrace e)))]
     (println error-msg)

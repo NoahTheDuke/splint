@@ -290,10 +290,12 @@
             (conj m (first fdecl))
             m)
         fdecl (if (map? (first fdecl)) (next fdecl) fdecl)
-        fdecl (if (vector? (first fdecl))
-               (list fdecl)
-               fdecl)
+        fdecl (cond
+                (vector? (first fdecl)) (list fdecl)
+                (list? (first fdecl)) fdecl)
         m (assoc m :arities fdecl)
-        m (conj {:arglists (sigs fdecl)} m)
-        m (conj (or (meta fname) {}) m)]
+        m (when fdecl
+            (conj {:arglists (sigs fdecl)} m))
+        m (when m
+            (conj (or (meta fname) {}) m))]
     m))

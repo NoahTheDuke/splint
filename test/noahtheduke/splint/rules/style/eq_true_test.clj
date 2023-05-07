@@ -9,4 +9,4 @@
 
 (defexpect eq-true-test
   (expect '(true? x) (check-alt "(= true x)"))
-  (expect '(true? x) (check-alt "(= true x)")))
+  (expect '(true? x) (check-alt "(= x true)")))

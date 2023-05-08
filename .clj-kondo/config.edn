@@ -1,8 +1,8 @@
+; This Source Code Form is subject to the terms of the Mozilla Public
+; License, v. 2.0. If a copy of the MPL was not distributed with this
+; file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 {:hooks {:analyze-call {noahtheduke.splint.rules/defrule hooks.noahtheduke.splint.rules/defrule}}
  :config-in-call {noahtheduke.splint.rules/defrule {:linters {:unused-binding {:level :off}}}}
- :linters {:clojure-lsp/unused-public-var {:level :off}
-           :unresolved-symbol
-           {:exclude [(cljs.test/is [match? thrown-match?])
-                      (clojure.test/is [match? thrown-match?])
-                      (expectations.clojure.test/expect [match? thrown-match?])]}}
+ :linters {:clojure-lsp/unused-public-var {:level :off}}
  :output {:linter-name true}}

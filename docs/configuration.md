@@ -2,10 +2,12 @@
 
 ## Command-line options
 
-* `-h`, `--help`: Print the command line options.
 * `-o`, `--output FMT`: Output format: `simple`, `full`, `clj-kondo`, `markdown`. Defaults to `full`.
 * `-q`, `--quiet`: Print no suggestions, only return exit code.
 * `--[no-]parallel`: Run Splint in parallel. Defaults to `true`.
+* `--config TYPE`: Print the absolute path of the loaded config, and prints the contents of the loaded config according to the chosen type: `diff` for the difference between default and loaded config file, `local` for the contents of the loaded config file, and `full` for the merged default and loaded config file.
+* `-h`, `--help`: Print the command line options.
+* `-v`, `--version`: Print the current version.
 
 ### Output styles
 
@@ -70,6 +72,17 @@ Consider using:
 ```clojure
 (zero? (get-counters (refresh pb) :advancement))
 ```
+
+### Config styles
+
+**diff:**
+Only prints the difference between the Splint defaults and the loaded `.splint.edn` file. This is useful when explicitly setting local options to their default.
+
+**local:**
+Prints the contents of the loaded `.splint.edn` file. Useful to see which options are being set without directly opening the file.
+
+**full:**
+Fully merges the Splint defaults with the loaded `.splint.edn` file and prints it.
 
 ## Configuration file
 

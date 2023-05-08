@@ -3,6 +3,13 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+## [v1.4.0]
+
+### Added
+
+- `-v` and `--version` cli flags to print the current version.
+- `--config TYPE` cli flag to print the `diff`, `local`, or `full` configuration.
+
 ### Fixed
 
 - Fix "Don't know how to create ISeq from: clojure.lang.Symbol" error in `splint.rules.helpers.parse-defn` when trying to parse ill-formed function definitions.
@@ -287,7 +294,8 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.3.2...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.4.0...HEAD
+[v1.4.0]: https://github.com/noahtheduke/splint/compare/v1.3.2...v1.4.0
 [v1.3.2]: https://github.com/noahtheduke/splint/compare/v1.3.1...v1.3.2
 [v1.3.1]: https://github.com/noahtheduke/splint/compare/v1.3.0...v1.3.1
 [v1.3.0]: https://github.com/noahtheduke/splint/compare/v1.2.4...v1.3.0

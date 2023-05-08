@@ -1002,7 +1002,7 @@ and idiomatic.
 | ------------------ | ------------- | --------------- |
 | true               | 0.1.69        | 1.2.0           |
 
-A single item in a `do` is a no-op.
+A single item in a `do` is a no-op. However, it is sometimes necessary to wrap expressions in `do`s to avoid issues, so `do` surrounding `~@something` will be skipped as well as `#(do something)`.
 
 ### Examples
 
@@ -1012,6 +1012,10 @@ A single item in a `do` is a no-op.
 
 ; good
 coll
+
+; skipped
+(do ~@body)
+#(do [%1 %2])
 ```
 
 ---

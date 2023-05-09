@@ -27,7 +27,7 @@
 
 (defn help-message
   [summary]
-  (let [lines [splint-version
+  (let [lines [(splint-version)
                ""
                "Usage:"
                "  splint [options] [path...]"
@@ -90,7 +90,7 @@
   (let [{:keys [arguments options errors summary]} (cli/parse-opts args cli-options :strict true)]
     (cond
       (:help options) (help-message summary)
-      (:version options) {:exit-message splint-version :ok true}
+      (:version options) {:exit-message (splint-version) :ok true}
       errors (print-errors errors)
       (:config options) (print-config options)
       (seq arguments) (validate-paths options arguments)

@@ -11,8 +11,8 @@
 
 (set! *warn-on-reflection* true)
 
-(def version (str/trim (slurp "./resources/SPLINT_VERSION")))
-(def splint-version (str "splint v" version))
+(def version (delay (str/trim (slurp (io/resource "SPLINT_VERSION")))))
+(defn splint-version [] (str "splint v" @version))
 
 (defn read-default-config []
   (edn/read-string (slurp (io/resource "config/default.edn"))))

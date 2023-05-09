@@ -3,6 +3,11 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix `io/resource` issue.
+- Remove `.class` files from `jar`.
+
 ## [v1.4.0]
 
 ### Added

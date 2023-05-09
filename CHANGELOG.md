@@ -3,6 +3,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+## [v1.4.1]
+
 ### Fixed
 
 - Fix `io/resource` issue.
@@ -299,7 +301,8 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.4.1...HEAD
+[v1.4.1]: https://github.com/noahtheduke/splint/compare/v1.4.0...v1.4.1
 [v1.4.0]: https://github.com/noahtheduke/splint/compare/v1.3.2...v1.4.0
 [v1.3.2]: https://github.com/noahtheduke/splint/compare/v1.3.1...v1.3.2
 [v1.3.1]: https://github.com/noahtheduke/splint/compare/v1.3.0...v1.3.1

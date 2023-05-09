@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.self-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
-    [matcher-combinators.test]
+    [matcher-combinators.test :refer [match?]]
     [noahtheduke.splint.runner :as splint]
     [noahtheduke.splint.test-helpers :refer [with-out-str-data-map]]))
 

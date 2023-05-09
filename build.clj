@@ -27,13 +27,14 @@
 
 (defn jar [opts]
   (let [opts (make-opts opts)]
+    (b/delete {:path class-dir})
     (b/copy-dir {:src-dirs ["src" "resources"]
                  :target-dir class-dir})
-    (b/compile-clj opts)
     (b/jar opts)))
 
 (defn uber [opts]
   (let [opts (make-opts opts)]
+    (b/delete {:path class-dir})
     (b/copy-dir {:src-dirs ["src" "resources"]
                  :target-dir class-dir})
     (b/compile-clj opts)

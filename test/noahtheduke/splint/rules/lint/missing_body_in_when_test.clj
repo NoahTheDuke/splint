@@ -4,11 +4,15 @@
 
 (ns noahtheduke.splint.rules.lint.missing-body-in-when-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-str]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect missing-body-in-when-test
-  (expect "Missing body in when"
-    (:message (first (check-str "(when true)"))))
-  (expect "Missing body in when"
-    (:message (first (check-str "(when (some-func))")))))
+  (expect-match
+    '[{:alt nil
+       :message "Missing body in when"}]
+    "(when true)")
+  (expect-match
+    '[{:alt nil
+       :message "Missing body in when"}]
+    "(when (some-func))"))

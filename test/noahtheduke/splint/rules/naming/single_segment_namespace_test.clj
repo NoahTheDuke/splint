@@ -4,16 +4,16 @@
 
 (ns noahtheduke.splint.rules.naming.single-segment-namespace-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt check-message]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect single-segment-namespace-test
-  (expect nil? (check-alt "(ns simple)"))
-  (expect nil? (check-alt "(ns foo.bar)"))
-  (expect "simple is a single segment. Consider adding an additional segment."
-    (check-message "(ns simple)"))
-  (expect nil? (check-message "(ns foo.bar)")))
+  (expect-match
+    '[{:alt nil
+       :message "simple is a single segment. Consider adding an additional segment."}]
+    "(ns simple)")
+  (expect-match nil "(ns foo.bar)"))
 
 (defexpect single-segment-namespace-special-exceptions-test
-  (expect nil? (check-message "(ns build)"))
-  (expect nil? (check-message "(ns user)")))
+  (expect-match nil "(ns build)")
+  (expect-match nil "(ns user)"))

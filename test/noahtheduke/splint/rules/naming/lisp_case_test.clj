@@ -4,26 +4,27 @@
 
 (ns noahtheduke.splint.rules.naming.lisp-case-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect from-each]]
-    [noahtheduke.splint.test-helpers :refer [check-alt check-all]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect lisp-case-test
-  (expect '(def some-var 1)
-    (from-each [input ["(def someVar 1)"
-                       "(def SomeVar 1)"
-                       "(def some_var 1)"
-                       "(def Some_var 1)"]]
-      (check-alt input)))
-  (expect '(defn some-var [arg] 1)
-    (from-each [input ["(defn someVar [arg] 1)"
-                       "(defn some_var [arg] 1)"]]
-      (check-alt input)))
-  (expect nil?
-    (from-each [input ["(def somevar 1)"
-                       "(defn somevar [args] 1)"
-                       "(def _somevar 1)"
-                       "(defn _somevar [args] 1)"
-                       "(def Somevar 1)"
-                       "(defn Somevar [args] 1)"
-                       "(list (def someVar 1))"]]
-      (check-all input))))
+  (doseq [input ["(def someVar 1)"
+                 "(def SomeVar 1)"
+                 "(def some_var 1)"
+                 "(def Some_var 1)"]]
+    (expect-match
+      '[{:alt (def some-var 1)}]
+      input))
+  (doseq [input ["(defn someVar [arg] 1)"
+                 "(defn some_var [arg] 1)"]]
+    (expect-match
+      '[{:alt (defn some-var [arg] 1)}]
+      input))
+  (doseq [input ["(def somevar 1)"
+                 "(defn somevar [args] 1)"
+                 "(def _somevar 1)"
+                 "(defn _somevar [args] 1)"
+                 "(def Somevar 1)"
+                 "(defn Somevar [args] 1)"
+                 "(list (def someVar 1))"]]
+    (expect-match nil input)))

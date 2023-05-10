@@ -4,24 +4,23 @@
 
 (ns noahtheduke.splint.rules.naming.conventional-aliases-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-all]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect conventional-aliases-test
-  #_(expect '(:require [clojure.string :as str])
-    (-> (check-all "(ns foo.bar (:require [clojure.string :as string]))")
-        (first)
-        (:alt)))
-  (expect '(:require [clojure.string :as str]
-                     clojure.set
-                     [clojure.edn]
-                     [clojure pprint [zip :refer [1 2 3] :as zip]
-                      [edn :as edn]])
-    (-> (check-all "(ns foo.bar
-                      (:require [clojure.string :as string]
-                        clojure.set
-                        [clojure.edn]
-                        [clojure pprint [zip :refer [1 2 3] :as z]
-                        [edn :as e]]))")
-        (first)
-        (:alt))))
+  (expect-match
+    '[{:alt (:require [clojure.string :as str])}]
+    "(ns foo.bar (:require [clojure.string :as string]))")
+  (expect-match
+    '[{:alt (:require
+              [clojure.string :as str]
+              clojure.set
+              [clojure.edn]
+              [clojure pprint [zip :refer [1 2 3] :as zip]
+               [edn :as edn]])}]
+    "(ns foo.bar
+       (:require [clojure.string :as string]
+         clojure.set
+         [clojure.edn]
+         [clojure pprint [zip :refer [1 2 3] :as z]
+         [edn :as e]]))"))

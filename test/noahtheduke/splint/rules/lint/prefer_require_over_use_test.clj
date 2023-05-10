@@ -4,16 +4,23 @@
 
 (ns noahtheduke.splint.rules.lint.prefer-require-over-use-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-message]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect prefer-require-over-use-test
   (let [config '{lint/prefer-require-over-use {:chosen-style :as}}]
-    (expect "Use (:require [some.lib :as l]) over (:use some.lib)"
-      (check-message "(ns examples.ns (:use clojure.zip))" config)))
+    (expect-match
+      [{:alt nil
+        :message "Use (:require [some.lib :as l]) over (:use some.lib)"}]
+      "(ns examples.ns (:use clojure.zip))"
+      config))
   (let [config '{lint/prefer-require-over-use {:chosen-style :refer}}]
-      (expect "Use (:require [some.lib :refer [...]]) over (:use some.lib)"
-        (check-message "(ns examples.ns (:use clojure.zip))" config)))
+    (expect-match
+      [{:alt nil
+        :message "Use (:require [some.lib :refer [...]]) over (:use some.lib)"}]
+      "(ns examples.ns (:use clojure.zip))" config))
   (let [config '{lint/prefer-require-over-use {:chosen-style :all}}]
-      (expect "Use (:require [some.lib :refer :all]) over (:use some.lib)"
-        (check-message "(ns examples.ns (:use clojure.zip))" config))))
+    (expect-match
+      [{:alt nil
+        :message "Use (:require [some.lib :refer :all]) over (:use some.lib)"}]
+      "(ns examples.ns (:use clojure.zip))" config)))

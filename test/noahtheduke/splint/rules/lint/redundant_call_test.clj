@@ -4,15 +4,14 @@
 
 (ns noahtheduke.splint.rules.lint.redundant-call-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect from-each]]
-    [noahtheduke.splint.test-helpers :refer [check-all check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect redundant-call-test
-  (expect 'x
-    (from-each [given ["(-> x)" "(->> x)"
-                       "(cond-> x)" "(cond->> x)"
-                       "(some-> x)" "(some->> x)"
-                       "(comp x)" "(partial x)" "(merge x)"]]
-      (check-alt given)))
-  (expect nil? (check-all "(-> a b (merge c))"))
-  (expect nil? (check-all "(case elem (-> ->>) true false)")))
+  (doseq [given ["(-> x)" "(->> x)"
+                 "(cond-> x)" "(cond->> x)"
+                 "(some-> x)" "(some->> x)"
+                 "(comp x)" "(partial x)" "(merge x)"]]
+    (expect-match '[{:alt x}] given))
+  (expect-match nil "(-> a b (merge c))")
+  (expect-match nil "(case elem (-> ->>) true false)"))

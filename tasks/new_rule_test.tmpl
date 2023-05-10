@@ -4,9 +4,8 @@
 
 (ns noahtheduke.splint.rules.{{genre}}.{{rule-name}}-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect {{rule-name}}-test
-  (expect '()
-    (check-alt "")))
+  (expect-match [] ""))

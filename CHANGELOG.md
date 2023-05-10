@@ -3,6 +3,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### Added
+
+- Add `test-helpers/expect-match` to assert on submatches, transition `check-str` and `check-message` and `check-all` to use it instead. `check-alt` will come later as time allows.
+
 ### New Rules
 
 - `metrics/fn-length`: Function bodies shouldn't be longer than 10 lines.

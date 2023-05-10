@@ -7,7 +7,9 @@
     noahtheduke.splint
     noahtheduke.splint.rules.helpers
     matcher-combinators.test
-    [noahtheduke.spat.pattern :refer [simple-type]]
+    [clojure.spec.alpha :as s]
+    [expectations.clojure.test :refer [expect]]
+    [noahtheduke.spat.pattern :refer [simple-type drop-quote]]
     [noahtheduke.splint.config :refer [read-default-config deep-merge]]
     [noahtheduke.spat.parser :refer [parse-string]]
     [noahtheduke.splint.rules :refer [global-rules]]
@@ -21,7 +23,7 @@
    (prepare-rules (deep-merge (read-default-config) test-config)
                   (or @global-rules {}))))
 
-(defn check-str
+(defn- check-str
   ([s] (check-str s nil))
   ([s config]
    (let [rules (make-rules config)
@@ -34,19 +36,29 @@
   ([s config]
    (:alt (first (check-str s config)))))
 
-(defn check-message
-  ([s] (check-message s nil))
-  ([s config]
-   (:message (first (check-str s config)))))
-
-(defn check-all
+(defn- check-all
   ([s] (check-all s nil))
   ([s config]
    (let [rules (make-rules config)
          ctx (prepare-context rules nil)
          form (parse-string s)]
-     (check-and-recur ctx rules "filename" nil form)
+     (check-and-recur ctx rules
+                      (or (:filename config) "filename")
+                      (:parent-form (meta form))
+                      form)
      (seq @(:diagnostics ctx)))))
+
+(defmacro expect-match
+  ([expected s] `(expect-match ~expected ~s nil))
+  ([expected s config]
+   `(let [diagnostics# (#'check-all ~s ~config)]
+      (expect (~'match? ~expected diagnostics#)))))
+
+(s/fdef expect-match
+        :args (s/cat :expected (s/or :nil nil? :vector #(vector? (drop-quote %)))
+                     :s (s/or :string string? :sym symbol?)
+                     :config (s/? (s/or :nil nil? :sym symbol? :map map?)))
+        :ret any?)
 
 (defmacro with-out-str-data-map
   "Evaluates exprs in a context in which *out* is bound to a fresh

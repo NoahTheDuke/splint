@@ -4,9 +4,9 @@
 
 (ns noahtheduke.splint.rules.style.prefer-clj-math-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-all check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect prefer-clj-math-test
-  (expect '[clojure.math/atan] (map :alt (check-all "(Math/atan 45)")))
-  (expect 'clojure.math/PI (check-alt "Math/PI")))
+  (expect-match '[{:alt clojure.math/atan}] "(Math/atan 45)")
+  (expect-match '[{:alt clojure.math/PI}] "Math/PI"))

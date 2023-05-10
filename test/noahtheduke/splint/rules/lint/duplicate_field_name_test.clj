@@ -5,8 +5,10 @@
 (ns noahtheduke.splint.rules.lint.duplicate-field-name-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-str]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect duplicate-field-name-test
-  '"Duplicate field has been found"
-  (:message (first (check-str "(defrecord Foo [a b a])"))))
+  (expect-match
+    [{:alt nil
+      :message "Duplicate field has been found"}]
+    "(defrecord Foo [a b a])"))

@@ -43,6 +43,8 @@
     noahtheduke.splint.rules.lint.thread-macro-one-arg
     noahtheduke.splint.rules.lint.try-splicing
 
+    noahtheduke.splint.rules.metrics.fn-length
+
     noahtheduke.splint.rules.naming.conventional-aliases
     noahtheduke.splint.rules.naming.conversion-functions
     noahtheduke.splint.rules.naming.lisp-case

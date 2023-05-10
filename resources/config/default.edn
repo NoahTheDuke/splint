@@ -185,6 +185,15 @@
   :updated "1.0"
   :link "https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"}
 
+ ;; Metrics Rules
+
+ metrics/fn-length
+ {:description "Avoid functions longer than 10 lines of code."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"
+  :guid-ref "#function-length"}
+
  ;; Naming Rules
 
  naming/conventional-aliases

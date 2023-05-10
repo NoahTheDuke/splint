@@ -3,6 +3,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### New Rules
+
+- `metrics/fn-length`: Function bodies shouldn't be longer than 10 lines.
+
 ## [v1.4.1]
 
 ### Fixed

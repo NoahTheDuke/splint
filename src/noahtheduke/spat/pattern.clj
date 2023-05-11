@@ -160,8 +160,9 @@
        result#)))
 
 (defmethod read-form :binding [sexp form retval]
-  `(if-let [existing# (get @~retval '~sexp)]
-     (= existing# ~form)
+  `(if (contains? @~retval '~sexp)
+     (let [existing# (get @~retval '~sexp)]
+       (= existing# ~form))
      (do (vswap! ~retval assoc '~sexp ~form)
          true)))
 

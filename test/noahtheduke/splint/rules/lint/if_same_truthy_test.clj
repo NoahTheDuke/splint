@@ -10,4 +10,6 @@
 (defexpect if-x-x-y-test
   (expect-match
     '[{:alt (or x y)}]
-    "(if x x y)"))
+    "(if x x y)")
+  (expect-match nil
+    "(if false (reset! state true) (go a))"))

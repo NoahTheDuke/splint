@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.prefer-vary-meta-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect prefer-vary-meta-test
-  '(vary-meta x f args)
-  (check-alt "(with-meta x (f (meta x) args))"))
+  (expect-match
+    '[{:alt (vary-meta x f args)}]
+    "(with-meta x (f (meta x) args))"))

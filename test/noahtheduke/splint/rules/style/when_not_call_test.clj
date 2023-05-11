@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.when-not-call-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect when-not-x-y-test
-  '(when-not x y)
-  (check-alt "(when (not x) y)"))
+  (expect-match
+    '[{:alt (when-not x y)}]
+    "(when (not x) y)"))

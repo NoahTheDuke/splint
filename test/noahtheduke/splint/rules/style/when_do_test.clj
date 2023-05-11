@@ -4,9 +4,13 @@
 
 (ns noahtheduke.splint.rules.style.when-do-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect when-do-test
-  (expect '(when x y) (check-alt "(when x (do y))"))
-  (expect '(when x y z) (check-alt "(when x (do y z))")))
+  (expect-match
+    '[{:alt (when x y)} {:rule-name style/useless-do}]
+    "(when x (do y))")
+  (expect-match
+    '[{:alt (when x y z)}]
+    "(when x (do y z))"))

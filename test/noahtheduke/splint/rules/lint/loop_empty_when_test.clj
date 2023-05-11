@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.lint.loop-empty-when-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect loop-empty-when-test
-  '(while (= 1 1) (prn 1) (prn 2))
-  (check-alt "(loop [] (when (= 1 1) (prn 1) (prn 2) (recur)))"))
+  (expect-match
+    '[{:alt (while (= 1 1) (prn 1) (prn 2))}]
+    "(loop [] (when (= 1 1) (prn 1) (prn 2) (recur)))"))

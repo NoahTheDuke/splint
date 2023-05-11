@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.new-object-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect new-object-test
-  '(java.util.ArrayList. 100)
-  (check-alt "(new java.util.ArrayList 100)"))
+  (expect-match
+    '[{:alt (java.util.ArrayList. 100)}]
+    "(new java.util.ArrayList 100)"))

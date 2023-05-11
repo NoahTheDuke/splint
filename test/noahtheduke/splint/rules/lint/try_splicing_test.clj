@@ -4,9 +4,10 @@
 
 (ns noahtheduke.splint.rules.lint.try-splicing-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect try-splicing-test
-  (expect '(try (do (splint/unquote-splicing body)) (finally :true))
-    (check-alt "(try ~@body (finally :true))")))
+  (expect-match
+    '[{:alt (try (do (splint/unquote-splicing body)) (finally :true))}]
+    "(try ~@body (finally :true))"))

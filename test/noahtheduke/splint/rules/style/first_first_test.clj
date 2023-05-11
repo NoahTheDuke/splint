@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.first-first-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect first-first-test
-  '(ffirst coll)
-  (check-alt "(first (first coll))"))
+  (expect-match
+    '[{:alt (ffirst coll)}]
+    "(first (first coll))"))

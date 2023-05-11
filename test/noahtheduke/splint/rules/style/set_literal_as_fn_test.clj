@@ -4,15 +4,15 @@
 
 (ns noahtheduke.splint.rules.style.set-literal-as-fn-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect set-literal-as-fn-test
-  (expect '(case elem (a b c) elem nil)
-    (check-alt "(#{'a 'b 'c} elem)"))
-  (expect '(case elem (nil 1 :b c) elem nil)
-    (check-alt "(#{nil 1 :b 'c} elem)"))
-  (expect nil?
-    (check-alt "(#{'a 'b c} elem)"))
-  (expect nil?
-    (check-alt "(#{'a 'b 'c '(1 2 3)} elem)")))
+  (expect-match
+    '[{:alt (case elem (a b c) elem nil)}]
+    "(#{'a 'b 'c} elem)")
+  (expect-match
+    '[{:alt (case elem (nil 1 :b c) elem nil)}]
+    "(#{nil 1 :b 'c} elem)")
+  (expect-match nil "(#{'a 'b c} elem)")
+  (expect-match nil "(#{'a 'b 'c '(1 2 3)} elem)"))

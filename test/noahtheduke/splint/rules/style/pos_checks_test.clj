@@ -5,12 +5,14 @@
 (ns noahtheduke.splint.rules.style.pos-checks-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect lt-0-x-test
-  '(pos? x)
-  (check-alt "(< 0 x)"))
+  (expect-match
+    '[{:alt (pos? x)}]
+    "(< 0 x)"))
 
 (defexpect gt-x-0-test
-  '(pos? x)
-  (check-alt "(> x 0)"))
+  (expect-match
+    '[{:alt (pos? x)}]
+    "(> x 0)"))

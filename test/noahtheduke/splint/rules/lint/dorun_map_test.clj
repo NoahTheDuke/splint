@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.lint.dorun-map-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect dorun-map-test
-  '(run! f coll)
-  (check-alt "(dorun (map f coll))"))
+  (expect-match
+    '[{:alt (run! f coll)}]
+    "(dorun (map f coll))"))

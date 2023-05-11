@@ -4,10 +4,12 @@
 
 (ns noahtheduke.splint.rules.style.when-not-empty-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect when-not-empty?-test
-  (expect '(when (seq x) y) (check-alt "(when-not (empty? x) y)"))
-  (expect nil? (check-alt "(if (= 1 called-with) \"arg\" \"args\")")))
-
+  (expect-match
+    '[{:alt (when (seq x) y)}]
+    "(when-not (empty? x) y)")
+  (expect-match nil
+    "(if (= 1 called-with) \"arg\" \"args\")"))

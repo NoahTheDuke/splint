@@ -4,13 +4,20 @@
 
 (ns noahtheduke.splint.rules.lint.if-else-nil-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect if-else-nil-test
-  (expect '(when x y) (check-alt "(if x y nil)"))
-  (expect '(when x y) (check-alt "(if x (do y))"))
-  (expect nil? (check-alt "(if x \"y\" \"z\")")))
+  (expect-match
+    '[{:alt (when x y)}]
+    "(if x y nil)")
+  (expect-match
+    '[{:alt (when x y)}
+      {:rule-name style/useless-do}]
+    "(if x (do y))")
+  (expect-match nil "(if x \"y\" \"z\")"))
 
 (defexpect rest-arg-list-test
-  (expect '(when x (if y (z a b c))) (check-alt "(if x (if y (z a b c)))")))
+  (expect-match
+    '[{:alt (when x (if y (z a b c) d))}]
+    "(if x (if y (z a b c) d))"))

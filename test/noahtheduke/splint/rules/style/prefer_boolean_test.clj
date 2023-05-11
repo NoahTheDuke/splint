@@ -4,11 +4,13 @@
 
 (ns noahtheduke.splint.rules.style.prefer-boolean-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect prefer-boolean-test
-  (expect '(boolean some-val)
-    (check-alt "(if some-val true false)"))
-  (expect '(boolean (some-func a b c))
-    (check-alt "(if (some-func a b c) true false)")))
+  (expect-match
+    '[{:alt (boolean some-val)}]
+    "(if some-val true false)")
+  (expect-match
+    '[{:alt (boolean (some-func a b c))}]
+    "(if (some-func a b c) true false)"))

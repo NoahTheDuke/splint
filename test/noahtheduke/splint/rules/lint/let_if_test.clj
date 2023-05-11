@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.lint.let-if-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect let-if-test
-  '(if-let [result (some-func)] (do-stuff result) (other-stuff))
-  (check-alt "(let [result (some-func)] (if result (do-stuff result) (other-stuff)))"))
+  (expect-match
+    '[{:alt (if-let [result (some-func)] (do-stuff result) (other-stuff))}]
+    "(let [result (some-func)] (if result (do-stuff result) (other-stuff)))"))

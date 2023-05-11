@@ -4,9 +4,13 @@
 
 (ns noahtheduke.splint.rules.style.eq-false-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect eq-false-test
-  (expect '(false? x) (check-alt "(= false x)"))
-  (expect '(false? x) (check-alt "(= x false)")))
+  (expect-match
+    '[{:alt (false? x)}]
+    "(= false x)")
+  (expect-match
+    '[{:alt (false? x)}]
+    "(= x false)"))

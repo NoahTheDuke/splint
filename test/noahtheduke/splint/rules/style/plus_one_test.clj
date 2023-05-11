@@ -4,10 +4,13 @@
 
 (ns noahtheduke.splint.rules.style.plus-one-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect plus-x-1-test
-  (expect '(inc x) (check-alt "(+ x 1)"))
-  (expect '(inc x) (check-alt "(+ 1 x)")))
-
+  (expect-match
+    '[{:alt (inc x)}]
+    "(+ x 1)")
+  (expect-match
+    '[{:alt (inc x)}]
+    "(+ 1 x)"))

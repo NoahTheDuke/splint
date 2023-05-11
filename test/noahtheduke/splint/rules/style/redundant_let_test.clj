@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.redundant-let-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect redundant-let-test
-  '(let [a 1 b 2] (println a b))
-  (check-alt "(let [a 1] (let [b 2] (println a b)))"))
+  (expect-match
+    '[{:alt (let [a 1 b 2] (println a b))}]
+    "(let [a 1] (let [b 2] (println a b)))"))

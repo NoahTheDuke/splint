@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.lint.if-let-else-nil-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect if-let-else-nil-test
-  '(when-let ?binding ?expr)
-  (check-alt "(if-let ?binding ?expr nil)"))
+  (expect-match
+    '[{:alt (when-let ?binding ?expr)}]
+    "(if-let ?binding ?expr nil)"))

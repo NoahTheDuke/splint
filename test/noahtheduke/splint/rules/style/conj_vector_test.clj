@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.conj-vector-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect conj-vec-test
-  '(vector x)
-  (check-alt "(conj [] x)"))
+  (expect-match
+    '[{:alt (vector x)}]
+    "(conj [] x)"))

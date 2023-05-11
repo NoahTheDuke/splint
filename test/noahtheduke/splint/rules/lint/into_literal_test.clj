@@ -5,12 +5,14 @@
 (ns noahtheduke.splint.rules.lint.into-literal-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect into-vec-test
-  '(vec coll)
-  (check-alt "(into [] coll)"))
+  (expect-match
+    '[{:alt (vec coll)}]
+    "(into [] coll)"))
 
 (defexpect into-set-test
-  '(set coll)
-  (check-alt "(into #{} coll)"))
+  (expect-match
+    '[{:alt (set coll)}]
+    "(into #{} coll)"))

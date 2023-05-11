@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.lint.if-same-truthy-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect if-x-x-y-test
-  '(or x y)
-  (check-alt "(if x x y)"))
+  (expect-match
+    '[{:alt (or x y)}]
+    "(if x x y)"))

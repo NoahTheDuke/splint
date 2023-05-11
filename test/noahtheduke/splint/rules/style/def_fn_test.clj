@@ -4,13 +4,15 @@
 
 (ns noahtheduke.splint.rules.style.def-fn-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect def-let-fn-test
-  (expect '(let [allowed #{:a :b :c}] (defn check-inclusion [i] (contains? allowed i)))
-    (check-alt "(def check-inclusion (let [allowed #{:a :b :c}] (fn [i] (contains? allowed i))))")))
+  (expect-match
+    '[{:alt (let [allowed #{:a :b :c}] (defn check-inclusion [i] (contains? allowed i)))}]
+    "(def check-inclusion (let [allowed #{:a :b :c}] (fn [i] (contains? allowed i))))"))
 
 (defexpect def-fn-test
-  (expect '(defn some-func [i] (+ i 100))
-    (check-alt "(def some-func (fn [i] (+ i 100)))")))
+  (expect-match
+    '[{:alt (defn some-func [i] (+ i 100))}]
+    "(def some-func (fn [i] (+ i 100)))"))

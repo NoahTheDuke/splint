@@ -4,9 +4,13 @@
 
 (ns noahtheduke.splint.rules.style.eq-nil-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
-(defexpect eq-x-nil-test
-  (expect '(nil? x) (check-alt "(= x nil)"))
-  (expect '(nil? x) (check-alt "(= nil x)")))
+(defexpect eq-nil-test
+  (expect-match
+    '[{:alt (nil? x)}]
+    "(= nil x)")
+  (expect-match
+    '[{:alt (nil? x)}]
+    "(= x nil)"))

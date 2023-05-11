@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.update-in-assoc-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect update-in-assoc-test
-  '(assoc-in coll ks v)
-  (check-alt "(update-in coll ks assoc v)"))
+  (expect-match
+    '[{:alt (assoc-in coll ks v)}]
+    "(update-in coll ks assoc v)"))

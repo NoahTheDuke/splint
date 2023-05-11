@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.minus-zero-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect minus-0-test
-  'x
-  (check-alt "(- x 0)"))
+  (expect-match
+    '[{:alt x}]
+    "(- x 0)"))

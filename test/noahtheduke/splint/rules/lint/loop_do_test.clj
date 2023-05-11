@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.lint.loop-do-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect loop-do-test
-  '(loop [] 1)
-  (check-alt "(loop [] (do 1))"))
+  (expect-match
+    '[{:alt (loop [] a b)}]
+    "(loop [] (do a b))"))

@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.lint.dot-class-method-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect dot-class-usage-test
-  '(Obj/method 1 2 3)
-  (check-alt "(. Obj method 1 2 3)"))
+  (expect-match
+    '[{:alt (Obj/method 1 2 3)}]
+    "(. Obj method 1 2 3)"))

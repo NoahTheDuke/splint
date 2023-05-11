@@ -5,21 +5,25 @@
 (ns noahtheduke.splint.rules.style.filter-complement-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect filter-complement-test
-  '(remove pred coll)
-  (check-alt "(filter (complement pred) coll)"))
+  (expect-match
+    '[{:alt (remove pred coll)}]
+    "(filter (complement pred) coll)"))
 
 (defexpect filter-not-pred-test
-  '(remove pred coll)
-  (check-alt "(filter #(not (pred %)) coll)"))
+  (expect-match
+    '[{:alt (remove pred coll)}]
+    "(filter #(not (pred %)) coll)"))
 
 (defexpect filter-fn*-not-pred-test
-  '(remove pred coll)
-  (check-alt "(filter (fn* [x] (not (pred x))) coll)"))
+  (expect-match
+    '[{:alt (remove pred coll)}]
+    "(filter (fn* [x] (not (pred x))) coll)"))
 
 (defexpect filter-fn-not-pred-test
-  '(remove pred coll)
-  (check-alt "(filter (fn [x] (not (pred x))) coll)"))
+  (expect-match
+    '[{:alt (remove pred coll)}]
+    "(filter (fn [x] (not (pred x))) coll)"))
 

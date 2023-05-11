@@ -4,10 +4,12 @@
 
 (ns noahtheduke.splint.rules.style.useless-do-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect useless-do-x-test
-  (expect 'x (check-alt "(do x)"))
-  (expect nil? (check-alt "#(do [%1 %2])"))
-  (expect nil? (check-alt "(do ~@body)")))
+  (expect-match
+    '[{:alt x}]
+    "(do x)")
+  (expect-match nil "#(do [%1 %2])")
+  (expect-match nil "(do ~@body)"))

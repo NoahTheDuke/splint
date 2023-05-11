@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.apply-str-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect str-apply-str-test
-  '(clojure.string/join x)
-  (check-alt "(apply str x)"))
+  (expect-match
+    '[{:alt (clojure.string/join x)}]
+    "(apply str x)"))

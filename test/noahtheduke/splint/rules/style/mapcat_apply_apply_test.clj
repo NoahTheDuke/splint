@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.mapcat-apply-apply-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect mapcat-apply-apply-test
-  '(mapcat x y)
-  (check-alt "(apply concat (apply map x y))"))
+  (expect-match
+    '[{:alt (mapcat x y)}]
+    "(apply concat (apply map x y))"))

@@ -56,8 +56,10 @@
 
 (s/fdef expect-match
         :args (s/cat :expected (s/or :nil nil? :vector #(vector? (drop-quote %)))
-                     :s (s/or :string string? :sym symbol?)
-                     :config (s/? (s/or :nil nil? :sym symbol? :map map?)))
+                     :s any?
+                     :config (s/? (s/or :nil nil?
+                                        :sym #(symbol? (drop-quote %))
+                                        :map #(map? (drop-quote %)))))
         :ret any?)
 
 (defmacro with-out-str-data-map

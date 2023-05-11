@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.apply-str-interpose-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect str-apply-interpose-test
-  '(clojure.string/join x y)
-  (check-alt "(apply str (interpose x y))"))
+  (expect-match
+    '[{:alt (clojure.string/join x y)}]
+    "(apply str (interpose x y))"))

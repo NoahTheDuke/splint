@@ -5,12 +5,15 @@
 (ns noahtheduke.splint.rules.lint.not-empty-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect not-empty?-test
-  '(seq x)
-  (check-alt "(not (empty? x))"))
+  (expect-match
+    '[{:alt (seq x)}]
+    "(not (empty? x))"))
 
 (defexpect not-empty?-not-empty-style-test
-  '(not-empty x)
-  (check-alt "(not (empty? x))" '{lint/not-empty? {:chosen-style :not-empty}}))
+  (expect-match
+    '[{:alt (not-empty x)}]
+    "(not (empty? x))"
+    '{lint/not-empty? {:chosen-style :not-empty}}))

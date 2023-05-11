@@ -4,15 +4,16 @@
 
 (ns noahtheduke.splint.rules.style.multiple-arity-order-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect multiple-arity-order-test
-  (expect '(defn foo
-             ([x] (foo x 1))
-             ([x y] (+ x y))
-             ([x y & more] (reduce foo (+ x y) more)))
-    (check-alt "(defn foo
-                  ([x] (foo x 1))
-                  ([x y & more] (reduce foo (+ x y) more))
-                  ([x y] (+ x y)))")))
+  (expect-match
+    '[{:alt (defn foo
+              ([x] (foo x 1))
+              ([x y] (+ x y))
+              ([x y & more] (reduce foo (+ x y) more)))}]
+    "(defn foo
+    ([x] (foo x 1))
+    ([x y & more] (reduce foo (+ x y) more))
+    ([x y] (+ x y)))"))

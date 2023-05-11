@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.lint.if-not-both-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect if-not-x-y-x-test
-  '(if-not x y z)
-  (check-alt "(if (not x) y z)"))
+  (expect-match
+    '[{:alt (if-not x y z)}]
+    "(if (not x) y z)"))

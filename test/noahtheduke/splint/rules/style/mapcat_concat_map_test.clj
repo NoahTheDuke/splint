@@ -4,9 +4,13 @@
 
 (ns noahtheduke.splint.rules.style.mapcat-concat-map-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect mapcat-concat-map-test
-  (expect '(mapcat x y) (check-alt "(apply concat (map x y))"))
-  (expect '(mapcat x y z) (check-alt "(apply concat (map x y z))")))
+  (expect-match
+    '[{:alt (mapcat x y)}]
+    "(apply concat (map x y))")
+  (expect-match
+    '[{:alt (mapcat x y z)}]
+    "(apply concat (map x y z))"))

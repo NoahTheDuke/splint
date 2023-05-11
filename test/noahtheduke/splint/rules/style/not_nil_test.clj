@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.not-nil-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect not-nil?-test
-  '(some? x)
-  (check-alt "(not (nil? x))"))
+  (expect-match
+    '[{:alt (some? x)}]
+    "(not (nil? x))"))

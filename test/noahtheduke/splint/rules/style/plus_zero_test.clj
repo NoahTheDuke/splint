@@ -4,9 +4,13 @@
 
 (ns noahtheduke.splint.rules.style.plus-zero-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
-(defexpect plus-0-test
-  (expect 'x (check-alt "(+ x 0)"))
-  (expect 'x (check-alt "(+ 0 x)")))
+(defexpect plus-x-0-test
+  (expect-match
+    '[{:alt x}]
+    "(+ x 0)")
+  (expect-match
+    '[{:alt x}]
+    "(+ 0 x)"))

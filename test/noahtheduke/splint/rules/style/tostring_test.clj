@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.tostring-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect str-to-string-test
-  '(str x)
-  (check-alt "(.toString x)"))
+  (expect-match
+    '[{:alt (str x)}]
+    "(.toString x)"))

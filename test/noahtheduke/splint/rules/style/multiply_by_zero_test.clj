@@ -4,9 +4,9 @@
 
 (ns noahtheduke.splint.rules.style.multiply-by-zero-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect multiply-by-0-test
-  (expect '0 (check-alt "(* x 0)"))
-  (expect '0 (check-alt "(* 0 x)")))
+  (expect-match [{:alt 0}] "(* x 0)")
+  (expect-match [{:alt 0}] "(* 0 x)"))

@@ -5,16 +5,19 @@
 (ns noahtheduke.splint.rules.style.assoc-assoc-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect assoc-assoc-key-coll-test
-  '(assoc-in coll [:k1 :k2] v)
-  (check-alt "(assoc coll :k1 (assoc (:k1 coll) :k2 v))"))
+  (expect-match
+    '[{:alt (assoc-in coll [:k1 :k2] v)}]
+    "(assoc coll :k1 (assoc (:k1 coll) :k2 v))"))
 
 (defexpect assoc-assoc-coll-key-test
-  '(assoc-in coll [:k1 :k2] v)
-  (check-alt "(assoc coll :k1 (assoc (coll :k1) :k2 v))"))
+  (expect-match
+    '[{:alt (assoc-in coll [:k1 :k2] v)}]
+    "(assoc coll :k1 (assoc (coll :k1) :k2 v))"))
 
 (defexpect assoc-assoc-get-test
-  '(assoc-in coll [:k1 :k2] v)
-  (check-alt "(assoc coll :k1 (assoc (get coll :k1) :k2 v))"))
+  (expect-match
+    '[{:alt (assoc-in coll [:k1 :k2] v)}]
+    "(assoc coll :k1 (assoc (get coll :k1) :k2 v))"))

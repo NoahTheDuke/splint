@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.apply-str-reverse-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect str-apply-reverse-test
-  '(clojure.string/reverse x)
-  (check-alt "(apply str (reverse x))"))
+  (expect-match
+    '[{:alt (clojure.string/reverse x)}]
+    "(apply str (reverse x))"))

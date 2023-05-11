@@ -20,7 +20,7 @@
                [edn :as edn]])}]
     "(ns foo.bar
        (:require [clojure.string :as string]
-         clojure.set
-         [clojure.edn]
-         [clojure pprint [zip :refer [1 2 3] :as z]
-         [edn :as e]]))"))
+                 clojure.set
+                 [clojure.edn]
+                 [clojure pprint [zip :refer [1 2 3] :as z]
+                  [edn :as e]]))"))

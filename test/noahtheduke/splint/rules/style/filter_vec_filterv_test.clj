@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.filter-vec-filterv-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect filter-vec-filterv-test
-  '(filterv pred coll)
-  (check-alt "(vec (filter pred coll))"))
+  (expect-match
+    '[{:alt (filterv pred coll)}]
+    "(vec (filter pred coll))"))

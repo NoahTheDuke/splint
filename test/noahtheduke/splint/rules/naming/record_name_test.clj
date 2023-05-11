@@ -4,13 +4,16 @@
 
 (ns noahtheduke.splint.rules.naming.record-name-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect record-name-test
-  (expect '(defrecord Foo [a b c])
-    (check-alt "(defrecord foo [a b c])"))
-  (expect '(defrecord FooBar [a b c])
-    (check-alt "(defrecord fooBar [a b c])"))
-  (expect '(defrecord Foo-bar [a b c])
-    (check-alt "(defrecord foo-bar [a b c])")))
+  (expect-match
+    '[{:alt (defrecord Foo [a b c])}]
+    "(defrecord foo [a b c])")
+  (expect-match
+    '[{:alt (defrecord FooBar [a b c])}]
+    "(defrecord fooBar [a b c])")
+  (expect-match
+    '[{:alt (defrecord Foo-bar [a b c])}]
+    "(defrecord foo-bar [a b c])"))

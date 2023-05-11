@@ -5,20 +5,24 @@
 (ns noahtheduke.splint.rules.style.eq-zero-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect eq-0-x-test
-  '(zero? x)
-  (check-alt "(= 0 x)"))
+  (expect-match
+    '[{:alt (zero? x)}]
+    "(= 0 x)"))
 
 (defexpect eq-x-0-test
-  '(zero? x)
-  (check-alt "(= x 0)"))
+  (expect-match
+    '[{:alt (zero? x)}]
+    "(= x 0)"))
 
 (defexpect eqeq-0-x-test
-  '(zero? x)
-  (check-alt "(== 0 x)"))
+  (expect-match
+    '[{:alt (zero? x)}]
+    "(== 0 x)"))
 
 (defexpect eqeq-x-0-test
-  '(zero? x)
-  (check-alt "(== x 0)"))
+  (expect-match
+    '[{:alt (zero? x)}]
+    "(== x 0)"))

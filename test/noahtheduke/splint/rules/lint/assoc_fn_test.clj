@@ -5,16 +5,19 @@
 (ns noahtheduke.splint.rules.lint.assoc-fn-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect assoc-fn-key-coll-test
-  '(update coll :k f args)
-  (check-alt "(assoc coll :k (f (:k coll) args))"))
+  (expect-match
+    '[{:alt (update coll :k f args)}]
+    "(assoc coll :k (f (:k coll) args))"))
 
 (defexpect assoc-fn-coll-key-test
-  '(update coll :k f args)
-  (check-alt "(assoc coll :k (f (coll :k) args))"))
+  (expect-match
+    '[{:alt (update coll :k f args)}]
+    "(assoc coll :k (f (coll :k) args))"))
 
 (defexpect assoc-fn-get-test
-  '(update coll :k f args)
-  (check-alt "(assoc coll :k (f (get coll :k) args))"))
+  (expect-match
+    '[{:alt (update coll :k f args)}]
+    "(assoc coll :k (f (get coll :k) args))"))

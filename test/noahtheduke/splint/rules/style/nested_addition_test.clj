@@ -4,9 +4,13 @@
 
 (ns noahtheduke.splint.rules.style.nested-addition-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect nested-addition-test
-  (expect '(+ x y z) (check-alt "(+ x (+ y z))"))
-  (expect '(+ x y z a) (check-alt "(+ x (+ y z a))")))
+  (expect-match
+    '[{:alt (+ x y z)}]
+    "(+ x (+ y z))")
+  (expect-match
+    '[{:alt (+ x y z a)}]
+    "(+ x (+ y z a))"))

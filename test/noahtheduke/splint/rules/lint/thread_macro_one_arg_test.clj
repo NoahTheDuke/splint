@@ -4,37 +4,75 @@
 
 (ns noahtheduke.splint.rules.lint.thread-macro-one-arg-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect thread-first-1-arg-test
-  (expect '(form arg) (check-alt "(-> arg form)"))
-  (expect '(form arg) (check-alt "(-> arg (form))"))
-  (expect '(form arg 10) (check-alt "(-> arg (form 10))")))
+  (expect-match
+    '[{:alt (form arg)}]
+    "(-> arg form)")
+  (expect-match
+    '[{:alt (form arg)}]
+    "(-> arg (form))")
+  (expect-match
+    '[{:alt (form arg 10)}]
+    "(-> arg (form 10))"))
 
 (defexpect thread-last-1-arg-test
-  (expect '(form arg) (check-alt "(->> arg form)"))
-  (expect '(form arg) (check-alt "(->> arg (form))"))
-  (expect '(form 10 arg) (check-alt "(->> arg (form 10))")))
+  (expect-match
+    '[{:alt (form arg)}]
+    "(->> arg form)")
+  (expect-match
+    '[{:alt (form arg)}]
+    "(->> arg (form))")
+  (expect-match
+    '[{:alt (form 10 arg)}]
+    "(->> arg (form 10))"))
 
 (defexpect thread-style-inline-test
   (let [config '{lint/thread-macro-one-arg {:chosen-style :inline}}]
-    (expect '(form arg) (check-alt "(-> arg form)" config))
-    (expect '(form [arg]) (check-alt "(-> [arg] form)" config))
-    (expect '(form {:a arg}) (check-alt "(-> {:a arg} form)" config))
-    (expect '(form #{arg}) (check-alt "(-> #{arg} form)" config))
-    (expect '(form arg) (check-alt "(->> arg form)" config))
-    (expect '(form [arg]) (check-alt "(->> [arg] form)" config))
-    (expect '(form {:a arg}) (check-alt "(->> {:a arg} form)" config))
-    (expect '(form #{arg}) (check-alt "(->> #{arg} form)" config))))
+    (expect-match
+      '[{:alt (form arg)}]
+      "(-> arg form)" config)
+    (expect-match
+      '[{:alt (form [arg])}]
+      "(-> [arg] form)" config)
+    (expect-match
+      '[{:alt (form {:a arg})}]
+      "(-> {:a arg} form)" config)
+    (expect-match
+      '[{:alt (form #{arg})}]
+      "(-> #{arg} form)" config)
+    (expect-match
+      '[{:alt (form arg)}]
+      "(->> arg form)" config)
+    (expect-match
+      '[{:alt (form [arg])}]
+      "(->> [arg] form)" config)
+    (expect-match
+      '[{:alt (form {:a arg})}]
+      "(->> {:a arg} form)" config)
+    (expect-match
+      '[{:alt (form #{arg})}]
+      "(->> #{arg} form)" config)))
 
 (defexpect thread-style-avoid-collections-test
   (let [config '{lint/thread-macro-one-arg {:chosen-style :avoid-collections}}]
-    (expect '(form arg) (check-alt "(-> arg form)" config))
-    (expect nil? (check-alt "(-> [arg] form)" config))
-    (expect nil? (check-alt "(-> {:a arg} form)" config))
-    (expect nil? (check-alt "(-> #{arg} form)" config))
-    (expect '(form arg) (check-alt "(->> arg form)" config))
-    (expect nil? (check-alt "(->> [arg] form)" config))
-    (expect nil? (check-alt "(->> {:a arg} form)" config))
-    (expect nil? (check-alt "(->> #{arg} form)" config))))
+    (expect-match
+      '[{:alt (form arg)}]
+      "(-> arg form)" config)
+    (expect-match nil
+      "(-> [arg] form)" config)
+    (expect-match nil
+      "(-> {:a arg} form)" config)
+    (expect-match nil
+      "(-> #{arg} form)" config)
+    (expect-match
+      '[{:alt (form arg)}]
+      "(->> arg form)" config)
+    (expect-match nil
+      "(->> [arg] form)" config)
+    (expect-match nil
+      "(->> {:a arg} form)" config)
+    (expect-match nil
+      "(->> #{arg} form)" config)))

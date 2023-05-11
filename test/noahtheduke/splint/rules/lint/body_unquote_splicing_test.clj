@@ -4,17 +4,19 @@
 
 (ns noahtheduke.splint.rules.lint.body-unquote-splicing-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [expectations.clojure.test :refer [defexpect]]
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect only-body-test
   (doseq [input '[delay dosync future lazy-cat lazy-seq pvalues
                   with-loading-context]]
-    (expect (list input '(let [res# (do (splint/unquote-splicing body))] res#))
-      (check-alt (format "(%s ~@body)" input)))))
+    (expect-match
+      [{:alt (list input '(let [res# (do (splint/unquote-splicing body))] res#))}]
+      (format "(%s ~@body)" input))))
 
 (defexpect init-arg-test
   (doseq [input '[binding locking sync with-bindings with-in-str
                   with-local-vars with-precision with-redefs]]
-    (expect (list input 'arg '(let [res# (do (splint/unquote-splicing body))] res#))
-      (check-alt (format "(%s arg ~@body)" input)))))
+    (expect-match
+      [{:alt (list input 'arg '(let [res# (do (splint/unquote-splicing body))] res#))}]
+      (format "(%s arg ~@body)" input))))

@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.style.not-eq-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect not-eq-test
-  '(not= arg1 arg2 arg3)
-  (check-alt "(not (= arg1 arg2 arg3))"))
+  (expect-match
+    '[{:alt (not= arg1 arg2 arg3)}]
+    "(not (= arg1 arg2 arg3))"))

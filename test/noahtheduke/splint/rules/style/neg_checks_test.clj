@@ -5,12 +5,14 @@
 (ns noahtheduke.splint.rules.style.neg-checks-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [check-alt]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (defexpect lt-x-0-test
-  '(neg? x)
-  (check-alt "(< x 0)"))
+  (expect-match
+    '[{:alt (neg? x)}]
+    "(< x 0)"))
 
 (defexpect gt-0-x-test
-  '(neg? x)
-  (check-alt "(> 0 x)"))
+  (expect-match
+    '[{:alt (neg? x)}]
+    "(> 0 x)"))

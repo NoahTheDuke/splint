@@ -8,9 +8,9 @@
   A Diagnostic is an instance of a match of a rule's pattern in a given
   analyzed code. It has the following definition:
 
-  (defrecord Diagnostic [rule-name form message alt line column filename])")
+  (defrecord Diagnostic [rule-name form message alt line column end-row end-col filename])")
 
-(defrecord Diagnostic [rule-name form message alt line column filename])
+(defrecord Diagnostic [rule-name form message alt line column end-row end-col filename])
 
 (defn ->diagnostic
   "Create and return a new diagnostic."
@@ -19,10 +19,12 @@
    (let [form-meta (meta form)
          message (or message (:message rule))]
      (->Diagnostic
-       (:full-name rule)
+       (rule :full-name)
        form
        message
        replace-form
-       (:line form-meta)
-       (:column form-meta)
-       (:filename form-meta)))))
+       (form-meta :line)
+       (form-meta :column)
+       (form-meta :end-row)
+       (form-meta :end-col)
+       (form-meta :filename)))))

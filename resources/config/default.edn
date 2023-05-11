@@ -188,11 +188,14 @@
  ;; Metrics Rules
 
  metrics/fn-length
- {:description "Avoid functions longer than 10 lines of code."
-  :enabled true
+ {:description "Avoid functions longer than 10 lines of code (default)."
+  :enabled false
   :added "<<next>>"
   :updated "<<next>>"
-  :guid-ref "#function-length"}
+  :chosen-style :body
+  :supported-styles [:body :defn]
+  :length 10
+  :guide-ref "#function-length"}
 
  ;; Naming Rules
 

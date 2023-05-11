@@ -280,22 +280,60 @@
 
 (defn parse-defn
   "Adapted from clojure.core but returns `nil` if given an improperly formed defn."
-  [fname fdecl]
-  (let [m {:splint/name fname}
-        m (if (string? (first fdecl))
-            (assoc m :doc (first fdecl))
-            m)
-        fdecl (if (string? (first fdecl)) (next fdecl) fdecl)
-        m (if (map? (first fdecl))
-            (conj m (first fdecl))
-            m)
-        fdecl (if (map? (first fdecl)) (next fdecl) fdecl)
-        fdecl (cond
-                (vector? (first fdecl)) (list fdecl)
-                (list? (first fdecl)) fdecl)
-        m (assoc m :arities fdecl)
-        m (when fdecl
-            (conj {:arglists (sigs fdecl)} m))
-        m (when m
-            (conj (or (meta fname) {}) m))]
-    m))
+  [form]
+  (let [fdecl (next form)
+        fname (when (symbol? (first fdecl)) (first fdecl))]
+    (when fname
+      (let [fdecl (next fdecl)
+            m {:splint/name fname}
+            m (if (string? (first fdecl))
+                (assoc m :doc (first fdecl))
+                m)
+            fdecl (if (string? (first fdecl)) (next fdecl) fdecl)
+            m (if (map? (first fdecl))
+                (conj m (first fdecl))
+                m)
+            fdecl (if (map? (first fdecl)) (next fdecl) fdecl)
+            fdecl (cond
+                    ;; For linting purposes, it's helpful to track the location
+                    ;; of function "arities" (the arg vector plus fn body). If
+                    ;; the function has single or multiple arities but they're
+                    ;; all wrapped in lists, then they'll have location data
+                    ;; already. However, if it's a single arity function, the
+                    ;; "arity" won't have location data as it's a plain seq
+                    ;; built from calling `next` repeatedly. Therefore, we
+                    ;; gotta do it ourselves here.
+                    ;;
+                    ;; At this point, fdecl is either:
+                    ;; - a single arity: ([] 1 2 3) 
+                    ;; - a single arity wrapped in a list: (([] 1 2 3))
+                    ;; - multiple arities (each wrapped in a list): (([] 1 2 3) ([a] a 1 2 3))
+                    ;; If it's the first, that means when we create the wrapped
+                    ;; version, we don't carry forward the metadata of the
+                    ;; "body" (arglist plus actual body).
+                    ;;
+                    ;; To do that, we have to convert the fdecl seq to
+                    ;; a concrete list, and attach to it the position of the
+                    ;; vector at the start and the position of the function's
+                    ;; form at the end (because ends are exclusive indices).
+                    ;;         start    end
+                    ;;           v       v
+                    ;; (defn foo [] 1 2 3)
+                    (vector? (first fdecl))
+                    (let [vm (meta (first fdecl))
+                          loc {:line (:line vm)
+                               :column (:column vm)
+                               :end-row (:end-row (meta form))
+                               :end-col (dec (:end-col (meta form)))}]
+                      (-> (apply list fdecl)
+                          (vary-meta (fnil conj {}) loc)
+                          (list)))
+                    ;; Otherwise, just use the existing list (which will have
+                    ;; location data already).
+                    (list? (first fdecl)) fdecl)
+            m (assoc m :arities fdecl)
+            m (when fdecl
+                (conj {:arglists (sigs fdecl)} m))
+            m (when m
+                (conj (or (meta fname) {}) m))]
+        m))))

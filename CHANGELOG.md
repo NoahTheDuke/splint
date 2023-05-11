@@ -3,6 +3,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### New Rules
+
+- `metrics/fn-length`: Function bodies shouldn't be longer than 10 lines. Has `:body` and `:defn` styles, and `:length` configurable value to set maximum length.
+
 ### Added
 
 - Add `test-helpers/expect-match` to assert on submatches, transition all existing `check-X` functions to use it instead.
@@ -10,10 +14,6 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Fix binding pattern when binding is falsey.
 - Track end position of diagnostics.
 - Attach location metadata to function "arities" when a defn arg+body isn't wrapped in a list.
-
-### New Rules
-
-- `metrics/fn-length`: Function bodies shouldn't be longer than 10 lines. Has `:body` and `:defn` styles, and `:length` configurable value to set maximum length.
 
 ## [v1.4.1]
 

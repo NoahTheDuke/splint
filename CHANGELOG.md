@@ -6,6 +6,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Added
 
 - Add `test-helpers/expect-match` to assert on submatches, transition all existing `check-X` functions to use it instead.
+- Fix multiple-arity-order with :arglists metadata.
+- Fix binding pattern when binding is falsey.
 
 ### New Rules
 

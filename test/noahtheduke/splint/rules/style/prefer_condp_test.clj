@@ -16,4 +16,6 @@
     "(cond (= 1 x) :one (= 2 x) :two (= 3 x) :three :else :big)")
   (expect-match
     '[{:alt (condp apply [2 3] = "eq" < "lt" > "gt")}]
-    "(cond (apply = [2 3]) \"eq\" (apply < [2 3]) \"lt\" (apply > [2 3]) \"gt\")"))
+    "(cond (apply = [2 3]) \"eq\" (apply < [2 3]) \"lt\" (apply > [2 3]) \"gt\")")
+  (expect-match nil "(cond (and a b) true (and c b) false)")
+  (expect-match nil "(cond (or a b) true (or c b) false)"))

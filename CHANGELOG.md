@@ -22,6 +22,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Fix `style/multiple-arity-order` with `:arglists` metadata.
 - Fix binding pattern when binding is falsey.
 - Skip `#(.someMethod %)` in `lint/fn-wrapper`.
+- Skip `and` and `or` in `style/prefer-condp`.
 
 ## [v1.4.1]
 

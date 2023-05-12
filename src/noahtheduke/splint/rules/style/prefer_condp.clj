@@ -25,22 +25,23 @@
               ;; trim final pred if it's a keyword or `true`
               all-pairs (if default?
                           (butlast all-pairs)
-                          all-pairs)
-              test-exprs
-              (reduce
-                (fn [acc [cur-pred cur-branch]]
-                  (if (and (list? cur-pred)
-                           (= pred-f (first cur-pred))
-                           (= expr (last cur-pred)))
-                    (conj acc (second cur-pred) cur-branch)
-                    (reduced nil)))
-                []
-                all-pairs)]
-          (when test-exprs ; short circuit
-            (let [test-exprs (if default?
-                               (conj test-exprs (last ?pairs))
-                               test-exprs)]
-              (list* 'condp pred-f expr test-exprs))))))))
+                          all-pairs)]
+          ;; Skip simple built-in macros
+          (when-not (case pred-f (and or) true false)
+            (when-let [test-exprs
+                       (reduce
+                         (fn [acc [cur-pred cur-branch]]
+                           (if (and (list? cur-pred)
+                                    (= pred-f (first cur-pred))
+                                    (= expr (last cur-pred)))
+                             (conj acc (second cur-pred) cur-branch)
+                             (reduced nil)))
+                         []
+                         all-pairs)]
+              (let [test-exprs (if default?
+                                 (conj test-exprs (last ?pairs))
+                                 test-exprs)]
+                (list* 'condp pred-f expr test-exprs)))))))))
 
 (defrule style/prefer-condp
   "`cond` checking against the same value in every branch is a code smell.

@@ -5,7 +5,7 @@
 (ns ^:no-doc noahtheduke.splint.rules.naming.conventional-aliases
   (:require
     [clojure.set :as set]
-    [noahtheduke.spat.ns-parser :refer [deps-from-libspec]]
+    [noahtheduke.spat.parser.ns :refer [deps-from-libspec]]
     [noahtheduke.spat.pattern :refer [drop-quote]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))

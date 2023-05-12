@@ -2,7 +2,7 @@
 ; Kibit: Copyright © 2012 Jonas Enlund, ELP 1.0
 ; Modifications licensed under ELP 1.0
 
-(ns noahtheduke.spat.ns-parser
+(ns noahtheduke.spat.parser.ns
   (:require
     [noahtheduke.spat.pattern :refer [drop-quote]]))
 

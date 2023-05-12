@@ -1,6 +1,6 @@
-(ns noahtheduke.spat.ns-parser-test
+(ns noahtheduke.spat.parser.ns-test
   (:require [expectations.clojure.test :refer [defexpect expect from-each]]
-            [noahtheduke.spat.ns-parser :as sut]))
+            [noahtheduke.spat.parser.ns :as sut]))
 
 (defexpect parse-ns-import-test
   (expect

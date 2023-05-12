@@ -3,6 +3,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+## [v1.5.0]
+
 ### New Rules
 
 - `metrics/fn-length`: Function bodies shouldn't be longer than 10 lines. Has `:body` and `:defn` styles, and `:length` configurable value to set maximum length.
@@ -320,7 +322,8 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.4.1...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.5.0...HEAD
+[v1.5.0]: https://github.com/noahtheduke/splint/compare/v1.4.1...v1.5.0
 [v1.4.1]: https://github.com/noahtheduke/splint/compare/v1.4.0...v1.4.1
 [v1.4.0]: https://github.com/noahtheduke/splint/compare/v1.3.2...v1.4.0
 [v1.3.2]: https://github.com/noahtheduke/splint/compare/v1.3.1...v1.3.2

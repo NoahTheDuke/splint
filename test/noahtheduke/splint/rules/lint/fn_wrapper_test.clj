@@ -14,4 +14,5 @@
 
 (defexpect interop-static-test
   (expect-match nil "#(Integer/parseInt %)")
-  (expect-match nil "(do (import (java.util.regex Pattern)) #(Pattern/compile %))"))
+  (expect-match nil "(do (import (java.util.regex Pattern)) #(Pattern/compile %))")
+  (expect-match nil "#(.getPath %)"))

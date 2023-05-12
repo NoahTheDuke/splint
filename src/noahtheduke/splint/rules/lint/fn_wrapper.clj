@@ -4,6 +4,7 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.fn-wrapper
   (:require
+    [clojure.string :as str]
     [noahtheduke.splint.rules :refer [defrule]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules.helpers :refer [default-import?]]))
@@ -13,7 +14,8 @@
 (defn interop? [sexp]
   (and (symbol? sexp)
        (or (some->> sexp namespace symbol default-import?)
-           (some->> sexp meta :spat/import-ns))))
+           (some->> sexp meta :spat/import-ns)
+           (str/starts-with? (name sexp) "."))))
 
 (defrule lint/fn-wrapper
   "Avoid wrapping functions in pass-through anonymous function defitions.

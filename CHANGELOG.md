@@ -10,14 +10,18 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Added
 
 - Add `test-helpers/expect-match` to assert on submatches, transition all existing `check-X` functions to use it instead.
-- Fix multiple-arity-order with :arglists metadata.
-- Fix binding pattern when binding is falsey.
 - Track end position of diagnostics.
 - Attach location metadata to function "arities" when a defn arg+body isn't wrapped in a list.
 
 ### Changed
 
 - Parse `defn` forms in postprocessing and attach as metadata instead of parsing in individual rules.
+
+### Fixed
+
+- Fix `style/multiple-arity-order` with `:arglists` metadata.
+- Fix binding pattern when binding is falsey.
+- Skip `#(.someMethod %)` in `lint/fn-wrapper`.
 
 ## [v1.4.1]
 
@@ -200,15 +204,15 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [v1.0]
 
-### Added
-
-- Use markdownlint to pretty up the markdown in the repo. Will do my best to keep up with it.
-
 ### New Rules
 
 - `style/def-fn`: Prefer `(let [z f] (defn x [y] (z y)))` over `(def x (let [z f] (fn [y] (z y))))`
 - `lint/try-splicing`: Prefer `(try (do ~@body) (finally ...))` over `(try ~@body (finally ...))`.
 - `lint/body-unquote-splicing`: Prefer `(binding [max mymax] (let [res# (do ~@body)] res#))` over `(binding [max mymax] ~@body)`.
+
+### Added
+
+- Use markdownlint to pretty up the markdown in the repo. Will do my best to keep up with it.
 
 ### Changed
 
@@ -226,16 +230,16 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ## [v0.1.119]
 Actually wrote out something of a changelog.
 
-### Added
-
-- The `:new-rule` task now creates a test stub in the correct test directory.
-- `#_:splint/disable` is treated as metadata on the following form and disables all rules. `#_{:splint/disable []}` can take genres of rules (`[lint]`) and/or specific rules (`[lint/loop-do]`) and disables those rules. See below (Thoughts and Followup) for discussion and [Configuration](./docs/configuration.md) for more details.
-
 ### New Rules
 
 - `lint/duplicate-field-name`: `(defrecord Foo [a b a])`
 - `naming/conversion-functions`: Should use `x->y` instead of `x-to-y`.
 - `style/set-literal-as-fn`: Should use `(case elem (a b) true false)` instead of `(#{'a 'b} elem)`
+
+### Added
+
+- The `:new-rule` task now creates a test stub in the correct test directory.
+- `#_:splint/disable` is treated as metadata on the following form and disables all rules. `#_{:splint/disable []}` can take genres of rules (`[lint]`) and/or specific rules (`[lint/loop-do]`) and disables those rules. See below (Thoughts and Followup) for discussion and [Configuration](./docs/configuration.md) for more details.
 
 ### Changed
 
@@ -268,8 +272,6 @@ After tinkering with Edamame for a bit, I've found a solution that requires no c
 ## [v0.1.85]
 Update readme with some better writing.
 
-### Added
-
 ### New Rules
 
 - `dev/sorted-rules-require` for internal use only
@@ -282,15 +284,6 @@ Update readme with some better writing.
 
 ## [v0.1.69]
 Renamed to Splint! Things are really coming together now.
-
-### Added
-
-- Basic CLI.
-- Basic config file and config management.
-- cljdoc support.
-- `-M:gen-docs` for rule documentation generation and formatting.
-- `-M:new-rule` task to generate a new rule file from a template.
-- `-M:deploy` task to push to clojars.
 
 ### New Rules
 
@@ -305,6 +298,15 @@ Renamed to Splint! Things are really coming together now.
 - `style/prefer-condp`
 - `style/redundant-let`
 - `style/single-key-in`
+
+### Added
+
+- Basic CLI.
+- Basic config file and config management.
+- cljdoc support.
+- `-M:gen-docs` for rule documentation generation and formatting.
+- `-M:new-rule` task to generate a new rule file from a template.
+- `-M:deploy` task to push to clojars.
 
 ### Changed
 

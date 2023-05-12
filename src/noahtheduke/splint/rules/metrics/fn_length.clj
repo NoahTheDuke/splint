@@ -6,8 +6,7 @@
   (:require
     [noahtheduke.splint.config :refer [get-config]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]
-    [noahtheduke.splint.rules.helpers :refer [parse-defn]]))
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
@@ -78,7 +77,7 @@
   "
   {:pattern '(%defn?? &&. ?_args)
    :on-match (fn [ctx rule form bindings]
-               (when-let [defn-form (parse-defn form)]
+               (when-let [defn-form (:spat/defn-form (meta form))]
                  (let [config (get-config ctx rule)]
                    (condp = (:chosen-style config)
                      :defn (defn-size config rule form)

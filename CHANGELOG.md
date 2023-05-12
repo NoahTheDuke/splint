@@ -15,6 +15,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Track end position of diagnostics.
 - Attach location metadata to function "arities" when a defn arg+body isn't wrapped in a list.
 
+### Changed
+
+- Parse `defn` forms in postprocessing and attach as metadata instead of parsing in individual rules.
+
 ## [v1.4.1]
 
 ### Fixed

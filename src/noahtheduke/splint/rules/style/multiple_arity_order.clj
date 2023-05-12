@@ -6,8 +6,7 @@
   (:require
     [noahtheduke.spat.pattern :refer [drop-quote]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]
-    [noahtheduke.splint.rules.helpers :refer [parse-defn]]))
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
@@ -31,7 +30,7 @@
   {:pattern '(%defn??%-?defn ?name &&. ?args)
    :message "defn arities should be sorted fewest to most arguments."
    :on-match (fn [ctx rule form {:syms [?defn ?name]}]
-               (when-let [defn-form (parse-defn form)]
+               (when-let [defn-form (:spat/defn-form (meta form))]
                  (let [arglists (drop-quote (:arglists defn-form))]
                    (when (not= arglists (sort-by count arglists))
                      (let [new-arities (sort-by (comp count first) (:arities defn-form))

@@ -9,7 +9,7 @@
 (set! *warn-on-reflection* true)
 
 (defrule style/filter-complement
-  "Check for (filter (complement pred) coll)
+  "Check for `(filter (complement pred) coll)`.
 
   Examples:
 

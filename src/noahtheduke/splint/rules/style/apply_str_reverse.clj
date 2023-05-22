@@ -9,7 +9,7 @@
 (set! *warn-on-reflection* true)
 
 (defrule style/apply-str-reverse
-  "Check for round-about clojure.string/reverse.
+  "Check for round-about `clojure.string/reverse`.
 
   Examples:
 

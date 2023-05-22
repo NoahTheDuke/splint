@@ -12,7 +12,7 @@
   (not= 'assoc sym))
 
 (defrule lint/assoc-fn
-  "`assoc`-ing an update with the same key are hard to read. `update` is known and
+  "`assoc`-ing an update with the same key is hard to read. `update` is known and
   idiomatic.
 
   Examples:

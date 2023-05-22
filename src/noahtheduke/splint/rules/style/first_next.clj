@@ -9,7 +9,7 @@
 (set! *warn-on-reflection* true)
 
 (defrule style/first-next
-  "fnext is succinct and meaningful.
+  "`fnext` is succinct and meaningful.
 
   Examples:
 

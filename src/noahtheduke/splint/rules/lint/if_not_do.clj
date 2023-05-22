@@ -17,8 +17,9 @@
   (if-not x (do (println :a) (println :b) :c))
 
   ; good
-  (if-not x (println :a) (println :b) :c)
+  (when-not x (println :a) (println :b) :c)
   "
-  {:pattern '(if-not ?x (do &&. ?y))
+  {:patterns ['(if-not ?x (do &&. ?y))
+              '(if-not ?x (do &&. ?y) nil)]
    :message "Use `when-not` instead of recreating it."
    :replace '(when-not ?x &&. ?y)})

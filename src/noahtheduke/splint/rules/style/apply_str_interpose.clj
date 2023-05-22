@@ -9,7 +9,7 @@
 (set! *warn-on-reflection* true)
 
 (defrule style/apply-str-interpose
-  "Check for round-about str/join.
+  "Check for round-about `clojure.string/join`.
 
   Examples:
 

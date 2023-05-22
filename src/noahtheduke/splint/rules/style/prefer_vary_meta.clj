@@ -9,7 +9,7 @@
 (set! *warn-on-reflection* true)
 
 (defrule style/prefer-vary-meta
-  "`vary-meta` works like swap!, so no need to access and overwrite in two steps.
+  "`vary-meta` works like `swap!`, so no need to access and overwrite in two steps.
 
   Examples:
 

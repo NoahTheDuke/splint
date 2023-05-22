@@ -9,7 +9,7 @@
 (set! *warn-on-reflection* true)
 
 (defrule style/mapcat-concat-map
-  "Check for (apply concat (map x y z))
+  "Check for `(apply concat (map x y z))`.
 
   Examples:
 

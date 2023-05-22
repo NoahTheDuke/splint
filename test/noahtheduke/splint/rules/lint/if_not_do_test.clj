@@ -10,4 +10,7 @@
 (defexpect if-not-do-test
   (expect-match
     '[{:alt (when-not x y z)}]
-    "(if-not x (do y z))"))
+    "(if-not x (do y z))")
+  (expect-match
+    '[{:alt (when-not x y z)}]
+    "(if-not x (do y z) nil)"))

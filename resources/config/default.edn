@@ -8,7 +8,7 @@
  ;; Lint Rules
 
  lint/assoc-fn
- {:description ""
+ {:description "`assoc`-ing an update with the same key is harder to read than `update`."
   :enabled true
   :added "0.1"
   :updated "0.1"}
@@ -21,127 +21,127 @@
   :link "https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"}
 
  lint/divide-by-one
- {:description ""
+ {:description "Dividing by 1 is a no-op."
   :enabled true
   :added "0.1"
   :updated "0.1"}
 
  lint/dorun-map
- {:description ""
+ {:description "Prefer `run!` to `(dorun (map ...))`."
   :enabled true
   :added "0.1"
   :updated "1.2.1"}
 
  lint/dot-class-method
- {:description ""
+ {:description "Prefer `(.method obj)` to `(. obj method)`."
   :enabled true
   :added "0.1"
   :updated "0.1"}
 
  lint/dot-obj-method
- {:description ""
+ {:description "Prefer `(Obj/method)` to `(. Obj method)`."
   :enabled true
   :added "0.1"
   :updated "0.1"}
 
  lint/duplicate-field-name
- {:description ""
+ {:description "`defrecord` and `deftype` don't allow duplicate field names."
   :enabled true
   :added "0.1.119"
   :updated "0.1.119"
   :guide-ref "#naming-conversion-functions"}
 
  lint/fn-wrapper
- {:description ""
+ {:description "Avoid wrapping functions in pass-through anonymous function defitions."
   :enabled true
   :added "0.1"
   :updated "0.1"
   :guide-ref "#no-useless-anonymous-fns"}
 
  lint/if-else-nil
- {:description ""
+ {:description "Prefer `when` to `(if x y nil)`."
   :enabled true
   :added "0.1"
   :updated "0.1"
   :guide-ref "#when-instead-of-single-branch-if"}
 
  lint/if-let-else-nil
- {:description ""
+ {:description "Prefer `when-let` to `(if-let [x (abc)] x nil)`."
   :enabled true
   :added "0.1"
   :updated "0.1"}
 
  lint/if-nil-else
- {:description ""
+ {:description "Prefer `when-not` to `(if x nil y)`."
   :enabled true
   :added "0.1"
   :updated "0.1"}
 
  lint/if-not-both
- {:description ""
+ {:description "Prefer `if-not` to `(if (not x) y z)`."
   :enabled true
   :added "0.1"
   :updated "0.1"
   :guide-ref "#if-not"}
 
  lint/if-not-do
- {:description ""
+ {:description "Prefer `when-not` to `(if-not x (do y))`."
   :enabled true
   :added "0.1"
   :updated "0.1"}
 
  lint/if-not-not
- {:description ""
+ {:description "Prefer `if` to `(if-not (not x) y z)`."
   :enabled true
   :added "0.1"
   :updated "0.1"}
 
  lint/if-same-truthy
- {:description ""
+ {:description "Prefer `or` to `(if x x y)`."
   :enabled true
   :added "0.1"
   :updated "0.1"}
 
  lint/into-literal
- {:description ""
+ {:description "Prefer `vec` or `set` to `(into [] ...)`."
   :enabled true
   :added "0.1"
   :updated "0.1"}
 
  lint/let-if
- {:description ""
+ {:description "Prefer `if-let` to `(let [x (abc)] (if x y z))`."
   :enabled true
   :added "0.1.69"
   :updated "0.1.69"
   :guide-ref "#if-let"}
 
  lint/let-when
- {:description ""
+ {:description "Prefer `when-let` to `(let [x (abc)] (when x y z))`."
   :enabled true
   :added "0.1.69"
   :updated "0.1.69"
   :guide-ref "#when-let"}
 
  lint/loop-do
- {:description ""
+ {:description "`loop` has an implicit `do`."
   :enabled true
   :added "0.1"
   :updated "0.1"}
 
  lint/loop-empty-when
- {:description ""
+ {:description "Prefer `while` to empty loops with `when`s."
   :enabled true
   :added "0.1"
   :updated "0.1"}
 
  lint/missing-body-in-when
- {:description ""
+ {:description "`when` calls should have at least 1 expression after the condition."
   :enabled true
   :added "0.1.69"
   :updated "0.1.69"}
 
  lint/not-empty?
- {:description "Looks for (not (empty?)) which matters for nil-punning."
+ {:description "Looks for `(not (empty?))` which matters for nil-punning."
   :enabled true
   :added "0.1"
   :updated "1.2.0"
@@ -150,7 +150,7 @@
   :guide-ref "#nil-punning"}
 
  lint/prefer-require-over-use
- {:description "Use is considered deprecated."
+ {:description "`use` is conventionally deprecated."
   :enabled true
   :added "1.3.0"
   :updated "1.3.0"
@@ -159,19 +159,19 @@
   :guide-ref "#prefer-require-over-use"}
 
  lint/redundant-call
- {:description ""
+ {:description "Certain core functions return the arg when given a single arg."
   :enabled true
   :added "0.1"
   :updated "0.1"}
 
  lint/take-repeatedly
- {:description ""
+ {:description "`repeatedly` has an arity for limiting the number of repeats with `take`."
   :enabled true
   :added "0.1"
   :updated "0.1"}
 
  lint/thread-macro-one-arg
- {:description ""
+ {:description "Prefer `(y x)` to `(-> x y)`."
   :enabled true
   :added "0.1"
   :updated "1.2.1"
@@ -207,7 +207,7 @@
   :guide-ref "#use-idiomatic-namespace-aliases"}
 
  naming/conversion-functions
- {:description ""
+ {:description "Use `->` instead of `to` in the names of conversion functions."
   :enabled true
   :added "0.1.94"
   :updated "0.1.94"
@@ -221,7 +221,7 @@
   :guide-ref "#naming-functions-and-variables"}
 
  naming/predicate
- {:description ""
+ {:description "Functions that return a boolean should end in a question mark."
   :enabled true
   :added "0.1.69"
   :updated "0.1.94"
@@ -235,7 +235,7 @@
   :guide-ref "#no-single-segment-namespaces"}
 
  naming/record-name
- {:description ""
+ {:description "Records should use PascalCase."
   :enabled true
   :added "0.1.69"
   :updated "1.0"
@@ -244,122 +244,122 @@
  ;; Style Rules
 
  style/apply-str
- {:description ""
+ {:description "Check for round-about `clojure.string/reverse`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/apply-str-interpose
- {:description ""
+ {:description "Check for round-about `clojure.string/join`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/apply-str-reverse
- {:description ""
+ {:description "Check for round-about `clojure.string/reverse`"
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/assoc-assoc
- {:description ""
+ {:description "Prefer `assoc-in` to nested `assoc`s."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/cond-else
- {:description ""
+ {:description "Prefer `:else` as default branch of `cond`."
   :enabled true
   :added "0.1"
   :updated "0.1.85"
   :guide-ref "#else-keyword-in-cond"}
 
  style/conj-vector
- {:description ""
+ {:description "Prefer `vector` to `(conj [] ...)`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/def-fn
- {:description ""
+ {:description "Prefer `(defn [])` to `(def (fn []))`."
   :enabled true
   :added "1.0"
   :updated "1.0"}
 
  style/eq-false
- {:description ""
+ {:description "Prefer `false?` to `(= x false)`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/eq-nil
- {:description ""
+ {:description "Prefer `nil?` to `(= x nil)`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/eq-true
- {:description ""
+ {:description "Prefer `true?` to `(= x true)`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/eq-zero
- {:description ""
+ {:description "Prefer `zero?` to `(= x 0)`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/filter-complement
- {:description ""
+ {:description "Prefer `remove` to `(filter (complement f) ...)`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/filter-vec-filterv
- {:description ""
+ {:description "Prefer `filterv` to `(vec (filter f ...))`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/first-first
- {:description ""
+ {:description "Prefer `ffirst` to `(first (first x))`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/first-next
- {:description ""
+ {:description "Prefer `fnext` to `(first (next x))`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/let-do
- {:description ""
+ {:description "`let` has an implicit `do`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/mapcat-apply-apply
- {:description ""
+ {:description "Prefer `mapcat` to `(apply concat (apply ...))`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/mapcat-concat-map
- {:description ""
+ {:description "Prefer `mapcat` to `(apply concat (map x y z))`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/minus-one
- {:description ""
+ {:description "Prefer `dec` to `(- x 1)`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/minus-zero
- {:description ""
+ {:description "Subtracting 0 is a no-op."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
@@ -372,179 +372,179 @@
   :guide-ref "#multiple-arity-order"}
 
  style/multiply-by-one
- {:description ""
+ {:description "Multiplying by 1 is a no-op."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/multiply-by-zero
- {:description ""
+ {:description "Multiplying by 0 is the same as returning 0."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/neg-checks
- {:description ""
+ {:description "Prefer `neg?` to `(< num 0)` or `(> 0 num)`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/nested-addition
- {:description ""
+ {:description "`+` takes a variable number of args."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/nested-multiply
- {:description ""
+ {:description "`*` takes a variable number of args."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/new-object
- {:description ""
+ {:description "Prefer `X.` to `(new X)`."
   :enabled true
   :added "0.1.69"
   :updated "0.1.69"}
 
  style/next-first
- {:description ""
+ {:description "Prefer `nfirst` to `(next (first x))`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/next-next
- {:description ""
+ {:description "Prefer `nnext` to `(next (next x))`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/not-eq
- {:description ""
+ {:description "Prefer `not=` to `(not (= x y))`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"
   :guide-ref "#not-equal"}
 
  style/not-nil?
- {:description ""
+ {:description "Prefer `some?` to `(not (nil? x))`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/not-some-pred
- {:description ""
+ {:description "Prefer `not-any?` to `(not (some f x))`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/plus-one
- {:description ""
+ {:description "Prefer `inc` to `(+ x 1)`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/plus-zero
- {:description ""
+ {:description "Adding 0 is a no-op."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/pos-checks
- {:description ""
+ {:description "Prefer `pos?` to `(> num 0)` or `(< 0 num)`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/prefer-boolean
- {:description ""
+ {:description "Prefer `boolean` to `(if x true false)`."
   :enabled true
   :added "0.1.69"
   :updated "0.1.69"
   :guide-ref "#converting-something-to-boolean"}
 
  style/prefer-clj-math
- {:description ""
+ {:description "Prefer clojure.math to interop."
   :enabled true
   :added "0.1.69"
   :updated "0.1.69"
   :guide-ref "#prefer-clojure-math-over-interop"}
 
  style/prefer-condp
- {:description ""
+ {:description "Prefer `condp` to `cond` when testing same base case."
   :enabled true
   :added "0.1.69"
   :updated "1.0"
   :guide-ref "#condp"}
 
  style/prefer-vary-meta
- {:description ""
+ {:description "Prefer `vary-meta` to `(with-meta x (assoc (meta x) ...))`."
   :enabled true
   :added "0.1"
   :updated "0.1.69"}
 
  style/redundant-let
- {:description ""
+ {:description "Merge nested `let`s."
   :enabled true
   :added "0.1.69"
   :updated "0.1.69"}
 
  style/set-literal-as-fn
- {:description ""
+ {:description "Prefer `case` to using `(#{:a :b :c} x)`."
   :enabled true
   :added "0.1.119"
   :updated "1.0"}
 
  style/single-key-in
- {:description ""
+ {:description "Prefer `assoc` to `assoc-in` when given a single element vec."
   :enabled true
   :added "0.1.69"
   :updated "0.1.69"}
 
  style/tostring
- {:description ""
+ {:description "Prefer `str` to interop `(.toString x)`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/update-in-assoc
- {:description ""
+ {:description "Prefer `assoc-in` to using `assoc` as the `f` in an `update-in`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/useless-do
- {:description ""
+ {:description "A single expression in a `do` is a no-op."
   :enabled true
   :added "0.1.69"
   :updated "1.2.0"}
 
  style/when-do
- {:description ""
+ {:description "`when` has an implicit `do`."
   :enabled true
   :added "0.1.69"
   :updated "1.2.0"}
 
  style/when-not-call
- {:description ""
+ {:description "Prefer `when-not` to `(when (not x) ...)`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/when-not-do
- {:description ""
+ {:description "`when-not` has an implicit `do`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
 
  style/when-not-empty?
- {:description ""
+ {:description "Prefer `(when (seq x) ...)` to `(when (not (empty? x)) ...)`."
   :enabled true
   :added "0.1"
   :updated "0.1.69"}
 
  style/when-not-not
- {:description ""
+ {:description "Use `when` instead of double negation."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}

@@ -9,32 +9,21 @@
     matcher-combinators.test
     [clojure.spec.alpha :as s]
     [expectations.clojure.test :refer [expect]]
-    [noahtheduke.spat.pattern :refer [simple-type drop-quote]]
-    [noahtheduke.splint.config :refer [read-default-config deep-merge]]
     [noahtheduke.spat.parser :refer [parse-string]]
+    [noahtheduke.spat.pattern :refer [drop-quote]]
+    [noahtheduke.splint.config :refer [deep-merge read-default-config]]
     [noahtheduke.splint.rules :refer [global-rules]]
-    [noahtheduke.splint.runner :refer [check-and-recur check-form prepare-context prepare-rules]]))
+    [noahtheduke.splint.runner :refer [check-and-recur prepare-context prepare-rules]]))
 
 (set! *warn-on-reflection* true)
+
+(def default-config (atom (read-default-config)))
 
 (defn make-rules
   ([] (make-rules nil))
   ([test-config]
-   (prepare-rules (deep-merge (read-default-config) test-config)
+   (prepare-rules (deep-merge @default-config test-config)
                   (or @global-rules {}))))
-
-(defn- check-str
-  ([s] (check-str s nil))
-  ([s config]
-   (let [rules (make-rules config)
-         ctx (prepare-context rules nil)
-         form (parse-string s)]
-     (seq (:diagnostics (check-form ctx (rules (simple-type form)) nil form))))))
-
-(defn check-alt
-  ([s] (check-alt s nil))
-  ([s config]
-   (:alt (first (check-str s config)))))
 
 (defn- check-all
   ([s] (check-all s nil))

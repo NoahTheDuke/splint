@@ -50,14 +50,3 @@
                                         :sym #(symbol? (drop-quote %))
                                         :map #(map? (drop-quote %)))))
         :ret any?)
-
-(defmacro with-out-str-data-map
-  "Evaluates exprs in a context in which *out* is bound to a fresh
-  StringWriter. Returns the result of the body and the string created by any
-  nested printing calls in a map under the respective keys :result and :str."
-  [& body]
-  `(let [s# (java.io.StringWriter.)]
-     (binding [*out* s#]
-       (let [r# (do ~@body)]
-         {:result r#
-          :str (str s#)}))))

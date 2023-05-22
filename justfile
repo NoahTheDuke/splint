@@ -7,6 +7,7 @@ flow-storm:
 repl arg="":
     clojure -M:dev:test{{arg}}:repl/rebel
 
+[no-exit-message]
 @test *args:
     clj-kondo --parallel --lint src test dev
     clojure -M:dev:test:runner {{args}}

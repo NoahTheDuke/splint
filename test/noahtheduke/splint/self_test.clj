@@ -7,7 +7,7 @@
     [expectations.clojure.test :refer [defexpect expect]]
     [matcher-combinators.test :refer [match?]]
     [noahtheduke.splint.runner :as splint]
-    [noahtheduke.splint.test-helpers :refer [with-out-str-data-map]]))
+    [noahtheduke.splint.utils.test-runner :refer [with-out-str-data-map]]))
 
 (defexpect dogfooding-test
   (expect

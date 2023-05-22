@@ -23,17 +23,15 @@ repl arg="":
     fd '.(clj|edn|md)' . -x sd '<<next>>' '{{version}}' {}
 
 # Builds the uberjar, builds the jar, sends the jar to clojars
-@deploy:
+@deploy version:
+    echo 'Running tests'
+    just test
+    echo 'Setting new version {{version}}'
+    just set-version {{version}}
+    echo 'Rendering docs'
+    just gen-docs
     echo 'Building uber'
     clojure -T:build uber
     echo 'Deploying to clojars'
     env CLOJARS_USERNAME='noahtheduke' CLOJARS_PASSWORD=`cat ../clojars.txt` \
         clojure -T:build deploy
-
-@update-and-deploy version:
-    echo 'Running tests'
-    capture=`just test`
-    echo 'Setting new version {{version}}'
-    just set-version {{version}}
-    just gen-docs
-    just deploy

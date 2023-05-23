@@ -31,7 +31,7 @@ repl arg="":
     just set-version {{version}}
     echo 'Rendering docs'
     just gen-docs
-    git commit -a 'Bump version for release'
+    git commit -a -m 'Bump version for release'
     git tag v{{version}}
     git push
     git push --tags

@@ -4,7 +4,7 @@
 
 | Enabled by default | Version Added | Version Updated |
 | ------------------ | ------------- | --------------- |
-| false              | <<next>>      | <<next>>        |
+| false              | 1.6.0         | 1.6.0           |
 
 Avoid `defn`-defined functions longer than some number (10) of lines of code. Longer functions are harder to read and should be split into smaller-purpose functions that are composed.
 

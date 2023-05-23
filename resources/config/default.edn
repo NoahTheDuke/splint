@@ -190,8 +190,8 @@
  metrics/fn-length
  {:description "Avoid functions longer than 10 lines of code (default)."
   :enabled false
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.6.0"
+  :updated "1.6.0"
   :chosen-style :body
   :supported-styles [:body :defn]
   :length 10

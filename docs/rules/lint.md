@@ -6,7 +6,7 @@
 | ------------------ | ------------- | --------------- |
 | true               | 0.1           | 0.1             |
 
-`assoc`-ing an update with the same key are hard to read. `update` is known and
+`assoc`-ing an update with the same key is hard to read. `update` is known and
 idiomatic.
 
 ### Examples
@@ -290,7 +290,7 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 (if-not x (do (println :a) (println :b) :c))
 
 ; good
-(if-not x (println :a) (println :b) :c)
+(when-not x (println :a) (println :b) :c)
 ```
 
 ---

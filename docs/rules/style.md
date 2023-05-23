@@ -26,7 +26,7 @@ Check for round-about clojure.string/reverse.
 | ------------------ | ------------- | --------------- |
 | true               | 0.1           | 1.2.0           |
 
-Check for round-about str/join.
+Check for round-about `clojure.string/join`.
 
 ### Examples
 
@@ -46,7 +46,7 @@ Check for round-about str/join.
 | ------------------ | ------------- | --------------- |
 | true               | 0.1           | 1.2.0           |
 
-Check for round-about clojure.string/reverse.
+Check for round-about `clojure.string/reverse`.
 
 ### Examples
 
@@ -256,7 +256,7 @@ It's nice when the default branch is consistent.
 | ------------------ | ------------- | --------------- |
 | true               | 0.1           | 1.2.0           |
 
-Check for (filter (complement pred) coll)
+Check for `(filter (complement pred) coll)`.
 
 ### Examples
 
@@ -316,7 +316,7 @@ ffirst is succinct and meaningful.
 | ------------------ | ------------- | --------------- |
 | true               | 0.1           | 1.2.0           |
 
-fnext is succinct and meaningful.
+`fnext` is succinct and meaningful.
 
 ### Examples
 
@@ -356,7 +356,7 @@ fnext is succinct and meaningful.
 | ------------------ | ------------- | --------------- |
 | true               | 0.1           | 1.2.0           |
 
-Check for (apply concat (apply map x y))
+Check for `(apply concat (apply map x y))`.
 
 ### Examples
 
@@ -376,7 +376,7 @@ Check for (apply concat (apply map x y))
 | ------------------ | ------------- | --------------- |
 | true               | 0.1           | 1.2.0           |
 
-Check for (apply concat (map x y z))
+Check for `(apply concat (map x y z))`.
 
 ### Examples
 
@@ -875,7 +875,7 @@ gathered and rendered into a `condp`.
 | ------------------ | ------------- | --------------- |
 | true               | 0.1           | 0.1.69          |
 
-`vary-meta` works like swap!, so no need to access and overwrite in two steps.
+`vary-meta` works like `swap!`, so no need to access and overwrite in two steps.
 
 ### Examples
 

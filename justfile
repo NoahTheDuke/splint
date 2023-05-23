@@ -31,6 +31,10 @@ repl arg="":
     just set-version {{version}}
     echo 'Rendering docs'
     just gen-docs
+    git commit -a 'Bump version for release'
+    git tag v{{version}}
+    git push
+    git push --tags
     echo 'Building uber'
     clojure -T:build uber
     echo 'Deploying to clojars'

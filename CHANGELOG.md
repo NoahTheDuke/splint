@@ -3,6 +3,14 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+## [v1.6.1]
+
+### Fixed
+
+- Re-fix deploy script.
+
+## [v1.6.0]
+
 ### Added
 
 - Multiple self tests for consistency.
@@ -338,7 +346,9 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.6.1...HEAD
+[v1.6.1]: https://github.com/noahtheduke/splint/compare/v1.6.0...v1.6.1
+[v1.6.0]: https://github.com/noahtheduke/splint/compare/v1.5.0...v1.6.0
 [v1.5.0]: https://github.com/noahtheduke/splint/compare/v1.4.1...v1.5.0
 [v1.4.1]: https://github.com/noahtheduke/splint/compare/v1.4.0...v1.4.1
 [v1.4.0]: https://github.com/noahtheduke/splint/compare/v1.3.2...v1.4.0

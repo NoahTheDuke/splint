@@ -3,6 +3,22 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### Added
+
+- Multiple self tests for consistency.
+- New test runner based on Cognitect test-runner to print better summary and skip printing namespaces.
+
+### Changed
+
+- Cleaned up deploy recipe.
+- Wrote short descriptions for all empty config.edn rule descriptions.
+- Removed tools.cli defaults for `--parallel` and `--output`, now those are added later (see [#5](https://github.com/NoahTheDuke/splint/issues/5)).
+
+### Fixed
+
+- Correctly merge cli and local options ([#5](https://github.com/NoahTheDuke/splint/issues/5)).
+- Edge cases for `lint/if-not-do`, `style/when-not-do`.
+
 ## [v1.5.0]
 
 ### New Rules

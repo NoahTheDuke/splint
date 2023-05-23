@@ -26,7 +26,7 @@
   (let [default-config (slurp (io/resource "config/default.edn"))
         config-as-vec (->> default-config
                            (str/split-lines)
-                           (drop-while #(not (= \{ (first %))))
+                           (drop-while #(not= \{ (first %)))
                            (str/join "\n"))
         config-as-vec (edn/read-string
                         (str "[" (subs config-as-vec 1 (dec (count config-as-vec))) "]"))

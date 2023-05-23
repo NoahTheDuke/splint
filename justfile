@@ -10,6 +10,7 @@ repl arg="":
 [no-exit-message]
 @test *args:
     clj-kondo --parallel --lint src test dev
+    bb -m noahtheduke.splint dev/ src/ test/
     clojure -M:dev:test:runner {{args}}
 
 @new-rule arg:

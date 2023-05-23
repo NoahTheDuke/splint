@@ -43,11 +43,15 @@
 (defn load-config
   ([options] (load-config (:local (find-local-config)) options))
   ([local options]
-   (-> (deep-merge @default-config local)
-       (set/rename-keys {'output :output
-                         'parallel :parallel
-                         'quiet :quiet})
-       (merge options))))
+   (let [merged-options
+         (-> (deep-merge @default-config local)
+             (set/rename-keys {'output :output
+                               'parallel :parallel
+                               'quiet :quiet})
+             (merge options))]
+     ;; Defaults are set here because cli options are merged in last and
+     ;; tools.cli defaults can't be distinguished.
+     (conj {:parallel true :output "full"} merged-options))))
 
 (defn get-config [ctx rule]
   (let [full-name (:full-name rule)

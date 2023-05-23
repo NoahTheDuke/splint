@@ -13,13 +13,11 @@
 
 (def cli-options
   [["-o" "--output FMT" "Output format: simple, full, clj-kondo, markdown."
-    :default "full"
     :validate [#{"simple" "full" "clj-kondo" "markdown"}
                "Not a valid output format (simple, full, clj-kondo, markdown)"]]
    ["-q" "--quiet" "Print no suggestions, only return exit code."]
-   [nil "--[no-]parallel" "Run splint in parallel."
-    :default true]
-   [nil "--config TYPE" "Pretty-print the config. \"diff\": difference from default; \"local\": contents of loaded config file; \"full\": complete merged config."
+   [nil "--[no-]parallel" "Run splint in parallel."]
+   [nil "--config TYPE" "Pretty-print the config: diff, local, full."
     :validate [#{"diff" "local" "full"}
                "Not a valid selection (diff, local, full)."]]
    ["-h" "--help" "Print help information."]

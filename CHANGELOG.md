@@ -6,6 +6,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Added
 
 - Add Metrics rules to documentation.
+- Add `-s` / `--silent` command line flag to print literally nothing when running Splint.
 
 ## [v1.6.1]
 

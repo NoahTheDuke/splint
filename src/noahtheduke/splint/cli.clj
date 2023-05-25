@@ -15,11 +15,12 @@
   [["-o" "--output FMT" "Output format: simple, full, clj-kondo, markdown."
     :validate [#{"simple" "full" "clj-kondo" "markdown"}
                "Not a valid output format (simple, full, clj-kondo, markdown)"]]
-   ["-q" "--quiet" "Print no suggestions, only return exit code."]
    [nil "--[no-]parallel" "Run splint in parallel."]
    [nil "--config TYPE" "Pretty-print the config: diff, local, full."
     :validate [#{"diff" "local" "full"}
                "Not a valid selection (diff, local, full)."]]
+   ["-q" "--quiet" "Print no suggestions, only summary."]
+   ["-s" "--silent" "Print no suggestions or summary."]
    ["-h" "--help" "Print help information."]
    ["-v" "--version" "Print version information."]])
 

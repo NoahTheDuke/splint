@@ -47,7 +47,8 @@
          (-> (deep-merge @default-config local)
              (set/rename-keys {'output :output
                                'parallel :parallel
-                               'quiet :quiet})
+                               'quiet :quiet
+                               'silent :silent})
              (merge options))]
      ;; Defaults are set here because cli options are merged in last and
      ;; tools.cli defaults can't be distinguished.

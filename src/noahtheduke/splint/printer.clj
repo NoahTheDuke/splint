@@ -49,11 +49,12 @@
 
 (defn print-results
   [options diagnostics total-time]
-  (when-not (:quiet options)
+  (when-not (or (:quiet options) (:silent options))
     (let [printer (get-method print-find (:output options))]
       (doseq [diagnostic (sort-by :filename diagnostics)]
         (printer nil diagnostic))))
-  (printf "Linting took %sms, %s style warnings%n"
-          total-time
-          (count diagnostics))
-  (flush))
+  (when-not (:silent options)
+    (printf "Linting took %sms, %s style warnings%n"
+            total-time
+            (count diagnostics))
+    (flush)))

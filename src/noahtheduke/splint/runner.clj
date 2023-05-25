@@ -172,7 +172,8 @@
        (reduce-kv
          (fn [rules rule-name config]
            (if (and (map? config)
-                    (contains? config :enabled))
+                    (contains? config :enabled)
+                    (contains? rules rule-name))
              (assoc-in rules [rule-name :config] (assoc config :rule-name rule-name))
              rules))
          rules)
@@ -185,10 +186,7 @@
 (defn prepare-context [rules config]
   (-> rules
       (assoc :diagnostics (atom []))
-      (assoc :options {:help (:help config)
-                       :output (:output config)
-                       :parallel (:parallel config)
-                       :quiet (:quiet config)})))
+      (assoc :options (select-keys config [:help :output :parallel :quiet :silent]))))
 
 (defn run [args]
   (let [start-time (System/currentTimeMillis)

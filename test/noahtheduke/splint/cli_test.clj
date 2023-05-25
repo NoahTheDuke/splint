@@ -44,6 +44,17 @@
     (match? {:options {:quiet true}}
             (sut/validate-opts ["--quiet" "files"]))))
 
+(defexpect silent-test
+  (expect
+    (match? {:options {:silent absent}}
+            (sut/validate-opts ["files"])))
+  (expect
+    (match? {:options {:silent true}}
+            (sut/validate-opts ["-s" "files"])))
+  (expect
+    (match? {:options {:silent true}}
+            (sut/validate-opts ["--silent" "files"]))))
+
 (defexpect print-config-test
   (expect
     (match? {:exit-message #"Diff:"

@@ -3,6 +3,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### Added
+
+- Add Metrics rules to documentation.
+
 ## [v1.6.1]
 
 ### Fixed

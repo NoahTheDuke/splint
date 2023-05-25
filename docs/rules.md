@@ -19,6 +19,7 @@ Rules are fairly simple. The call to `defrule` takes a fully qualified name (nam
 Rule names should be short descriptions of the problem domain or the preferred solution. Genres are meant to loosely group rules according to their focus:
 
 * `lint` is for code that can be easily incorrect or is suspicious (`if` missing a branch, a threading macro with a single element, etc).
+* `metrics` is about properties of code that can be measured, such as length of functions.
 * `naming` is about the names given to defining forms (`defn`, `defrecord`, etc) when they don't adhere to Clojure community idioms or style.
 * `style` is for code that has no issues but doesn't adhere to Clojure community idioms or style (`(when (not ...` vs `(when-not ...`, etc)
 

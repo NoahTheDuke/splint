@@ -4,7 +4,11 @@ Running `splint` with no arguments or `--help` will print the help:
 
 ```text
 $ clojure -M:splint
-splint: s-expression pattern matching and linting engine
+splint v1.6.0
+
+Usage:
+  splint [options] [path...]
+  splint [options] -- [path...]
 ...
 ```
 

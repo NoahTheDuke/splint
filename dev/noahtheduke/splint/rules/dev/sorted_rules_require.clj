@@ -1,4 +1,4 @@
-(ns rules.dev.sorted-rules-require
+(ns noahtheduke.splint.rules.dev.sorted-rules-require
   (:require
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))

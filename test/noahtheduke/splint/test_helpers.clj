@@ -11,18 +11,17 @@
     [expectations.clojure.test :refer [expect]]
     [noahtheduke.spat.parser :refer [parse-string]]
     [noahtheduke.spat.pattern :refer [drop-quote]]
-    [noahtheduke.splint.config :refer [deep-merge read-default-config]]
+    [noahtheduke.splint.config :refer [deep-merge]]
+    [noahtheduke.splint.dev :as dev]
     [noahtheduke.splint.rules :refer [global-rules]]
     [noahtheduke.splint.runner :refer [check-and-recur prepare-context prepare-rules]]))
 
 (set! *warn-on-reflection* true)
 
-(def default-config (atom (read-default-config)))
-
 (defn make-rules
   ([] (make-rules nil))
   ([test-config]
-   (prepare-rules (deep-merge @default-config test-config)
+   (prepare-rules (deep-merge @dev/default-config test-config)
                   (or @global-rules {}))))
 
 (defn- check-all

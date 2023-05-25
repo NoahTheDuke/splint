@@ -4,7 +4,6 @@
 
 (ns noahtheduke.spat.parser
   (:require
-    [clojure.string :as str]
     [edamame.core :as e]
     [edamame.impl.read-fn :as read-fn]
     [noahtheduke.spat.parser.defn :refer [parse-defn]]
@@ -54,7 +53,7 @@
                         (attach-import-meta ns-state))
                     (and (list? obj)
                          (symbol? (first obj))
-                         (str/starts-with? (name (first obj)) "defn"))
+                         (#{"defn" "defn-"} (name (first obj))))
                     (attach-defn-meta)))
    :uneval (fn [{:keys [uneval next]}]
              (cond

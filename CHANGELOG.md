@@ -12,6 +12,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Move Splint-specific dev code to proper namespaces in `dev/`.
 
+### Fixed
+
+- Only attach parsed `defn` metadata when symbol name exactly matches `defn` or `defn-`.
+
 ## [v1.6.1]
 
 ### Fixed

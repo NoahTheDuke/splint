@@ -39,22 +39,21 @@ test/clj/game/core/say_test.clj:18:15: warning: Use `zero?` instead of recreatin
 **markdown:**
 Same as `full` but formatted to produce markdown, with the location and rule name in a header and the code wrapped in code blocks:
 
-`````markdown
-----
+    ----
 
-#### test/clj/game/core/say_test.clj:82:15 [lint/eq-zero]
+    #### test/clj/game/core/say_test.clj:82:15 [lint/eq-zero]
 
-Use `zero?` instead of recreating it.
+    Use `zero?` instead of recreating it.
 
-```clojure
-(= 0 (get-counters (refresh pb) :advancement))
-```
+    ```clojure
+    (= 0 (get-counters (refresh pb) :advancement))
+    ```
 
-Consider using:
+    Consider using:
 
-```clojure
-(zero? (get-counters (refresh pb) :advancement))
-`````
+    ```clojure
+    (zero? (get-counters (refresh pb) :advancement))
+    ```
 
 which renders to:
 
@@ -72,6 +71,28 @@ Consider using:
 
 ```clojure
 (zero? (get-counters (refresh pb) :advancement))
+```
+
+**json:**
+Prints diagnostics formatted to json with `clojure.data.json`. `:rule-name` is a string of the fully-qualified symbol. `:form` isn't raw from the file, it's the processed form, converted to string with `pr-str`. `:alt` is converted to string with `pr-str`.
+
+```json
+{"rule-name":"style/eq-zero","form":"(= 0 (get-counters (refresh pb) :advancement))","message":"Use `zero?` instead of recreating it.","alt":"(zero? (get-counters (refresh pb) :advancement))","line":18,"column":15,"end-row":18,"end-col":61,"filename":"../netrunner/test/clj/game/core/say_test.clj"}
+```
+
+**json-pretty:**
+Same as `json` but uses `clojure.data.json`'s `pprint`.
+
+```json
+{"rule-name":"style/eq-zero",
+ "form":"(= 0 (get-counters (refresh pb) :advancement))",
+ "message":"Use `zero?` instead of recreating it.",
+ "alt":"(zero? (get-counters (refresh pb) :advancement))",
+ "line":18,
+ "column":15,
+ "end-row":18,
+ "end-col":61,
+ "filename":"../netrunner/test/clj/game/core/say_test.clj"}
 ```
 
 ### Config styles

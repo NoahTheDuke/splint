@@ -1,5 +1,6 @@
 (ns noahtheduke.splint.printer 
   (:require
+    [clojure.data.json :as json]
     [clojure.pprint :as pp]))
 
 (defn print-find-dispatch [output _diagnostic] output)
@@ -46,6 +47,24 @@
     (println "```")
     (newline))
   (flush))
+
+(defmethod print-find "json" [_ diagnostic]
+  (let [diagnostic (-> diagnostic
+                       (update :rule-name pr-str)
+                       (update :form pr-str)
+                       (update :alt pr-str))]
+    (json/write diagnostic *out* {:escape-slash false})
+    (newline)
+    (flush)))
+
+(defmethod print-find "json-pretty" [_ diagnostic]
+  (let [diagnostic (-> diagnostic
+                       (update :rule-name pr-str)
+                       (update :form pr-str)
+                       (update :alt pr-str))]
+    (json/pprint diagnostic {:escape-slash false})
+    (newline)
+    (flush)))
 
 (defn print-results
   [options diagnostics total-time]

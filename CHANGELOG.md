@@ -7,6 +7,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Add Metrics rules to documentation.
 - Add `-s` / `--silent` command line flag to print literally nothing when running Splint.
+- `json` output: Print diagnostics as json using `clojure.data.json`.
+- `json-pretty` output: Same as `json` but prettified with `pprint`.
 
 ### Changed
 

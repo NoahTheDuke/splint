@@ -135,7 +135,7 @@
                  (filter #(and (.isFile ^File %)
                                (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
                  (map #(parse-and-check-file ctx rules %)))]
-    (sequence xf paths)))
+    (transduce xf (constantly nil) nil paths)))
 
 (defn- print-runner-error [^java.lang.Throwable e]
   (let [message (str/trim (ex-message e))

@@ -15,6 +15,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Fixed
 
 - Only attach parsed `defn` metadata when symbol name exactly matches `defn` or `defn-`.
+- `--no-parallel` was producing a lazy seq, now consumes to actually check all files.
 
 ## [v1.6.1]
 

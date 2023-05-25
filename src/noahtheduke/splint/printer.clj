@@ -72,7 +72,7 @@
     (let [printer (get-method print-find (:output options))]
       (doseq [diagnostic (sort-by :filename diagnostics)]
         (printer nil diagnostic))))
-  (when-not (:silent options)
+  (when-not (or (:silent options) (#{"markdown" "json" "json-pretty"} (:output options)))
     (printf "Linting took %sms, %s style warnings%n"
             total-time
             (count diagnostics))

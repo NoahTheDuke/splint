@@ -7,6 +7,7 @@
   (:require
     [clojure.java.io :as io]
     [clojure.string :as str]
+    [farolero.core :as faro :refer [handler-bind restart-case]]
     [noahtheduke.spat.parser :refer [parse-string-all]]
     [noahtheduke.spat.pattern :refer [simple-type]]
     [noahtheduke.splint.cli :refer [validate-opts]]
@@ -30,7 +31,10 @@
   "Call `:pattern` on the form and if it hits, call `:on-match` on it.
 
   Only attach `parent-form` to the metadata after `:pattern` is true, cuz
-  `parent-form` can be potentially massive."
+  `parent-form` can be potentially massive.
+
+  This has implications for pattern writing, where predicates can't rely
+  on that metadata to exist."
   [ctx rule pattern parent-form form]
   (try
     (when-let [binds (pattern form)]
@@ -46,6 +50,11 @@
                 :rule (:full-name rule)})))))
 
 (defn check-rule
+  "Rules either have `:pattern` or `:patterns` defined, never both.
+  To avoid iteration and seq manipulation costs, handle them separately.
+
+  Use `reduced` to early exit when checking multiple patterns as we don't
+  want to create multiple diagnostics for a single form and rule."
   [ctx rule parent-form form]
   (if-let [pattern (:pattern rule)]
     (check-pattern ctx rule pattern parent-form form)
@@ -58,6 +67,9 @@
         patterns))))
 
 (defn check-all-rules-of-type
+  "For each rule: if the rule is enabled, call `check-rule`.
+  If `check-rule` returns a non-nil result, add or append it to the accumulator.
+  Otherwise, return the accumulator."
   [ctx rules parent-form form]
   (reduce
     (fn [acc rule-entry]
@@ -117,17 +129,33 @@
       (run! #(check-and-recur ctx rules filename form %) form)
       nil)))
 
+(defn- print-runner-error [ctx ^Throwable e]
+  (let [message (str/trim (or (ex-message e) ""))
+        data (ex-data e)
+        error-msg (str "Splint encountered an error: " (pr-str message))
+        error (->diagnostic
+                {:full-name 'splint/error}
+                (:form data)
+                {:message error-msg
+                 :filename (str (:file data))})]
+    (update ctx :diagnostics swap! conj error)))
+
 (defn parse-and-check-file
   "Parse the given file and then check each form."
   [ctx rules filename file]
-  (try
-    (when-let [parsed-file (parse-string-all file)]
-      (let [ctx (update ctx :checked-files swap! conj filename)]
-        ;; Check any full-file rules
-        (check-form ctx (rules :file) nil parsed-file)
-        (run! #(check-and-recur ctx rules filename nil %) parsed-file)))
-    (catch Throwable e
-      (throw (throwable->ex-info e (assoc (ex-data e) :file filename))))))
+  (restart-case
+    (try
+      (when-let [parsed-file (parse-string-all file)]
+        (let [ctx (update ctx :checked-files swap! conj filename)]
+          ;; Check any full-file rules
+          (check-form ctx (rules :file) nil parsed-file)
+          ;; Step over each top-level form (parent-form is nil)
+          (run! #(check-and-recur ctx rules filename nil %) parsed-file)
+          nil))
+      (catch Throwable e
+        (faro/error ::parse-and-check-error
+                    :ex (throwable->ex-info e (assoc (ex-data e) :file filename)))))
+    (::faro/use-value [ex] (print-runner-error ctx ex) nil)))
 
 (defn check-paths-single [ctx rules file]
   (let [[filename file]
@@ -151,42 +179,18 @@
                  (map #(parse-and-check-file ctx rules (str %) (slurp %))))]
     (transduce xf (constantly nil) nil paths)))
 
-(defn- print-runner-error [ctx ^Throwable e]
-  (let [message (str/trim (or (ex-message e) ""))
-        data (ex-data e)
-        error-msg (format "Splint encountered an error in %s: %s"
-                          (str (:file data)
-                               (when-let [line (:line data)]
-                                 (str ":" line))
-                               (when-let [column (:column data)]
-                                 (str ":" column))
-                               (when-let [form (:form data)]
-                                 (str " in form " (if (seq? form)
-                                                    (apply list form)
-                                                    form))))
-                          message)
-        error (->diagnostic
-                {:full-name 'splint/error}
-                (:form data)
-                {:message error-msg
-                 :filename (str :file data)})]
-    (update ctx :diagnostics swap! conj error)))
-
 (defn check-paths!
   "Call into the relevant `check-path-X` function, depending on the given config."
   [ctx rules paths]
-  (try
+  (handler-bind [::parse-and-check-error (fn [_ & {:keys [ex]}]
+                                           (faro/use-value ex))]
     (cond
       (-> ctx :config :dev)
       (check-paths-single ctx rules paths)
       (-> ctx :config :parallel)
       (check-paths-parallel ctx rules paths)
       :else
-      (check-paths-serial ctx rules paths))
-    (catch java.util.concurrent.ExecutionException e
-      (print-runner-error ctx (.getCause e)))
-    (catch Throwable e
-      (print-runner-error ctx e))))
+      (check-paths-serial ctx rules paths))))
 
 (defn prepare-rules [config rules]
   (->> config

@@ -21,6 +21,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Move Splint-specific dev code to proper namespaces in `dev/`.
 - Extract `splint.runner/run-impl` to decomplect processing cli options and returning a status code from performing the actual config loading and rule building and running.
 - Rewrite test helper `check-all` to properly call the existing architecture instead of mock it, to accurately test the `run-impl` flow.
+- Use [farolero](https://github.com/IGJoshua/farolero/) to handle `splint.runner` errors. Shows no signs of slowing down the app, so will investigate other areas for usage as well.
 
 ### Fixed
 

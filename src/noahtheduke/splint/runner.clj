@@ -119,27 +119,36 @@
 
 (defn parse-and-check-file
   "Parse the given file and then check each form."
-  [ctx rules ^File file]
+  [ctx rules filename file]
   (try
-    (when-let [parsed-file (parse-string-all (slurp file))]
-      ;; Check any full-file rules
-      (check-form ctx (rules :file) nil parsed-file)
-      (check-and-recur ctx rules (str file) nil parsed-file))
+    (when-let [parsed-file (parse-string-all file)]
+      (let [ctx (update ctx :checked-files swap! conj filename)]
+        ;; Check any full-file rules
+        (check-form ctx (rules :file) nil parsed-file)
+        (run! #(check-and-recur ctx rules filename nil %) parsed-file)))
     (catch Throwable e
-      (throw (throwable->ex-info e (assoc (ex-data e) :file file))))))
+      (throw (throwable->ex-info e (assoc (ex-data e) :file filename))))))
+
+(defn check-paths-single [ctx rules file]
+  (let [[filename file]
+        (cond
+          (instance? java.io.File file) [(str file) (slurp file)]
+          (string? file) ["example.clj" file])]
+    (when filename
+      (parse-and-check-file ctx rules filename file))))
 
 (defn check-paths-parallel [ctx rules paths]
   (->> (mapcat #(file-seq (io/file %)) paths)
        (filter #(and (.isFile ^File %)
                      (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
-       (pmap #(parse-and-check-file ctx rules %))
+       (pmap #(parse-and-check-file ctx rules (str %) (slurp %)))
        (dorun)))
 
-(defn check-paths-single [ctx rules paths]
+(defn check-paths-serial [ctx rules paths]
   (let [xf (comp (mapcat #(file-seq (io/file %)))
                  (filter #(and (.isFile ^File %)
                                (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
-                 (map #(parse-and-check-file ctx rules %)))]
+                 (map #(parse-and-check-file ctx rules (str %) (slurp %))))]
     (transduce xf (constantly nil) nil paths)))
 
 (defn- print-runner-error [ctx ^Throwable e]
@@ -163,11 +172,17 @@
                  :filename (str :file data)})]
     (update ctx :diagnostics swap! conj error)))
 
-(defn check-paths [ctx rules paths]
+(defn check-paths!
+  "Call into the relevant `check-path-X` function, depending on the given config."
+  [ctx rules paths]
   (try
-    (if (-> ctx :options :parallel)
+    (cond
+      (-> ctx :config :dev)
+      (check-paths-single ctx rules paths)
+      (-> ctx :config :parallel)
       (check-paths-parallel ctx rules paths)
-      (check-paths-single ctx rules paths))
+      :else
+      (check-paths-serial ctx rules paths))
     (catch java.util.concurrent.ExecutionException e
       (print-runner-error ctx (.getCause e)))
     (catch Throwable e
@@ -192,22 +207,38 @@
 (defn prepare-context [rules config]
   (-> rules
       (assoc :diagnostics (atom []))
-      (assoc :options (select-keys config [:help :output :parallel :quiet :silent]))))
+      (assoc :checked-files (atom []))
+      (assoc :config (select-keys config [:help :output :parallel :quiet :silent :dev]))))
 
-(defn run [args]
+(defn build-result-map
+  [ctx start-time]
+  (let [diagnostics @(:diagnostics ctx)
+        checked-files @(:checked-files ctx)]
+    {:diagnostics diagnostics
+     :checked-files checked-files
+     :config (:config ctx)
+     :total-time (int (- (System/currentTimeMillis) start-time))
+     :exit (if (pos? (count diagnostics)) 1 0)}))
+
+(defn run-impl
+  "Actually perform check"
+  ([start-time options paths] (run-impl start-time options paths nil))
+  ([start-time options paths config]
+   (let [config (or config (load-config options))
+         rules (prepare-rules config (or @global-rules {}))
+         ctx (prepare-context rules config)]
+     (check-paths! ctx rules paths)
+     (build-result-map ctx start-time))))
+
+(defn run
+  "Convert command line args to usable options, pass to runner, print output."
+  [args]
   (let [start-time (System/currentTimeMillis)
         {:keys [options paths exit-message ok]} (validate-opts args)]
     (if exit-message
       (do (when-not (:quiet options) (println exit-message))
           {:exit (if ok 0 1)})
-      (let [config (load-config options)
-            rules (prepare-rules config (or @global-rules {}))
-            ctx (prepare-context rules config)
-            _ (check-paths ctx rules paths)
-            end-time (System/currentTimeMillis)
-            diagnostics @(:diagnostics ctx)
-            total-time (int (- end-time start-time))]
-        (print-results (:options ctx) diagnostics total-time)
-        {:diagnostics diagnostics
-         :total-time total-time
-         :exit (count diagnostics)}))))
+      (let [{:keys [config diagnostics total-time] :as results}
+            (run-impl start-time options paths)]
+        (print-results config diagnostics total-time)
+        results))))

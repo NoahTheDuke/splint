@@ -9,37 +9,26 @@
     matcher-combinators.test
     [clojure.spec.alpha :as s]
     [expectations.clojure.test :refer [expect]]
-    [noahtheduke.spat.parser :refer [parse-string]]
     [noahtheduke.spat.pattern :refer [drop-quote]]
     [noahtheduke.splint.config :refer [deep-merge]]
     [noahtheduke.splint.dev :as dev]
-    [noahtheduke.splint.rules :refer [global-rules]]
-    [noahtheduke.splint.runner :refer [check-and-recur prepare-context prepare-rules]]))
+    [noahtheduke.splint.runner :refer [run-impl]]))
 
 (set! *warn-on-reflection* true)
 
-(defn make-rules
-  ([] (make-rules nil))
-  ([test-config]
-   (prepare-rules (deep-merge @dev/default-config test-config)
-                  (or @global-rules {}))))
-
-(defn- check-all
-  ([s] (check-all s nil))
-  ([s config]
-   (let [rules (make-rules config)
-         ctx (prepare-context rules nil)
-         form (parse-string s)]
-     (check-and-recur ctx rules
-                      (or (:filename config) "filename")
-                      (:parent-form (meta form))
-                      form)
-     (seq @(:diagnostics ctx)))))
+(defn check-all
+  ([path] (check-all path nil))
+  ([path config] (check-all path config nil))
+  ([path config options]
+   (let [start-time (System/currentTimeMillis)
+         config (conj {:dev true} (deep-merge @dev/default-config config))
+         results (run-impl start-time options path config)]
+     (seq (:diagnostics results)))))
 
 (defmacro expect-match
   ([expected s] `(expect-match ~expected ~s nil))
   ([expected s config]
-   `(let [diagnostics# (#'check-all ~s ~config)]
+   `(let [diagnostics# (check-all ~s ~config nil)]
       (expect (~'match? ~expected diagnostics#)))))
 
 (s/fdef expect-match

@@ -35,8 +35,8 @@
                    (if-let [resolved-ns (get-in @ns-state [:aliases ns-str])]
                      resolved-ns
                      (if (= :current ns-str)
-                       "splint-auto-current_"
-                       (str "splint-auto-alias_" (name ns-str)))))
+                       "splint-auto-current"
+                       (str "splint-auto-alias-" (name ns-str)))))
    :postprocess (fn postprocess [{:keys [obj loc]}]
                   (when-let [{:keys [current aliases imports]} (parse-ns obj)]
                     (when current
@@ -53,6 +53,7 @@
                         (attach-import-meta ns-state))
                     (and (list? obj)
                          (symbol? (first obj))
+                         (symbol? (second obj))
                          (#{"defn" "defn-"} (name (first obj))))
                     (attach-defn-meta)))
    :uneval (fn [{:keys [uneval next]}]

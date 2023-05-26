@@ -13,15 +13,21 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Add `-s` / `--silent` command line flag to print literally nothing when running Splint.
 - `json` output: Print diagnostics as json using `clojure.data.json`.
 - `json-pretty` output: Same as `json` but prettified with `pprint`.
+- Track processed files in `:checked-files`.
+- Add initial `corpus` files to handle large-scale tests.
 
 ### Changed
 
 - Move Splint-specific dev code to proper namespaces in `dev/`.
+- Extract `splint.runner/run-impl` to decomplect processing cli options and returning a status code from performing the actual config loading and rule building and running.
+- Rewrite test helper `check-all` to properly call the existing architecture instead of mock it, to accurately test the `run-impl` flow.
 
 ### Fixed
 
-- Only attach parsed `defn` metadata when symbol name exactly matches `defn` or `defn-`.
-- `--no-parallel` was producing a lazy seq, now consumes to actually check all files.
+- Only attach parsed `defn` metadata when fn name exactly matches `defn` or `defn-` and second form is a symbol.
+- `--no-parallel` was producing a lazy seq, now consumes to actually check all files. Oops lol.
+- Map over top-level forms with `nil` parent form instead of treating the whole file as a top-level vector of forms. Fixes `naming/lisp-case`.
+- Add pre- and post- `attr-maps` to `defn` metadata when parsing `defn` forms.
 
 ## [v1.6.1]
 

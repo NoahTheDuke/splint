@@ -35,14 +35,21 @@
     (when fname
       (let [fdecl (next fdecl)
             m {:spat/name fname}
+            ; docstring
             m (if (string? (first fdecl))
                 (assoc m :doc (first fdecl))
                 m)
-            fdecl (if (string? (first fdecl)) (next fdecl) fdecl)
+            fdecl (if (string? (first fdecl))
+                    (next fdecl)
+                    fdecl)
+            ; pre attr-map
             m (if (map? (first fdecl))
                 (conj m (first fdecl))
                 m)
-            fdecl (if (map? (first fdecl)) (next fdecl) fdecl)
+            fdecl (if (map? (first fdecl))
+                    (next fdecl)
+                    fdecl)
+            ;; function bodies
             fdecl (cond
                     ;; For linting purposes, it's helpful to track the location
                     ;; of function "arities" (the arg vector plus fn body). If
@@ -81,6 +88,13 @@
                     ;; Otherwise, just use the existing list (which will have
                     ;; location data already).
                     (list? (first fdecl)) fdecl)
+            ; post-attr-map
+            m (if (map? (last fdecl))
+                (conj m (last fdecl))
+                m)
+            fdecl (if (map? (last fdecl))
+                    (apply list (butlast fdecl))
+                    fdecl)
             m (assoc m :arities fdecl)
             m (when fdecl
                 (if (contains? m :arglists)

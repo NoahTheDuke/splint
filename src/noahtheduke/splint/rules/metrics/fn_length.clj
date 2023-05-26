@@ -81,6 +81,4 @@
                  (let [config (get-config ctx rule)]
                    (condp = (:chosen-style config)
                      :defn (defn-size config rule form)
-                     :body (body-size config rule defn-form)
-                     ; else
-                     nil))))})
+                     :body (body-size config rule defn-form)))))})

@@ -15,7 +15,7 @@
 (defn ->diagnostic
   "Create and return a new diagnostic."
   ([rule form] (->diagnostic rule form nil))
-  ([rule form {:keys [replace-form message] :as _opts}]
+  ([rule form {:keys [replace-form message filename] :as _opts}]
    (let [form-meta (meta form)
          message (or message (:message rule))]
      (->Diagnostic
@@ -27,4 +27,4 @@
        (form-meta :column)
        (form-meta :end-row)
        (form-meta :end-col)
-       (form-meta :filename)))))
+       (or filename (form-meta :filename))))))

@@ -197,6 +197,16 @@
   :length 10
   :guide-ref "#function-length"}
 
+ metrics/parameter-count
+ {:description "Avoid parameter lists with more than 4 positional parameters (default)."
+  :enabled false
+  :added "<<next>>"
+  :updated "<<next>>"
+  :chosen-style :positional
+  :supported-styles [:positional :include-rest]
+  :count 4
+  :guide-ref "#function-positional-parameter-limit"}
+
  ;; Naming Rules
 
  naming/conventional-aliases

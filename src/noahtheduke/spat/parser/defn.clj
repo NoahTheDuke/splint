@@ -1,4 +1,6 @@
-(ns noahtheduke.spat.parser.defn)
+(ns noahtheduke.spat.parser.defn
+  (:require
+    [noahtheduke.spat.pattern :refer [drop-quote]]))
 
 (set! *warn-on-reflection* true)
 
@@ -82,7 +84,7 @@
             m (assoc m :arities fdecl)
             m (when fdecl
                 (if (contains? m :arglists)
-                  m
+                  (update m :arglists drop-quote)
                   (assoc m :arglists (sigs fdecl))))
             m (when m
                 (conj (or (meta fname) {}) m))]

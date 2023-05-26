@@ -44,6 +44,7 @@
     noahtheduke.splint.rules.lint.try-splicing
 
     noahtheduke.splint.rules.metrics.fn-length
+    noahtheduke.splint.rules.metrics.parameter-count
 
     noahtheduke.splint.rules.naming.conventional-aliases
     noahtheduke.splint.rules.naming.conversion-functions

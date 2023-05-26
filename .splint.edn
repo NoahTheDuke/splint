@@ -1,4 +1,6 @@
 {
  dev/sorted-rules-require {:enabled true}
  lint/thread-macro-one-arg {:enabled false}
+ metrics/parameter-count {:enabled true
+                          :count 5}
  }

@@ -61,3 +61,50 @@ The total length is configurable, and the size can be configured (`:body` or `:d
 ### Reference
 
 * https://guide.clojure.style/#function-length
+
+---
+
+## metrics/parameter-count
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| false              | <<next>>      | <<next>>        |
+
+Avoid parameter lists with more than 4 positional parameters.
+
+The number of parameters can be configured with `:count`. The default style `:positional` excludes `& args` rest parameters, and the style `:include-rest` includes them.
+
+Functions with multiple arities will have each arity checked.
+
+### Examples
+
+```clojure
+;; :positional style (default)
+# bad
+(defn example [a b c d e] ...)
+(defn example ([a b c d e] ...) ([a b c d e f g] ...))
+(defn example [a b c d e & args] ...)
+
+# good
+(defn example [a b c d] ...)
+(defn example ([a b c] ...) ([a b c e] ...))
+(defn example [a b c d & args] ...)
+
+;; :include-rest style
+# bad
+(defn example [a b c d & args] ...)
+
+# good
+(defn example [a b c & args] ...)
+```
+
+### Configurable Attributes
+
+| Name            | Default       | Options                        |
+| --------------- | ------------- | ------------------------------ |
+| `:chosen-style` | `:positional` | `:positional`, `:include-rest` |
+| `:count`        | `4`           | Number                         |
+
+### Reference
+
+* https://guide.clojure.style/#function-positional-parameter-limit

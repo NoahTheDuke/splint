@@ -51,6 +51,11 @@
     (defn defn-) true
     false))
 
+(defn defn-fn?? [sexp]
+  (case sexp
+    (defn defn- fn fn* splint/fn) true
+    false))
+
 (defn re-pattern?? [sexp]
   (case sexp
     (re-pattern splint/re-pattern) true

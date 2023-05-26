@@ -3,6 +3,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### New Rules
+
+- `metrics/parameter-count`: Function parameter vectors shouldn't have more than 4 positional parameters. Has `:positional` and `:include-rest` styles (only positional or include `& args` rest params too?), and `:count` configurable value to set maximum number of parameters allowed.
+
 ### Added
 
 - Add Metrics rules to documentation.

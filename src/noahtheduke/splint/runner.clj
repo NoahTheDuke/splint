@@ -138,7 +138,7 @@
     (transduce xf (constantly nil) nil paths)))
 
 (defn- print-runner-error [^java.lang.Throwable e]
-  (let [message (str/trim (ex-message e))
+  (let [message (str/trim (or (ex-message e) ""))
         data (ex-data e)
         error-msg (format "Splint encountered an error in %s: %s\n%s"
                           (str (:file data)

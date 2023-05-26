@@ -3,6 +3,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+## [v1.7.0]
+
 ### New Rules
 
 - `metrics/parameter-count`: Function parameter vectors shouldn't have more than 4 positional parameters. Has `:positional` and `:include-rest` styles (only positional or include `& args` rest params too?), and `:count` configurable value to set maximum number of parameters allowed.
@@ -374,7 +376,8 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.6.1...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.7.0...HEAD
+[v1.7.0]: https://github.com/noahtheduke/splint/compare/v1.6.1...v1.7.0
 [v1.6.1]: https://github.com/noahtheduke/splint/compare/v1.6.0...v1.6.1
 [v1.6.0]: https://github.com/noahtheduke/splint/compare/v1.5.0...v1.6.0
 [v1.5.0]: https://github.com/noahtheduke/splint/compare/v1.4.1...v1.5.0

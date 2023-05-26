@@ -36,6 +36,8 @@ test *args:
     just set-version {{version}}
     echo 'Rendering docs'
     just gen-docs
+    echo 'Update changelog'
+    # TODO
     git commit -a -m 'Bump version for release'
     git tag v{{version}}
     git push

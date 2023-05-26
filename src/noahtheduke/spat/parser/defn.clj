@@ -1,4 +1,4 @@
-(ns noahtheduke.spat.parser.defn
+(ns noahtheduke.spat.parser.defn 
   (:require
     [noahtheduke.spat.pattern :refer [drop-quote]]))
 

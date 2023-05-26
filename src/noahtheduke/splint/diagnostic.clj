@@ -19,12 +19,12 @@
    (let [form-meta (meta form)
          message (or message (:message rule))]
      (->Diagnostic
-       (rule :full-name)
+       (:full-name rule)
        form
        message
        replace-form
-       (form-meta :line)
-       (form-meta :column)
-       (form-meta :end-row)
-       (form-meta :end-col)
-       (or filename (form-meta :filename))))))
+       (:line form-meta)
+       (:column form-meta)
+       (:end-row form-meta)
+       (:end-col form-meta)
+       (or filename (:filename form-meta))))))

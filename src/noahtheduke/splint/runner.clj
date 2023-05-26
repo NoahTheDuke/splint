@@ -12,11 +12,19 @@
     [noahtheduke.splint.cli :refer [validate-opts]]
     [noahtheduke.splint.config :refer [load-config]]
     [noahtheduke.splint.printer :refer [print-results]]
-    [noahtheduke.splint.rules :refer [global-rules]])
+    [noahtheduke.splint.rules :refer [global-rules]]
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]])
   (:import
-    (java.io File)))
+    (java.io File)
+    (clojure.lang ExceptionInfo)))
 
 (set! *warn-on-reflection* true)
+
+(defn throwable->ex-info
+  ^ExceptionInfo [^Throwable ex data]
+  (let [new-ex (ExceptionInfo. (or (ex-message ex) "") data ex)]
+    (.setStackTrace new-ex (.getStackTrace ex))
+    new-ex))
 
 (defn check-pattern
   "Call `:pattern` on the form and if it hits, call `:on-match` on it.
@@ -27,13 +35,15 @@
   (try
     (when-let [binds (pattern form)]
       (let [on-match (:on-match rule)]
-        (on-match ctx rule (vary-meta form assoc :parent-form parent-form) binds)))
-    (catch Throwable e
-      (throw (ex-info (ex-message e)
-                      {:form (if (seqable? form) (take 2 form) form)
-                       :data (ex-data e)
-                       :rule (:full-name rule)}
-                      e)))))
+        (doall (on-match ctx rule (vary-meta form assoc :parent-form parent-form) binds))))
+    (catch Throwable ex
+      (throw (throwable->ex-info
+               ex
+               {:form form
+                :line (:line (meta form))
+                :column (:column (meta form))
+                :data (ex-data ex)
+                :rule (:full-name rule)})))))
 
 (defn check-rule
   [ctx rule parent-form form]
@@ -110,18 +120,13 @@
 (defn parse-and-check-file
   "Parse the given file and then check each form."
   [ctx rules ^File file]
-  (when-let [parsed-file
-             (try (parse-string-all (slurp file))
-                  (catch Throwable e
-                    (throw (ex-info (ex-message e)
-                                    (assoc (ex-data e) :file file)
-                                    e))))]
-    (try
+  (try
+    (when-let [parsed-file (parse-string-all (slurp file))]
       ;; Check any full-file rules
       (check-form ctx (rules :file) nil parsed-file)
-      (check-and-recur ctx rules (str file) nil parsed-file)
-      (catch clojure.lang.ExceptionInfo e
-        (throw (ex-info (ex-message e) (assoc (ex-data e) :file file) e))))))
+      (check-and-recur ctx rules (str file) nil parsed-file))
+    (catch Throwable e
+      (throw (throwable->ex-info e (assoc (ex-data e) :file file))))))
 
 (defn check-paths-parallel [ctx rules paths]
   (->> (mapcat #(file-seq (io/file %)) paths)
@@ -137,23 +142,26 @@
                  (map #(parse-and-check-file ctx rules %)))]
     (transduce xf (constantly nil) nil paths)))
 
-(defn- print-runner-error [^java.lang.Throwable e]
+(defn- print-runner-error [ctx ^Throwable e]
   (let [message (str/trim (or (ex-message e) ""))
         data (ex-data e)
-        error-msg (format "Splint encountered an error in %s: %s\n%s"
+        error-msg (format "Splint encountered an error in %s: %s"
                           (str (:file data)
-                               (when (:line data)
-                                 (str ":" (:line data)))
-                               (when (:column data)
-                                 (str ":" (:column data)))
-                               (when (:form data)
-                                 (str " in form " (if (seq? (:form data))
-                                                    (apply list (:form data))
-                                                    (:form data)))))
-                          message
-                          (str/join "\n" (.getStackTrace e)))]
-    (println error-msg)
-    (flush)))
+                               (when-let [line (:line data)]
+                                 (str ":" line))
+                               (when-let [column (:column data)]
+                                 (str ":" column))
+                               (when-let [form (:form data)]
+                                 (str " in form " (if (seq? form)
+                                                    (apply list form)
+                                                    form))))
+                          message)
+        error (->diagnostic
+                {:full-name 'splint/error}
+                (:form data)
+                {:message error-msg
+                 :filename (str :file data)})]
+    (update ctx :diagnostics swap! conj error)))
 
 (defn check-paths [ctx rules paths]
   (try
@@ -161,11 +169,9 @@
       (check-paths-parallel ctx rules paths)
       (check-paths-single ctx rules paths))
     (catch java.util.concurrent.ExecutionException e
-      (print-runner-error (.getCause e))
-      (System/exit 1))
+      (print-runner-error ctx (.getCause e)))
     (catch Throwable e
-      (print-runner-error e)
-      (System/exit 1))))
+      (print-runner-error ctx e))))
 
 (defn prepare-rules [config rules]
   (->> config

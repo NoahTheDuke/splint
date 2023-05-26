@@ -5,21 +5,20 @@ Pretty standard installation as a library.
 For Clojure CLI:
 
 ```clojure
-:aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.3.2"}}
+:aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.7.0"}}
                    :main-opts ["-m" "noahtheduke.splint"]}}
 ```
 
 And in Leiningen, add this to `project.clj`:
 
 ```clojure
-:profiles {:dev {:dependencies [io.github.noahtheduke/splint "1.3.2"]}}
+:profiles {:dev {:dependencies [io.github.noahtheduke/splint "1.7.0"]}}
 :aliases {"splint" ["run" "-m" "noahtheduke.splint"]}
 ```
 
 ## Jar / Native
 
-At some point, I hope to have downloadable versions but I'm still figuring that
-out.
+At some point, I hope to have downloadable versions but I'm still figuring that out.
 
 In the meantime, it runs fast on babashka and can be installed using `bbin`:
 
@@ -27,7 +26,7 @@ In the meantime, it runs fast on babashka and can be installed using `bbin`:
 $ bbin install io.github.noahtheduke/splint
 {:coords
  #:git{:url "https://github.com/noahtheduke/splint",
-       :tag "v1.3.2",
+       :tag "v1.7.0",
        :sha "..."},
  :lib io.github.noahtheduke/splint}
 ```

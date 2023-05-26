@@ -68,7 +68,7 @@ The total length is configurable, and the size can be configured (`:body` or `:d
 
 | Enabled by default | Version Added | Version Updated |
 | ------------------ | ------------- | --------------- |
-| false              | <<next>>      | <<next>>        |
+| false              | 1.7.0         | 1.7.0           |
 
 Avoid parameter lists with more than 4 positional parameters.
 

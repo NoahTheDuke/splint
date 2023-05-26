@@ -200,8 +200,8 @@
  metrics/parameter-count
  {:description "Avoid parameter lists with more than 4 positional parameters (default)."
   :enabled false
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.7.0"
+  :updated "1.7.0"
   :chosen-style :positional
   :supported-styles [:positional :include-rest]
   :count 4

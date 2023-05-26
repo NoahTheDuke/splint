@@ -1,4 +1,8 @@
-(ns noahtheduke.spat.parser.defn 
+; Adapted from Clojure
+; Clojure: Copyright (c) Rich Hickey. All rights reserved., ELP 1.0
+; Modifications licensed under ELP 1.0
+
+(ns noahtheduke.spat.parser.defn
   (:require
     [noahtheduke.spat.pattern :refer [drop-quote]]))
 

@@ -57,7 +57,7 @@
   "Adapted from clojure.test/report :summary"
   [{:keys [result elapsed]}]
   (printf
-    "\nRan %s tests containing %s assertions in %s msecs.\n%s failures, %s errors.\n"
+    "Ran %s tests containing %s assertions in %s msecs.\n%s failures, %s errors.\n"
     (:test result)
     (+ (:pass result) (:fail result) (:error result))
     elapsed

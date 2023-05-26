@@ -28,6 +28,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - `--no-parallel` was producing a lazy seq, now consumes to actually check all files. Oops lol.
 - Map over top-level forms with `nil` parent form instead of treating the whole file as a top-level vector of forms. Fixes `naming/lisp-case`.
 - Add pre- and post- `attr-maps` to `defn` metadata when parsing `defn` forms.
+- Added license headers where necessary.
 
 ## [v1.6.1]
 

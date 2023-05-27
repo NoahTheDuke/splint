@@ -6,6 +6,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Added
 
 - `edn` / `edn-pretty` output: Print diagnostics as edn using `clojure.core/prn` and `clojure.pprint/pprint`.
+- Continue to process files after running into errors during rules checking.
 
 ### Changed
 

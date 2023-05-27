@@ -3,6 +3,15 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### Added
+
+- `edn` / `edn-pretty` output: Print diagnostics as edn using `clojure.core/prn` and `clojure.pprint/pprint`.
+
+### Changed
+
+- Dependencies are updated to latest.
+- `json` and `json-pretty` keys are now sorted.
+
 ## [v1.7.0]
 
 ### New Rules

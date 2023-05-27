@@ -12,9 +12,9 @@
     [noahtheduke.splint.config :refer [default-config find-local-config load-config splint-version]]))
 
 (def cli-options
-  [["-o" "--output FMT" "Output format: simple, full, clj-kondo, markdown, json, json-pretty."
-    :validate [#{"simple" "full" "clj-kondo" "markdown" "json" "json-pretty"}
-               "Not a valid output format (simple, full, clj-kondo, markdown, json, json-pretty)"]]
+  [["-o" "--output FMT" "Output format: simple, full, clj-kondo, markdown, json, json-pretty, edn."
+    :validate [#{"simple" "full" "clj-kondo" "markdown" "json" "json-pretty" "edn"}
+               "Not a valid output format (simple, full, clj-kondo, markdown, json, json-pretty, edn)"]]
    [nil "--[no-]parallel" "Run splint in parallel."]
    [nil "--config TYPE" "Pretty-print the config: diff, local, full."
     :validate [#{"diff" "local" "full"}

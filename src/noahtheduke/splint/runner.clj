@@ -161,7 +161,7 @@
                     :data (assoc (ex-data e) :filename filename))))
     (::faro/continue [])))
 
-(defn check-paths-single [ctx rules file]
+(defn check-single-file [ctx rules [file]]
   (let [[filename file]
         (cond
           (instance? java.io.File file) [(str file) (slurp file)]
@@ -169,23 +169,18 @@
     (when filename
       (parse-and-check-file ctx rules filename file))))
 
-(defn check-paths-parallel [ctx rules paths]
-  (->> (mapcat #(file-seq (io/file %)) paths)
-       (filter #(and (.isFile ^File %)
-                     (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
+(defn check-files-parallel [ctx rules files]
+  (->> files
        (pmap #(parse-and-check-file ctx rules (str %) (slurp %)))
        (dorun)))
 
-(defn check-paths-serial [ctx rules paths]
-  (let [xf (comp (mapcat #(file-seq (io/file %)))
-                 (filter #(and (.isFile ^File %)
-                               (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"])))
-                 (map #(parse-and-check-file ctx rules (str %) (slurp %))))]
-    (transduce xf (constantly nil) nil paths)))
+(defn check-files-serial [ctx rules files]
+  (let [xf (map #(parse-and-check-file ctx rules (str %) (slurp %)))]
+    (transduce xf (constantly nil) nil files)))
 
-(defn check-paths!
+(defn check-files!
   "Call into the relevant `check-path-X` function, depending on the given config."
-  [ctx rules paths]
+  [ctx rules files]
   (handler-bind [::parse-and-check-error
                  (fn [_ & {:keys [ex data]}]
                    (let [diagnostic (runner-error->diagnostic (exception->ex-info ex data))]
@@ -193,11 +188,11 @@
                    (faro/continue))]
     (cond
       (-> ctx :config :dev)
-      (check-paths-single ctx rules paths)
+      (check-single-file ctx rules files)
       (-> ctx :config :parallel)
-      (check-paths-parallel ctx rules paths)
+      (check-files-parallel ctx rules files)
       :else
-      (check-paths-serial ctx rules paths))))
+      (check-files-serial ctx rules files))))
 
 (defn prepare-rules [config rules]
   (->> config
@@ -221,11 +216,20 @@
       (assoc :checked-files (atom []))
       (assoc :config (select-keys config [:help :output :parallel :quiet :silent :dev]))))
 
+(defn resolve-files-from-paths [paths]
+  (if (or (string? paths) (instance? java.io.File paths))
+    [paths]
+    (let [xf (comp (mapcat #(file-seq (io/file %)))
+                   (filter #(and (.isFile ^File %)
+                                 (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"]))))]
+      (into [] xf paths))))
+
 (defn build-result-map
-  [ctx start-time]
+  [ctx files start-time]
   (let [diagnostics @(:diagnostics ctx)
         checked-files @(:checked-files ctx)]
     {:diagnostics diagnostics
+     :files (mapv str files)
      :checked-files checked-files
      :config (:config ctx)
      :total-time (int (- (System/currentTimeMillis) start-time))
@@ -237,9 +241,10 @@
   ([start-time options paths config]
    (let [config (or config (load-config options))
          rules (prepare-rules config (or @global-rules {}))
-         ctx (prepare-context rules config)]
-     (check-paths! ctx rules paths)
-     (build-result-map ctx start-time))))
+         ctx (prepare-context rules config)
+         files (resolve-files-from-paths paths)]
+     (check-files! ctx rules files)
+     (build-result-map ctx files start-time))))
 
 (defn run
   "Convert command line args to usable options, pass to runner, print output."

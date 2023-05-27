@@ -24,8 +24,8 @@
                        "-XX:+UnlockDiagnosticVMOptions"
                        "-XX:+DebugNonSafepoints"]}
   :flow {:classpath-overrides {org.clojure/clojure nil} ;; for disabling the official compiler
-         :extra-deps {com.github.jpmonettas/clojure {:mvn/version "RELEASE"}
-                      com.github.jpmonettas/flow-storm-dbg {:mvn/version "RELEASE"}}
+         :extra-deps {com.github.jpmonettas/clojure {:mvn/version "1.11.1-3"}
+                      com.github.jpmonettas/flow-storm-dbg {:mvn/version "3.6.0"}}
          :jvm-opts ["-Dclojure.storm.traceEnable=true"
                     "-Dclojure.storm.instrumentEnable=true"
                     "-Dclojure.storm.instrumentOnlyPrefixes=user,noahtheduke"]}

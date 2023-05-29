@@ -18,7 +18,8 @@
                      com.clojure-goes-fast/clj-java-decompiler {:mvn/version "0.3.4"}
                      com.nextjournal/beholder {:mvn/version "1.0.2"}
                      org.slf4j/slf4j-simple {:mvn/version "2.0.7"}
-                     com.taoensso/tufte {:mvn/version "2.4.5"}}}
+                     com.taoensso/tufte {:mvn/version "2.4.5"}
+                     org.clojure/tools.gitlibs {:mvn/version "2.5.190"}}}
   :profile {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.0.3"}}
             :jvm-opts ["-Djdk.attach.allowAttachSelf"
                        "-XX:+UnlockDiagnosticVMOptions"

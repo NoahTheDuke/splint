@@ -115,8 +115,7 @@
            @~retval)))))
 
 (defmethod read-form :default [sexp form retval]
-  `(do (throw (ex-info "default" {:type (read-dispatch ~sexp ~form ~retval)}))
-       false))
+  `(throw (ex-info "default" {:type (read-dispatch ~sexp ~form ~retval)})))
 
 (defmethod read-form :any [_sexp _form _revtal] nil)
 
@@ -154,15 +153,14 @@
                  (requiring-resolve (symbol "noahtheduke.splint.rules.helpers" pred)))
         bind (when bind (symbol bind))]
     `(let [form# ~form
-           result# (~pred form#)]
+           result# (~(deref pred) form#)]
        (when (and result# ~(some? bind))
          (vswap! ~retval assoc '~bind form#))
        result#)))
 
 (defmethod read-form :binding [sexp form retval]
-  `(if (contains? @~retval '~sexp)
-     (let [existing# (get @~retval '~sexp)]
-       (= existing# ~form))
+  `(if-let [existing# (find @~retval '~sexp)]
+     (= (val existing#) ~form)
      (do (vswap! ~retval assoc '~sexp ~form)
          true)))
 
@@ -194,8 +192,8 @@
     (assert (= \? (first (name rest-sym))) "&&. binding sym must start with ?")
     `(let [form# (take (- (count ~children-form) ~(+ start end))
                        (drop ~start ~children-form))]
-       (if-let [existing# (get @~retval '~rest-sym)]
-         (= existing# form#)
+       (if-let [existing# (find @~retval '~rest-sym)]
+         (= (val existing#) form#)
          (do (vswap! ~retval assoc '~rest-sym (vary-meta form# assoc ::rest true))
              true)))))
 
@@ -217,7 +215,7 @@
                     `(<= ~(- (count sexp) 2) (count ~children-form))
                     `(= ~(count sexp) (count ~children-form)))]
     `(let [~children-form ~form]
-       (and (~(resolve f) ~children-form)
+       (and (~(deref (resolve f)) ~children-form)
             ~size-pred
             ~@preds))))
 

@@ -12,6 +12,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Dependencies are updated to latest.
 - `json` and `json-pretty` keys are now sorted.
+- Small performance improvements to patterns.
 
 ## [v1.7.0]
 

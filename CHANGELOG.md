@@ -3,6 +3,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+## [v1.8.0]
+
 ### New rules
 
 - `lint/warn-on-reflection`: Require that `(set! *warn-on-reflection* true)` is called after the `ns` declaration at the start of every file. Defaults to `false`.
@@ -395,7 +397,8 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 
 [edamame]: https://github.com/borkdude/edamame
 
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.7.0...HEAD
+[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.8.0...HEAD
+[v1.8.0]: https://github.com/noahtheduke/splint/compare/v1.7.0...v1.8.0
 [v1.7.0]: https://github.com/noahtheduke/splint/compare/v1.6.1...v1.7.0
 [v1.6.1]: https://github.com/noahtheduke/splint/compare/v1.6.0...v1.6.1
 [v1.6.0]: https://github.com/noahtheduke/splint/compare/v1.5.0...v1.6.0
@@ -411,7 +414,7 @@ Initial release of `spat`, announcement on Clojurian Slack and bbin installation
 [v1.2.1]: https://github.com/noahtheduke/splint/compare/v1.2.0...v1.2.1
 [v1.2.0]: https://github.com/noahtheduke/splint/compare/v1.1.1...v1.2.0
 [v1.1.1]: https://github.com/noahtheduke/splint/compare/v1.1.0...v1.1.1
-[v1.1.0]: https://github.com/noahtheduke/splint/compare/v1.0...v1.1.0
+[v1.1.0]: https://github.com/noahtheduke/splint/compare/v1.0.1...v1.1.0
 [v1.0.1]: https://github.com/noahtheduke/splint/compare/v1.0...v1.0.1
 [v1.0]: https://github.com/noahtheduke/splint/compare/v0.1.119...v1.0
 [v0.1.119]: https://github.com/noahtheduke/splint/compare/0.1.85...v0.1.119

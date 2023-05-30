@@ -8,7 +8,7 @@
     [noahtheduke.splint.rules :refer [defrule]]))
 
 (defrule lint/warn-on-reflection
-  "Because we can't (or won't) check for interop, *warn-on-reflection* should
+  "Because we can't (or won't) check for interop, `*warn-on-reflection*` should
   be at the top of every file out of caution.
 
   Examples:

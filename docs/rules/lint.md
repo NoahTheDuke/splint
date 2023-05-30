@@ -662,3 +662,31 @@ to force it into 'expression position'.
 ### Reference
 
 * <https://blog.ambrosebs.com/2022/09/08/break-your-macros.html>
+
+---
+
+## lint/warn-on-reflection
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| false              | 1.8.0         | 1.8.0           |
+
+Because we can't (or won't) check for interop, `*warn-on-reflection*` should
+be at the top of every file out of caution.
+
+### Examples
+
+```clojure
+# bad
+(ns foo.bar)
+(defn baz [a b] (+ a b))
+
+# good
+(ns foo.bar)
+(set! *warn-on-reflection* true)
+(defn baz [a b] (+ a b))
+```
+
+### Reference
+
+* <http://clojure-goes-fast.com/blog/performance-nemesis-reflection>

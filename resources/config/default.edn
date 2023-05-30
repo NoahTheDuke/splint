@@ -189,8 +189,8 @@
  lint/warn-on-reflection
  {:description "Always set *warn-on-reflection* to avoid reflection in interop."
   :enabled false
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.8.0"
+  :updated "1.8.0"
   :link "http://clojure-goes-fast.com/blog/performance-nemesis-reflection"}
 
  ;; Metrics Rules

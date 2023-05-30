@@ -4,7 +4,7 @@
 
 * `-o`, `--output FMT`: Output format: `simple`, `full`, `clj-kondo`, `markdown`, `json`, `json-pretty`. Defaults to `full`.
 * `--[no-]parallel`: Run Splint in parallel. Defaults to `true`.
-* `--config TYPE`: Print the absolute path of the loaded config, and prints the contents of the loaded config according to the chosen type: `diff` for the difference between default and loaded config file, `local` for the contents of the loaded config file, and `full` for the merged default and loaded config file.
+* `--print-config TYPE`: Print the absolute path of the loaded config, and prints the contents of the loaded config according to the chosen type: `diff` for the difference between default and loaded config file, `local` for the contents of the loaded config file, and `full` for the merged default and loaded config file.
 * `-q`, `--quiet`: Print no suggestions, only summary.
 * `-s`, `--silent`: Print no suggestions or summary.
 * `-h`, `--help`: Print the command line options.

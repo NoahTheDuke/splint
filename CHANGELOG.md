@@ -7,6 +7,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - `lint/warn-on-reflection`: Require that `(set! *warn-on-reflection* true)` is called after the `ns` declaration at the start of every file. Defaults to `false`.
 
+### Breaking
+
+- Deprecate `--config`. Add `--print-config`. No timeline for removal of `--config` (maybe never?).
+
 ### Added
 
 - `edn` / `edn-pretty` output: Print diagnostics as edn using `clojure.core/prn` and `clojure.pprint/pprint`.

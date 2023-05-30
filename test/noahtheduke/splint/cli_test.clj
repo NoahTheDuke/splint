@@ -59,15 +59,19 @@
   (expect
     (match? {:exit-message #"Diff:"
              :ok true}
-            (sut/validate-opts ["--config" "diff"])))
+            (sut/validate-opts ["--print-config" "diff"])))
   (expect
     (match? {:exit-message #"Local:"
              :ok true}
-            (sut/validate-opts ["--config" "local"])))
+            (sut/validate-opts ["--print-config" "local"])))
   (expect
     (match? {:exit-message #"Full:"
              :ok true}
-            (sut/validate-opts ["--config" "full"]))))
+            (sut/validate-opts ["--print-config" "full"])))
+  (expect
+    (match? {:exit-message #"DEPRECATION WARNING:"
+             :ok true}
+            (sut/validate-opts ["--config" "diff"]))))
 
 (defexpect paths-test
   (expect

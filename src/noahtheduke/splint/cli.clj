@@ -16,7 +16,10 @@
     :validate [#{"simple" "full" "clj-kondo" "markdown" "json" "json-pretty" "edn"}
                "Not a valid output format (simple, full, clj-kondo, markdown, json, json-pretty, edn)"]]
    [nil "--[no-]parallel" "Run splint in parallel."]
-   [nil "--config TYPE" "Pretty-print the config: diff, local, full."
+   [nil "--config TYPE" "DEPRECATED: Pretty-print the config: diff, local, full."
+    :validate [#{"diff" "local" "full"}
+               "Not a valid selection (diff, local, full)."]]
+   [nil "--print-config TYPE" "Pretty-print the config: diff, local, full."
     :validate [#{"diff" "local" "full"}
                "Not a valid selection (diff, local, full)."]]
    ["-q" "--quiet" "Print no suggestions, only summary."]
@@ -49,7 +52,7 @@
 (defn print-config
   [options]
   (let [{:keys [file local]} (find-local-config)
-        kind (:config options)
+        kind (or (:config options) (:print-config options))
         result (case kind
                  "diff" (second (data/diff @default-config local))
                  "local" local
@@ -59,7 +62,10 @@
         result (into (sorted-map)
                      (update-keys (pick-visible result) (comp symbol name)))]
     {:exit-message
-     (format "%s%s:\n%s"
+     (format "%s%s%s:\n%s"
+             (if (:config options)
+               "DEPRECATION WARNING: --config should be --print-config\n\n"
+               "")
              (if file (format "Local config loaded from: %s\n\n" file) "")
              (str/capitalize kind)
              (with-out-str (pp/pprint result)))
@@ -91,6 +97,6 @@
       (:help options) (help-message summary)
       (:version options) {:exit-message (splint-version) :ok true}
       errors (print-errors errors)
-      (:config options) (print-config options)
+      (or (:config options) (:print-config options)) (print-config options)
       (seq arguments) (validate-paths options arguments)
       :else (help-message summary))))

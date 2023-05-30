@@ -185,6 +185,14 @@
   :updated "1.0"
   :link "https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"}
 
+
+ lint/warn-on-reflection
+ {:description "Always set *warn-on-reflection* to avoid reflection in interop."
+  :enabled false
+  :added "<<next>>"
+  :updated "<<next>>"
+  :link "http://clojure-goes-fast.com/blog/performance-nemesis-reflection"}
+
  ;; Metrics Rules
 
  metrics/fn-length

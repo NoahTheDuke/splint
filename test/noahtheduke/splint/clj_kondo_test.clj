@@ -29,6 +29,7 @@
     lint/prefer-require-over-use 4
     lint/thread-macro-one-arg 85
     lint/try-splicing 2
+    lint/warn-on-reflection 261
     metrics/fn-length 314
     metrics/parameter-count 48
     naming/conventional-aliases 14
@@ -76,4 +77,4 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 736 (count (:diagnostics results)))))
+    (expect 997 (count (:diagnostics results)))))

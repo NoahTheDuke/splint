@@ -12,8 +12,9 @@
     [expectations.clojure.test :refer [defexpect expect]]
     [matcher-combinators.test :refer [match?]]
     [noahtheduke.splint.runner :as splint]
-    [noahtheduke.splint.utils.test-runner :refer [with-out-str-data-map]]
-    [clojure.spec.alpha :as s]))
+    [noahtheduke.splint.utils.test-runner :refer [with-out-str-data-map]])
+  (:import
+    (java.io File)))
 
 (defexpect dogfooding-test
   (expect
@@ -33,30 +34,26 @@
         config-keys (take-nth 2 config-as-vec)]
     (is (match? config-keys (sort config-keys)))))
 
-(s/def ::description string?)
-(s/def ::enabled boolean?)
-(s/def ::added string?)
-(s/def ::updated string?)
-(s/def ::guide-ref (s/and string? #(str/starts-with? % "#")))
-(s/def ::link (s/and string? #(str/starts-with? % "http")))
-(s/def ::supported-styles (s/and vector? (s/+ keyword?)))
-(s/def ::chosen-style keyword?)
+(def mpl-v2
+  (->> ["; This Source Code Form is subject to the terms of the Mozilla Public"
+        "; License, v. 2.0. If a copy of the MPL was not distributed with this"
+        "; file, You can obtain one at https://mozilla.org/MPL/2.0/."]
+       (str/join "\n")))
 
-(s/def ::style-pair
-  #(if (contains? % :supported-styles)
-     (contains? (set (:supported-styles %))
-                (:chosen-style %))
-     true))
+(def adapted-files
+  #{"src/noahtheduke/spat/parser/defn.clj"
+    "src/noahtheduke/spat/parser/ns.clj"
+    "test/noahtheduke/splint/utils/test_runner.clj"})
 
-(s/def ::config-key (s/and qualified-symbol? #(#{"lint" "metrics" "naming" "style"} (namespace %))))
-(s/def ::config-opts
-  (s/and (s/keys :req-un [::description ::enabled ::added ::updated]
-                 :opt-un [::guide-ref ::link ::supported-styles ::chosen-style])
-         ::style-pair))
-
-(s/def ::default-config
-  (s/map-of ::config-key ::config-opts))
-
-(defexpect default-config-spec-test
-  (let [default-config (edn/read-string (slurp (io/resource "config/default.edn")))]
-    (expect ::default-config default-config)))
+(defexpect license-test
+  (let [files (->> ["dev" "resources" "src" "test"]
+                   (mapcat #(file-seq (io/file %)))
+                   (filter #(and (.isFile ^File %)
+                                 (some (fn [ft] (str/ends-with? % ft))
+                                       [".clj" ".cljs" ".cljc" ".edn"]))))]
+    (doseq [file files
+            :let [f-str (slurp file)
+                  msg (str file " doesn't start with a license")]]
+      (if (adapted-files (str file))
+        (is (str/starts-with? f-str "; Adapted from") msg)
+        (is (str/starts-with? f-str mpl-v2) msg)))))

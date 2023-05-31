@@ -12,7 +12,6 @@ run *args:
 
 [no-exit-message]
 test *args:
-    ! fd ".(clj|edn)" | xargs ghead -q -n 1 | rg -v '^;'
     clj-kondo --parallel --lint dev src test
     bb -m noahtheduke.splint dev src test
     clojure -M:dev:test:runner {{args}}

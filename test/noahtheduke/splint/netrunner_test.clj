@@ -54,6 +54,7 @@
     style/plus-one 13
     style/pos-checks 4
     style/prefer-clj-math 16
+    style/prefer-clj-string 5
     style/prefer-condp 2
     style/redundant-let 4
     style/set-literal-as-fn 24
@@ -78,4 +79,4 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 1671 (count (:diagnostics results)))))
+    (expect 1676 (count (:diagnostics results)))))

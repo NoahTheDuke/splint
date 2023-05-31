@@ -53,6 +53,7 @@
     style/not-some-pred 2
     style/plus-one 4
     style/pos-checks 1
+    style/prefer-clj-string 18
     style/prefer-condp 3
     style/prefer-vary-meta 6
     style/redundant-let 6
@@ -77,4 +78,4 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 997 (count (:diagnostics results)))))
+    (expect 1015 (count (:diagnostics results)))))

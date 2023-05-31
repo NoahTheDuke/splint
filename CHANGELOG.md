@@ -3,6 +3,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## [Unreleased]
 
+### New Rules
+
+- `style/prefer-clj-string`: Prefer `clojure.string` functions over raw interop. Defaults to `true`.
+
 ## [v1.8.0]
 
 ### New rules

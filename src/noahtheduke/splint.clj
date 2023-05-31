@@ -91,6 +91,7 @@
     noahtheduke.splint.rules.style.pos-checks
     noahtheduke.splint.rules.style.prefer-boolean
     noahtheduke.splint.rules.style.prefer-clj-math
+    noahtheduke.splint.rules.style.prefer-clj-string
     noahtheduke.splint.rules.style.prefer-condp
     noahtheduke.splint.rules.style.prefer-vary-meta
     noahtheduke.splint.rules.style.redundant-let

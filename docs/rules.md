@@ -61,7 +61,7 @@ For example, if you want to match on an `if` that has `nil` in the else branch, 
 
 The macro [`noahtheduke.spat.pattern/pattern`] builds the matching function.
 
-[`noahtheduke.spat.pattern/pattern`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.spat.pattern/pattern
+[`noahtheduke.spat.pattern/pattern`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.spat.pattern#pattern
 
 A simple replacement pattern is defined with `:replace`. This can be a quoted form of any shape and will be substituted in when printing diagnostics. It uses some of the same logic as the patterns. For our purposes, the main one is that any symbols that start with a quotation mark is substituted for the value of that symbol in the binding output from the `:pattern`. (The rest of the details are also in [Patterns](patterns.md).)
 

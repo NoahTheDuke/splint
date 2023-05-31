@@ -36,7 +36,7 @@ Some symbols are treated differently as part of the Pattern DSL. These are usefu
 
 * `_` matches any value. Useful when a pattern only cares about a portion of the input and the replacement form will discard the rest.
 * A symbol that starts with `%` is treated as a predicate. Example: `%keyword?` will match any keyword.
-  * The `%` is removed and the resulting symbol is resolved using `clojure.core/requiring-resolve`. It first tries to resolve with `clojure.core`, then with `noahtheduke.splint.rules.helpers`, then with the current namespace. If it can't resolve to a function, an ExceptionInfo is thrown.
+  * The `%` is removed and the resulting symbol is resolved using `clojure.core/requiring-resolve`. It first tries to resolve with `clojure.core`, then with `noahtheduke.splint.rules.helpers`, then with the current namespace. If it can't resolve to a function, an `ExceptionInfo` is thrown.
 * A symbol that starts with `?` is treated as a binding. It matches any value and stores the value in the map returned by `pattern`.
 * `&&.` is a pattern-specific rest argument. It requires that there is an immediately-following `?` binding symbol. Unlike normal bindings, multiple values of any kind are stored within this.
   * `&&.` works differently than Clojure's built-in `&` rest args and destructuring form. Whereas `& arg` must be in the final position, `&&. ?args` can have following entries, allowing patterns to match against items at the end of list or vector.

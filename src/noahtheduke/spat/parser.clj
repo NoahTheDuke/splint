@@ -56,6 +56,21 @@
                          (symbol? (second obj))
                          (#{"defn" "defn-"} (name (first obj))))
                     (attach-defn-meta)))
+   ; Each of dispatch literals should either be processed (uneval), or wrap the
+   ; expression in a splint-specific "function call".
+   ; @x
+   :deref (fn [expr] (list 'splint/deref expr))
+   ; #()
+   :fn (fn [expr]
+         (let [sexp (read-fn/read-fn expr)]
+           (apply list (cons 'splint/fn (next sexp)))))
+   ; #=(+ 1 2)
+   :read-eval (fn [expr] (list 'splint/read-eval expr))
+   ; #".*"
+   :regex (fn [expr] (list 'splint/re-pattern expr))
+   ; #'x
+   :var (fn [expr] (list 'splint/var expr))
+   ; #_
    :uneval (fn [{:keys [uneval next]}]
              (cond
                (identical? uneval :splint/disable)
@@ -65,26 +80,12 @@
                (vary-meta next assoc :splint/disable (seq (:splint/disable uneval)))
                :else
                next))
-   ; All reader macros should be a splint-specific symbol wrapping the expression
-   :dispatch {; @x
-              \@ (fn [expr] (list 'splint/deref expr))
-              ; `(+ 1 2)
-              ; This is a deliberate decision to not expand syntax quotes. Easier to parse/manipulate the entire tree.
-              \` (fn [expr] (list 'splint/syntax-quote expr))
-              \~ {; ~x unquote
-                  :default (fn [expr] (list 'splint/unquote expr))
-                  ; ~@(map inc [1 2 3])
-                  \@ (fn [expr] (list 'splint/unquote-splicing expr))}
-              \# {; #'x
-                  \' (fn [expr] (list 'splint/var expr))
-                  ; #=(+ 1 2)
-                  \= (fn [expr] (list 'splint/read-eval expr))
-                  ; #()
-                  \( (fn [expr]
-                       (let [sexp (read-fn/read-fn expr)]
-                         (apply list (cons 'splint/fn (next sexp)))))
-                  ; #".*"
-                  \" (fn [expr] (list 'splint/re-pattern expr))}}})
+   ; `(+ 1 2)
+   :syntax-quote (fn [expr] (list 'splint/syntax-quote expr))
+   ; ~x unquote
+   :unquote (fn [expr] (list 'splint/unquote expr))
+   ; ~@(map inc [1 2 3])
+   :unquote-splicing (fn [expr] (list 'splint/unquote-splicing expr))})
 
 (defn parse-string
   ([s] (parse-string s (atom {})))

@@ -9,5 +9,5 @@
 
 (defexpect try-splicing-test
   (expect-match
-    '[{:alt (try (do (splint/unquote-splicing body)) (finally :true))}]
+    '[{:alt (try (do ~@body) (finally :true))}]
     "(try ~@body (finally :true))"))

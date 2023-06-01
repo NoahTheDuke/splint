@@ -7,6 +7,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - `style/prefer-clj-string`: Prefer `clojure.string` functions over raw interop. Defaults to `true`.
 
+### Fixed
+
+- Correctly print special characters/clojure.core vars (`@`, not `splint/deref`). Add tests.
+
 ## [v1.8.0]
 
 ### New rules

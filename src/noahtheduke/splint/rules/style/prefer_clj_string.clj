@@ -6,7 +6,8 @@
   (:require
     [noahtheduke.spat.pattern :as p]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule postwalk-splicing-replace]]))
+    [noahtheduke.splint.replace :refer [postwalk-splicing-replace]]
+    [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 

@@ -52,8 +52,8 @@
                                  (some (fn [ft] (str/ends-with? % ft))
                                        [".clj" ".cljs" ".cljc" ".edn"]))))]
     (doseq [file files
-            :let [f-str (slurp file)
-                  msg (str file " doesn't start with a license")]]
-      (if (adapted-files (str file))
-        (is (str/starts-with? f-str "; Adapted from") msg)
-        (is (str/starts-with? f-str mpl-v2) msg)))))
+            :let [f-str (slurp file)]]
+      (let [result (if (adapted-files (str file))
+                     (str/starts-with? f-str "; Adapted from")
+                     (str/starts-with? f-str mpl-v2))]
+        (is result (str file " doesn't start with a license"))))))

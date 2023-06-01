@@ -4,27 +4,22 @@
 
 (ns noahtheduke.splint.rules
   (:require
-    [clojure.walk :as walk]
+    [clojure.spec.alpha :as s]
     [noahtheduke.spat.pattern :as p]
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]))
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.replace :refer [postwalk-splicing-replace]]))
 
 (set! *warn-on-reflection* true)
 
-(def global-rules
-  "All registered rules, grouped by :init-type and full-name"
+(defonce
+  ^{:doc "All registered rules, grouped by :init-type and full-name"}
+  global-rules
   (atom {}))
 
-(defn postwalk-splicing-replace [binds replace-form]
-  (walk/postwalk
-    (fn [item]
-      (cond
-        (seq? item)
-        (let [[front-sexp rest-sexp] (split-with #(not= '&&. %) item)]
-          (concat front-sexp (second rest-sexp) (drop 2 rest-sexp)))
-        (contains? binds item) (binds item)
-        :else
-        item))
-    replace-form))
+(defn replace->diagnostic [replace-map]
+  (fn [_ctx rule form binds]
+    (let [replaced-form (postwalk-splicing-replace binds replace-map)]
+      (->diagnostic rule form {:replace-form replaced-form}))))
 
 (defmacro defrule
   "Define a new rule. Must include:
@@ -33,17 +28,11 @@
   * EITHER `:replace` or `:on-match`"
   [rule-name docs opts]
   (let [{:keys [pattern patterns replace on-match message init-type]} opts]
-    (assert (qualified-symbol? rule-name) "defrule name must be namespaced")
-    (assert (or pattern patterns)
-            "defrule must define either :pattern or :patterns")
     (assert (not (and pattern patterns))
             "defrule cannot define both :pattern and :patterns")
     (when patterns
-      (assert (vector? patterns) ":patterns must be in a vector")
       (assert (apply = (map p/simple-type patterns))
               "All :patterns should have the same `simple-type`"))
-    (assert (or replace on-match)
-            "defrule must define either :replace or :on-match")
     (assert (not (and replace on-match))
             "defrule cannot define both :replace and :on-match")
     (let [full-name rule-name
@@ -64,10 +53,24 @@
                     :pattern (when ~(some? pattern) (p/pattern ~pattern))
                     :patterns (when ~(some? patterns)
                                 ~(mapv #(list `p/pattern %) patterns))
-                    :on-match
-                    ~(or on-match
-                         `(fn [ctx# rule# form# binds#]
-                            (let [new-form# (postwalk-splicing-replace binds# ~replace)]
-                              (->diagnostic rule# form# {:replace-form new-form#}))))}]
+                    :on-match (or ~on-match (replace->diagnostic ~replace))}]
          (swap! global-rules assoc '~full-name rule#)
          (def ~(symbol rule-name) ~docs rule#)))))
+
+(s/def ::rule-name qualified-symbol?)
+(s/def ::docs string?)
+(s/def ::pattern any?)
+(s/def ::patterns (s/and vector? (s/+ any?)))
+(s/def ::replace any?)
+(s/def ::on-match (s/and seq? #(= "fn" (name (first %)))))
+(s/def ::message string?)
+(s/def ::init-type keyword?)
+(s/def ::opts (s/keys :req-un [(or ::pattern ::patterns)
+                               (or ::replace ::on-match)]
+                      :opt-un [::message ::init-type]))
+
+(s/fdef defrule
+  :args (s/cat :rule-name ::rule-name
+               :docs ::docs
+               :opts ::opts)
+  :ret any?)

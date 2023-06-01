@@ -30,7 +30,7 @@
     style/set-literal-as-fn 1
     style/when-not-call 1})
 
-(defexpect re-frame-test
+(defexpect ^:integration re-frame-test
   (let [re-frame (gl/procure "https://github.com/day8/re-frame.git" 'day8/re-frame "v1.3.0")
         results (run-impl (System/currentTimeMillis)
                           {:silent true :parallel false}

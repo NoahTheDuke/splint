@@ -65,7 +65,7 @@
     style/when-not-call 15
     style/when-not-do 1})
 
-(defexpect re-frame-test
+(defexpect ^:integration clj-kondo-test
   (let [clj-kondo (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2023.05.26")
         results (run-impl (System/currentTimeMillis)
                           {:silent true :parallel false}

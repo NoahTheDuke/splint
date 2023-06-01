@@ -65,7 +65,7 @@
     style/when-not-call 27
     style/when-not-empty? 14})
 
-(defexpect netrunner-test
+(defexpect ^:integration netrunner-test
   (let [netrunner (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "114")
         results (runner/run-impl
                   (System/currentTimeMillis)

@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.replace
   (:require
-    [clojure.walk :as walk]))
+    [edamame.impl.read-fn :refer [postwalk*]]))
 
 (set! *warn-on-reflection* true)
 
@@ -22,7 +22,7 @@
   (list `re-pattern sexp))
 
 (defn- render-var [[_ sexp]]
-  (list `var sexp))
+  (list 'var sexp))
 
 (defn- render-syntax-quote [sexp]
   (if (symbol? (second sexp))
@@ -36,21 +36,6 @@
 (defn- render-unquote-splicing [[_ sexp]]
   (list `unquote-splicing sexp))
 
-(defn- revert-splint-reader-macros [sexp]
-  (if-let [f (case (first sexp)
-               splint/deref render-deref
-               splint/fn render-fn
-               splint/read-eval render-read-eval
-               splint/re-pattern render-re-pattern
-               splint/var render-var
-               splint/syntax-quote render-syntax-quote
-               splint/unquote render-unquote
-               splint/unquote-splicing render-unquote-splicing
-               ; else
-               nil)]
-    (f sexp)
-    sexp))
-
 (defn- uplift [sexp]
   (if (symbol? sexp)
     sexp
@@ -63,18 +48,35 @@
            sexp)
          (apply list))))
 
+(defn revert-splint-reader-macros [replace-form]
+  (postwalk*
+    (fn [sexp]
+      (if (seq? sexp)
+        (if-let [f (case (first sexp)
+                     splint/deref render-deref
+                     splint/fn render-fn
+                     splint/read-eval render-read-eval
+                     splint/re-pattern render-re-pattern
+                     splint/var render-var
+                     splint/syntax-quote render-syntax-quote
+                     splint/unquote render-unquote
+                     splint/unquote-splicing render-unquote-splicing
+                     ; else
+                     nil)]
+          (uplift (f sexp))
+          sexp)
+        sexp))
+    replace-form))
+
 (defn- splicing-replace [sexp]
   (let [[front-sexp rest-sexp] (split-with #(not= '&&. %) sexp)]
     (concat front-sexp (second rest-sexp) (drop 2 rest-sexp))))
 
 (defn postwalk-splicing-replace [binds replace-form]
-  (walk/postwalk
+  (postwalk*
     (fn [item]
       (cond
-        (seq? item) (-> item
-                        (splicing-replace)
-                        (revert-splint-reader-macros)
-                        (uplift))
+        (seq? item) (splicing-replace item)
         (contains? binds item) (binds item)
         :else
         item))

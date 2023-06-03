@@ -8,7 +8,10 @@
   A Diagnostic is an instance of a match of a rule's pattern in a given
   analyzed code. It has the following definition:
 
-  (defrecord Diagnostic [rule-name form message alt line column end-row end-col filename])")
+  (defrecord Diagnostic
+    [rule-name form message alt line column end-row end-col filename])"
+  (:require
+    [noahtheduke.splint.replace :refer [revert-splint-reader-macros]]))
 
 (defrecord Diagnostic [rule-name form message alt line column end-row end-col filename])
 
@@ -20,9 +23,9 @@
          message (or message (:message rule))]
      (->Diagnostic
        (:full-name rule)
-       form
+       (revert-splint-reader-macros form)
        message
-       replace-form
+       (revert-splint-reader-macros replace-form)
        (:line form-meta)
        (:column form-meta)
        (:end-row form-meta)

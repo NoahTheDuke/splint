@@ -11,12 +11,12 @@
   (doseq [input '[delay dosync future lazy-cat lazy-seq pvalues
                   with-loading-context]]
     (expect-match
-      [{:alt (list input '(let [res# (do (splint/unquote-splicing body))] res#))}]
+      [{:alt (list input '(let [res# (do ~@body)] res#))}]
       (format "(%s ~@body)" input))))
 
 (defexpect init-arg-test
   (doseq [input '[binding locking sync with-bindings with-in-str
                   with-local-vars with-precision with-redefs]]
     (expect-match
-      [{:alt (list input 'arg '(let [res# (do (splint/unquote-splicing body))] res#))}]
+      [{:alt (list input 'arg '(let [res# (do ~@body)] res#))}]
       (format "(%s arg ~@body)" input))))

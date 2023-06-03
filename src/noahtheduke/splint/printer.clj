@@ -14,7 +14,8 @@
 (defmethod print-find "full" [_ {:keys [filename rule-name form line column message alt]}]
   (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)
   (newline)
-  (pp/pprint form)
+  (when form
+    (pp/pprint form))
   (when alt
     (println "Consider using:")
     (pp/pprint alt))
@@ -36,10 +37,11 @@
   (newline)
   (println message)
   (newline)
-  (println "```clojure")
-  (pp/pprint form)
-  (println "```")
-  (newline)
+  (when form
+    (println "```clojure")
+    (pp/pprint form)
+    (println "```")
+    (newline))
   (when alt
     (println "Consider using:")
     (newline)

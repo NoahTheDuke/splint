@@ -24,9 +24,9 @@
 
 (defexpect throws-test
   (expect-match
-    '[{:rule-name splint/error
+    '[{:rule-name dev/throws-on-match
        :form (very-special-symbol :do-not-match)
-       :message "Splint encountered an error: \"matched\""}]
+       :message "Splint encountered an error: matched"}]
     "(very-special-symbol :do-not-match)")
   (expect-match
     '[{:rule-name naming/single-segment-namespace
@@ -38,9 +38,9 @@
        :end-row 5
        :end-col 21
        :filename "corpus/throw_in_middle.clj"}
-      {:rule-name splint/error
+      {:rule-name dev/throws-on-match
        :form (very-special-symbol :do-not-match)
-       :message "Splint encountered an error: \"matched\""
+       :message "Splint encountered an error: matched"
        :alt nil
        :line 7
        :column 1
@@ -57,3 +57,16 @@
        :end-row 9
        :filename "corpus/throw_in_middle.clj"}]
     (io/file "corpus" "throw_in_middle.clj")))
+
+(defexpect parse-error-test
+  (expect-match
+    '[{:rule-name splint/parsing-error
+       :form nil
+       :message "Splint encountered an error: Map literal contains duplicate key: :a"
+       :alt nil
+       :line 5
+       :column 1
+       :end-row nil
+       :end-col nil
+       :filename "corpus/parse_error.clj"}]
+    (io/file "corpus" "parse_error.clj")))

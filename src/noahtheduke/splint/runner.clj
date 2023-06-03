@@ -24,20 +24,18 @@
 
 (defn exception->ex-info
   ^ExceptionInfo [^Exception ex data]
-  (let [new-ex (ExceptionInfo. (or (ex-message ex) "") data ex)]
-    (.setStackTrace new-ex (.getStackTrace ex))
-    new-ex))
+  (doto (ExceptionInfo. (or (ex-message ex) "") data ex)
+    (.setStackTrace (.getStackTrace ex))))
 
 (defn runner-error->diagnostic [^Exception e]
   (let [message (str/trim (or (ex-message e) ""))
         data (ex-data e)
-        error-msg (str "Splint encountered an error: " (pr-str message))
-        error (->diagnostic
-                {:full-name 'splint/error}
-                (:form data)
-                {:message error-msg
-                 :filename (:filename data)})]
-    error))
+        error-msg (str "Splint encountered an error: " message)]
+    (->diagnostic
+      {:full-name (or (:rule-name data) 'splint/error)}
+      (:form data)
+      {:message error-msg
+       :filename (:filename data)})))
 
 (defn check-pattern
   "Call `:pattern` on the form and if it hits, call `:on-match` on it.
@@ -72,8 +70,10 @@
         nil
         patterns))))
 
-(defn check-rule-ex-data [ex form]
-  (exception->ex-info ex {:form form :filename (:filename (meta form))}))
+(defn check-rule-ex-data [ex form rule]
+  (exception->ex-info ex {:form form
+                          :rule-name (:full-name rule)
+                          :filename (:filename (meta form))}))
 
 (defn check-and-accumulate
   [ctx parent-form form acc rule]
@@ -87,7 +87,7 @@
           acc))
       acc)
     (catch Exception ex
-      (conj acc (runner-error->diagnostic (check-rule-ex-data ex form))))))
+      (conj acc (runner-error->diagnostic (check-rule-ex-data ex form rule))))))
 
 (defn check-all-rules-of-type
   "For each rule: if the rule is enabled, call `check-rule`.
@@ -155,10 +155,18 @@
           ;; Step over each top-level form (parent-form is nil)
           (run! #(check-and-recur ctx rules filename nil %) parsed-file)
           nil))
-      (catch Exception e
-        (faro/error ::parse-and-check-error
-                    :ex e
-                    :data (assoc (ex-data e) :filename filename))))
+      (catch Exception ex
+        (let [data (ex-data ex)]
+          (if (= :edamame/error (:type data))
+            (let [ex (ex-info (ex-message ex)
+                              (assoc data
+                                     :rule-name 'splint/parsing-error
+                                     :filename filename
+                                     :form (with-meta [] {:line (:line data)
+                                                          :column (:column data)}))
+                              ex)]
+              (faro/error ::parse-error ex))
+            (faro/error ::runner-error ex)))))
     (::faro/continue [])))
 
 (defn check-single-file [ctx rules [file]]
@@ -181,9 +189,15 @@
 (defn check-files!
   "Call into the relevant `check-path-X` function, depending on the given config."
   [ctx rules files]
-  (handler-bind [::parse-and-check-error
-                 (fn [_ & {:keys [ex data]}]
-                   (let [diagnostic (runner-error->diagnostic (exception->ex-info ex data))]
+  (handler-bind [::parse-error
+                 (fn [_ & [ex]]
+                   (let [diagnostic (-> (runner-error->diagnostic ex)
+                                        (assoc :form nil))]
+                     (update ctx :diagnostics swap! conj diagnostic))
+                   (faro/continue))
+                 ::runner-error
+                 (fn [_ & [ex]]
+                   (let [diagnostic (runner-error->diagnostic ex)]
                      (update ctx :diagnostics swap! conj diagnostic))
                    (faro/continue))]
     (cond

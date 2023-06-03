@@ -37,7 +37,7 @@
     naming/predicate 2
     naming/record-name 1
     naming/single-segment-namespace 80
-    splint/error 4
+    splint/parsing-error 4
     style/apply-str 14
     style/apply-str-interpose 3
     style/cond-else 5

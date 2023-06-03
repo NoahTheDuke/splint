@@ -15,7 +15,7 @@
   [["-o" "--output FMT" "Output format: simple, full, clj-kondo, markdown, json, json-pretty, edn."
     :validate [#{"simple" "full" "clj-kondo" "markdown" "json" "json-pretty" "edn"}
                "Not a valid output format (simple, full, clj-kondo, markdown, json, json-pretty, edn)"]]
-   [nil "--[no-]parallel" "Run splint in parallel."]
+   [nil "--[no-]parallel" "Run splint in parallel. Default to true."]
    [nil "--config TYPE" "DEPRECATED: Pretty-print the config: diff, local, full."
     :validate [#{"diff" "local" "full"}
                "Not a valid selection (diff, local, full)."]]
@@ -23,7 +23,8 @@
     :validate [#{"diff" "local" "full"}
                "Not a valid selection (diff, local, full)."]]
    ["-q" "--quiet" "Print no suggestions, only summary."]
-   ["-s" "--silent" "Print no suggestions or summary."]
+   [nil "--[no-]summary" "Don't print summary. Default to true."]
+   ["-s" "--silent" "Don't print suggestions or summary."]
    ["-h" "--help" "Print help information."]
    ["-v" "--version" "Print version information."]])
 

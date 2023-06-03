@@ -47,12 +47,15 @@
          (-> (deep-merge @default-config local)
              (set/rename-keys {'output :output
                                'parallel :parallel
+                               'summary :summary
                                'quiet :quiet
                                'silent :silent})
              (merge options))]
      ;; Defaults are set here because cli options are merged in last and
      ;; tools.cli defaults can't be distinguished.
-     (conj {:parallel true :output "full"} merged-options))))
+     (conj {:parallel true
+            :output "full"
+            :summary true} merged-options))))
 
 (defn get-config [ctx rule]
   (let [full-name (:full-name rule)

@@ -228,7 +228,7 @@
   (-> rules
       (assoc :diagnostics (atom []))
       (assoc :checked-files (atom []))
-      (assoc :config (select-keys config [:help :output :parallel :quiet :silent :dev]))))
+      (assoc :config (select-keys config [:help :output :parallel :summary :quiet :silent :dev]))))
 
 (defn resolve-files-from-paths [paths]
   (if (or (string? paths) (instance? java.io.File paths))

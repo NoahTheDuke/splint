@@ -81,8 +81,10 @@
       (doseq [diagnostic (sort-by :filename diagnostics)]
         (printer nil diagnostic))
       (flush)))
-  (when-not (or (:silent options) (#{"markdown" "json" "json-pretty"
-                                     "edn" "edn-pretty"} (:output options)))
+  (when-not (or (:silent options)
+                (false? (:summary options))
+                (#{"markdown" "json" "json-pretty"
+                   "edn" "edn-pretty"} (:output options)))
     (printf "Linting took %sms, %s style warnings%s\n"
             total-time
             (count (remove #(= 'splint/error (:rule-name %)) diagnostics))

@@ -7,6 +7,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - `style/prefer-clj-string`: Prefer `clojure.string` functions over raw interop. Defaults to `true`.
 
+### Added
+
+- `--[no]summary` cli flag to print or not print the summary line.
+
 ### Fixed
 
 - Correctly print special characters/clojure.core vars (`@`, not `splint/deref`). Add tests.

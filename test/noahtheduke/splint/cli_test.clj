@@ -33,6 +33,14 @@
              :ok false}
             (sut/validate-opts ["--" "--quiet"]))))
 
+(defexpect summary-test
+  (expect
+    (match? {:options {:summary true}}
+            (sut/validate-opts ["--summary" "files"])))
+  (expect
+    (match? {:options {:summary false}}
+            (sut/validate-opts ["--no-summary" "files"]))))
+
 (defexpect quiet-test
   (expect
     (match? {:options {:quiet absent}}

@@ -27,4 +27,4 @@
    :message "*warn-on-reflection* should be immediately after ns declaration."
    :on-match (fn [ctx rule form {:syms [?warn ?rest-of-file] :as binds}]
                (when-not (= '(set! *warn-on-reflection* true) ?warn)
-                 (->diagnostic rule ?warn)))})
+                 (->diagnostic rule ?warn (select-keys (meta form) [:filename]))))})

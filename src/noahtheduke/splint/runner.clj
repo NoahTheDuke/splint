@@ -11,10 +11,10 @@
     [noahtheduke.spat.parser :refer [parse-string-all]]
     [noahtheduke.spat.pattern :refer [simple-type]]
     [noahtheduke.splint.cli :refer [validate-opts]]
-    [noahtheduke.splint.config :refer [load-config]]
+    [noahtheduke.splint.config :refer [load-config spit-config default-config]]
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.printer :refer [print-results]]
-    [noahtheduke.splint.rules :refer [global-rules]]
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]])
+    [noahtheduke.splint.rules :refer [global-rules]])
   (:import
     (java.io File)
     (clojure.lang ExceptionInfo)
@@ -149,7 +149,8 @@
   (restart-case
     (try
       (when-let [parsed-file (parse-string-all file)]
-        (let [ctx (update ctx :checked-files swap! conj filename)]
+        (let [parsed-file (vary-meta parsed-file assoc :filename filename)
+              ctx (update ctx :checked-files swap! conj filename)]
           ;; Check any full-file rules
           (check-form ctx (rules :file) nil parsed-file)
           ;; Step over each top-level form (parent-form is nil)
@@ -265,9 +266,14 @@
   [args]
   (let [start-time (System/currentTimeMillis)
         {:keys [options paths exit-message ok]} (validate-opts args)]
-    (if exit-message
+    (cond
+      exit-message
       (do (when-not (:quiet options) (println exit-message))
           {:exit (if ok 0 1)})
+      (:auto-gen-config options)
+      (let [all-enabled (update-vals @default-config #(assoc % :enabled true))]
+        (spit-config (run-impl start-time options paths all-enabled)))
+      :else
       (let [{:keys [config diagnostics total-time] :as results}
             (run-impl start-time options paths)]
         (print-results config diagnostics total-time)

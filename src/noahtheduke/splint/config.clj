@@ -61,3 +61,24 @@
   (let [full-name (:full-name rule)
         init-type (:init-type rule)]
     (-> ctx init-type full-name :config)))
+
+(defn spit-config [{:keys [diagnostics]}]
+  (let [diagnostic-counts (update-vals (group-by :rule-name diagnostics) count)
+        rules (reduce-kv
+                (fn [m k v]
+                  (str m (format "\n ;; Diagnostics count: %s\n %s\n {:description %s\n  :enabled false}\n"
+                                 v
+                                 (str k)
+                                 (-> @default-config k :description pr-str))))
+                ""
+                (into (sorted-map) diagnostic-counts))
+        new-config (str/join
+                     "\n"
+                     [(str ";; Splint configuration auto-generated on "
+                           (.format (java.text.SimpleDateFormat. "yyyy-MM-dd")
+                                    (java.util.Date.)))
+                      ""
+                      "{"
+                      (str " " (str/trim rules))
+                      "}"])]
+    (spit ".splint.edn" new-config)))

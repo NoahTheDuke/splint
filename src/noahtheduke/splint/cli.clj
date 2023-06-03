@@ -22,6 +22,7 @@
    [nil "--print-config TYPE" "Pretty-print the config: diff, local, full."
     :validate [#{"diff" "local" "full"}
                "Not a valid selection (diff, local, full)."]]
+   [nil "--auto-gen-config" "Generate a passing config file for chosen paths."]
    ["-q" "--quiet" "Print no suggestions, only summary."]
    [nil "--[no-]summary" "Don't print summary. Default to true."]
    ["-s" "--silent" "Don't print suggestions or summary."]

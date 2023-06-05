@@ -37,11 +37,11 @@ jobs:
           key: cljdeps-${{ hashFiles('deps.edn', 'bb.edn') }}
           restore-keys: cljdeps-
 
-      - name: Execute clojure code
-        run: clojure -M:dev:test:runner dev/ src/ test/
+      - name: clj-kondo
+        run: clj-kondo --parallel --lint dev/ src/ test/
 
-      - name: run with babashka
+      - name: splint self
         run: bb -m noahtheduke.splint dev/ src/ test/
 
-      - name: Get clj-kondo version
-        run: clj-kondo --parallel --lint dev/ src/ test/
+      - name: tests
+        run: clojure -M:dev:test:runner

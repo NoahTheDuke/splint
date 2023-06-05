@@ -69,7 +69,7 @@
   (try
     (if-let [results (apply ctr-main args)]
       (do (print-summary results)
-          (System/exit (if (+ (-> results :result :fail)
-                              (-> results :result :error)) 0 1)))
+          (System/exit (if (zero? (+ (-> results :result :fail)
+                                     (-> results :result :error))) 0 1)))
       (System/exit 1))
     (finally (shutdown-agents))))

@@ -18,7 +18,7 @@
        :column 1
        :end-row 7
        :end-col 20
-       :filename nil}]
+       :filename "corpus/arglists.clj"}]
     (io/file "corpus" "arglists.clj")
     '{lint/warn-on-reflection {:enabled true}
       naming/single-segment-namespace {:enabled false}}))

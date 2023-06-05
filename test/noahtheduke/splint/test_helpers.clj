@@ -10,7 +10,7 @@
     [clojure.spec.alpha :as s]
     [expectations.clojure.test :refer [expect]]
     [noahtheduke.spat.pattern :refer [drop-quote]]
-    [noahtheduke.splint.config :refer [deep-merge]]
+    [noahtheduke.splint.config :refer [merge-config]]
     [noahtheduke.splint.dev :as dev]
     [noahtheduke.splint.runner :refer [run-impl]]))
 
@@ -21,7 +21,7 @@
   ([path config] (check-all path config nil))
   ([path config options]
    (let [start-time (System/currentTimeMillis)
-         config (conj {:dev true} (deep-merge @dev/default-config config))
+         config (conj {:dev true} (merge-config @dev/default-config config))
          results (run-impl start-time options path config)]
      (seq (:diagnostics results)))))
 

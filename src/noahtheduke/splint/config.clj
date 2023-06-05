@@ -6,7 +6,6 @@
   (:require
     [clojure.edn :as edn]
     [clojure.java.io :as io]
-    [clojure.set :as set]
     [clojure.string :as str]))
 
 (set! *warn-on-reflection* true)
@@ -30,27 +29,28 @@
         (when-let [parent (.getParentFile dir)]
           (recur parent))))))
 
-(defn deep-merge [default & maps]
-  (letfn [(reconcile-keys [val-in-result val-in-latter]
-            (if (and (map? val-in-result)
-                     (map? val-in-latter))
-              (merge-with reconcile-keys val-in-result val-in-latter)
-              val-in-latter))
-          (reconcile-maps [result latter]
-            (merge-with reconcile-keys result latter))]
-    (reduce reconcile-maps default maps)))
+(defn merge-config [given new]
+  (reduce-kv
+    (fn [m k v]
+      (cond
+        (map? v)
+        (update m k conj (dissoc v :description :added :updated :supported-styles))
+        (case k
+          (output :output
+           parallel :parallel
+           summary :summary
+           quiet :quiet
+           silent :silent)
+          true false) (assoc m (keyword k) v)
+        :else m))
+    given
+    new))
 
 (defn load-config
   ([options] (load-config (:local (find-local-config)) options))
   ([local options]
-   (let [merged-options
-         (-> (deep-merge @default-config local)
-             (set/rename-keys {'output :output
-                               'parallel :parallel
-                               'summary :summary
-                               'quiet :quiet
-                               'silent :silent})
-             (merge options))]
+   (let [merged-options (-> (merge-config @default-config local)
+                            (conj options))]
      ;; Defaults are set here because cli options are merged in last and
      ;; tools.cli defaults can't be distinguished.
      (conj {:parallel true
@@ -63,22 +63,24 @@
     (-> ctx init-type full-name :config)))
 
 (defn spit-config [{:keys [diagnostics]}]
-  (let [diagnostic-counts (update-vals (group-by :rule-name diagnostics) count)
-        rules (reduce-kv
-                (fn [m k v]
-                  (str m (format "\n ;; Diagnostics count: %s\n %s\n {:description %s\n  :enabled false}\n"
-                                 v
-                                 (str k)
-                                 (-> @default-config k :description pr-str))))
-                ""
-                (into (sorted-map) diagnostic-counts))
+  (let [rule-strs (->> (group-by :rule-name diagnostics)
+                       (into (sorted-map))
+                       (reduce-kv
+                         (fn [m rule-name diagnostics]
+                           (conj m (str " ;; Diagnostics count: " (count diagnostics)
+                                        "\n ;; " (-> @default-config rule-name :description)
+                                        (when-let [supported-styles (-> @default-config rule-name :supported-styles)]
+                                          (str "\n ;; :supported-styles " (pr-str supported-styles)))
+                                        "\n " (str rule-name) " {:enabled false}")))
+                         []))
         new-config (str/join
                      "\n"
                      [(str ";; Splint configuration auto-generated on "
                            (.format (java.text.SimpleDateFormat. "yyyy-MM-dd")
-                                    (java.util.Date.)))
+                                    (java.util.Date.)) ".")
+                      ";; All failing rules have been disabled and can be enabled as time allows."
                       ""
                       "{"
-                      (str " " (str/trim rules))
+                      (str " " (str/trim (str/join "\n\n" rule-strs)))
                       "}"])]
     (spit ".splint.edn" new-config)))

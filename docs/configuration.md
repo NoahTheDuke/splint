@@ -139,3 +139,7 @@ This will disable all `style` rules and the specific `lint/plus-one` rule in the
 ## Merging options
 
 When identifying whether to apply a given rule to a form, the provided sources of configuration are merged: Command line options override `.splint.edn`, and inline options override command line options.
+
+## Auto-Generated Configuration
+
+If you wish to use Splint but have a large number of offenses, it can be helpful to "start from zero" and disable all of the rules that raise diagnostics. Instead of hand-crafting such a config file, use `--auto-gen-config`, which will run Splint over the chosen directories/files and then create a `.splint.edn` file that disables each failing rule. Each rule has a comment with the number of diagnostics and the `:description` and the available styles of the rule, which should provide enough information to make reasonable decisions about how to fix each one.

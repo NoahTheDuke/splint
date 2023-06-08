@@ -14,7 +14,7 @@
 (defonce
   ^{:doc "All registered rules, grouped by :init-type and full-name"}
   global-rules
-  (atom {}))
+  (atom {:rules {} :genres #{}}))
 
 (defn replace->diagnostic [replace-map]
   (fn [_ctx rule form binds]
@@ -54,7 +54,9 @@
                     :patterns (when ~(some? patterns)
                                 ~(mapv #(list `p/pattern %) patterns))
                     :on-match (or ~on-match (replace->diagnostic ~replace))}]
-         (swap! global-rules assoc '~full-name rule#)
+         (swap! global-rules #(-> %
+                                  (assoc-in [:rules '~full-name] rule#)
+                                  (update :genres conj ~genre)))
          (def ~(symbol rule-name) ~docs rule#)))))
 
 (s/def ::rule-name qualified-symbol?)

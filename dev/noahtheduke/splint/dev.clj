@@ -18,7 +18,7 @@
   (load-file (str dev-rule)))
 
 (defn build-default-config []
-  (let [dev-rules (->> (keys @global-rules)
+  (let [dev-rules (->> (keys (:rules @global-rules))
                        (filter #(= "dev" (namespace %)))
                        (map (fn [r] (clojure.lang.MapEntry. r {:enabled true})))
                        (into {}))

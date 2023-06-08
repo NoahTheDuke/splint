@@ -255,7 +255,7 @@
   ([start-time options paths] (run-impl start-time options paths nil))
   ([start-time options paths config]
    (let [config (or config (load-config options))
-         rules (prepare-rules config (or @global-rules {}))
+         rules (prepare-rules config (or (:rules @global-rules) {}))
          ctx (prepare-context rules config)
          files (resolve-files-from-paths paths)]
      (check-files! ctx rules files)

@@ -4,9 +4,9 @@
 
 (ns noahtheduke.splint.config-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.config :as sut]
-    [matcher-combinators.test :refer [match?]]))
+    [expectations.clojure.test :refer [defexpect expect from-each in]]
+    [matcher-combinators.test :refer [match?]]
+    [noahtheduke.splint.config :as sut]))
 
 (defexpect load-config-test
   (expect (match? {:parallel true :output "full"}
@@ -18,3 +18,21 @@
                   (sut/load-config {'parallel false} nil)))
   (expect (match? {:output "simple"}
                   (sut/load-config {'output "simple"} nil))))
+
+(defexpect disable-single-rule-test
+  (expect (match? {'style/plus-one {:enabled false}}
+                  (sut/load-config {'style/plus-one {:enabled false}}
+                                   nil))))
+
+(defexpect disable-genre-test
+  (let [config (update-vals @sut/default-config #(assoc % :enabled true))]
+    (expect
+      {:enabled false}
+      (from-each [c (->> (sut/merge-config config {'style {:enabled false}})
+                         (vals)
+                         (filter #(= "style" (namespace (:rule-name % :a)))))]
+        (in c)))
+    (expect
+      (match? {'style/plus-one {:enabled true}}
+              (sut/merge-config config {'style {:enabled false}
+                                        'style/plus-one {:enabled true}})))))

@@ -28,7 +28,7 @@
         config-as-vec (->> default-config
                            (str/split-lines)
                            (drop-while #(not= \{ (first %)))
-                           (str/join "\n"))
+                           (str/join \newline))
         config-as-vec (edn/read-string
                         (str "[" (subs config-as-vec 1 (dec (count config-as-vec))) "]"))
         config-keys (take-nth 2 config-as-vec)]
@@ -38,7 +38,7 @@
   (->> ["; This Source Code Form is subject to the terms of the Mozilla Public"
         "; License, v. 2.0. If a copy of the MPL was not distributed with this"
         "; file, You can obtain one at https://mozilla.org/MPL/2.0/."]
-       (str/join "\n")))
+       (str/join \newline)))
 
 (def adapted-files
   #{"src/noahtheduke/spat/parser/defn.clj"

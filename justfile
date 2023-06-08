@@ -13,7 +13,7 @@ run *args:
 [no-exit-message]
 test *args:
     clj-kondo --parallel --lint dev src test
-    bb -m noahtheduke.splint dev src test
+    bb run dev src test
     clojure -M:dev:test:runner {{args}}
 
 @new-rule arg:

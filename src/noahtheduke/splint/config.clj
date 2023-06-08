@@ -7,8 +7,7 @@
     [clojure.edn :as edn]
     [clojure.java.io :as io]
     [clojure.string :as str]
-    [noahtheduke.splint.rules :refer [global-rules]]
-    [clojure.set :as set]))
+    [noahtheduke.splint.rules :refer [global-rules]]))
 
 (set! *warn-on-reflection* true)
 
@@ -31,6 +30,22 @@
         (when-let [parent (.getParentFile dir)]
           (recur parent))))))
 
+(defn get-opts-from-config
+  [config]
+  ;; Defaults are set here because cli options are merged in last and
+  ;; tools.cli defaults can't be distinguished.
+  (let [config (or config {})
+        output (config 'output (config :output "full"))
+        parallel (config 'parallel (config :parallel true))
+        summary (config 'summary (config :summary true))
+        quiet (config 'quiet (config :quiet false))
+        silent (config 'silent (config :silent false))]
+    {:output output
+     :parallel parallel
+     :summary summary
+     :quiet quiet
+     :silent silent}))
+
 (defn merge-config
   "Merge the local config file into the default.
 
@@ -39,19 +54,10 @@
 
   If .splint.edn has both `'output` and `:output`, it will use `'output`."
   [default local]
-  (let [;; Normalize cli opts to keywords for internal use.
-        local (set/rename-keys local {'output :output
-                                      'parallel :parallel
-                                      'summary :summary
-                                      'quiet :quiet
-                                      'silent :silent})
-        ;; Select whole genres from local config
+  (let [;; Select whole genres from local config
         whole-genres (select-keys local (map symbol (:genres @global-rules)))
         ;; Select non-opts, non-genres as a `volatile!`
-        local-rules (volatile!
-                      (as-> local $
-                        (dissoc $ :output :parallel :summary :quiet :silent)
-                        (apply dissoc $ whole-genres)))
+        local-rules (into {} (filter (comp qualified-symbol? key)) local)
         ;; For each rule in the defaults:
         ;; * Merge (left to right) the default config,
         ;;   the whole genre config, and the local config for that rule.
@@ -61,33 +67,26 @@
                         (reduce-kv
                           (fn [m k v]
                             (let [genre (symbol (namespace k))
-                                  rule-config (merge
-                                                (assoc v :rule-name k)
-                                                (genre whole-genres)
-                                                (k @local-rules))]
-                              (vswap! local-rules dissoc k)
+                                  genre-config (whole-genres genre)
+                                  local-config (local-rules k)
+                                  rule-config (cond-> (assoc v :rule-name k)
+                                                genre-config (conj genre-config)
+                                                local-config (conj local-config))]
                               (assoc! m k rule-config)))
                           (transient {}))
                         (persistent!))
         ;; If there are custom local rules that aren't in the defaults,
         ;; just merge them directly into the new config.
-        new-config (if (seq @local-rules)
-                     (conj new-config @local-rules)
-                     new-config)
-        ;; Actually merge in the cli opts to the new config.
-        opts (select-keys local [:output :parallel :summary :quiet :silent])]
+        new-config (conj local-rules new-config)
+        ;; Merge in the cli opts to the new config.
+        opts (get-opts-from-config local)]
     (conj new-config opts)))
 
 (defn load-config
   ([options] (load-config (:local (find-local-config)) options))
   ([local options]
-   (let [merged-options (-> (merge-config @default-config local)
-                            (conj options))]
-     ;; Defaults are set here because cli options are merged in last and
-     ;; tools.cli defaults can't be distinguished.
-     (conj {:parallel true
-            :output "full"
-            :summary true} merged-options))))
+   (conj (merge-config @default-config local)
+         options)))
 
 (defn get-config [ctx rule]
   (let [full-name (:full-name rule)

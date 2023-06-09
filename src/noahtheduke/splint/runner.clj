@@ -7,7 +7,6 @@
   (:require
     [clojure.java.io :as io]
     [clojure.string :as str]
-    [farolero.core :as faro :refer [handler-bind restart-case]]
     [noahtheduke.spat.parser :refer [parse-string-all]]
     [noahtheduke.spat.pattern :refer [simple-type]]
     [noahtheduke.splint.cli :refer [validate-opts]]
@@ -146,8 +145,7 @@
 (defn parse-and-check-file
   "Parse the given file and then check each form."
   [ctx rules {:keys [ext ^File file contents]}]
-  (restart-case
-    (try
+  (try
       (when-let [parsed-file (parse-string-all contents ext)]
         (let [parsed-file (vary-meta parsed-file assoc :filename file)
               ctx (update ctx :checked-files swap! conj file)]
@@ -156,19 +154,21 @@
           ;; Step over each top-level form (parent-form is nil)
           (run! #(check-and-recur ctx rules file nil %) parsed-file)
           nil))
-      (catch Exception ex
-        (let [data (ex-data ex)]
-          (if (= :edamame/error (:type data))
-            (let [ex (ex-info (ex-message ex)
-                              (assoc data
-                                     :rule-name 'splint/parsing-error
-                                     :filename file
-                                     :form (with-meta [] {:line (:line data)
-                                                          :column (:column data)}))
-                              ex)]
-              (faro/error ::parse-error ex))
-            (faro/error ::runner-error ex)))))
-    (::faro/continue [])))
+    (catch Exception ex
+      (let [data (ex-data ex)]
+        (if (= :edamame/error (:type data))
+          (let [ex (ex-info (ex-message ex)
+                            (assoc data
+                                   :rule-name 'splint/parsing-error
+                                   :filename file
+                                   :form (with-meta [] {:line (:line data)
+                                                        :column (:column data)}))
+                            ex)
+                diagnostic (-> (runner-error->diagnostic ex)
+                               (assoc :form nil))]
+            (update ctx :diagnostics swap! conj diagnostic))
+          (let [diagnostic (runner-error->diagnostic ex)]
+            (update ctx :diagnostics swap! conj diagnostic)))))))
 
 (defn slurp-file [file-obj]
   (assoc file-obj :contents (slurp (:file file-obj))))
@@ -185,24 +185,13 @@
 (defn check-files!
   "Call into the relevant `check-path-X` function, depending on the given config."
   [ctx rules files]
-  (handler-bind [::parse-error
-                 (fn [_ & [ex]]
-                   (let [diagnostic (-> (runner-error->diagnostic ex)
-                                        (assoc :form nil))]
-                     (update ctx :diagnostics swap! conj diagnostic))
-                   (faro/continue))
-                 ::runner-error
-                 (fn [_ & [ex]]
-                   (let [diagnostic (runner-error->diagnostic ex)]
-                     (update ctx :diagnostics swap! conj diagnostic))
-                   (faro/continue))]
-    (cond
-      (-> ctx :config :dev)
-      (parse-and-check-file ctx rules (first files))
-      (-> ctx :config :parallel)
-      (check-files-parallel ctx rules files)
-      :else
-      (check-files-serial ctx rules files))))
+  (cond
+    (-> ctx :config :dev)
+    (parse-and-check-file ctx rules (first files))
+    (-> ctx :config :parallel)
+    (check-files-parallel ctx rules files)
+    :else
+    (check-files-serial ctx rules files)))
 
 (defn prepare-rules [config rules]
   (->> config

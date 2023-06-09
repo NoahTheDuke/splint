@@ -25,4 +25,4 @@
    :replace '()
    :on-match (fn [ctx rule form {:syms []}]
                (let [new-form '()]
-                 (->diagnostic rule form {:replace-form new-form})))})
+                 (->diagnostic ctx rule form {:replace-form new-form})))})

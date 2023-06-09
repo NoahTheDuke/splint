@@ -41,5 +41,5 @@
                      message (if ?binds
                                "Prefer `let` wrapping `defn`."
                                "Prefer `defn` instead of `def` wrapping `fn`.")]
-                 (->diagnostic rule form {:replace-form new-form
-                                          :message message})))})
+                 (->diagnostic ctx rule form {:replace-form new-form
+                                              :message message})))})

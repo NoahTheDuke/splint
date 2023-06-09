@@ -36,5 +36,5 @@
    :on-match (fn [ctx rule form {:syms [?f ?coll ?key ?vals]}]
                (let [new-form (list* (setter ?f) ?coll ?key ?vals)
                      message (format "Use `%s` instead of recreating it." (setter ?f))]
-                 (->diagnostic rule form {:replace-form new-form
+                 (->diagnostic ctx rule form {:replace-form new-form
                                           :message message})))})

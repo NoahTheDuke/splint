@@ -17,9 +17,9 @@
   (atom {:rules {} :genres #{}}))
 
 (defn replace->diagnostic [replace-map]
-  (fn [_ctx rule form binds]
+  (fn [ctx rule form binds]
     (let [replaced-form (postwalk-splicing-replace binds replace-map)]
-      (->diagnostic rule form {:replace-form replaced-form}))))
+      (->diagnostic ctx rule form {:replace-form replaced-form}))))
 
 (defmacro defrule
   "Define a new rule. Must include:

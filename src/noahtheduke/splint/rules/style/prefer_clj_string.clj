@@ -63,10 +63,10 @@
    :on-match (fn [ctx rule form {:syms [?sym ?args]}]
                (if-let [binds ((:pattern capitalize??) form)]
                  (let [new-form (postwalk-splicing-replace binds (:replace capitalize??))]
-                   (->diagnostic rule form {:replace-form new-form}))
+                   (->diagnostic ctx rule form {:replace-form new-form}))
                  (if-let [binds ((:pattern reverse??) form)]
                    (let [new-form (postwalk-splicing-replace binds (:replace reverse??))]
-                     (->diagnostic rule form {:replace-form new-form}))
+                     (->diagnostic ctx rule form {:replace-form new-form}))
                    (when-let [replacement (interop->clj-string ?sym)]
                      (let [new-form (apply list replacement ?args)]
-                       (->diagnostic rule form {:replace-form new-form}))))))})
+                       (->diagnostic ctx rule form {:replace-form new-form}))))))})

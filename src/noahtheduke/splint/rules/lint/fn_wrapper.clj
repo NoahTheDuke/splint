@@ -38,5 +38,5 @@
               '(%fn?? ([?arg] (?fun ?arg)))]
    :on-match (fn [ctx rule form {:syms [?fun ?args]}]
                (when-not (interop? ?fun)
-                 (->diagnostic rule form {:replace-form ?fun
-                                          :message "No need to wrap function. Clojure supports first-class functions."})))})
+                 (->diagnostic ctx rule form {:replace-form ?fun
+                                              :message "No need to wrap function. Clojure supports first-class functions."})))})

@@ -11,7 +11,7 @@
 (set! *warn-on-reflection* true)
 
 (defn check-size
-  [config rule form form-str]
+  [ctx config rule form form-str]
   (when-let [m (meta form)]
     (let [len (- (:end-row m 0) (:line m 0))
           config-length (or (:length config) 10)]
@@ -19,16 +19,16 @@
         (let [message (format "%s shouldn't be longer than %s lines."
                               form-str
                               config-length)]
-          (->diagnostic rule form {:message message}))))))
+          (->diagnostic ctx rule form {:message message}))))))
 
 (defn defn-size
-  [config rule form]
-  (check-size config rule form "defn forms"))
+  [ctx config rule form]
+  (check-size ctx config rule form "defn forms"))
 
 (defn body-size
-  [config rule defn-form]
+  [ctx config rule defn-form]
   (keep
-    (fn [fn-body] (check-size config rule fn-body "Function bodies"))
+    (fn [fn-body] (check-size ctx config rule fn-body "Function bodies"))
     (:arities defn-form)))
 
 (defrule metrics/fn-length
@@ -80,5 +80,5 @@
                (when-let [defn-form (:spat/defn-form (meta form))]
                  (let [config (get-config ctx rule)]
                    (condp = (:chosen-style config)
-                     :defn (defn-size config rule form)
-                     :body (body-size config rule defn-form)))))})
+                     :defn (defn-size ctx config rule form)
+                     :body (body-size ctx config rule defn-form)))))})

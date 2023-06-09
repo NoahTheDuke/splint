@@ -34,4 +34,4 @@
                                          (str (subs (str/upper-case (str ?record-name)) 0 1)
                                               (subs (str ?record-name) 1)))
                        new-form (list* 'defrecord new-record-name ?args)]
-                   (->diagnostic rule form {:replace-form new-form}))))})
+                   (->diagnostic ctx rule form {:replace-form new-form}))))})

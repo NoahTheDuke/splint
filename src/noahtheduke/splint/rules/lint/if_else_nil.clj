@@ -29,4 +29,4 @@
                (let [new-form (if (rest-arg? ?y)
                                 (list* 'when ?x ?y)
                                 (list 'when ?x ?y))]
-                 (->diagnostic rule form {:replace-form new-form})))})
+                 (->diagnostic ctx rule form {:replace-form new-form})))})

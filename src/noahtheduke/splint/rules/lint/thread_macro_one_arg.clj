@@ -31,11 +31,12 @@
     (= '->> ?f)
     (concat ?form [?arg])))
 
-(defn make-diagnostic [rule form ?f ?arg ?form]
+(defn make-diagnostic [ctx rule form {:syms [?f ?arg ?form]}]
   (let [replace-form (make-form ?f ?arg ?form)
         message (format "Intention of `%s` is clearer with inlined form." ?f)]
-    (->diagnostic rule form {:replace-form replace-form
-                             :message message})))
+    (->diagnostic ctx rule form
+                  {:replace-form replace-form
+                   :message message})))
 
 (defrule lint/thread-macro-one-arg
   "Threading macros require more effort to understand so only use them with multiple
@@ -63,9 +64,9 @@
   (y z x)
   "
   {:pattern '(%thread-macro?%-?f ?arg ?form)
-   :on-match (fn [ctx rule form {:syms [?f ?arg ?form]}]
-               (when (symbol-or-keyword-or-list? ?form)
+   :on-match (fn [ctx rule form bindings]
+               (when (symbol-or-keyword-or-list? ('?form bindings))
                  (condp = (:chosen-style (get-config ctx rule))
-                   :inline (make-diagnostic rule form ?f ?arg ?form)
-                   :avoid-collections (when (non-coll? (simple-type ?arg))
-                                        (make-diagnostic rule form ?f ?arg ?form)))))})
+                   :inline (make-diagnostic ctx rule form bindings)
+                   :avoid-collections (when (non-coll? (simple-type ('?arg bindings)))
+                                        (make-diagnostic ctx rule form bindings)))))})

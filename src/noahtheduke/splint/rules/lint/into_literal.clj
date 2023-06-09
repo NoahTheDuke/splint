@@ -36,5 +36,5 @@
                (let [replace-form (list (if (set? ?literal) 'set 'vec) ?coll)
                      message (format "Use `%s` instead of recreating it."
                                      (if (set? ?literal) "set" "vec"))]
-                 (->diagnostic rule form {:replace-form replace-form
-                                          :message message})))})
+                 (->diagnostic ctx rule form {:replace-form replace-form
+                                              :message message})))})

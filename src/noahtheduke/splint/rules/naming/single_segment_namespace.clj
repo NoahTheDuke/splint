@@ -30,4 +30,4 @@
                  (let [message
                        (format "%s is a single segment. Consider adding an additional segment."
                                ?ns)]
-                   (->diagnostic rule form {:message message}))))})
+                   (->diagnostic ctx rule form {:message message}))))})

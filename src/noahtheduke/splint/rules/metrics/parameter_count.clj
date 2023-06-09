@@ -16,7 +16,8 @@
       (- arglist-count 2)
       arglist-count)))
 
-(defn build-diagnostic [rule filename config-count chosen-style arglist]
+(defn build-diagnostic
+  [ctx rule config-count chosen-style arglist]
   (let [param-count (condp = chosen-style
                       :positional (count-positional-params arglist)
                       :include-rest (count arglist))]
@@ -27,8 +28,7 @@
             message (format "Avoid parameter lists with more than %s parameters%s."
                             config-count
                             rest-msg)]
-        (->diagnostic rule arglist {:message message
-                                    :filename filename})))))
+        (->diagnostic ctx rule arglist {:message message})))))
 
 (defrule metrics/parameter-count
   "Avoid parameter lists with more than 4 positional parameters.
@@ -62,7 +62,6 @@
                (when-let [defn-form (:spat/defn-form (meta form))]
                  (let [config (get-config ctx rule)
                        config-count (:count config)
-                       chosen-style (:chosen-style config)
-                       filename (:filename (meta form))]
+                       chosen-style (:chosen-style config)]
                    (->> (:arglists defn-form)
-                        (keep #(build-diagnostic rule filename config-count chosen-style %))))))})
+                        (keep #(build-diagnostic ctx rule config-count chosen-style %))))))})

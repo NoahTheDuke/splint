@@ -26,4 +26,4 @@
    :on-match (fn [ctx rule form {:syms [?f-name ?args]}]
                (when (str/includes? (str ?f-name) "-to-")
                  (let [new-form (list* 'defn (symbol (str/replace (str ?f-name) "-to-" "->")) ?args)]
-                   (->diagnostic rule form {:replace-form new-form}))))})
+                   (->diagnostic ctx rule form {:replace-form new-form}))))})

@@ -31,6 +31,7 @@
         data (ex-data e)
         error-msg (str "Splint encountered an error: " message)]
     (->diagnostic
+      nil
       {:full-name (or (:rule-name data) 'splint/error)}
       (:form data)
       {:message error-msg
@@ -44,10 +45,10 @@
 
   This has implications for pattern writing, where predicates can't rely
   on that metadata to exist."
-  [ctx rule pattern parent-form form]
+  [ctx rule pattern form]
   (when-let [binds (pattern form)]
     (let [on-match (:on-match rule)
-          diagnostics (on-match ctx rule (vary-meta form assoc :parent-form parent-form) binds)]
+          diagnostics (on-match ctx rule form binds)]
       (if (instance? Diagnostic diagnostics)
         diagnostics
         (doall diagnostics)))))
@@ -58,27 +59,22 @@
 
   Use `reduced` to early exit when checking multiple patterns as we don't
   want to create multiple diagnostics for a single form and rule."
-  [ctx rule parent-form form]
+  [ctx rule form]
   (if-let [pattern (:pattern rule)]
-    (check-pattern ctx rule pattern parent-form form)
+    (check-pattern ctx rule pattern form)
     (let [patterns (:patterns rule)]
       (reduce
         (fn [_ pattern]
-          (when-let [result (check-pattern ctx rule pattern parent-form form)]
+          (when-let [result (check-pattern ctx rule pattern form)]
             (reduced result)))
         nil
         patterns))))
 
-(defn check-rule-ex-data [ex form rule]
-  (exception->ex-info ex {:form form
-                          :rule-name (:full-name rule)
-                          :filename (:filename (meta form))}))
-
 (defn check-and-accumulate
-  [ctx parent-form form acc rule]
+  [ctx form acc rule]
   (try
     (if (-> rule :config :enabled)
-      (let [result (check-rule ctx rule parent-form form)]
+      (let [result (check-rule ctx rule form)]
         (if (some? result)
           (if (sequential? result)
             (into acc result)
@@ -86,24 +82,28 @@
           acc))
       acc)
     (catch Exception ex
-      (conj acc (runner-error->diagnostic (check-rule-ex-data ex form rule))))))
+      (conj acc (runner-error->diagnostic
+                  (exception->ex-info ex {:form form
+                                          :rule-name (:full-name rule)
+                                          :filename (:filename ctx)}))))))
 
 (defn check-all-rules-of-type
   "For each rule: if the rule is enabled, call `check-rule`.
   If `check-rule` returns a non-nil result, add or append it to the accumulator.
   Otherwise, return the accumulator."
-  [ctx rules parent-form form]
+  [ctx rules form]
   (reduce-kv
-    (fn [acc _rule-name rule] (check-and-accumulate ctx parent-form form acc rule))
+    (fn [acc _rule-name rule] (check-and-accumulate ctx form acc rule))
     nil
     rules))
 
 (defn check-form
   "Checks a given form against the appropriate rules then calls `on-match` to build the
   diagnostic and store it in `ctx`."
-  [ctx rules parent-form form]
-  (when (seq rules)
-    (when-let [diagnostics (check-all-rules-of-type ctx rules parent-form form)]
+  [ctx rules form]
+  ;; `rules` is a map and therefore it's faster to check
+  (when (pos? (count rules))
+    (when-let [diagnostics (check-all-rules-of-type ctx rules form)]
       (update ctx :diagnostics swap! into diagnostics))))
 
 (defn update-rules [rules form]
@@ -132,11 +132,10 @@
 (defn check-and-recur
   "Check a given form and then map recur over each of the form's children."
   [ctx rules filename parent-form form]
-  (let [form (if (meta form)
-               (vary-meta form assoc :filename filename)
-               form)
+  (let [ctx (assoc ctx :parent-form parent-form)
         rules (update-rules rules form)]
-    (check-form ctx (rules (simple-type form)) parent-form form)
+    (when-let [rules-for-type (rules (simple-type form))]
+      (check-form ctx rules-for-type form))
     (when (and (seqable? form)
                (not= 'quote (first form)))
       (run! #(check-and-recur ctx rules filename form %) form)
@@ -147,10 +146,11 @@
   [ctx rules {:keys [ext ^File file contents]}]
   (try
       (when-let [parsed-file (parse-string-all contents ext)]
-        (let [parsed-file (vary-meta parsed-file assoc :filename file)
-              ctx (update ctx :checked-files swap! conj file)]
+        (let [ctx (-> ctx
+                      (update :checked-files swap! conj file)
+                      (assoc :filename file))]
           ;; Check any full-file rules
-          (check-form ctx (rules :file) nil parsed-file)
+          (check-form ctx (rules :file) parsed-file)
           ;; Step over each top-level form (parent-form is nil)
           (run! #(check-and-recur ctx rules file nil %) parsed-file)
           nil))

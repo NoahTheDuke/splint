@@ -33,4 +33,4 @@
    :on-match (fn [ctx rule form {:syms [?obj ?method ?args]}]
                (when (symbol-not-class? ?obj)
                  (let [replace-form `(~(symbol (str "." ?method)) ~?obj ~@?args)]
-                   (->diagnostic rule form {:replace-form replace-form}))))})
+                   (->diagnostic ctx rule form {:replace-form replace-form}))))})

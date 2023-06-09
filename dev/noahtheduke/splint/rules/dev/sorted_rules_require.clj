@@ -16,4 +16,4 @@
                                         (filter #(and (seq? %) (= :require (first %))))
                                         (last))]
                  (when (not= (next rules-require) (sort (next rules-require)))
-                   (->diagnostic rule form))))})
+                   (->diagnostic ctx rule form))))})

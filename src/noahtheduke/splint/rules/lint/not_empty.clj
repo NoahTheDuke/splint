@@ -10,13 +10,13 @@
 
 (set! *warn-on-reflection* true)
 
-(defn seq-diagnostic [rule form {:syms [?x]}]
-  (->diagnostic rule form
+(defn seq-diagnostic [ctx rule form {:syms [?x]}]
+  (->diagnostic ctx rule form
                 {:message "`seq` is idiomatic, gotta learn to love it."
                  :replace-form (list 'seq ?x)}))
 
-(defn not-empty-diagnostic [rule form {:syms [?x]}]
-  (->diagnostic rule form
+(defn not-empty-diagnostic [ctx rule form {:syms [?x]}]
+  (->diagnostic ctx rule form
                 {:message "`not-empty` is built-in."
                  :replace-form (list 'not-empty ?x)}))
 
@@ -38,5 +38,5 @@
   {:pattern '(not (empty? ?x))
    :on-match (fn [ctx rule form bindings]
                (condp = (:chosen-style (get-config ctx rule))
-                 :seq (seq-diagnostic rule form bindings)
-                 :not-empty (not-empty-diagnostic rule form bindings)))})
+                 :seq (seq-diagnostic ctx rule form bindings)
+                 :not-empty (not-empty-diagnostic ctx rule form bindings)))})

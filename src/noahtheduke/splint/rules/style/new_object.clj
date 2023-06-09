@@ -25,4 +25,4 @@
    :on-match (fn [ctx rule form {:syms [?class ?args]}]
                (let [class-dot (symbol (str ?class "."))
                      new-form `(~class-dot ~@?args)]
-                 (->diagnostic rule form {:replace-form new-form})))})
+                 (->diagnostic ctx rule form {:replace-form new-form})))})

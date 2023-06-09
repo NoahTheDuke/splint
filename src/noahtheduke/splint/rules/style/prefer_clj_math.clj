@@ -93,4 +93,4 @@
    :message "Use the `clojure.math` function instead of interop."
    :on-match (fn [ctx rule form {:syms [?sym]}]
                (let [new-form (Math->clj-math ?sym)]
-                 (->diagnostic rule form {:replace-form new-form})))})
+                 (->diagnostic ctx rule form {:replace-form new-form})))})

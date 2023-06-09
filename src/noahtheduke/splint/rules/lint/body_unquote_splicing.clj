@@ -47,4 +47,4 @@
                (let [new-form (if ?init-arg
                                 (init-arg-new-form ?f ?init-arg ?body)
                                 (only-body-new-form ?f ?body))]
-                 (->diagnostic rule form {:replace-form new-form})))})
+                 (->diagnostic ctx rule form {:replace-form new-form})))})

@@ -35,4 +35,4 @@
                    (when (not= arglists (sort-by count arglists))
                      (let [new-arities (sort-by (comp count first) (:arities defn-form))
                            new-form (list* ?defn ?name new-arities)]
-                       (->diagnostic rule form {:replace-form new-form}))))))})
+                       (->diagnostic ctx rule form {:replace-form new-form}))))))})

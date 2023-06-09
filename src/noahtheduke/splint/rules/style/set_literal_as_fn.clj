@@ -48,4 +48,4 @@
                                      (sort-by str)
                                      (apply list))
                        new-form (list 'case ?elem case-lst ?elem nil)]
-                   (->diagnostic rule form {:replace-form new-form}))))})
+                   (->diagnostic ctx rule form {:replace-form new-form}))))})

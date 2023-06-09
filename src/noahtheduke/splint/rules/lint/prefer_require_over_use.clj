@@ -42,4 +42,4 @@
                (when-let [use-libs (find-use-libs ?libspecs)]
                  (when-let [message (make-message ctx rule)]
                    (for [_use-body use-libs]
-                     (->diagnostic rule form {:message message})))))})
+                     (->diagnostic ctx rule form {:message message})))))})

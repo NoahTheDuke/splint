@@ -35,6 +35,6 @@
   {:pattern '(%def*??%-?def %incorrect-name?%-?name &&. ?args)
    :message "Prefer kebab-case over other cases for top-level definitions."
    :on-match (fn [ctx rule form {:syms [?def ?name ?args]}]
-               (when (nil? (:parent-form (meta form)))
+               (when (nil? (:parent-form ctx))
                  (let [new-form (list* ?def (csk/->kebab-case-symbol ?name) ?args)]
-                   (->diagnostic rule form {:replace-form new-form}))))})
+                   (->diagnostic ctx rule form {:replace-form new-form}))))})

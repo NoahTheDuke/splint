@@ -81,7 +81,6 @@
 
 (defn- rewrite-libspecs [aliases]
   (fn [libspec]
-    ; (prn :libspec libspec)
     ;; only [clojure.string ...]
     ;; not clojure.string or [clojure.string]
     (if (and (sequential? libspec)
@@ -124,8 +123,8 @@
                              [clojure pprint [zip :refer [1 2 3] :as z]
                               [edn :as e]])))
 
-(defn check-parent [form]
-  (when-let [parent-form (:parent-form (meta form))]
+(defn check-parent [ctx]
+  (when-let [parent-form (:parent-form ctx)]
     (and (list? parent-form)
          (= 'ns (first parent-form)))))
 
@@ -143,6 +142,6 @@
   {:pattern '(:require &&. ?args)
    :message "Prefer community standard aliases."
    :on-match (fn [ctx rule form _bindings]
-               (when (check-parent form)
+               (when (check-parent ctx)
                  (when-let [replace-form (check-libspecs form)]
-                   (->diagnostic rule form {:replace-form replace-form}))))})
+                   (->diagnostic ctx rule form {:replace-form replace-form}))))})

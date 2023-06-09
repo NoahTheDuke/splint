@@ -43,4 +43,4 @@
    :on-match (fn [ctx rule form {:syms [?defn ?name ?args]}]
                (when (bad-name? ?name)
                  (let [new-form (list* ?defn (symbol (good-name ?name)) ?args)]
-                   (->diagnostic rule form {:replace-form new-form}))))})
+                   (->diagnostic ctx rule form {:replace-form new-form}))))})

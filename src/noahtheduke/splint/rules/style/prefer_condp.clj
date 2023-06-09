@@ -95,5 +95,5 @@
    :on-match (fn [ctx rule form {:syms [?pairs]}]
                (when-let [new-form (find-issue ?pairs)]
                  (let [message "Prefer condp when predicate and arguments are the same"]
-                   (->diagnostic rule form {:replace-form new-form
-                                            :message message}))))})
+                   (->diagnostic ctx rule form {:replace-form new-form
+                                                :message message}))))})

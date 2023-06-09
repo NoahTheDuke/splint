@@ -29,7 +29,7 @@
    :message "Unnecessary `do`."
    :on-match (fn [ctx rule form {:syms [?x]}]
                (when-not (when (sequential? ?x) (unquote-splicing?? (first ?x)))
-                 (let [parent-form (:parent-form (meta form))]
+                 (let [parent-form (:parent-form ctx)]
                    (when-not (and (sequential? parent-form)
                                   (= 'splint/fn (first parent-form)))
-                     (->diagnostic rule form {:replace-form ?x})))))})
+                     (->diagnostic ctx rule form {:replace-form ?x})))))})

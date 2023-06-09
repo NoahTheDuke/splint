@@ -14,8 +14,8 @@
     (-> ->> cond-> cond->> some-> some->> comp partial merge) true
     false))
 
-(defn check-parent [form]
-  (when-let [parent-form (:parent-form (meta form))]
+(defn check-parent [ctx]
+  (when-let [parent-form (:parent-form ctx)]
     (and (seq? parent-form)
          (case (first parent-form)
            (case -> ->>) true
@@ -51,7 +51,7 @@
   "
   {:pattern '(%right-fn?%-?the-fn ?x)
    :on-match (fn [ctx rule form {:syms [?the-fn ?x]}]
-               (when-not (check-parent form)
+               (when-not (check-parent ctx)
                  (let [message (format "Single-arg `%s` always returns the arg." ?the-fn)]
-                   (->diagnostic rule form {:message message
-                                            :replace-form ?x}))))})
+                   (->diagnostic ctx rule form {:message message
+                                                :replace-form ?x}))))})

@@ -24,4 +24,4 @@
   "
   {:pattern '(when _)
    :message "Missing body in when"
-   :on-match (fn [ctx rule form _] (->diagnostic rule form))})
+   :on-match (fn [ctx rule form _] (->diagnostic ctx rule form))})

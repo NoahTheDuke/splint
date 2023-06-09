@@ -29,4 +29,4 @@
                (let [new-form (list* 'let
                                      (vec (concat ?outer-bindings ?inner-bindings))
                                      ?body)]
-                 (->diagnostic rule form {:replace-form new-form})))})
+                 (->diagnostic ctx rule form {:replace-form new-form})))})

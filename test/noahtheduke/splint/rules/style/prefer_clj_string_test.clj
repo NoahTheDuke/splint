@@ -21,8 +21,7 @@
        :line 1
        :column 6
        :end-row 1
-       :end-col 33
-       :filename "example.clj"}
+       :end-col 33}
       {:rule-name style/prefer-clj-string
        :form (.toLowerCase (subs s 1))
        :message
@@ -31,8 +30,7 @@
        :line 1
        :column 34
        :end-row 1
-       :end-col 59
-       :filename "example.clj"}]
+       :end-col 59}]
     "(str (.toUpperCase (subs s 0 1)) (.toLowerCase (subs s 1)))")
   (expect-match
     '[{:alt (clojure.string/upper-case "hello world")}]

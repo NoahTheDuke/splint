@@ -145,16 +145,16 @@
 
 (defn parse-and-check-file
   "Parse the given file and then check each form."
-  [ctx rules filename file]
+  [ctx rules {:keys [ext ^File file contents]}]
   (restart-case
     (try
-      (when-let [parsed-file (parse-string-all file)]
-        (let [parsed-file (vary-meta parsed-file assoc :filename filename)
-              ctx (update ctx :checked-files swap! conj filename)]
+      (when-let [parsed-file (parse-string-all contents ext)]
+        (let [parsed-file (vary-meta parsed-file assoc :filename file)
+              ctx (update ctx :checked-files swap! conj file)]
           ;; Check any full-file rules
           (check-form ctx (rules :file) nil parsed-file)
           ;; Step over each top-level form (parent-form is nil)
-          (run! #(check-and-recur ctx rules filename nil %) parsed-file)
+          (run! #(check-and-recur ctx rules file nil %) parsed-file)
           nil))
       (catch Exception ex
         (let [data (ex-data ex)]
@@ -162,7 +162,7 @@
             (let [ex (ex-info (ex-message ex)
                               (assoc data
                                      :rule-name 'splint/parsing-error
-                                     :filename filename
+                                     :filename file
                                      :form (with-meta [] {:line (:line data)
                                                           :column (:column data)}))
                               ex)]
@@ -170,21 +170,16 @@
             (faro/error ::runner-error ex)))))
     (::faro/continue [])))
 
-(defn check-single-file [ctx rules [file]]
-  (let [[filename file]
-        (cond
-          (instance? java.io.File file) [(str file) (slurp file)]
-          (string? file) ["example.clj" file])]
-    (when filename
-      (parse-and-check-file ctx rules filename file))))
+(defn slurp-file [file-obj]
+  (assoc file-obj :contents (slurp (:file file-obj))))
 
 (defn check-files-parallel [ctx rules files]
   (->> files
-       (pmap #(parse-and-check-file ctx rules (str %) (slurp %)))
+       (pmap #(parse-and-check-file ctx rules (slurp-file %)))
        (dorun)))
 
 (defn check-files-serial [ctx rules files]
-  (let [xf (map #(parse-and-check-file ctx rules (str %) (slurp %)))]
+  (let [xf (map #(parse-and-check-file ctx rules (slurp-file %)))]
     (transduce xf (constantly nil) nil files)))
 
 (defn check-files!
@@ -203,7 +198,7 @@
                    (faro/continue))]
     (cond
       (-> ctx :config :dev)
-      (check-single-file ctx rules files)
+      (parse-and-check-file ctx rules (first files))
       (-> ctx :config :parallel)
       (check-files-parallel ctx rules files)
       :else
@@ -233,10 +228,22 @@
 
 (defn resolve-files-from-paths [paths]
   (if (or (string? paths) (instance? java.io.File paths))
-    [paths]
+    (let [p paths
+          [file contents] (cond
+                            (instance? java.io.File p) [p (slurp p)]
+                            (string? p) [(io/file "example.clj") p])]
+      [{:ext #{:clj} :file file :contents contents}])
     (let [xf (comp (mapcat #(file-seq (io/file %)))
-                   (filter #(and (.isFile ^File %)
-                                 (some (fn [ft] (str/ends-with? % ft)) [".clj" ".cljs" ".cljc"]))))]
+                   (mapcat #(when (.isFile ^File %)
+                              (cond
+                                (str/ends-with? % "cljc")
+                                [{:ext #{:clj :cljs} :file %}
+                                 #_{:ext #{:cljs} :file %}]
+                                (str/ends-with? % "clj")
+                                [{:ext #{:clj} :file %}]
+                                (str/ends-with? % "cljs")
+                                [{:ext #{:cljs} :file %}]
+                                :else nil))))]
       (into [] xf paths))))
 
 (defn build-result-map

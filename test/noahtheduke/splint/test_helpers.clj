@@ -7,14 +7,53 @@
     noahtheduke.splint
     noahtheduke.splint.rules.helpers
     matcher-combinators.test
+    [matcher-combinators.core :refer [Matcher]]
+    [matcher-combinators.result :as-alias result]
     [clojure.spec.alpha :as s]
     [expectations.clojure.test :refer [expect]]
     [noahtheduke.spat.pattern :refer [drop-quote]]
     [noahtheduke.splint.config :refer [merge-config]]
     [noahtheduke.splint.dev :as dev]
-    [noahtheduke.splint.runner :refer [run-impl]]))
+    [noahtheduke.splint.runner :refer [run-impl]]
+    [clojure.java.io :as io]
+    [clojure.string :as str])
+  (:import
+    (java.io File)))
 
 (set! *warn-on-reflection* true)
+
+(defn file-match [^File this actual]
+  (cond
+    (string? actual)
+    (let [this-path (str/split (.getAbsolutePath this) (re-pattern File/separator))
+          actual-path (str/split (.getAbsolutePath (io/file actual)) #"/")]
+      (if (= this-path actual-path)
+        {::result/type :match
+         ::value actual
+         ::weight 0}
+        {::result/type :mismatch
+         ::value actual
+         ::weight 1}))
+    (instance? File actual)
+    (if (.equals (.getName this) (.getName ^File actual))
+      {::result/type :match
+       ::value actual
+       ::weight 0}
+      {::result/type :mismatch
+       ::value actual
+       ::weight 1})
+    :else
+    {::result/type :mismatch
+     ::value actual
+     ::weight 1}))
+
+(extend-protocol Matcher
+  File
+  (-matcher-for
+    ([this] this)
+    ([this _] this))
+  (-name [_] 'file-match)
+  (-match [this actual] (file-match this actual)))
 
 (defn check-all
   ([path] (check-all path nil))

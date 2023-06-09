@@ -10,15 +10,15 @@
 
 (defexpect warn-on-reflection-test
   (expect-match
-    '[{:rule-name lint/warn-on-reflection
-       :form (defn normal [a] a)
+    [{:rule-name 'lint/warn-on-reflection
+       :form '(defn normal [a] a)
        :message "*warn-on-reflection* should be immediately after ns declaration."
        :alt nil
        :line 7
        :column 1
        :end-row 7
        :end-col 20
-       :filename "corpus/arglists.clj"}]
+       :filename (io/file "corpus/arglists.clj")}]
     (io/file "corpus" "arglists.clj")
     '{lint/warn-on-reflection {:enabled true}
       naming/single-segment-namespace {:enabled false}}))

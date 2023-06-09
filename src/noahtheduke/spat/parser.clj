@@ -23,12 +23,12 @@
     (vary-meta obj assoc :spat/defn-form defn-form)
     obj))
 
-(defn make-edamame-opts [ns-state]
+(defn make-edamame-opts [features ns-state]
   {:all true
    :row-key :line
    :col-key :column
    :end-location true
-   :features #{:clj :cljs}
+   :features features
    :read-cond :allow
    :readers (fn reader [r] (fn reader-value [v] (list 'splint/tagged-literal (list r v))))
    :auto-resolve (fn auto-resolve [ns-str]
@@ -88,9 +88,9 @@
    :unquote-splicing (fn [expr] (list 'splint/unquote-splicing expr))})
 
 (defn parse-string
-  ([s] (parse-string s (atom {})))
-  ([s ns-state] (e/parse-string s (make-edamame-opts ns-state))))
+  ([s] (parse-string s #{:clj}))
+  ([s features] (e/parse-string s (make-edamame-opts features (atom {})))))
 
 (defn parse-string-all
-  ([s] (parse-string-all s (atom {})))
-  ([s ns-state] (e/parse-string-all s (make-edamame-opts ns-state))))
+  ([s] (parse-string-all s #{:clj}))
+  ([s features] (e/parse-string-all s (make-edamame-opts features (atom {})))))

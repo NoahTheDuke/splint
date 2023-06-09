@@ -55,6 +55,7 @@
                        (update :rule-name pr-str)
                        (update :form pr-str)
                        (update :alt pr-str)
+                       (update :filename str)
                        (->> (into (sorted-map))))]
     (json/write diagnostic *out* {:escape-slash false})
     (newline)))
@@ -64,15 +65,18 @@
                        (update :rule-name pr-str)
                        (update :form pr-str)
                        (update :alt pr-str)
+                       (update :filename str)
                        (->> (into (sorted-map))))]
     (json/pprint diagnostic {:escape-slash false})
     (newline)))
 
 (defmethod print-find "edn" [_ diagnostic]
-  (prn (into (sorted-map) diagnostic)))
+  (let [diagnostic (update diagnostic :filename str)]
+   (prn (into (sorted-map) diagnostic))))
 
 (defmethod print-find "edn-pretty" [_ diagnostic]
-  (pp/pprint (into (sorted-map) diagnostic)))
+  (let [diagnostic (update diagnostic :filename str)]
+    (pp/pprint (into (sorted-map) diagnostic))))
 
 (defn print-results
   [options diagnostics total-time]

@@ -60,7 +60,7 @@
   ([path config] (check-all path config nil))
   ([path config options]
    (let [start-time (System/currentTimeMillis)
-         config (conj {:dev true} (merge-config @dev/default-config config))
+         config (conj {:dev true} (merge-config @dev/dev-config config))
          results (run-impl start-time options path config)]
      (seq (:diagnostics results)))))
 
@@ -73,7 +73,5 @@
 (s/fdef expect-match
         :args (s/cat :expected (s/or :nil nil? :vector #(vector? (drop-quote %)))
                      :s any?
-                     :config (s/? (s/or :nil nil?
-                                        :sym #(symbol? (drop-quote %))
-                                        :map #(map? (drop-quote %)))))
+                     :config (s/? any?))
         :ret any?)

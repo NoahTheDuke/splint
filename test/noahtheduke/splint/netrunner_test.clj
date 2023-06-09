@@ -27,7 +27,7 @@
     lint/let-when 1
     lint/redundant-call 3
     lint/thread-macro-one-arg 71
-    lint/warn-on-reflection 220
+    lint/warn-on-reflection 169
     metrics/fn-length 485
     metrics/parameter-count 204
     naming/conventional-aliases 33
@@ -79,4 +79,5 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 1676 (count (:diagnostics results)))))
+    (expect 1625 (count (:diagnostics results)))
+    (expect 222 (count (:checked-files results)))))

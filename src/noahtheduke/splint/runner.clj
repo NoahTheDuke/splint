@@ -133,27 +133,39 @@
   "Check a given form and then map recur over each of the form's children."
   [ctx rules filename parent-form form]
   (let [ctx (assoc ctx :parent-form parent-form)
-        rules (update-rules rules form)]
-    (when-let [rules-for-type (rules (simple-type form))]
+        rules (update-rules rules form)
+        form-type (simple-type form)]
+    (when-let [rules-for-type (rules form-type)]
       (check-form ctx rules-for-type form))
-    (when (and (seqable? form)
-               (not= 'quote (first form)))
+    ;; Can't recur in non-seqable forms
+    (case form-type
+      :list (when (not= 'quote (first form))
+              (run! #(check-and-recur ctx rules filename form %) form))
+      ;; There is currently no need for checking MapEntry,
+      ;; so check each individually.
+      :map (run! #(do (check-and-recur ctx rules filename form (key %))
+                      (check-and-recur ctx rules filename form (val %))) form)
+      (:set :vector)
       (run! #(check-and-recur ctx rules filename form %) form)
-      nil)))
+      ; else
+      nil)
+    nil))
 
 (defn parse-and-check-file
   "Parse the given file and then check each form."
-  [ctx rules {:keys [ext ^File file contents]}]
+  [ctx rules {:keys [ext features ^File file contents]}]
   (try
-      (when-let [parsed-file (parse-string-all contents ext)]
-        (let [ctx (-> ctx
-                      (update :checked-files swap! conj file)
-                      (assoc :filename file))]
-          ;; Check any full-file rules
-          (check-form ctx (rules :file) parsed-file)
-          ;; Step over each top-level form (parent-form is nil)
-          (run! #(check-and-recur ctx rules file nil %) parsed-file)
-          nil))
+    (when-let [parsed-file (parse-string-all contents features)]
+      (let [ctx (-> ctx
+                    (update :checked-files swap! conj file)
+                    (assoc :ext ext)
+                    (assoc :filename file)
+                    (assoc :file-str contents))]
+        ;; Check any full-file rules
+        (check-form ctx (:file rules) parsed-file)
+        ;; Step over each top-level form (parent-form is nil)
+        (run! #(check-and-recur ctx rules file nil %) parsed-file)
+        nil))
     (catch Exception ex
       (let [data (ex-data ex)]
         (if (= :edamame/error (:type data))
@@ -215,36 +227,50 @@
       (assoc :checked-files (atom []))
       (assoc :config (select-keys config [:help :output :parallel :summary :quiet :silent :dev]))))
 
+(defn get-extension [^File file]
+  (let [filename (.getName file)
+        i (.lastIndexOf filename ".")]
+    (when (< i (dec (count filename)))
+      (subs filename (inc i)))))
+
 (defn resolve-files-from-paths [paths]
   (if (or (string? paths) (instance? java.io.File paths))
-    (let [p paths
-          [file contents] (cond
-                            (instance? java.io.File p) [p (slurp p)]
-                            (string? p) [(io/file "example.clj") p])]
-      [{:ext #{:clj} :file file :contents contents}])
+    (let [p paths]
+      (cond
+        (instance? java.io.File p)
+        [{:features #{:clj} :ext :clj :file p :contents (slurp p)}]
+        (string? p)
+        [{:features #{:clj} :ext :clj :file (io/file "example.clj") :contents p}]))
     (let [xf (comp (mapcat #(file-seq (io/file %)))
-                   (mapcat #(when (.isFile ^File %)
-                              (cond
-                                (str/ends-with? % "cljc")
-                                [{:ext #{:clj :cljs} :file %}
-                                 #_{:ext #{:cljs} :file %}]
-                                (str/ends-with? % "clj")
-                                [{:ext #{:clj} :file %}]
-                                (str/ends-with? % "cljs")
-                                [{:ext #{:cljs} :file %}]
-                                :else nil))))]
+                   (distinct)
+                   (mapcat (fn [^File file]
+                             (when (.isFile file)
+                               (case (get-extension file)
+                                 "cljc"
+                                 [{:features #{:clj} :ext :cljc :file file}
+                                  {:features #{:cljs} :ext :cljc :file file}]
+                                 "clj"
+                                 [{:features #{:clj} :ext :clj :file file}]
+                                 "cljs"
+                                 [{:features #{:cljs} :ext :cljs :file file}]
+                                 ; else
+                                 nil)))))]
       (into [] xf paths))))
 
 (defn build-result-map
   [ctx files start-time]
-  (let [diagnostics @(:diagnostics ctx)
-        checked-files @(:checked-files ctx)]
-    {:diagnostics diagnostics
-     :files (mapv str files)
+  (let [all-diagnostics @(:diagnostics ctx)
+        grouped-diagnostics (group-by (juxt :filename :line :column :rule-name) all-diagnostics)
+        filtered-diagnostics (mapv first (vals grouped-diagnostics))
+        checked-files (into [] (distinct) @(:checked-files ctx))
+        file-strs (mapv str files)
+        total-time (int (- (System/currentTimeMillis) start-time))]
+    {:diagnostics filtered-diagnostics
+     :files file-strs
      :checked-files checked-files
      :config (:config ctx)
-     :total-time (int (- (System/currentTimeMillis) start-time))
-     :exit (if (pos? (count diagnostics)) 1 0)}))
+     :total-time total-time
+     :exit (if (pos? (count filtered-diagnostics)) 1 0)}))
 
 (defn run-impl
   "Actually perform check"

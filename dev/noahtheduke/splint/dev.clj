@@ -25,15 +25,14 @@
         default-rules (config/read-default-config)]
     (merge dev-rules default-rules)))
 
-(def default-config (atom (build-default-config)))
+(def dev-config (atom (build-default-config)))
 
 (def watcher
   (beholder/watch
     (fn [action]
       (when (#{:create :modify} (:type action))
-        (reset! default-config (build-default-config))))
+        (reset! dev-config (build-default-config))))
     "resources"))
-
 
 (tufte/add-basic-println-handler! {})
 

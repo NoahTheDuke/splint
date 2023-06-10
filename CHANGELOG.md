@@ -10,17 +10,21 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Added
 
 - `--[no]summary` cli flag to print or not print the summary line.
-- Extend the `matcher-combinators.core/Matcher` protocol to `java.io.File`, making `match?` work nicely with both strings and file objects.
 
 ### Changed
 
 - `:filename` in `Diagnostic` is now a `java.io.File` object, not a string. This is propogated through everything. I suspect no one is using these so I think I could change the `Diagnostic` as well, but maybe I'll wait a min.
 - `make-edamame-opts` now accepts both `features` and `ns-state`, and `parse-string` and `parse-string-all` take in `features` instead of `ns-state`.
-- The runner produces objects instead of raw paths for processing. This includes which 
+- The runner tracks the filetype of each file and runs over `cljc` files twice, both `clj` and `cljs`, with their respective sides of the reader conditionals applied.
+- Diagnostics are deduped before printing.
+- `lint/warn-on-reflection` only runs in `clj` files.
+- Remove `farolero`. Didn't provide any benefits over judicious `try`/`catch` use. :(
+- Extend the `matcher-combinators.core/Matcher` protocol to `java.io.File`, making `match?` work nicely with both strings and file objects.
+- Performance improvements by converting `rules-by-type` from a map of simple-type -> map of rule name -> rule to simple-type -> vec of rule.
 
 ### Fixed
 
-- Correctly print special characters/clojure.core vars (`@`, not `splint/deref`). Add tests.
+- Correctly print special characters/clojure.core vars (`@`, not `splint/deref`, etc).
 
 ## [v1.8.0]
 

@@ -491,8 +491,8 @@
  style/prefer-clj-string
  {:description "Prefer clojure.string to interop."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.9.0"
+  :updated "1.9.0"
   :guide-ref "#prefer-clojure-string-over-interop"}
 
  style/prefer-condp

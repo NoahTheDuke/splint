@@ -808,6 +808,30 @@ clojure.math/PI
 
 ---
 
+## style/prefer-clj-string
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 1.9.0         | 1.9.0           |
+
+Prefer clojure.math to interop.
+
+### Examples
+
+```clojure
+# bad
+(.toUpperCase "hello world")
+
+# good
+(clojure.string/upper-case "hello world")
+```
+
+### Reference
+
+* https://guide.clojure.style/#prefer-clojure-string-over-interop
+
+---
+
 ## style/prefer-condp
 
 | Enabled by default | Version Added | Version Updated |

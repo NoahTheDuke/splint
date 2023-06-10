@@ -23,26 +23,26 @@
 (defexpect printer-output-simple-test
   (expect
     (match?
-      ["corpus/printer_test.clj:7:1 [style/when-do] - Unnecessary `do` in `when` body."
-       "corpus/printer_test.clj:7:1 [style/when-not-call] - Use `when-not` instead of recreating it."
-       "corpus/printer_test.clj:7:7 [style/not-eq] - Use `not=` instead of recreating it."
+      ["corpus/printer_test.clj:7:1 [style/when-not-call] - Use `when-not` instead of recreating it."
+       "corpus/printer_test.clj:7:1 [style/when-do] - Unnecessary `do` in `when` body."
+       "corpus/printer_test.clj:8:3 [style/not-eq] - Use `not=` instead of recreating it."
        "Linting took 0ms, 3 style warnings"]
       (print-result-lines "simple"))))
 
 (defexpect printer-output-full-test
   (expect
     (match?
-      ["corpus/printer_test.clj:7:1 [style/when-do] - Unnecessary `do` in `when` body."
-       "(when (not (= 1 1)) (do (prn 2) (prn 3)))"
-       "Consider using:"
-       "(when (not (= 1 1)) (prn 2) (prn 3))"
-       ""
-       "corpus/printer_test.clj:7:1 [style/when-not-call] - Use `when-not` instead of recreating it."
+      ["corpus/printer_test.clj:7:1 [style/when-not-call] - Use `when-not` instead of recreating it."
        "(when (not (= 1 1)) (do (prn 2) (prn 3)))"
        "Consider using:"
        "(when-not (= 1 1) (do (prn 2) (prn 3)))"
        ""
-       "corpus/printer_test.clj:7:7 [style/not-eq] - Use `not=` instead of recreating it."
+       "corpus/printer_test.clj:7:1 [style/when-do] - Unnecessary `do` in `when` body."
+       "(when (not (= 1 1)) (do (prn 2) (prn 3)))"
+       "Consider using:"
+       "(when (not (= 1 1)) (prn 2) (prn 3))"
+       ""
+       "corpus/printer_test.clj:8:3 [style/not-eq] - Use `not=` instead of recreating it."
        "(not (= 1 1))"
        "Consider using:"
        "(not= 1 1)"
@@ -53,9 +53,9 @@
 (defexpect printer-output-clj-kondo-test
   (expect
     (match?
-      ["corpus/printer_test.clj:7:1: warning: Unnecessary `do` in `when` body."
-       "corpus/printer_test.clj:7:1: warning: Use `when-not` instead of recreating it."
-       "corpus/printer_test.clj:7:7: warning: Use `not=` instead of recreating it."
+      ["corpus/printer_test.clj:7:1: warning: Use `when-not` instead of recreating it."
+       "corpus/printer_test.clj:7:1: warning: Unnecessary `do` in `when` body."
+       "corpus/printer_test.clj:8:3: warning: Use `not=` instead of recreating it."
        "Linting took 0ms, 3 style warnings"]
       (print-result-lines "clj-kondo"))))
 
@@ -63,22 +63,6 @@
   (expect
     (match?
       ["----"
-       ""
-       "#### corpus/printer_test.clj:7:1 [style/when-do]"
-       ""
-       "Unnecessary `do` in `when` body."
-       ""
-       "```clojure"
-       "(when (not (= 1 1)) (do (prn 2) (prn 3)))"
-       "```"
-       ""
-       "Consider using:"
-       ""
-       "```clojure"
-       "(when (not (= 1 1)) (prn 2) (prn 3))"
-       "```"
-       ""
-       "----"
        ""
        "#### corpus/printer_test.clj:7:1 [style/when-not-call]"
        ""
@@ -96,7 +80,23 @@
        ""
        "----"
        ""
-       "#### corpus/printer_test.clj:7:7 [style/not-eq]"
+       "#### corpus/printer_test.clj:7:1 [style/when-do]"
+       ""
+       "Unnecessary `do` in `when` body."
+       ""
+       "```clojure"
+       "(when (not (= 1 1)) (do (prn 2) (prn 3)))"
+       "```"
+       ""
+       "Consider using:"
+       ""
+       "```clojure"
+       "(when (not (= 1 1)) (prn 2) (prn 3))"
+       "```"
+       ""
+       "----"
+       ""
+       "#### corpus/printer_test.clj:8:3 [style/not-eq]"
        ""
        "Use `not=` instead of recreating it."
        ""
@@ -114,41 +114,41 @@
 (defexpect printer-output-json-test
   (expect
     (match?
-      ["{\"alt\":\"(when (not (= 1 1)) (prn 2) (prn 3))\",\"column\":1,\"end-col\":42,\"end-row\":7,\"filename\":\"corpus/printer_test.clj\",\"form\":\"(when (not (= 1 1)) (do (prn 2) (prn 3)))\",\"line\":7,\"message\":\"Unnecessary `do` in `when` body.\",\"rule-name\":\"style/when-do\"}"
-       "{\"alt\":\"(when-not (= 1 1) (do (prn 2) (prn 3)))\",\"column\":1,\"end-col\":42,\"end-row\":7,\"filename\":\"corpus/printer_test.clj\",\"form\":\"(when (not (= 1 1)) (do (prn 2) (prn 3)))\",\"line\":7,\"message\":\"Use `when-not` instead of recreating it.\",\"rule-name\":\"style/when-not-call\"}"
-       "{\"alt\":\"(not= 1 1)\",\"column\":7,\"end-col\":20,\"end-row\":7,\"filename\":\"corpus/printer_test.clj\",\"form\":\"(not (= 1 1))\",\"line\":7,\"message\":\"Use `not=` instead of recreating it.\",\"rule-name\":\"style/not-eq\"}"]
+      ["{\"alt\":\"(when-not (= 1 1) (do (prn 2) (prn 3)))\",\"column\":1,\"end-col\":14,\"end-row\":12,\"filename\":\"corpus/printer_test.clj\",\"form\":\"(when (not (= 1 1)) (do (prn 2) (prn 3)))\",\"line\":7,\"message\":\"Use `when-not` instead of recreating it.\",\"rule-name\":\"style/when-not-call\"}"
+       "{\"alt\":\"(when (not (= 1 1)) (prn 2) (prn 3))\",\"column\":1,\"end-col\":14,\"end-row\":12,\"filename\":\"corpus/printer_test.clj\",\"form\":\"(when (not (= 1 1)) (do (prn 2) (prn 3)))\",\"line\":7,\"message\":\"Unnecessary `do` in `when` body.\",\"rule-name\":\"style/when-do\"}"
+       "{\"alt\":\"(not= 1 1)\",\"column\":3,\"end-col\":13,\"end-row\":9,\"filename\":\"corpus/printer_test.clj\",\"form\":\"(not (= 1 1))\",\"line\":8,\"message\":\"Use `not=` instead of recreating it.\",\"rule-name\":\"style/not-eq\"}"]
       (print-result-lines "json"))))
 
 (defexpect printer-output-json-pretty-test
   (expect
     (match?
-      ["{\"alt\":\"(when (not (= 1 1)) (prn 2) (prn 3))\","
+      ["{\"alt\":\"(when-not (= 1 1) (do (prn 2) (prn 3)))\","
        " \"column\":1,"
-       " \"end-col\":42,"
-       " \"end-row\":7,"
-       " \"filename\":\"corpus/printer_test.clj\","
-       " \"form\":\"(when (not (= 1 1)) (do (prn 2) (prn 3)))\","
-       " \"line\":7,"
-       " \"message\":\"Unnecessary `do` in `when` body.\","
-       " \"rule-name\":\"style/when-do\"}"
-       ""
-       "{\"alt\":\"(when-not (= 1 1) (do (prn 2) (prn 3)))\","
-       " \"column\":1,"
-       " \"end-col\":42,"
-       " \"end-row\":7,"
+       " \"end-col\":14,"
+       " \"end-row\":12,"
        " \"filename\":\"corpus/printer_test.clj\","
        " \"form\":\"(when (not (= 1 1)) (do (prn 2) (prn 3)))\","
        " \"line\":7,"
        " \"message\":\"Use `when-not` instead of recreating it.\","
        " \"rule-name\":\"style/when-not-call\"}"
        ""
+       "{\"alt\":\"(when (not (= 1 1)) (prn 2) (prn 3))\","
+       " \"column\":1,"
+       " \"end-col\":14,"
+       " \"end-row\":12,"
+       " \"filename\":\"corpus/printer_test.clj\","
+       " \"form\":\"(when (not (= 1 1)) (do (prn 2) (prn 3)))\","
+       " \"line\":7,"
+       " \"message\":\"Unnecessary `do` in `when` body.\","
+       " \"rule-name\":\"style/when-do\"}"
+       ""
        "{\"alt\":\"(not= 1 1)\","
-       " \"column\":7,"
-       " \"end-col\":20,"
-       " \"end-row\":7,"
+       " \"column\":3,"
+       " \"end-col\":13,"
+       " \"end-row\":9,"
        " \"filename\":\"corpus/printer_test.clj\","
        " \"form\":\"(not (= 1 1))\","
-       " \"line\":7,"
+       " \"line\":8,"
        " \"message\":\"Use `not=` instead of recreating it.\","
        " \"rule-name\":\"style/not-eq\"}"]
       (print-result-lines "json-pretty"))))
@@ -156,39 +156,39 @@
 (defexpect printer-output-edn-test
   (expect
     (match?
-      ["{:alt (when (not (= 1 1)) (prn 2) (prn 3)), :column 1, :end-col 42, :end-row 7, :filename \"corpus/printer_test.clj\", :form (when (not (= 1 1)) (do (prn 2) (prn 3))), :line 7, :message \"Unnecessary `do` in `when` body.\", :rule-name style/when-do}"
-       "{:alt (when-not (= 1 1) (do (prn 2) (prn 3))), :column 1, :end-col 42, :end-row 7, :filename \"corpus/printer_test.clj\", :form (when (not (= 1 1)) (do (prn 2) (prn 3))), :line 7, :message \"Use `when-not` instead of recreating it.\", :rule-name style/when-not-call}"
-       "{:alt (not= 1 1), :column 7, :end-col 20, :end-row 7, :filename \"corpus/printer_test.clj\", :form (not (= 1 1)), :line 7, :message \"Use `not=` instead of recreating it.\", :rule-name style/not-eq}"]
+      ["{:alt (when-not (= 1 1) (do (prn 2) (prn 3))), :column 1, :end-col 14, :end-row 12, :filename \"corpus/printer_test.clj\", :form (when (not (= 1 1)) (do (prn 2) (prn 3))), :line 7, :message \"Use `when-not` instead of recreating it.\", :rule-name style/when-not-call}"
+       "{:alt (when (not (= 1 1)) (prn 2) (prn 3)), :column 1, :end-col 14, :end-row 12, :filename \"corpus/printer_test.clj\", :form (when (not (= 1 1)) (do (prn 2) (prn 3))), :line 7, :message \"Unnecessary `do` in `when` body.\", :rule-name style/when-do}"
+       "{:alt (not= 1 1), :column 3, :end-col 13, :end-row 9, :filename \"corpus/printer_test.clj\", :form (not (= 1 1)), :line 8, :message \"Use `not=` instead of recreating it.\", :rule-name style/not-eq}"]
       (print-result-lines "edn"))))
 
 (defexpect printer-output-edn-pretty-test
   (expect
     (match?
-      ["{:alt (when (not (= 1 1)) (prn 2) (prn 3)),"
+      ["{:alt (when-not (= 1 1) (do (prn 2) (prn 3))),"
        " :column 1,"
-       " :end-col 42,"
-       " :end-row 7,"
-       " :filename \"corpus/printer_test.clj\","
-       " :form (when (not (= 1 1)) (do (prn 2) (prn 3))),"
-       " :line 7,"
-       " :message \"Unnecessary `do` in `when` body.\","
-       " :rule-name style/when-do}"
-       "{:alt (when-not (= 1 1) (do (prn 2) (prn 3))),"
-       " :column 1,"
-       " :end-col 42,"
-       " :end-row 7,"
+       " :end-col 14,"
+       " :end-row 12,"
        " :filename \"corpus/printer_test.clj\","
        " :form (when (not (= 1 1)) (do (prn 2) (prn 3))),"
        " :line 7,"
        " :message \"Use `when-not` instead of recreating it.\","
        " :rule-name style/when-not-call}"
+       "{:alt (when (not (= 1 1)) (prn 2) (prn 3)),"
+       " :column 1,"
+       " :end-col 14,"
+       " :end-row 12,"
+       " :filename \"corpus/printer_test.clj\","
+       " :form (when (not (= 1 1)) (do (prn 2) (prn 3))),"
+       " :line 7,"
+       " :message \"Unnecessary `do` in `when` body.\","
+       " :rule-name style/when-do}"
        "{:alt (not= 1 1),"
-       " :column 7,"
-       " :end-col 20,"
-       " :end-row 7,"
+       " :column 3,"
+       " :end-col 13,"
+       " :end-row 9,"
        " :filename \"corpus/printer_test.clj\","
        " :form (not (= 1 1)),"
-       " :line 7,"
+       " :line 8,"
        " :message \"Use `not=` instead of recreating it.\","
        " :rule-name style/not-eq}"]
       (print-result-lines "edn-pretty"))))

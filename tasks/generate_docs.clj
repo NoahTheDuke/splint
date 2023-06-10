@@ -123,7 +123,7 @@
 
 (defn build-rules [genre]
   (->> genre
-       (get (group-by :genre (vals @global-rules)))
+       (get (group-by :genre (vals (:rules @global-rules))))
        (sort-by :full-name)
        (map build-rule)
        (interpose "---")
@@ -144,6 +144,6 @@
     (spit filename (str page \newline))))
 
 (defn -main [& genres]
-  (when-let [genres (seq (or genres (set (keep :genre (vals @global-rules)))))]
+  (when-let [genres (seq (or genres (:genres @global-rules)))]
     (println "Saving genres to file")
     (run! print-genre-to-file genres)))

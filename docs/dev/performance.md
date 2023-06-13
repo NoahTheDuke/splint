@@ -65,13 +65,24 @@ user	1m30.477s
 sys	0m1.333s
 ```
 
-### main (9eb758a)
+### v1.8.0
 
 ```
 $ time clojure -M:run ../netrunner/ --quiet
-Linting took 6457ms, 779 style warnings
+Linting took 5572ms, 779 style warnings
 
-real	0m11.288s
-user	1m25.527s
-sys	0m1.224s
+real	0m12.301s
+user	1m30.984s
+sys	0m1.398s
+```
+
+### v1.9.0
+
+```
+$ time clojure -M:run ../netrunner/ --quiet
+Linting took 5500ms, 784 style warnings
+
+real	0m11.940s
+user	1m27.257s
+sys	0m1.459s
 ```

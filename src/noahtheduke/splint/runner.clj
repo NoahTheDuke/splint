@@ -15,8 +15,8 @@
     [noahtheduke.splint.printer :refer [print-results]]
     [noahtheduke.splint.rules :refer [global-rules]])
   (:import
-    (java.io File)
     (clojure.lang ExceptionInfo)
+    (java.io File)
     (java.util.concurrent Executors Future)
     (noahtheduke.splint.diagnostic Diagnostic)))
 
@@ -76,11 +76,11 @@
   (try
     (if (-> rule :config :enabled)
       (let [result (check-rule ctx rule form)]
-        (if (some? result)
+        (if (nil? result)
+          acc
           (if (sequential? result)
             (into acc result)
-            (conj acc result))
-          acc))
+            (conj acc result))))
       acc)
     (catch Exception ex
       (conj acc (runner-error->diagnostic

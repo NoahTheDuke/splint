@@ -3,18 +3,18 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 (ns noahtheduke.splint.performance-test
-  {:clj-kondo/ignore true}
   (:require
-    [noahtheduke.splint.config :refer [default-config]]
     [clojure.java.io :as io]
-    [noahtheduke.splint.runner :refer [run]]
-    [noahtheduke.splint.rules :refer [global-rules]]))
+    [clojure.tools.gitlibs :as gl]
+    [noahtheduke.splint.config :refer [default-config]]
+    [noahtheduke.splint.rules :refer [global-rules]]
+    [noahtheduke.splint.runner :refer [run]]))
 
 (def all-enabled-config
   (update-vals @default-config #(assoc % :enabled true)))
 
 (defn clj-kondo-analyzer-perf-test []
-  (let [clj-kondo "/home/noah/.gitlibs/libs/clj-kondo/clj-kondo/dcc0cc4f461ce49050a6b890d276cf088f29e4ec"
+  (let [clj-kondo (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2023.05.26")
         analyzer (io/file clj-kondo "src" "clj_kondo" "impl" "analyzer.clj")
         original-rules @global-rules]
     ; v1.3 -> v1.8
@@ -23,15 +23,18 @@
     (swap! global-rules update :rules update-vals #(assoc % :pattern (constantly nil)))
     ; (prn (count (clojure.string/split-lines (slurp analyzer))))
     (with-redefs [noahtheduke.splint.config/load-config all-enabled-config]
+      #_:clj-kondo/ignore
       (user/quick-bench
         (with-out-str (run ["--quiet" "--no-parallel" (str analyzer)]))))
     (reset! global-rules original-rules)
     nil))
 
 (comment
-  (clj-kondo-analyzer-perf-test)
-  (flush)
-  (clj-kondo-analyzer-perf-test)
+  (do
+    (clj-kondo-analyzer-perf-test)
+    (flush)
+    (clj-kondo-analyzer-perf-test)
+    (flush))
   )
 
 ; clj-kondo.impl.analyzer: 3146 lines

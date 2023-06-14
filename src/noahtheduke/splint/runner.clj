@@ -17,6 +17,7 @@
   (:import
     (java.io File)
     (clojure.lang ExceptionInfo)
+    (java.util.concurrent Executors Future)
     (noahtheduke.splint.diagnostic Diagnostic)))
 
 (set! *warn-on-reflection* true)
@@ -195,18 +196,28 @@
 (defn slurp-file [file-obj]
   (assoc file-obj :contents (slurp (:file file-obj))))
 
-(defn check-files-parallel [ctx rules-by-type files]
-  (->> files
-       (pmap #(parse-and-check-file ctx rules-by-type (slurp-file %)))
-       (dorun)))
+(defn ->parse-and-check-task
+  ^Callable [ctx rules-by-type file]
+  (reify Callable
+    (call [_]
+      (parse-and-check-file ctx rules-by-type (slurp-file file)))))
 
-(defn check-files-serial [ctx rules-by-type ^clojure.lang.Indexed files]
+(defn check-files-parallel [ctx rules-by-type files]
+  (let [thread-count (+ 2 (.availableProcessors (Runtime/getRuntime)))
+        executor (Executors/newFixedThreadPool thread-count)
+        futures (mapv #(.submit executor (->parse-and-check-task ctx rules-by-type %)) files)
+        cnt (count futures)]
+    (loop [idx 0]
+      (when (< idx cnt)
+        (.get ^Future (nth futures idx))
+        (recur (unchecked-inc idx))))))
+
+(defn check-files-serial [ctx rules-by-type files]
   (let [cnt (count files)]
     (loop [idx (int 0)]
       (when (< idx cnt)
-        (let [file (.nth files idx)]
-          (parse-and-check-file ctx rules-by-type (slurp-file file))
-          (recur (unchecked-inc idx)))))))
+        (parse-and-check-file ctx rules-by-type (slurp-file (nth files idx)))
+        (recur (unchecked-inc idx))))))
 
 (defn check-files!
   "Call into the relevant `check-path-X` function, depending on the given config."

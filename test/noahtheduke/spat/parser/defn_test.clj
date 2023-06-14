@@ -7,7 +7,7 @@
     [clojure.java.io :as io]
     [expectations.clojure.test :refer [defexpect expect]]
     [matcher-combinators.test :refer [match?]]
-    [noahtheduke.spat.parser :refer [parse-string-all]]
+    [noahtheduke.splint.test-helpers :refer [parse-string-all]]
     [noahtheduke.spat.parser.defn :as sut]))
 
 (defexpect parse-defn-arglist-metadata-test

@@ -1,4 +1,9 @@
+; This Source Code Form is subject to the terms of the Mozilla Public
+; License, v. 2.0. If a copy of the MPL was not distributed with this
+; file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 (ns noahtheduke.splint.performance-test
+  {:clj-kondo/ignore true}
   (:require
     [noahtheduke.splint.config :refer [default-config]]
     [clojure.java.io :as io]
@@ -23,7 +28,7 @@
     (reset! global-rules original-rules)
     nil))
 
-(do
+(comment
   (clj-kondo-analyzer-perf-test)
   (flush)
   (clj-kondo-analyzer-perf-test)

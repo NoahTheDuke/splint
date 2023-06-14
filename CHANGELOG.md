@@ -1,7 +1,12 @@
 # Change Log
 This changelog is loose. Versions are not semantic, they are incremental. Splint is not meant to be infrastructure, so don't rely on it like infrastructure; it is a helpful development tool.
 
-## [Unreleased]
+## Unreleased
+
+- Move `spat.parser/parse-string` and `spat.parser/parse-string-all` into the test-helper namespace, and replace with `parse-file` which accepts the `file-obj` map.
+- Parse data reader/tagged literals as maps instead of lists, and put the extension (dialect) into the symbol's metadata.
+
+## v1.9.0
 
 ### New Rules
 
@@ -26,7 +31,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Correctly print special characters/clojure.core vars (`@`, not `splint/deref`, etc).
 
-## [v1.8.0]
+## v1.8.0
 
 ### New rules
 
@@ -47,7 +52,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - `json` and `json-pretty` keys are now sorted.
 - Small performance improvements to patterns.
 
-## [v1.7.0]
+## v1.7.0
 
 ### New Rules
 
@@ -77,13 +82,13 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Add pre- and post- `attr-maps` to `defn` metadata when parsing `defn` forms.
 - Added license headers where necessary.
 
-## [v1.6.1]
+## v1.6.1
 
 ### Fixed
 
 - Re-fix deploy script.
 
-## [v1.6.0]
+## v1.6.0
 
 ### Added
 
@@ -101,7 +106,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Correctly merge cli and local options ([#5](https://github.com/NoahTheDuke/splint/issues/5)).
 - Edge cases for `lint/if-not-do`, `style/when-not-do`.
 
-## [v1.5.0]
+## v1.5.0
 
 ### New Rules
 
@@ -124,14 +129,14 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Skip `#(.someMethod %)` in `lint/fn-wrapper`.
 - Skip `and` and `or` in `style/prefer-condp`.
 
-## [v1.4.1]
+## v1.4.1
 
 ### Fixed
 
 - Fix `io/resource` issue.
 - Remove `.class` files from `jar`.
 
-## [v1.4.0]
+## v1.4.0
 
 ### Added
 
@@ -144,20 +149,20 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - "Fix" error messages. Honestly, I'm not great at these so I'm not entirely sure how to best display this stuff.
 - Skip `#(do [%1 %2])` in `style/useless-do`, add docstring note about it.
 
-## [v1.3.2]
+## v1.3.2
 
 ### Fixed
 
 - Babashka compatibility
 - Set up Github CI
 
-## [v1.3.1]
+## v1.3.1
 
 ### Fixed
 
 - Links in docs for style guide.
 
-## [v1.3.0]
+## v1.3.0
 
 ### New Rules
 
@@ -167,13 +172,13 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - `naming/lisp-case`: Prefer kebab-case over other cases for top-level definitions. Relies on [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).
 - `style/multiple-arity-order`: Function definitions should have multiple arities sorted fewest arguments to most: `(defn foo ([a] 1) ([a b] 2) ([a b & more] 3))`
 
-## [v1.2.4]
+## v1.2.4
 
 ### Fixed
 
 - Parsing bug in `lint/fn-wrapper` introduced in v1.2.3.
 
-## [v1.2.3]
+## v1.2.3
 
 ### Added
 
@@ -193,7 +198,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Fix [#2](https://github.com/NoahTheDuke/splint/issues/2), false positive on interop fn-wrappers.
 - Lots of small namespace parsing fixes.
 
-## [v1.2.2]
+## v1.2.2
 
 ### Fixed
 
@@ -201,7 +206,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Bump `edamame` to v1.3.21 to handle `#:: {:a 1}` auto-resolved namespaced maps with spaces between the colons and the map literal.
 - Use correct url in install docs. (Thanks [@dpassen](https://github.com/dpassen))
 
-## [v1.2.1]
+## v1.2.1
 
 ### Added
 
@@ -220,7 +225,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Correctly render bare links in rule docs.
 - Correctly export clojars info in `deploy` justfile recipe.
 
-## [v1.2.0]
+## v1.2.0
 
 ### Added
 
@@ -276,14 +281,14 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Add `ctx` as first argument to `:on-match` functions to pass in config to rules. Update functions in `splint.runner` as necessary.
 
-## [v1.1.1]
+## v1.1.1
 
 ### Changed
 
 - Update Rule Documentation.
 - Include new documentation in cljdoc.edn
 
-## [v1.1.0]
+## v1.1.0
 
 ### Added
 
@@ -297,13 +302,13 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Attempt to resolve predicates in calling namespace first, then in `clojure.core`, then in `noahtheduke.splint.rules.helpers`.
 - Rename read-dispatch type from `:var` to `:binding`.
 
-## [v1.0.1]
+## v1.0.1
 
 ### Fixed
 
 - Run linting over syntax-quoted forms again.
 
-## [v1.0]
+## v1.0
 
 ### New Rules
 
@@ -328,7 +333,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - `style/prefer-condp`: Only runs if given more than 1 predicate branch.
 - `style/set-literal-as-fn`: Allow quoted symbols in sets.
 
-## [v0.1.119]
+## v0.1.119
 Actually wrote out something of a changelog.
 
 ### New Rules
@@ -370,7 +375,7 @@ I want another parser because I want access to comments. Without comments, I can
 ### Followup
 After tinkering with Edamame for a bit, I've found a solution that requires no changes to [edamame][edamame] to support: `#_:splint/disable`. This style of directive applies metadata to the following form: `#_{:splint/disable [lint/plus-one]} (+ 1 x)`. Edamame normally discard `#_`/discarded forms, so on Borkdude's recommendation, I use `str/replace` to convert it at parse-time to metadata. This uses an existing convention and handles the issue of disabling multiple items or disabling for only a certain portion of the file.
 
-## [v0.1.85]
+## v0.1.85
 Update readme with some better writing.
 
 ### New Rules
@@ -383,7 +388,7 @@ Update readme with some better writing.
 - Rename `lint/cond-else` to `style/cond-else`.
 - Cleaned up readme.
 
-## [v0.1.69]
+## v0.1.69
 Renamed to Splint! Things are really coming together now.
 
 ### New Rules
@@ -415,32 +420,7 @@ Renamed to Splint! Things are really coming together now.
 - Rename `lint/with-meta-vary-meta` to `style/prefer-vary-meta`.
 - Rename `lint/thread-macro-no-arg` to `lint/redundant-call`.
 
-## [v0.1] - 2023-02-16
+## v0.1 - 2023-02-16
 Initial release of `spat`, announcement on Clojurian Slack and bbin installation set up. Contains working pattern matching system, a bunch of rules, and a simple runner.
 
 [edamame]: https://github.com/borkdude/edamame
-
-[Unreleased]: https://github.com/noahtheduke/splint/compare/v1.8.0...HEAD
-[v1.8.0]: https://github.com/noahtheduke/splint/compare/v1.7.0...v1.8.0
-[v1.7.0]: https://github.com/noahtheduke/splint/compare/v1.6.1...v1.7.0
-[v1.6.1]: https://github.com/noahtheduke/splint/compare/v1.6.0...v1.6.1
-[v1.6.0]: https://github.com/noahtheduke/splint/compare/v1.5.0...v1.6.0
-[v1.5.0]: https://github.com/noahtheduke/splint/compare/v1.4.1...v1.5.0
-[v1.4.1]: https://github.com/noahtheduke/splint/compare/v1.4.0...v1.4.1
-[v1.4.0]: https://github.com/noahtheduke/splint/compare/v1.3.2...v1.4.0
-[v1.3.2]: https://github.com/noahtheduke/splint/compare/v1.3.1...v1.3.2
-[v1.3.1]: https://github.com/noahtheduke/splint/compare/v1.3.0...v1.3.1
-[v1.3.0]: https://github.com/noahtheduke/splint/compare/v1.2.4...v1.3.0
-[v1.2.4]: https://github.com/noahtheduke/splint/compare/v1.2.3...v1.2.4
-[v1.2.3]: https://github.com/noahtheduke/splint/compare/v1.2.2...v1.2.3
-[v1.2.2]: https://github.com/noahtheduke/splint/compare/v1.2.1...v1.2.2
-[v1.2.1]: https://github.com/noahtheduke/splint/compare/v1.2.0...v1.2.1
-[v1.2.0]: https://github.com/noahtheduke/splint/compare/v1.1.1...v1.2.0
-[v1.1.1]: https://github.com/noahtheduke/splint/compare/v1.1.0...v1.1.1
-[v1.1.0]: https://github.com/noahtheduke/splint/compare/v1.0.1...v1.1.0
-[v1.0.1]: https://github.com/noahtheduke/splint/compare/v1.0...v1.0.1
-[v1.0]: https://github.com/noahtheduke/splint/compare/v0.1.119...v1.0
-[v0.1.119]: https://github.com/noahtheduke/splint/compare/0.1.85...v0.1.119
-[v0.1.85]: https://github.com/noahtheduke/splint/compare/v0.1.69...v0.1.85
-[v0.1.69]: https://github.com/noahtheduke/splint/compare/v0.1...v0.1.69
-[v0.1]: https://github.com/NoahTheDuke/splint/tree/v0.1

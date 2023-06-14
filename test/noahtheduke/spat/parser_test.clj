@@ -7,11 +7,11 @@
     [expectations.clojure.test :refer [defexpect expect]]
     [matcher-combinators.matchers :refer [absent]]
     [matcher-combinators.test :refer [match?]]
-    [noahtheduke.spat.parser :as parser :refer [parse-string parse-string-all]]))
+    [noahtheduke.splint.test-helpers :refer [parse-string parse-string-all]]))
 
 (defexpect unknown-tagged-literals-test
-  '[(splint/tagged-literal (sql/raw [1 2 3]))
-    (splint/tagged-literal (unknown [4]))]
+  '[{splint/tagged-literal (sql/raw [1 2 3])}
+    {splint/tagged-literal (unknown [4])}]
   (parse-string-all "#sql/raw [1 2 3] #unknown [4]"))
 
 (defexpect auto-resolve-kw-test

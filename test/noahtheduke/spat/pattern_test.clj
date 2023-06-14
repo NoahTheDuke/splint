@@ -5,8 +5,8 @@
 (ns noahtheduke.spat.pattern-test
   (:require
     [expectations.clojure.test :refer [defexpect expect from-each expecting]]
-    [noahtheduke.spat.parser :refer [parse-string]]
-    [noahtheduke.spat.pattern :as sut]))
+    [noahtheduke.spat.pattern :as sut]
+    [noahtheduke.splint.test-helpers :refer [parse-string]]))
 
 (defexpect simple-type-test
   (doseq [[input t] '[[nil :nil]

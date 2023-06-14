@@ -7,7 +7,7 @@
   (:require
     [clojure.java.io :as io]
     [clojure.string :as str]
-    [noahtheduke.spat.parser :refer [parse-string-all]]
+    [noahtheduke.spat.parser :refer [parse-file]]
     [noahtheduke.spat.pattern :refer [simple-type]]
     [noahtheduke.splint.cli :refer [validate-opts]]
     [noahtheduke.splint.config :refer [load-config spit-config default-config]]
@@ -162,9 +162,9 @@
 
 (defn parse-and-check-file
   "Parse the given file and then check each form."
-  [ctx rules-by-type {:keys [ext features ^File file contents]}]
+  [ctx rules-by-type {:keys [ext ^File file contents] :as file-obj}]
   (try
-    (when-let [parsed-file (parse-string-all contents features)]
+    (when-let [parsed-file (parse-file file-obj)]
       (let [ctx (-> ctx
                     (update :checked-files swap! conj file)
                     (assoc :ext ext)
@@ -200,9 +200,13 @@
        (pmap #(parse-and-check-file ctx rules-by-type (slurp-file %)))
        (dorun)))
 
-(defn check-files-serial [ctx rules-by-type files]
-  (let [xf (map #(parse-and-check-file ctx rules-by-type (slurp-file %)))]
-    (transduce xf (constantly nil) nil files)))
+(defn check-files-serial [ctx rules-by-type ^clojure.lang.Indexed files]
+  (let [cnt (count files)]
+    (loop [idx (int 0)]
+      (when (< idx cnt)
+        (let [file (.nth files idx)]
+          (parse-and-check-file ctx rules-by-type (slurp-file file))
+          (recur (unchecked-inc idx)))))))
 
 (defn check-files!
   "Call into the relevant `check-path-X` function, depending on the given config."

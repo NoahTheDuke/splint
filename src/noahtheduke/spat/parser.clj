@@ -23,14 +23,19 @@
     (vary-meta obj assoc :spat/defn-form defn-form)
     obj))
 
-(defn make-edamame-opts [features ns-state]
+(defn make-edamame-opts [{:keys [features ext ns-state]
+                          :or {ns-state (atom {})}}]
   {:all true
    :row-key :line
    :col-key :column
    :end-location true
    :features features
    :read-cond :allow
-   :readers (fn reader [r] (fn reader-value [v] (list 'splint/tagged-literal (list r v))))
+   :readers (fn reader [r]
+              (fn reader-value [v]
+                (let [tag-meta {:ext ext}
+                      tag (vary-meta 'splint/tagged-literal merge tag-meta)]
+                  {tag (list r v)})))
    :auto-resolve (fn auto-resolve [ns-str]
                    (if-let [resolved-ns (get-in @ns-state [:aliases ns-str])]
                      resolved-ns
@@ -87,10 +92,6 @@
    ; ~@(map inc [1 2 3])
    :unquote-splicing (fn [expr] (list 'splint/unquote-splicing expr))})
 
-(defn parse-string
-  ([s] (parse-string s #{:clj}))
-  ([s features] (e/parse-string s (make-edamame-opts features (atom {})))))
-
-(defn parse-string-all
-  ([s] (parse-string-all s #{:clj}))
-  ([s features] (e/parse-string-all s (make-edamame-opts features (atom {})))))
+(defn parse-file
+  [file-obj]
+  (e/parse-string-all (:contents file-obj) (make-edamame-opts file-obj)))

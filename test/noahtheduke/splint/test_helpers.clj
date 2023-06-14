@@ -16,7 +16,8 @@
     [noahtheduke.splint.dev :as dev]
     [noahtheduke.splint.runner :refer [run-impl]]
     [clojure.java.io :as io]
-    [clojure.string :as str])
+    [clojure.string :as str]
+    [noahtheduke.spat.parser :refer [parse-file]])
   (:import
     (java.io File)))
 
@@ -75,3 +76,13 @@
                      :s any?
                      :config (s/? any?))
         :ret any?)
+
+(defn parse-string-all
+  "Wrapper around [[parse-file]] to consume a string instead of a file"
+  [s]
+  (parse-file {:ext :clj :features #{:clj} :contents s}))
+
+(defn parse-string
+  "Wrapper around [[parse-file]] to consume a string and return the first form"
+  [s]
+  (first (parse-string-all s)))

@@ -64,4 +64,5 @@
                        config-count (:count config)
                        chosen-style (:chosen-style config)]
                    (->> (:arglists defn-form)
-                        (keep #(build-diagnostic ctx rule config-count chosen-style %))))))})
+                        (keep #(build-diagnostic ctx rule config-count chosen-style %))
+                        (into [])))))})

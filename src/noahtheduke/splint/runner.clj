@@ -7,6 +7,7 @@
   (:require
     [clojure.java.io :as io]
     [clojure.string :as str]
+    [noahtheduke.clojure-ext.core :refer [mapv* pmap* run!*]]
     [noahtheduke.spat.parser :refer [parse-file]]
     [noahtheduke.spat.pattern :refer [simple-type]]
     [noahtheduke.splint.cli :refer [validate-opts]]
@@ -17,7 +18,6 @@
   (:import
     (clojure.lang ExceptionInfo)
     (java.io File)
-    (java.util.concurrent Executors Future)
     (noahtheduke.splint.diagnostic Diagnostic)))
 
 (set! *warn-on-reflection* true)
@@ -71,30 +71,27 @@
         nil
         patterns))))
 
-(defn check-and-accumulate
-  [ctx form acc rule]
-  (try
-    (if (-> rule :config :enabled)
-      (let [result (check-rule ctx rule form)]
-        (if (nil? result)
-          acc
-          (if (sequential? result)
-            (into acc result)
-            (conj acc result))))
-      acc)
-    (catch Exception ex
-      (conj acc (runner-error->diagnostic
-                  (exception->ex-info ex {:form form
-                                          :rule-name (:full-name rule)
-                                          :filename (:filename ctx)}))))))
-
 (defn check-all-rules-of-type
   "For each rule: if the rule is enabled, call `check-rule`.
   If `check-rule` returns a non-nil result, add or append it to the accumulator.
   Otherwise, return the accumulator."
   [ctx rules form]
   (reduce
-    (fn [acc rule] (check-and-accumulate ctx form acc rule))
+    (fn [acc rule]
+      (try
+        (if (-> rule :config :enabled)
+          (let [result (check-rule ctx rule form)]
+            (if (nil? result)
+              acc
+              (if (sequential? result)
+                (into acc result)
+                (conj acc result))))
+          acc)
+        (catch Exception ex
+          (conj acc (runner-error->diagnostic
+                      (exception->ex-info ex {:form form
+                                              :rule-name (:full-name rule)
+                                              :filename (:filename ctx)}))))))
     nil
     rules))
 
@@ -114,8 +111,8 @@
       (update-vals
         rules-by-type
         (fn [rules]
-          (mapv (fn [rule] (assoc-in rule [:config :enabled] false))
-                rules)))
+          (mapv* (fn [rule] (assoc-in rule [:config :enabled] false))
+                 rules)))
       ;; parse list of disabled genres and specific rules
       (let [{genres true specific-rules false} (group-by simple-symbol? disabled-rules)
             genres (into #{} (map str) genres)
@@ -123,7 +120,7 @@
         (update-vals
           rules-by-type
           (fn [rules]
-            (mapv
+            (mapv*
               (fn [rule]
                 (let [genre (:genre rule)
                       rule-name (:full-name rule)]
@@ -145,18 +142,16 @@
     ;; Can't recur in non-seqable forms
     (case form-type
       :list (when-not (= 'quote (first form))
-              (run! #(check-and-recur ctx rules-by-type filename form %) form))
+              (run!* #(check-and-recur ctx rules-by-type filename form %) form))
       ;; There is currently no need for checking MapEntry,
       ;; so check each individually.
-      :map (reduce-kv
-             (fn [_ k v]
-               (check-and-recur ctx rules-by-type filename form k)
-               (check-and-recur ctx rules-by-type filename form v)
-               nil)
-             nil
+      :map (run!*
+             (fn [kv]
+               (check-and-recur ctx rules-by-type filename form (key kv))
+               (check-and-recur ctx rules-by-type filename form (val kv)))
              form)
       (:set :vector)
-      (run! #(check-and-recur ctx rules-by-type filename form %) form)
+      (run!* #(check-and-recur ctx rules-by-type filename form %) form)
       ; else
       nil)
     nil))
@@ -175,7 +170,7 @@
         (when-let [file-rules (:file rules-by-type)]
           (check-form ctx file-rules parsed-file))
         ;; Step over each top-level form (parent-form is nil)
-        (run! #(check-and-recur ctx rules-by-type file nil %) parsed-file)
+        (run!* #(check-and-recur ctx rules-by-type file nil %) parsed-file)
         nil))
     (catch Exception ex
       (let [data (ex-data ex)]
@@ -196,28 +191,11 @@
 (defn slurp-file [file-obj]
   (assoc file-obj :contents (slurp (:file file-obj))))
 
-(defn ->parse-and-check-task
-  ^Callable [ctx rules-by-type file]
-  (reify Callable
-    (call [_]
-      (parse-and-check-file ctx rules-by-type (slurp-file file)))))
-
 (defn check-files-parallel [ctx rules-by-type files]
-  (let [thread-count (+ 2 (.availableProcessors (Runtime/getRuntime)))
-        executor (Executors/newFixedThreadPool thread-count)
-        futures (mapv #(.submit executor (->parse-and-check-task ctx rules-by-type %)) files)
-        cnt (count futures)]
-    (loop [idx 0]
-      (when (< idx cnt)
-        (.get ^Future (nth futures idx))
-        (recur (unchecked-inc idx))))))
+  (pmap* #(parse-and-check-file ctx rules-by-type (slurp-file %)) files))
 
 (defn check-files-serial [ctx rules-by-type files]
-  (let [cnt (count files)]
-    (loop [idx (int 0)]
-      (when (< idx cnt)
-        (parse-and-check-file ctx rules-by-type (slurp-file (nth files idx)))
-        (recur (unchecked-inc idx))))))
+  (mapv* #(parse-and-check-file ctx rules-by-type (slurp-file %)) files))
 
 (defn check-files!
   "Call into the relevant `check-path-X` function, depending on the given config."
@@ -288,9 +266,9 @@
   [ctx files start-time]
   (let [all-diagnostics @(:diagnostics ctx)
         grouped-diagnostics (group-by (juxt :filename :line :column :rule-name) all-diagnostics)
-        filtered-diagnostics (mapv first (vals grouped-diagnostics))
+        filtered-diagnostics (mapv* (comp first val) grouped-diagnostics)
         checked-files (into [] (distinct) @(:checked-files ctx))
-        file-strs (mapv str files)
+        file-strs (mapv* str files)
         total-time (int (- (System/currentTimeMillis) start-time))]
     {:diagnostics filtered-diagnostics
      :files file-strs
@@ -329,4 +307,8 @@
         results))))
 
 (comment
-  (run ["--silent" "--no-parallel" "corpus/arglists.clj"]))
+  (do (require '[clj-async-profiler.core :as prof])
+      (prof/profile
+        (run ["--silent" "--no-parallel" "../netrunner/src"]))
+      nil)
+  )

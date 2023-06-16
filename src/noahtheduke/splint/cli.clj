@@ -8,7 +8,7 @@
     [clojure.pprint :as pp]
     [clojure.string :as str]
     [clojure.tools.cli :as cli]
-    [clojure.walk :as walk]
+    [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]
     [noahtheduke.splint.config :refer [default-config find-local-config load-config splint-version]]))
 
 (def cli-options
@@ -44,7 +44,7 @@
      :ok true}))
 
 (defn pick-visible [config]
-  (walk/postwalk
+  (postwalk*
     (fn [obj]
       (if (and (map? obj) (contains? obj :enabled))
         (select-keys obj [:enabled :chosen-style])

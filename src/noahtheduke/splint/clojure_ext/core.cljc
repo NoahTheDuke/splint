@@ -3,6 +3,8 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 (ns noahtheduke.splint.clojure-ext.core
+  (:require
+    [noahtheduke.spat.pattern :refer [simple-type]])
   (:import
     (java.util.concurrent Executors Future)
     #?@(:bb []
@@ -141,3 +143,41 @@
     (user/quick-bench
       (pmap* (fn [_] (Thread/sleep 100)) coll))
     nil))
+
+(defn walk*
+  [inner outer form]
+  (case (simple-type form)
+    (:nil :boolean :char :number :string :keyword :symbol) (outer form)
+    :list (with-meta (outer (->list (mapv* inner form))) (meta form))
+    :map (with-meta
+           (outer
+             (->> form
+                  (reduce-kv
+                    (fn [m k v]
+                      (assoc! m (inner k) (inner v)))
+                    (transient {}))
+                  (persistent!)))
+           (meta form))
+    :set (with-meta (outer (into #{} (map inner) form)) (meta form))
+    :vector (with-meta (outer (mapv* inner form)) (meta form))
+    ; else
+    (throw (ex-info "Unimplemented type: " {:type (simple-type form)
+                                            :form form}))))
+
+(defn postwalk*
+  "More efficient and meta-preserving clojure.walk/postwalk.
+  Only handles types returned from simple-type.
+  All ISeqs return concrete lists.
+
+  (clojure.walk/postwalk identity big-map) => 72 us
+  (postwalk* identity big-map) => 25 us"
+  [f form]
+  (walk* #(postwalk* f %) f form))
+
+(comment
+  (let [m {:a 1 :b 2 :c 3 :d {:a {:a 1 :b 2 :c 3 :d {:a {:a {:a 1, :b {:a 1, :b 2, :c 3, :d 4, :e 5, :f 6}, :c 3, :d 4, :e 5, :f 6} :b 2 :c 3 :d 4 :e 5 :f {:a {:a 1 :b {:a 1, :b 2, :c 3, :d 4, :e 5, :f 6} :c {:a 1, :b 2, :c 3, :d 4, :e 5, :f 6} :d 4 :e 5 :f 6} :b 2 :c 3 :d 4 :e 5 :f {:a {:a {:a 1 :b 2 :c 3 :d {:a 1, :b 2, :c 3, :d 4, :e 5, :f {:a 1, :b 2, :c 3, :d 4, :e 5, :f 6}} :e 5 :f 6} :b {:a 1, :b 2, :c 3, :d 4, :e 5, :f 6} :c 3 :d 4 :e 5 :f 6} :b 2 :c {:a 1 :b 2 :c {:a 1 :b 2 :c {:a {:a 1, :b 2, :c 3, :d 4, :e 5, :f 6} :b 2 :c 3 :d 4 :e 5 :f {:a 1, :b 2, :c 3, :d 4, :e 5, :f 6}} :d 4 :e 5 :f 6} :d 4 :e {:a 1 :b 2 :c 3 :d {:a {:a 1, :b 2, :c {:a 1, :b 2, :c 3, :d 4, :e 5, :f 6}, :d 4, :e 5, :f 6} :b 2 :c 3 :d 4 :e 5 :f 6} :e 5 :f 6} :f 6} :d 4 :e 5 :f {:a 1, :b 2, :c 3, :d 4, :e 5, :f 6}}}} :b 2 :c 3 :d 4 :e 5 :f 6} :e 5 :f 6} :b 2 :c 3 :d 4 :e {:a 1, :b 2, :c 3, :d 4, :e 5, :f {:a 1, :b 2, :c 3, :d 4, :e 5, :f 6}} :f 6} :e 5 :f 6}]
+    (require '[clojure.walk])
+    (user/quick-bench (clojure.walk/postwalk identity m))
+    (flush)
+    (user/quick-bench (postwalk* identity m))
+    ))

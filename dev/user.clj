@@ -7,12 +7,18 @@
     [clj-java-decompiler.core :as decompiler]
     [clojure.tools.namespace.repl :as tns]
     [criterium.core :as criterium]
-    [taoensso.tufte :as tufte]
-    [noahtheduke.splint.dev]))
+    [noahtheduke.splint.dev]
+    [potemkin :refer [import-vars]]
+    [taoensso.tufte :as tufte]))
 
-(defn refresh-all [& opts] (apply tns/refresh-all opts))
-(defmacro decompile [form] `(decompiler/decompile ~form))
-(defmacro quick-bench [expr & opts] `(criterium/quick-bench ~expr ~@opts))
-(defmacro bench [expr & opts] `(criterium/bench ~expr ~@opts))
-(defmacro p [id & body] `(tufte/p ~id ~@body))
-(defmacro profile [opts & body] `(tufte/profile ~opts ~@body))
+(import-vars
+  [clojure.tools.namespace.repl
+   refresh-all]
+  [clj-java-decompiler.core
+   decompile]
+  [criterium.core
+   quick-bench
+   bench]
+  [taoensso.tufte
+   p
+   profile])

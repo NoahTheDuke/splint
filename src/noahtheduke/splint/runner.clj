@@ -7,10 +7,10 @@
   (:require
     [clojure.java.io :as io]
     [clojure.string :as str]
-    [noahtheduke.clojure-ext.core :refer [mapv* pmap* run!*]]
     [noahtheduke.spat.parser :refer [parse-file]]
     [noahtheduke.spat.pattern :refer [simple-type]]
     [noahtheduke.splint.cli :refer [validate-opts]]
+    [noahtheduke.splint.clojure-ext.core :refer [mapv* pmap* run!*]]
     [noahtheduke.splint.config :refer [load-config spit-config default-config]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.printer :refer [print-results]]

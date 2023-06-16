@@ -5,7 +5,11 @@
 (ns noahtheduke.splint.printer
   (:require
     [clojure.data.json :as json]
-    [clojure.pprint :as pp]))
+    [clojure.pprint :as pp]
+    [noahtheduke.splint.replace :refer [revert-splint-reader-macros]]))
+
+(defmacro print-form [form]
+  `(revert-splint-reader-macros ~form))
 
 (defn print-find-dispatch [output _diagnostic] output)
 
@@ -15,10 +19,10 @@
   (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)
   (newline)
   (when form
-    (pp/pprint form))
+    (pp/pprint (print-form form)))
   (when alt
     (println "Consider using:")
-    (pp/pprint alt))
+    (pp/pprint (print-form alt)))
   (newline))
 
 (defmethod print-find "simple" [_ {:keys [filename rule-name line column message]}]
@@ -39,7 +43,7 @@
   (newline)
   (when form
     (println "```clojure")
-    (pp/pprint form)
+    (pp/pprint (print-form form))
     (println "```")
     (newline))
   (when alt

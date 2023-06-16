@@ -9,9 +9,7 @@
   analyzed code. It has the following definition:
 
   (defrecord Diagnostic
-    [rule-name form message alt line column end-row end-col filename])"
-  (:require
-    [noahtheduke.splint.replace :refer [revert-splint-reader-macros]]))
+    [rule-name form message alt line column end-row end-col filename])")
 
 (defrecord Diagnostic [rule-name form message alt line column end-row end-col filename])
 
@@ -19,15 +17,24 @@
   "Create and return a new diagnostic."
   ([ctx rule form] (->diagnostic ctx rule form nil))
   ([ctx rule form {:keys [replace-form message filename]}]
-   (let [form-meta (meta form)
-         message (or message (:message rule))]
+   (let [form-meta (meta form)]
      (->Diagnostic
        (:full-name rule)
-       (revert-splint-reader-macros form)
-       message
-       (revert-splint-reader-macros replace-form)
+       form
+       (or message (:message rule))
+       replace-form
        (:line form-meta)
        (:column form-meta)
        (:end-row form-meta)
        (:end-col form-meta)
        (or filename (:filename ctx))))))
+
+(comment
+  (let [ctx {:filename "adsf"}
+        rule {:full-name 'style/defn-fn
+              :message "message"}
+        form ^{:line 1 :column 2 :end-row 3 :end-col 4} '(1 2 3)
+        opts {:message "other"}]
+    (user/quick-bench
+      (->diagnostic ctx rule form opts)
+      )))

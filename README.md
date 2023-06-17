@@ -45,11 +45,11 @@ sys     0m2.995s
 
 $ time splint .
 ...
-Linting took 10550ms, 2483 style warnings
+Linting took 4606ms, 749 style warnings
 
-real    0m10.847s
-user    0m54.286s
-sys     0m0.522s
+real    0m6.891s
+user    0m37.746s
+sys     0m0.419s
 ```
 
 ## License

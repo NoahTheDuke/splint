@@ -30,3 +30,7 @@ $ bbin install io.github.noahtheduke/splint
        :sha "..."},
  :lib io.github.noahtheduke/splint}
 ```
+
+## Minimum Clojure version
+
+Splint supports Clojure 1.11+. If you wish to use Splint in a project targeting an earlier version, you'll have to add `org.clojure/clojure {:mvn/version "1.11.1"}` to the `extra-deps` in the alias.

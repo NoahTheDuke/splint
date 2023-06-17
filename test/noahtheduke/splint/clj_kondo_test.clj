@@ -67,8 +67,7 @@
 
 (defexpect ^:integration clj-kondo-test
   (let [clj-kondo (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2023.05.26")
-        results (run-impl (System/currentTimeMillis)
-                          {:silent true :parallel false}
+        results (run-impl {:silent true :parallel false}
                           [clj-kondo]
                           all-enabled-config)]
     (expect

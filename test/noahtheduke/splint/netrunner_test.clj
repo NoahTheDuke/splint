@@ -68,7 +68,6 @@
 (defexpect ^:integration netrunner-test
   (let [netrunner (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "114")
         results (runner/run-impl
-                  (System/currentTimeMillis)
                   {:silent true :parallel false}
                   [netrunner]
                   all-enabled-config)]

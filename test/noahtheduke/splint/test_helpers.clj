@@ -60,9 +60,8 @@
   ([path] (check-all path nil))
   ([path config] (check-all path config nil))
   ([path config options]
-   (let [start-time (System/currentTimeMillis)
-         config (conj {:dev true} (merge-config @dev/dev-config config))
-         results (run-impl start-time options path config)]
+   (let [config (conj {:dev true} (merge-config @dev/dev-config config))
+         results (run-impl options path config)]
      (seq (:diagnostics results)))))
 
 (defmacro expect-match

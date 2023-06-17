@@ -30,7 +30,7 @@
    ["-v" "--version" "Print version information."]])
 
 (defn help-message
-  [summary]
+  [specs]
   (let [lines [(splint-version)
                ""
                "Usage:"
@@ -38,7 +38,7 @@
                "  splint [options] -- [path...]"
                ""
                "Options:"
-               summary
+               (#'cli/summarize specs)
                ""]]
     {:exit-message (str/join \newline lines)
      :ok true}))
@@ -94,7 +94,8 @@
 
   :ok is false if given invalid options or an option is provided after paths."
   [args]
-  (let [{:keys [arguments options errors summary]} (cli/parse-opts args cli-options :strict true)]
+  (let [{:keys [arguments options errors summary]}
+        (cli/parse-opts args cli-options :strict true :summary-fn identity)]
     (cond
       (:help options) (help-message summary)
       (:version options) {:exit-message (splint-version) :ok true}

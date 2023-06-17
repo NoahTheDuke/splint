@@ -127,8 +127,7 @@
   (doall (pmap (fn [_] (Thread/sleep 100)) coll)) => 3.34 secs
   (pmap* (fn [_] (Thread/sleep 100)) coll) => 202 ms"
   [f coll]
-  (let [;thread-count (+ 2 (.availableProcessors (Runtime/getRuntime)))
-        executor (Executors/newCachedThreadPool)
+  (let [executor (Executors/newCachedThreadPool)
         futures (mapv #(.submit executor (reify Callable (call [_] (f %)))) coll)
         ret (mapv #(.get ^Future %) futures)]
     (.shutdownNow executor)

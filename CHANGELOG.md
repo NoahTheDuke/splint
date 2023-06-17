@@ -3,8 +3,20 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Added
+
+- Implemented faster/more efficient versions of Clojure standard library functions:
+  - `->list`: concrete list building instead of apply . Useful anywhere a lazy-seq might be returned otherwise. seq/vec input: 40/43 us -> 28/15 us
+  - `mapv*`: `mapv` but short-circuits empty input and uses `object-array`. Still unsure of this one. 36 us -> 36 us
+  - `run!*`: `run!` but short-circuits empty input and uses `.iterator` to perform the side-effects. Does not support `reduced`. 7 us -> 950 ns
+  - `pmap*`: Avoids lazy-seq overhead and relies on Java's built-in Executors. 3.34 s -> 202 ms
+  - `walk*` and `postwalk*`: Primarily useful in `replace`, but may prove useful otherwise. Only supports `simple-type` defined types. 72 us -> 25 us
+
+### Changed
+
 - Move `spat.parser/parse-string` and `spat.parser/parse-string-all` into the test-helper namespace, and replace with `parse-file` which accepts the `file-obj` map.
 - Parse data reader/tagged literals as maps instead of lists, and put the extension (dialect) into the symbol's metadata.
+- Defer building cli summary until needed.
 
 ## v1.9.0
 

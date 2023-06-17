@@ -26,6 +26,8 @@ For speed and simplicity, Splint doesn't run any code, it only works on the prov
 
 clj-kondo performs lexical analysis and can output usage and binding information, such as unused or incorrectly defined vars. At this time, Splint makes no such efforts. It is only focused on code shape, not code intent or meaning.
 
+Versions are not semantic, they are incremental. Splint is not meant to be infrastructure, so don't rely on it like infrastructure; it is a helpful development tool. It should not be relied on as a library. I make no guarantees about public API, visibility of functions, consistency of data shape, or otherwise. I hope to maintain consistent `json` and `edn` output so users can expect that to stay the same, but everything inside of Splint should be considered implementation detail.
+
 ## Speed comparison
 
 ```text

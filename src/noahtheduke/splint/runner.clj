@@ -7,7 +7,7 @@
   (:require
     [clojure.java.io :as io]
     [clojure.string :as str]
-    [noahtheduke.spat.parser :refer [parse-file]]
+    [noahtheduke.splint.parser :refer [parse-file]]
     [noahtheduke.spat.pattern :refer [simple-type]]
     [noahtheduke.splint.cli :refer [validate-opts]]
     [noahtheduke.splint.clojure-ext.core :refer [mapv* pmap* run!*]]

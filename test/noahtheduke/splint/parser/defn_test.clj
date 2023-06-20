@@ -2,13 +2,13 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.spat.parser.defn-test
+(ns noahtheduke.splint.parser.defn-test
   (:require
     [clojure.java.io :as io]
     [expectations.clojure.test :refer [defexpect expect]]
     [matcher-combinators.test :refer [match?]]
     [noahtheduke.splint.test-helpers :refer [parse-string-all]]
-    [noahtheduke.spat.parser.defn :as sut]))
+    [noahtheduke.splint.parser.defn :as sut]))
 
 (defexpect parse-defn-arglist-metadata-test
   (expect

@@ -17,7 +17,7 @@
     [noahtheduke.splint.runner :refer [run-impl]]
     [clojure.java.io :as io]
     [clojure.string :as str]
-    [noahtheduke.spat.parser :refer [parse-file]])
+    [noahtheduke.splint.parser :refer [parse-file]])
   (:import
     (java.io File)))
 

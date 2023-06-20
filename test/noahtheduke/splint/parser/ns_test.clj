@@ -2,9 +2,9 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.spat.parser.ns-test
+(ns noahtheduke.splint.parser.ns-test
   (:require [expectations.clojure.test :refer [defexpect expect from-each]]
-            [noahtheduke.spat.parser.ns :as sut]))
+            [noahtheduke.splint.parser.ns :as sut]))
 
 (defexpect parse-ns-import-test
   (expect

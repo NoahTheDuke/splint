@@ -41,8 +41,8 @@
        (str/join \newline)))
 
 (def adapted-files
-  #{"src/noahtheduke/spat/parser/defn.clj"
-    "src/noahtheduke/spat/parser/ns.clj"
+  #{"src/noahtheduke/splint/parser/defn.clj"
+    "src/noahtheduke/splint/parser/ns.clj"
     "test/noahtheduke/splint/utils/test_runner.clj"})
 
 (defexpect license-test

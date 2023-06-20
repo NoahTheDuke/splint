@@ -3,6 +3,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Breaking
+
+- Moved `spat.parser` to `splint.parser`.
+
 ### Added
 
 - Implemented faster/more efficient versions of Clojure standard library functions:

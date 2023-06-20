@@ -2,7 +2,7 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.spat.parser-test
+(ns noahtheduke.splint.parser-test
   (:require
     [expectations.clojure.test :refer [defexpect expect]]
     [matcher-combinators.matchers :refer [absent]]

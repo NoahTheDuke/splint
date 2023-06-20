@@ -2,12 +2,12 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.spat.parser
+(ns noahtheduke.splint.parser
   (:require
     [edamame.core :as e]
     [edamame.impl.read-fn :as read-fn]
-    [noahtheduke.spat.parser.defn :refer [parse-defn]]
-    [noahtheduke.spat.parser.ns :refer [parse-ns]]))
+    [noahtheduke.splint.parser.defn :refer [parse-defn]]
+    [noahtheduke.splint.parser.ns :refer [parse-ns]]))
 
 (set! *warn-on-reflection* true)
 

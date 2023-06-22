@@ -2,7 +2,7 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.spat.pattern
+(ns noahtheduke.splint.pattern
   (:require
     [clojure.string :as str]))
 
@@ -63,10 +63,14 @@
   "Same as [[simple-type]] except that :symbol and :list provide hints about
   their contents: :symbol can be refined to :pred, :binding, and :rest, and :list
   can be refined to :quote. A refinement can be skipped by adding the metadata
-  `:spat/lit`."
+  `:splint/lit`."
   [sexp _form _retval]
-  (let [type (simple-type sexp)]
-    (if (some-> sexp meta :spat/lit)
+  (let [type (simple-type sexp)
+        smeta (meta sexp)]
+    (if (and smeta
+             (or (smeta :splint/lit)
+                 ; legacy
+                 (smeta :spat/lit)))
       type
       (case type
         :symbol (if (= '_ sexp)
@@ -89,8 +93,8 @@
 
 (comment
   (read-dispatch (quote _) nil nil)
-  (read-dispatch (quote ^:spat/lit _) nil nil)
-  (read-dispatch (quote ^:spat/lit &&.) nil nil))
+  (read-dispatch (quote ^:splint/lit _) nil nil)
+  (read-dispatch (quote ^:splint/lit &&.) nil nil))
 
 (defmulti read-form
   "Implementation of the main logic of [[pattern]]. Requires form and retval

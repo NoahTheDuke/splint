@@ -42,7 +42,7 @@
 
 (defexpect parse-ns-ns-test
   (expect
-    '{:current noahtheduke.spat.ns-parser,
+    '{:current noahtheduke.splint.ns-parser,
       :aliases
       {str clojure.string,
        react-dom "react-dom",
@@ -56,7 +56,7 @@
        ArrayList java.lang.ArrayList,
        java.lang.ArrayList java.lang.ArrayList}}
     (sut/parse-ns
-      '(ns noahtheduke.spat.ns-parser
+      '(ns noahtheduke.splint.ns-parser
          (:refer-clojure :exclude [asdf])
          (:use [clojure.set :as-alias set])
          (:use [clojure.edn :as edn])

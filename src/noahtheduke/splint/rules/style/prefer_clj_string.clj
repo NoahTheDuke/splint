@@ -4,7 +4,7 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.prefer-clj-string
   (:require
-    [noahtheduke.spat.pattern :as p]
+    [noahtheduke.splint.pattern :as p]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.replace :refer [postwalk-splicing-replace]]
     [noahtheduke.splint.rules :refer [defrule]]))

@@ -6,7 +6,7 @@
   (:require
     [clojure.set :as set]
     [noahtheduke.splint.parser.ns :refer [deps-from-libspec]]
-    [noahtheduke.spat.pattern :refer [drop-quote]]
+    [noahtheduke.splint.pattern :refer [drop-quote]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 

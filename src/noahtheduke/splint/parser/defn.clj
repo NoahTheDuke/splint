@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.parser.defn
   (:require
-    [noahtheduke.spat.pattern :refer [drop-quote]]))
+    [noahtheduke.splint.pattern :refer [drop-quote]]))
 
 (set! *warn-on-reflection* true)
 
@@ -38,7 +38,7 @@
         fname (when (symbol? (first fdecl)) (first fdecl))]
     (when fname
       (let [fdecl (next fdecl)
-            m {:spat/name fname}
+            m {:splint/name fname}
             ; docstring
             m (if (string? (first fdecl))
                 (assoc m :doc (first fdecl))

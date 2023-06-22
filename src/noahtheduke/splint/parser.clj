@@ -14,13 +14,13 @@
 (defn attach-import-meta [obj ns-state]
   (if-let [ns_ (and (symbol? obj) (some-> obj namespace symbol))]
     (if-let [fqns (get-in @ns-state [:imports ns_])]
-      (vary-meta obj assoc :spat/import-ns fqns)
+      (vary-meta obj assoc :splint/import-ns fqns)
       obj)
     obj))
 
 (defn attach-defn-meta [obj]
   (if-let [defn-form (parse-defn obj)]
-    (vary-meta obj assoc :spat/defn-form defn-form)
+    (vary-meta obj assoc :splint/defn-form defn-form)
     obj))
 
 (defn make-edamame-opts [{:keys [features ext ns-state]

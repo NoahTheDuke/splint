@@ -6,15 +6,15 @@ The goal of the pattern DSL is ease of writing patterns. Because we can rely on 
 
 ## High-level description
 
-The macro [`noahtheduke.spat.pattern/pattern`] builds the matching function. It takes a quoted form (either a single literal or a collection with arbitrarily nested data) and returns a function that will either match the given shape or return `nil`.
+The macro [`noahtheduke.splint.pattern/pattern`] builds the matching function. It takes a quoted form (either a single literal or a collection with arbitrarily nested data) and returns a function that will either match the given shape or return `nil`.
 
-[`noahtheduke.spat.pattern/pattern`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.spat.pattern#pattern
+[`noahtheduke.splint.pattern/pattern`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.splint.pattern#pattern
 
 ## Types
 
-Inside of a pattern, each element has roughly the same "type" as in Clojure, using [`noahtheduke.spat.pattern/simple-type`]. The table below shows an example of the input, the keyword returned by `simple-type`, the comparison function created by `pattern`, and any additional information.
+Inside of a pattern, each element has roughly the same "type" as in Clojure, using [`noahtheduke.splint.pattern/simple-type`]. The table below shows an example of the input, the keyword returned by `simple-type`, the comparison function created by `pattern`, and any additional information.
 
-[`noahtheduke.spat.pattern/simple-type`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.spat.pattern#simple-type
+[`noahtheduke.splint.pattern/simple-type`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.splint.pattern#simple-type
 
 | Example | `simple-type` | Comparison function | Notes |
 | --- | --- | --- | --- |
@@ -44,7 +44,9 @@ Some symbols are treated differently as part of the Pattern DSL. These are usefu
 
 Predicates and bindings can be combined. The predicate must both start and end with a `%`, the predicate and binding must be separated by a dash `-`, and the binding must start with a `?`: `%keyword?%-?arg` matches any keyword and binds it to `?arg`.
 
-**Note:** Any of the above can be treated as literals instead of DSL symbols by using the metadata `:spat/lit`: `(quote _)` -> `:any`, `(quote ^:spat/lit _)` -> `:symbol`.
+**Note:** Any of the above can be treated as literals instead of DSL symbols by using the metadata `:splint/lit`: `(quote _)` -> `:any`, `(quote ^:splint/lit _)` -> `:symbol`.
+
+**Note:** `:splint/lit` used to be `:spat/lit`. That still works but is deprecated and may stop working at some future date.
 
 ## Maps
 

@@ -11,7 +11,7 @@
     [matcher-combinators.result :as-alias result]
     [clojure.spec.alpha :as s]
     [expectations.clojure.test :refer [expect]]
-    [noahtheduke.spat.pattern :refer [drop-quote]]
+    [noahtheduke.splint.pattern :refer [drop-quote]]
     [noahtheduke.splint.config :refer [merge-config]]
     [noahtheduke.splint.dev :as dev]
     [noahtheduke.splint.runner :refer [run-impl]]

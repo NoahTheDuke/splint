@@ -6,6 +6,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Breaking
 
 - Moved `spat.parser` to `splint.parser`.
+- Moved `spat.pattern` to `splint.pattern`. RIP `spat`, you treated me well for 9 months, but keeping `spat` and `splint` separate is no longer helpful.
 
 ### Added
 
@@ -22,6 +23,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Parse data reader/tagged literals as maps instead of lists, and put the extension (dialect) into the symbol's metadata.
 - Defer building cli summary until needed.
 - Use new `splint.config/slurp-1-edn` to read config files.
+- Changed `:spat/lit` metadata to `:splint/lit`. `:spat/lit` still works for the time being, but no promises.
 
 ## v1.9.0
 

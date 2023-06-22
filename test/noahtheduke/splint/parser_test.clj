@@ -32,12 +32,12 @@
   (expect '(defn example "docstring" [] (+ 1 1))
     (parse-string "(defn example \"docstring\" [] (+ 1 1))"))
   (expect
-    (match? '{:spat/defn-form
-              {:spat/name example
+    (match? '{:splint/defn-form
+              {:splint/name example
                :doc "docstring"
                :arities (([] (+ 1 1)))
                :arglists ([])}}
             (meta (parse-string "(defn example \"docstring\" [] (+ 1 1))"))))
   (expect
-    (match? {:spat/defn-form absent}
+    (match? {:splint/defn-form absent}
             (meta (parse-string "(defn-partial abc (+ 1 2 3))")))))

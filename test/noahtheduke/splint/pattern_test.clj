@@ -2,10 +2,10 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.spat.pattern-test
+(ns noahtheduke.splint.pattern-test
   (:require
     [expectations.clojure.test :refer [defexpect expect from-each expecting]]
-    [noahtheduke.spat.pattern :as sut]
+    [noahtheduke.splint.pattern :as sut]
     [noahtheduke.splint.test-helpers :refer [parse-string]]))
 
 (defexpect simple-type-test
@@ -43,11 +43,11 @@
                        ['&asdf :symbol]
                        ['asdf :symbol]]]
       (expect t (sut/read-dispatch input nil nil))
-      (expect :symbol (sut/read-dispatch (vary-meta input assoc :spat/lit true) nil nil)))
+      (expect :symbol (sut/read-dispatch (vary-meta input assoc :splint/lit true) nil nil)))
     (doseq [[input t] [['(quote (1 2 3)) :quote]
                        ['(1 2 3) :list]]]
       (expect t (sut/read-dispatch input nil nil))
-      (expect :list (sut/read-dispatch (vary-meta input assoc :spat/lit true) nil nil)))))
+      (expect :list (sut/read-dispatch (vary-meta input assoc :splint/lit true) nil nil)))))
 
 (defexpect match-any-test
   (expect {}

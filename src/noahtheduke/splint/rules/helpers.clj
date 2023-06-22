@@ -13,7 +13,7 @@
 
   Instead, attach metadata to the captured rest arg and look for it in rules."
   [sexp]
-  (:noahtheduke.spat.pattern/rest (meta sexp)))
+  (:noahtheduke.splint.pattern/rest (meta sexp)))
 
 (defn deref?? [sexp]
   (case sexp

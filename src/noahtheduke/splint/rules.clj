@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules
   (:require
     [clojure.spec.alpha :as s]
-    [noahtheduke.spat.pattern :as p]
+    [noahtheduke.splint.pattern :as p]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.replace :refer [postwalk-splicing-replace]]))
 

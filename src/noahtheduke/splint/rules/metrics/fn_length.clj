@@ -77,7 +77,7 @@
   "
   {:pattern '(%defn?? &&. ?_args)
    :on-match (fn [ctx rule form bindings]
-               (when-let [defn-form (:spat/defn-form (meta form))]
+               (when-let [defn-form (:splint/defn-form (meta form))]
                  (let [config (get-config ctx rule)]
                    (condp = (:chosen-style config)
                      :defn (defn-size ctx config rule form)

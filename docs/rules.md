@@ -12,7 +12,7 @@ For each file, Splint performs a depth-first descent into every form, starting w
 
 Rules are fairly simple. The call to `defrule` takes a fully qualified name (namespace being the rule's genre), a docstring with examples, and the rule map. The resulting "rule" is both stored in the [`global-rules`] atom as well as defined with `def` as a var in the calling namespace (dropping the rule-name's namespace).
 
-[`global-rules`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.spat.rules#global-rules
+[`global-rules`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.splint.rules#global-rules
 
 ### Rule name and genre
 
@@ -59,9 +59,9 @@ Patterns are described in detail in [Patterns](patterns.md), but to give a brief
 
 For example, if you want to match on an `if` that has `nil` in the else branch, you would write `'(if ?pred ?truthy nil)`. This is converted into a function that checks (in this order): The form is a list. The list is 4 elements long. The first element is the symbol `'if`. The second element can be any value and is bound to the symbol `?pred`. The third element can be any value and is bound to the symbol `?truthy?`. The fourth element is `nil`.
 
-The macro [`noahtheduke.spat.pattern/pattern`] builds the matching function.
+The macro [`noahtheduke.splint.pattern/pattern`] builds the matching function.
 
-[`noahtheduke.spat.pattern/pattern`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.spat.pattern#pattern
+[`noahtheduke.splint.pattern/pattern`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.splint.pattern#pattern
 
 A simple replacement pattern is defined with `:replace`. This can be a quoted form of any shape and will be substituted in when printing diagnostics. It uses some of the same logic as the patterns. For our purposes, the main one is that any symbols that start with a quotation mark is substituted for the value of that symbol in the binding output from the `:pattern`. (The rest of the details are also in [Patterns](patterns.md).)
 

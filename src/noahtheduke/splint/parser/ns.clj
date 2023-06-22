@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.parser.ns
   (:require
-    [noahtheduke.spat.pattern :refer [drop-quote]]))
+    [noahtheduke.splint.pattern :refer [drop-quote]]))
 
 (defmulti derive-aliases first :default 'ns)
 

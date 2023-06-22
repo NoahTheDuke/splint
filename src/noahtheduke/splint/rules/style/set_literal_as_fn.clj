@@ -4,14 +4,14 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.set-literal-as-fn
   (:require
-    [noahtheduke.spat.pattern :refer [simple-type drop-quote]]
+    [noahtheduke.splint.pattern :refer [simple-type drop-quote]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
 (defn literal-or-quote?
-  "Almost everything in spat.pattern/simple? but quoted symbols
+  "Almost everything in splint.pattern/simple? but quoted symbols
   because sets treat symbols as vars.
   #{'a 'b} is good, #{'a b} is bad because b means 'some val'."
   [form]

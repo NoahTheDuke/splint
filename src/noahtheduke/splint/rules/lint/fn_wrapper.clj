@@ -14,7 +14,7 @@
 (defn interop? [sexp]
   (and (symbol? sexp)
        (or (some->> sexp namespace symbol default-import?)
-           (some->> sexp meta :spat/import-ns)
+           (some->> sexp meta :splint/import-ns)
            (str/starts-with? (name sexp) "."))))
 
 (defrule lint/fn-wrapper

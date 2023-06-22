@@ -7,15 +7,30 @@
     [clojure.edn :as edn]
     [clojure.java.io :as io]
     [clojure.string :as str]
-    [noahtheduke.splint.rules :refer [global-rules]]))
+    [noahtheduke.splint.rules :refer [global-rules]])
+  (:import
+    (java.io File FileReader PushbackReader)))
 
 (set! *warn-on-reflection* true)
 
 (def version (delay (str/trim (slurp (io/resource "SPLINT_VERSION")))))
 (defn splint-version [] (str "splint v" @version))
 
+(defn slurp-1-edn
+  "Read a single value from an edn file. Returns nil if file is empty, throws if file contains more than 1 value."
+  [^File file]
+  (let [eof (Object.)
+        file-reader (FileReader. file)]
+    (with-open [rdr (PushbackReader. file-reader)]
+      (let [v (edn/read {:eof eof} rdr)]
+        (when-not (identical? eof v)
+          (if (identical? eof (edn/read {:eof eof} rdr))
+            v
+            (throw (ex-info "edn file has more than 1 value" {:file file
+                                                              :type :config}))))))))
+
 (defn read-default-config []
-  (edn/read-string (slurp (io/resource "config/default.edn"))))
+  (slurp-1-edn (io/file (io/resource "config/default.edn"))))
 
 (def default-config
   (delay (read-default-config)))
@@ -26,7 +41,7 @@
       (if (.exists config)
         {:dir dir
          :file (.getAbsoluteFile config)
-         :local (edn/read-string (slurp config))}
+         :local (slurp-1-edn config)}
         (when-let [parent (.getParentFile dir)]
           (recur parent))))))
 

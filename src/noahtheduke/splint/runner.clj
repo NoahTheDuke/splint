@@ -27,9 +27,9 @@
   (doto (ExceptionInfo. (or (ex-message ex) "") data ex)
     (.setStackTrace (.getStackTrace ex))))
 
-(defn runner-error->diagnostic [^Exception e]
-  (let [message (str/trim (or (ex-message e) ""))
-        data (ex-data e)
+(defn runner-error->diagnostic [^Exception ex]
+  (let [message (str/trim (or (ex-message ex) ""))
+        data (ex-data ex)
         error-msg (str "Splint encountered an error: " message)]
     (->diagnostic
       nil
@@ -292,18 +292,27 @@
 (defn run
   "Convert command line args to usable options, pass to runner, print output."
   [args]
-  (let [{:keys [options paths exit-message ok]} (validate-opts args)]
-    (cond
-      exit-message
-      (do (when-not (:quiet options) (println exit-message))
-          {:exit (if ok 0 1)})
-      (:auto-gen-config options)
-      (let [all-enabled (update-vals @default-config #(assoc % :enabled true))]
-        (spit-config (run-impl options paths all-enabled)))
-      :else
-      (let [{:keys [config diagnostics total-time] :as results} (run-impl options paths)]
-        (print-results config diagnostics total-time)
-        results))))
+  (try
+    (let [{:keys [options paths exit-message ok]} (validate-opts args)]
+      (cond
+        exit-message
+        (do (when-not (:quiet options) (println exit-message))
+            {:exit (if ok 0 1)})
+        (:auto-gen-config options)
+        (let [all-enabled (update-vals @default-config #(assoc % :enabled true))]
+          (spit-config (run-impl options paths all-enabled)))
+        :else
+        (let [{:keys [config diagnostics total-time] :as results} (run-impl options paths)]
+          (print-results config diagnostics total-time)
+          results)))
+    (catch Exception ex
+      (let [data (ex-data ex)]
+        (case (:type data)
+          :config (do (println "Error reading" (str (:file data)))
+                      (println (ex-message ex))
+                      {:exit 1})
+          ; else
+          (throw ex))))))
 
 (comment
   (do (require '[clj-async-profiler.core :as prof])

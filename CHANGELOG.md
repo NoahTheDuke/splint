@@ -21,6 +21,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Move `spat.parser/parse-string` and `spat.parser/parse-string-all` into the test-helper namespace, and replace with `parse-file` which accepts the `file-obj` map.
 - Parse data reader/tagged literals as maps instead of lists, and put the extension (dialect) into the symbol's metadata.
 - Defer building cli summary until needed.
+- Use new `splint.config/slurp-1-edn` to read config files.
 
 ## v1.9.0
 

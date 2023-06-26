@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+if [ -z "$GRAALVM_HOME" ]; then
+    echo 'Please set GRAALVM_HOME'
+    exit 1
+fi
+
+VERSION=$(cat resources/SPLINT_VERSION)
+
+# Ensure Graal native-image program is installed
+"$GRAALVM_HOME/bin/gu" install native-image
+
+rm -rf classes
+mkdir classes
+clojure -M -e "(compile 'noahtheduke.splint)"
+
+"$GRAALVM_HOME/bin/native-image" \
+    -cp "$(clojure -Spath):classes" \
+    -H:Name="splint-$VERSION" \
+    -H:+ReportExceptionStackTraces \
+    -H:IncludeResources="SPLINT_VERSION" \
+    -H:IncludeResources="config/default.edn" \
+    --verbose \
+    --no-fallback \
+    --no-server \
+    "-J-Xmx3g" \
+    noahtheduke.splint
+
+mv "splint-$VERSION" target/
+rm "splint-$VERSION.build_artifacts.txt"

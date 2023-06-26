@@ -9,7 +9,7 @@
     [clojure.string :as str]
     [noahtheduke.splint.rules :refer [global-rules]])
   (:import
-    (java.io File FileReader PushbackReader)))
+    (java.io PushbackReader)))
 
 (set! *warn-on-reflection* true)
 
@@ -18,9 +18,9 @@
 
 (defn slurp-1-edn
   "Read a single value from an edn file. Returns nil if file is empty, throws if file contains more than 1 value."
-  [^File file]
+  [file]
   (let [eof (Object.)
-        file-reader (FileReader. file)]
+        file-reader (io/reader file)]
     (with-open [rdr (PushbackReader. file-reader)]
       (let [v (edn/read {:eof eof} rdr)]
         (when-not (identical? eof v)
@@ -30,7 +30,7 @@
                                                               :type :config}))))))))
 
 (defn read-default-config []
-  (slurp-1-edn (io/file (io/resource "config/default.edn"))))
+  (slurp-1-edn (io/resource "config/default.edn")))
 
 (def default-config
   (delay (read-default-config)))

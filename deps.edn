@@ -7,9 +7,11 @@
         org.clojure/tools.cli {:mvn/version "1.0.219"}
         borkdude/edamame {:mvn/version "1.3.22"}
         camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
+        com.github.clj-easy/graal-build-time {:mvn/version "0.1.4"}
         org.clojure/data.json {:mvn/version "2.4.0"}}
  :aliases
- {:run {:main-opts ["-m" "noahtheduke.splint"]}
+ {:run {:extra-paths ["classes"]
+        :main-opts ["-m" "noahtheduke.splint"]}
   :dev {:extra-paths ["dev"]
         :extra-deps {org.clojure/spec.alpha {:mvn/version "0.3.218"}
                      org.clojure/tools.namespace {:mvn/version "1.4.4"}

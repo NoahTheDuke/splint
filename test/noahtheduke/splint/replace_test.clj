@@ -7,38 +7,6 @@
     [expectations.clojure.test :refer [defexpect expect]]
     [noahtheduke.splint.replace :as sut]))
 
-(defexpect revert-splint-reader-macros-test
-  (expect '(clojure.core/deref ?a)
-    (sut/revert-splint-reader-macros '(splint/deref ?a)))
-  (expect '(clojure.core/deref (?a))
-    (sut/revert-splint-reader-macros '(splint/deref (?a))))
-  (expect '(clojure.core/fn [arg] (+ ?a arg))
-    (sut/revert-splint-reader-macros '(splint/fn [arg] (+ ?a arg))))
-  (expect (list (symbol "#=") '(+ 1 2))
-    (sut/revert-splint-reader-macros '(splint/read-eval (+ 1 2))))
-  (expect '(clojure.core/re-pattern ?a)
-    (sut/revert-splint-reader-macros '(splint/re-pattern ?a)))
-  (expect #(instance? java.util.regex.Pattern %)
-    (sut/revert-splint-reader-macros '(splint/re-pattern "a")))
-  (expect #"a"
-    (str (sut/revert-splint-reader-macros '(splint/re-pattern "a"))))
-  (expect '(var ?a)
-    (sut/revert-splint-reader-macros '(splint/var ?a)))
-  (expect '(var (?a c))
-    (sut/revert-splint-reader-macros '(splint/var (?a c))))
-  (expect (symbol "`?a")
-    (sut/revert-splint-reader-macros '(splint/syntax-quote ?a)))
-  (expect (list (symbol "`") '(+ ?a (clojure.core/unquote b) c#))
-    (sut/revert-splint-reader-macros '(splint/syntax-quote (+ ?a ~b c#))))
-  (expect '(clojure.core/unquote ?a)
-    (sut/revert-splint-reader-macros '(splint/unquote ?a)))
-  (expect '(clojure.core/unquote (?a))
-    (sut/revert-splint-reader-macros '(splint/unquote (?a))))
-  (expect '(clojure.core/unquote-splicing ?a)
-    (sut/revert-splint-reader-macros '(splint/unquote-splicing ?a)))
-  (expect '(clojure.core/unquote-splicing (?a))
-    (sut/revert-splint-reader-macros '(splint/unquote-splicing (?a)))))
-
 (defexpect postwalk-splicing-replace-test
   (expect '(splint/deref b)
     (sut/postwalk-splicing-replace {'?a 'b} '(splint/deref ?a)))

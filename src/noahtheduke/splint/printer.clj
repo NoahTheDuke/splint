@@ -6,7 +6,65 @@
   (:require
     [clojure.data.json :as json]
     [clojure.pprint :as pp]
-    [noahtheduke.splint.replace :refer [revert-splint-reader-macros]]))
+    [noahtheduke.splint.clojure-ext.core :refer [->list postwalk*]]))
+
+(defn- render-deref [[_ sexp]]
+  (list `deref sexp))
+
+(defn- render-fn [[_fn _args sexp]]
+  (symbol (str "#" (with-out-str (print sexp)))))
+
+(defn- render-read-eval [sexp]
+  (symbol (str "#=" (with-out-str (print (fnext sexp))))))
+
+(defn- render-re-pattern [[_ sexp]]
+  (if (string? sexp)
+    (re-pattern (str sexp))
+    (list `re-pattern sexp)))
+
+(defn- render-var [[_ sexp]]
+  (list 'var sexp))
+
+(defn- render-syntax-quote [[_ sexp]]
+  (symbol (str "`" sexp)))
+
+(defn- render-unquote [[_ sexp]]
+  (symbol (str "~" (with-out-str (print sexp)))))
+
+(defn- render-unquote-splicing [[_ sexp]]
+  (symbol (str "~@" (with-out-str (print sexp)))))
+
+(defn- uplift [sexp]
+  (if (seq? sexp)
+    (->> (reduce
+           (fn [acc cur]
+             (if (::uplift (meta cur))
+               (apply conj acc cur)
+               (conj acc cur)))
+           []
+           sexp)
+         (->list))
+    sexp))
+
+(defn revert-splint-reader-macros [replace-form]
+  (postwalk*
+    (fn [sexp]
+      (if (seq? sexp)
+        (if-let [f (case (first sexp)
+                     splint/deref render-deref
+                     splint/fn render-fn
+                     splint/read-eval render-read-eval
+                     splint/re-pattern render-re-pattern
+                     splint/var render-var
+                     splint/syntax-quote render-syntax-quote
+                     splint/unquote render-unquote
+                     splint/unquote-splicing render-unquote-splicing
+                     ; else
+                     nil)]
+          (uplift (f sexp))
+          sexp)
+        sexp))
+    replace-form))
 
 (defmacro print-form [form]
   `(pp/pprint (revert-splint-reader-macros ~form)))

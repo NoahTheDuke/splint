@@ -9,7 +9,9 @@
     [expectations.clojure.test :refer [defexpect expect]]
     [matcher-combinators.test :refer [match?]]
     [noahtheduke.splint.printer :as sut]
-    [noahtheduke.splint.test-helpers :refer [check-all]]))
+    [noahtheduke.splint.test-helpers :refer [check-all]]
+    [noahtheduke.splint.parser :as parser]
+    [clojure.pprint :as pp]))
 
 (def diagnostics
   (check-all (io/file "corpus" "printer_test.clj")
@@ -195,3 +197,12 @@
        " :message \"Use `not=` instead of recreating it.\","
        " :rule-name style/not-eq}"]
       (print-result-lines "edn-pretty"))))
+
+(defexpect special-characters-test
+  (let [f (slurp (io/file "corpus" "special_characters.clj"))
+        parsed (parser/parse-file {:contents f :ext :clj})]
+    (expect (= "[@a\n @(a)\n #(+ 1 %1)\n #=(+ 1 2)\n #\"a\"\n #'a\n #'(a b)\n `a\n `(a b)\n ~a\n ~(a b)\n ~@a\n ~@(a b)]"
+     (->> (sut/revert-splint-reader-macros parsed)
+          (pp/pprint)
+          (with-out-str)
+          (str/trim))))))

@@ -4,71 +4,9 @@
 
 (ns noahtheduke.splint.replace
   (:require
-    [noahtheduke.splint.clojure-ext.core :refer [->list postwalk*]]))
+    [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]))
 
 (set! *warn-on-reflection* true)
-
-(defn- render-deref [[_ sexp]]
-  (list `deref sexp))
-
-(defn- render-fn [sexp]
-  (->list (cons `fn (next sexp))))
-
-(defn- render-read-eval [sexp]
-  (with-meta (->list (cons (symbol "#=") (next sexp)))
-             {::uplift true}))
-
-(defn- render-re-pattern [[_ sexp]]
-  (if (string? sexp)
-    (re-pattern (str sexp))
-    (list `re-pattern sexp)))
-
-(defn- render-var [[_ sexp]]
-  (list 'var sexp))
-
-(defn- render-syntax-quote [sexp]
-  (if (symbol? (second sexp))
-    (symbol (str "`" (second sexp)))
-    (with-meta (->list (cons (symbol "`") (next sexp)))
-               {::uplift true})))
-
-(defn- render-unquote [[_ sexp]]
-  (list `unquote sexp))
-
-(defn- render-unquote-splicing [[_ sexp]]
-  (list `unquote-splicing sexp))
-
-(defn- uplift [sexp]
-  (if (seq? sexp)
-    (->> (reduce
-           (fn [acc cur]
-             (if (::uplift (meta cur))
-               (apply conj acc cur)
-               (conj acc cur)))
-           []
-           sexp)
-         (->list))
-    sexp))
-
-(defn revert-splint-reader-macros [replace-form]
-  (postwalk*
-    (fn [sexp]
-      (if (seq? sexp)
-        (if-let [f (case (first sexp)
-                     splint/deref render-deref
-                     splint/fn render-fn
-                     splint/read-eval render-read-eval
-                     splint/re-pattern render-re-pattern
-                     splint/var render-var
-                     splint/syntax-quote render-syntax-quote
-                     splint/unquote render-unquote
-                     splint/unquote-splicing render-unquote-splicing
-                     ; else
-                     nil)]
-          (uplift (f sexp))
-          sexp)
-        sexp))
-    replace-form))
 
 (defn- splicing-replace [sexp]
   (let [[front-sexp rest-sexp] (split-with #(not= '&&. %) sexp)]

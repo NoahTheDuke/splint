@@ -57,6 +57,7 @@
     style/prefer-clj-string 5
     style/prefer-condp 2
     style/redundant-let 4
+    style/redundant-regex-constructor 9
     style/set-literal-as-fn 24
     style/single-key-in 34
     style/tostring 2
@@ -80,5 +81,5 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 1625 (count (:diagnostics results)))
+    (expect 1634 (count (:diagnostics results)))
     (expect 222 (count (:checked-files results)))))

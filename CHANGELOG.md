@@ -32,6 +32,8 @@ The big feature here is adding support to run `splint` without specifying paths.
 - Changed `:spat/lit` metadata to `:splint/lit`. `:spat/lit` still works for the time being, but no promises.
 - `splint.printer/print-results` now accepts only the `results` object, which should additionally have `:checked-files` and `:total-time`.
 - Output formats `simple`, `full,` and `clj-kondo` now print the number of files checked as well: `"Linting took 1ms, checked 3 files, 3 style warnings"`
+- Moved `splint.replace/revert-splint-reader-macros` into `splint.printer` where it belongs.
+- Rely on undefined behavior in `symbol` to correctly print unprintable special characters by converting sexprs to strings and then converting those to symbols.
 
 ## v1.9.0
 

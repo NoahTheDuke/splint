@@ -34,6 +34,7 @@
   (let [lines [(splint-version)
                ""
                "Usage:"
+               "  splint [options]"
                "  splint [options] [path...]"
                "  splint [options] -- [path...]"
                ""
@@ -101,5 +102,4 @@
       (:version options) {:exit-message (splint-version) :ok true}
       errors (print-errors errors)
       (or (:config options) (:print-config options)) (print-config options)
-      (seq arguments) (validate-paths options arguments)
-      :else (help-message summary))))
+      :else (validate-paths options arguments))))

@@ -7,19 +7,21 @@
     noahtheduke.splint
     noahtheduke.splint.rules.helpers
     matcher-combinators.test
+    [clojure.java.io :as io]
+    [clojure.spec.alpha :as s]
+    [clojure.string :as str]
+    [expectations.clojure.test :refer [expect]]
     [matcher-combinators.core :refer [Matcher]]
     [matcher-combinators.result :as-alias result]
-    [clojure.spec.alpha :as s]
-    [expectations.clojure.test :refer [expect]]
-    [noahtheduke.splint.pattern :refer [drop-quote]]
     [noahtheduke.splint.config :refer [merge-config]]
     [noahtheduke.splint.dev :as dev]
-    [noahtheduke.splint.runner :refer [run-impl]]
-    [clojure.java.io :as io]
-    [clojure.string :as str]
-    [noahtheduke.splint.parser :refer [parse-file]])
+    [noahtheduke.splint.parser :refer [parse-file]]
+    [noahtheduke.splint.pattern :refer [drop-quote]]
+    [noahtheduke.splint.runner :refer [run-impl]])
   (:import
-    (java.io File)))
+    (java.io File)
+    (java.nio.file Files)
+    (java.nio.file.attribute FileAttribute)))
 
 (set! *warn-on-reflection* true)
 
@@ -59,7 +61,10 @@
 (defn check-all
   ([path] (check-all path nil))
   ([path config]
-   (let [config (conj {:dev true} (merge-config @dev/dev-config config))
+   (let [config (conj {:dev true
+                       :clojure-version (or (:clojure-version config)
+                                            *clojure-version*)}
+                      (merge-config @dev/dev-config config))
          results (run-impl path config)]
      (seq (:diagnostics results)))))
 
@@ -84,3 +89,34 @@
   "Wrapper around [[parse-file]] to consume a string and return the first form"
   [s]
   (first (parse-string-all s)))
+
+(defmacro with-temp-files
+  [bindings & body]
+  (let [paths (take-nth 2 (drop 1 bindings))
+        temp-dir (gensym)
+        temp-files (map
+                     (fn [path]
+                       [(gensym)
+                        `(Files/createFile (.toPath (io/file (str ~temp-dir) ~path))
+                                           (into-array FileAttribute []))])
+                     paths)
+        binds (mapcat (fn [b f] [b f])
+                      (take-nth 2 bindings)
+                      (map (fn [[path _]] `(io/file (str ~path)))
+                           temp-files))]
+    `(let [~temp-dir (Files/createTempDirectory
+                       "splint" (into-array FileAttribute []))
+           ~@(mapcat identity temp-files)
+           ~@binds]
+       (try (let [res# (do ~@body)] res#)
+            (finally
+              (doseq [f# ~(mapv first temp-files)]
+                (Files/deleteIfExists f#))
+              (Files/deleteIfExists ~temp-dir))))))
+
+(defmacro print-to-file!
+  "Print "
+  [file & body]
+  `(with-open [~file (io/writer ~file)]
+     (binding [*out* ~file]
+       ~@(map #(list `println %) body))))

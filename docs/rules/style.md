@@ -788,6 +788,8 @@ Use `boolean` if you must return `true` or `false` from an expression.
 | ------------------ | ------------- | --------------- |
 | true               | 0.1.69        | 0.1.69          |
 
+**NOTE**: Requires Clojure version 1.11.0.
+
 Prefer clojure.math to interop.
 
 ### Examples

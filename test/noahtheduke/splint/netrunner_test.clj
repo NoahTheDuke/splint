@@ -69,7 +69,10 @@
   (let [netrunner (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "114")
         results (runner/run-impl
                   [netrunner]
-                  (assoc all-enabled-config :silent true :parallel false))]
+                  (assoc all-enabled-config
+                         :silent true
+                         :parallel false
+                         :clojure-version *clojure-version*))]
     (expect
       (match?
         (m/equals netrunner-diagnostics)

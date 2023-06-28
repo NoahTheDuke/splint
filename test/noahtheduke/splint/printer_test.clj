@@ -16,7 +16,10 @@
              '{naming/single-segment-namespace {:enabled false}}))
 
 (defn print-result-lines [output]
-  (-> (sut/print-results {:output output} diagnostics 0)
+  (-> (sut/print-results {:config {:output output}
+                          :diagnostics diagnostics
+                          :total-time 0
+                          :checked-files (mapv (comp str :filename) diagnostics)})
       (with-out-str)
       (str/split-lines)))
 
@@ -26,7 +29,7 @@
       ["corpus/printer_test.clj:7:1 [style/when-not-call] - Use `when-not` instead of recreating it."
        "corpus/printer_test.clj:7:1 [style/when-do] - Unnecessary `do` in `when` body."
        "corpus/printer_test.clj:8:3 [style/not-eq] - Use `not=` instead of recreating it."
-       "Linting took 0ms, 3 style warnings"]
+       "Linting took 0ms, checked 3 files, 3 style warnings"]
       (print-result-lines "simple"))))
 
 (defexpect printer-output-full-test
@@ -47,7 +50,7 @@
        "Consider using:"
        "(not= 1 1)"
        ""
-       "Linting took 0ms, 3 style warnings"]
+       "Linting took 0ms, checked 3 files, 3 style warnings"]
       (print-result-lines "full"))))
 
 (defexpect printer-output-clj-kondo-test
@@ -56,7 +59,7 @@
       ["corpus/printer_test.clj:7:1: warning: Use `when-not` instead of recreating it."
        "corpus/printer_test.clj:7:1: warning: Unnecessary `do` in `when` body."
        "corpus/printer_test.clj:8:3: warning: Use `not=` instead of recreating it."
-       "Linting took 0ms, 3 style warnings"]
+       "Linting took 0ms, checked 3 files, 3 style warnings"]
       (print-result-lines "clj-kondo"))))
 
 (defexpect printer-output-markdown-test

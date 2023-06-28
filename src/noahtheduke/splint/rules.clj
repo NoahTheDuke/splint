@@ -27,7 +27,8 @@
   * EITHER `:pattern` or `:patterns`,
   * EITHER `:replace` or `:on-match`"
   [rule-name docs opts]
-  (let [{:keys [pattern patterns replace on-match message init-type]} opts]
+  (let [{:keys [pattern patterns replace on-match message init-type
+                min-clojure-version]} opts]
     (assert (not (and pattern patterns))
             "defrule cannot define both :pattern and :patterns")
     (when patterns
@@ -50,6 +51,7 @@
                     :pattern-raw ~(or pattern patterns)
                     :replace-raw ~replace
                     :message ~message
+                    :min-clojure-version ~min-clojure-version
                     :pattern (when ~(some? pattern) (p/pattern ~pattern))
                     :patterns (when ~(some? patterns)
                                 ~(mapv #(list `p/pattern %) patterns))

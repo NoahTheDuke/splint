@@ -44,7 +44,8 @@
               '(%init-arg%-?f ?init-arg (splint/unquote-splicing ?body))]
    :message "Wrap ~@/unquote-splicing in `(let [res# (do ...)] res#)` to avoid unhygenic macro expansion."
    :on-match (fn [ctx rule form {:syms [?f ?init-arg ?body]}]
-               (let [new-form (if ?init-arg
-                                (init-arg-new-form ?f ?init-arg ?body)
-                                (only-body-new-form ?f ?body))]
-                 (->diagnostic ctx rule form {:replace-form new-form})))})
+               (when (symbol? ?body)
+                 (let [new-form (if ?init-arg
+                                  (init-arg-new-form ?f ?init-arg ?body)
+                                  (only-body-new-form ?f ?body))]
+                   (->diagnostic ctx rule form {:replace-form new-form}))))})

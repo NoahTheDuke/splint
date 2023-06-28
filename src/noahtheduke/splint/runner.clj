@@ -11,7 +11,7 @@
     [noahtheduke.splint.pattern :refer [simple-type]]
     [noahtheduke.splint.cli :refer [validate-opts]]
     [noahtheduke.splint.clojure-ext.core :refer [mapv* pmap* run!*]]
-    [noahtheduke.splint.config :refer [load-config spit-config default-config]]
+    [noahtheduke.splint.config :as conf]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.printer :refer [print-results]]
     [noahtheduke.splint.rules :refer [global-rules]])
@@ -111,7 +111,8 @@
       (update-vals
         rules-by-type
         (fn [rules]
-          (mapv* (fn [rule] (assoc-in rule [:config :enabled] false))
+          (mapv* (fn [rule]
+                   (assoc-in rule [:config :enabled] false))
                  rules)))
       ;; parse list of disabled genres and specific rules
       (let [{genres true specific-rules false} (group-by simple-symbol? disabled-rules)
@@ -208,15 +209,35 @@
     :else
     (check-files-serial ctx rules-by-type files)))
 
+(defn support-clojure-version?
+  [config rule]
+  (if-let [{:keys [major minor incremental]} (:min-clojure-version rule)]
+    (let [current-version (:clojure-version config)]
+      (and (if major
+             (<= major (:major current-version))
+             true)
+           (if minor
+             (<= minor (:minor current-version))
+             true)
+           (if incremental
+             (<= incremental (:incremental current-version))
+             true)))
+    true))
+
 (defn prepare-rules [config rules]
   (let [conjv (fnil conj [])]
     (->> config
          (reduce-kv
-           (fn [rules rule-name config]
-             (if (and (map? config)
-                      (contains? config :enabled)
-                      (contains? rules rule-name))
-               (assoc-in rules [rule-name :config] (assoc config :rule-name rule-name))
+           (fn [rules rule-name rule-config]
+             (if (and (map? rule-config)
+                      (contains? rule-config :enabled))
+               (if-let [rule (rules rule-name)]
+                 (let [rule-config (assoc rule-config :rule-name rule-name)
+                       rule-config (if (support-clojure-version? config rule)
+                                     rule-config
+                                     (assoc rule-config :enabled false))]
+                   (assoc-in rules [rule-name :config] rule-config))
+                 rules)
                rules))
            rules)
          (vals)
@@ -230,7 +251,7 @@
   (-> rules
       (assoc :diagnostics (atom []))
       (assoc :checked-files (atom []))
-      (assoc :config (select-keys config [:help :output :parallel :summary :quiet :silent :dev]))))
+      (assoc :config config)))
 
 (defn get-extension [^File file]
   (let [filename (.getName file)
@@ -290,19 +311,29 @@
   (try
     (let [start-time (System/currentTimeMillis)
           {:keys [options paths exit-message ok]} (validate-opts args)
-          config (load-config options)]
+          project-file (conf/read-project-file
+                         (io/file "deps.edn") (io/file "project.clj"))
+          paths (or (not-empty paths) (:paths project-file))
+          config (assoc (conf/load-config options)
+                        :clojure-version (or (:clojure-version project-file)
+                                             *clojure-version*))]
       (cond
         exit-message
         (do (when-not (:quiet options) (println exit-message))
             {:exit (if ok 0 1)})
+        (empty? paths)
+        (do (when-not (:quiet options)
+              (println "splint errors:")
+              (println "Paths must be provided in a project file (project.clj or deps.edn) or as the final arguments when calling. See --help for details."))
+            {:exit 1})
         (:auto-gen-config options)
-        (let [all-enabled (update-vals @default-config #(assoc % :enabled true))]
-          (spit-config (run-impl paths all-enabled)))
+        (let [all-enabled (update-vals @conf/default-config #(assoc % :enabled true))]
+          (conf/spit-config (run-impl paths all-enabled)))
         :else
-        (let [{:keys [config diagnostics] :as results} (run-impl paths config)
+        (let [results (run-impl paths config)
               total-time (int (- (System/currentTimeMillis) start-time))
               results (assoc results :total-time total-time)]
-          (print-results config diagnostics total-time)
+          (print-results results)
           results)))
     (catch Exception ex
       (let [data (ex-data ex)]

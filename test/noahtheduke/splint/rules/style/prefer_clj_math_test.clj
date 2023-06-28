@@ -10,3 +10,7 @@
 (defexpect prefer-clj-math-test
   (expect-match '[{:alt clojure.math/atan}] "(Math/atan 45)")
   (expect-match '[{:alt clojure.math/PI}] "Math/PI"))
+
+(defexpect bad-clojure-version-test
+  (expect-match nil "(Math/atan 45)"
+    {:clojure-version {:major 1 :minor 9}}))

@@ -3,6 +3,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+The big feature here is adding support to run `splint` without specifying paths. Now Splint will read the `deps.edn` or `project.clj` file in the current directory and check the paths in the base definition as well as `:dev` and `:test` aliases/profiles if no path argument is given. Splint still doesn't support specifying paths in `.splint.edn`, nor does it allow for using paths from a project file as well as additional paths when called, but those are planned.
+
 ### Breaking
 
 - Moved `spat.parser` to `splint.parser`.
@@ -16,14 +18,20 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
   - `run!*`: `run!` but short-circuits empty input and uses `.iterator` to perform the side-effects. Does not support `reduced`. 7 us -> 950 ns
   - `pmap*`: Avoids lazy-seq overhead and relies on Java's built-in Executors. 3.34 s -> 202 ms
   - `walk*` and `postwalk*`: Primarily useful in `replace`, but may prove useful otherwise. Only supports `simple-type` defined types. 72 us -> 25 us
+- `splint.config/read-project-file` returns a map of `:clojure-version` and `:paths`, taken from the project file (`deps.edn` or `project.clj`) in the current directory. If no file is found, `:paths` is `nil` and `:clojure-version` is pulled from `*clojure-version*`.
+- `:min-clojure-version` in `defrule`, allowing for rules to specify the minimum version of clojure they require. Rules that are below the supported version are disabled at preparation time and can't be enabled during a run. Acceptable shape is a map of at least one of `:major`, `:minor`, and `:incremental`.
+  - Include this in rule documentation.
+- `test-helpers/with-temp-file` and `test-helpers/print-to-file!` to test file contents.
 
 ### Changed
 
 - Move `spat.parser/parse-string` and `spat.parser/parse-string-all` into the test-helper namespace, and replace with `parse-file` which accepts the `file-obj` map.
 - Parse data reader/tagged literals as maps instead of lists, and put the extension (dialect) into the symbol's metadata.
 - Defer building cli summary until needed.
-- Use new `splint.config/slurp-1-edn` to read config files.
+- Use new `splint.config/slurp-edn` to read config files, parsed with [edamame][edamame].
 - Changed `:spat/lit` metadata to `:splint/lit`. `:spat/lit` still works for the time being, but no promises.
+- `splint.printer/print-results` now accepts only the `results` object, which should additionally have `:checked-files` and `:total-time`.
+- Output formats `simple`, `full,` and `clj-kondo` now print the number of files checked as well: `"Linting took 1ms, checked 3 files, 3 style warnings"`
 
 ## v1.9.0
 

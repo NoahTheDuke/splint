@@ -20,3 +20,8 @@
     (expect-match
       [{:alt (list input 'arg '(let [res# (do (splint/unquote-splicing body))] res#))}]
       (format "(%s arg ~@body)" input))))
+
+(defexpect only-symbol-test
+  (expect-match
+    nil
+    "(future ~@(map inc body))"))

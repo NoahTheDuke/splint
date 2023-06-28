@@ -32,8 +32,15 @@
   (let [headers [{:name :enabled :title "Enabled by default" :align :left}
                  {:name :added :title "Version Added" :align :left}
                  {:name :updated :title "Version Updated" :align :left}]]
-   (print-table headers
-                [(get-config rule)])))
+   (print-table headers [(get-config rule)])))
+
+(defn render-version-note [rule]
+  (when-let [min-clojure-version (:min-clojure-version rule)]
+    (let [min-clojure-version (conj {:major 1 :minor 9 :incremental 0}
+                                    min-clojure-version)]
+      (binding [*clojure-version* min-clojure-version]
+        (format "**NOTE**: Requires Clojure version %s."
+                (clojure-version))))))
 
 (defn render-docstring [rule]
   (when-let [docstring (:docstring rule)]
@@ -115,15 +122,18 @@
 (defn build-rule [rule]
   (->> [(str "## " (:full-name rule))
         (render-details rule)
+        (render-version-note rule)
         (render-docstring rule)
         (render-configuration rule)
         (render-reference rule)]
        (remove str/blank?)
        (str/join (str \newline \newline))))
 
+(def grouped-genres
+  (group-by :genre (vals (:rules @global-rules))))
+
 (defn build-rules [genre]
-  (->> genre
-       (get (group-by :genre (vals (:rules @global-rules))))
+  (->> (grouped-genres genre)
        (sort-by :full-name)
        (map build-rule)
        (interpose "---")

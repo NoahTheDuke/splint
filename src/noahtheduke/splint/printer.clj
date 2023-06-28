@@ -83,18 +83,19 @@
     (pp/pprint (into (sorted-map) diagnostic))))
 
 (defn print-results
-  [options diagnostics total-time]
-  (when-not (or (:quiet options) (:silent options))
-    (let [printer (get-method print-find (:output options))]
+  [{:keys [config diagnostics checked-files total-time]}]
+  (when-not (or (:quiet config) (:silent config))
+    (let [printer (get-method print-find (:output config))]
       (doseq [diagnostic (sort-by :filename diagnostics)]
         (printer nil diagnostic))
       (flush)))
-  (when-not (or (:silent options)
-                (false? (:summary options))
+  (when-not (or (:silent config)
+                (false? (:summary config))
                 (#{"markdown" "json" "json-pretty"
-                   "edn" "edn-pretty"} (:output options)))
-    (printf "Linting took %sms, %s style warnings%s\n"
+                   "edn" "edn-pretty"} (:output config)))
+    (printf "Linting took %sms, checked %s files, %s style warnings%s\n"
             total-time
+            (count checked-files)
             (count (remove #(= 'splint/error (:rule-name %)) diagnostics))
             (if-let [errors (seq (filter #(= 'splint/error (:rule-name %)) diagnostics))]
               (format ", %s errors" (count errors))

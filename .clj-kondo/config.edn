@@ -4,6 +4,7 @@
 
 {:hooks {:analyze-call {noahtheduke.splint.rules/defrule
                         hooks.noahtheduke.splint.rules/defrule}}
+ :lint-as {noahtheduke.splint.test-helpers/with-temp-files clojure.core/let}
  :config-in-call {noahtheduke.splint.rules/defrule {:linters {:unused-binding {:level :off}}}}
  :config-in-comment {:linters {:unused-value {:level :off}}}
  :linters {:clojure-lsp/unused-public-var {:level :off}

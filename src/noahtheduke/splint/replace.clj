@@ -19,7 +19,9 @@
              {::uplift true}))
 
 (defn- render-re-pattern [[_ sexp]]
-  (list `re-pattern sexp))
+  (if (string? sexp)
+    (re-pattern (str sexp))
+    (list `re-pattern sexp)))
 
 (defn- render-var [[_ sexp]]
   (list 'var sexp))
@@ -37,8 +39,7 @@
   (list `unquote-splicing sexp))
 
 (defn- uplift [sexp]
-  (if (symbol? sexp)
-    sexp
+  (if (seq? sexp)
     (->> (reduce
            (fn [acc cur]
              (if (::uplift (meta cur))
@@ -46,7 +47,8 @@
                (conj acc cur)))
            []
            sexp)
-         (->list))))
+         (->list))
+    sexp))
 
 (defn revert-splint-reader-macros [replace-form]
   (postwalk*

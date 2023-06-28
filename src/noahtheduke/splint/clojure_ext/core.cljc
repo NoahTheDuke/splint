@@ -143,12 +143,20 @@
       (pmap* (fn [_] (Thread/sleep 100)) coll))
     nil))
 
+(defn with-meta*
+  "Same as clojure.core/with-meta except it doesn't error if the obj doesn't
+  support meta."
+  [obj meta]
+  (if (instance? clojure.lang.IObj obj)
+    (with-meta obj meta)
+    obj))
+
 (defn walk*
   [inner outer form]
   (case (simple-type form)
     (:nil :boolean :char :number :string :keyword :symbol) (outer form)
-    :list (with-meta (outer (->list (mapv* inner form))) (meta form))
-    :map (with-meta
+    :list (with-meta* (outer (->list (mapv* inner form))) (meta form))
+    :map (with-meta*
            (outer
              (->> form
                   (reduce-kv
@@ -157,8 +165,8 @@
                     (transient {}))
                   (persistent!)))
            (meta form))
-    :set (with-meta (outer (into #{} (map inner) form)) (meta form))
-    :vector (with-meta (outer (mapv* inner form)) (meta form))
+    :set (with-meta* (outer (into #{} (map inner) form)) (meta form))
+    :vector (with-meta* (outer (mapv* inner form)) (meta form))
     ; else
     (throw (ex-info "Unimplemented type: " {:type (simple-type form)
                                             :form form}))))

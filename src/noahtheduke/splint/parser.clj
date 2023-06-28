@@ -53,7 +53,7 @@
                   ;; Gotta apply location data here as using `:postprocess`
                   ;; skips automatic location data
                   (cond-> obj
-                    (e/iobj? obj)
+                    (instance? clojure.lang.IObj obj)
                     (-> (vary-meta merge loc)
                         (attach-import-meta ns-state))
                     (and (list? obj)

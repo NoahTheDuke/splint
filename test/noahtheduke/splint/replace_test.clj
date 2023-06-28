@@ -18,6 +18,10 @@
     (sut/revert-splint-reader-macros '(splint/read-eval (+ 1 2))))
   (expect '(clojure.core/re-pattern ?a)
     (sut/revert-splint-reader-macros '(splint/re-pattern ?a)))
+  (expect #(instance? java.util.regex.Pattern %)
+    (sut/revert-splint-reader-macros '(splint/re-pattern "a")))
+  (expect #"a"
+    (str (sut/revert-splint-reader-macros '(splint/re-pattern "a"))))
   (expect '(var ?a)
     (sut/revert-splint-reader-macros '(splint/var ?a)))
   (expect '(var (?a c))

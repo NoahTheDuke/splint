@@ -84,7 +84,7 @@
   [options paths]
   (if-let [errors (seq (filter #(str/starts-with? % "--") paths))]
     (print-errors (mapv #(str (pr-str %) " must come before paths") errors))
-    {:options options :paths paths}))
+    {:options options :paths (vec paths)}))
 
 (defn validate-opts
   "Parse and validate seq of strings.

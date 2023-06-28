@@ -32,9 +32,8 @@
 
 (defexpect ^:integration re-frame-test
   (let [re-frame (gl/procure "https://github.com/day8/re-frame.git" 'day8/re-frame "v1.3.0")
-        results (run-impl {:silent true :parallel false}
-                          [re-frame]
-                          all-enabled-config)]
+        results (run-impl [re-frame]
+                          (assoc all-enabled-config :silent true :parallel false))]
     (expect
       (match?
         (m/equals re-frame-diagnostics)

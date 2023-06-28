@@ -15,8 +15,8 @@
              :ok true}
             (sut/validate-opts ["-h"])))
   (expect
-    (match? {:exit-message #"splint v.*\n\nUsage"
-             :ok true}
+    (match? {:exit-message absent
+             :ok absent}
             (sut/validate-opts []))))
 
 (defexpect version-test

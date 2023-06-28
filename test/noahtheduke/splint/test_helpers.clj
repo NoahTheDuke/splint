@@ -58,16 +58,15 @@
 
 (defn check-all
   ([path] (check-all path nil))
-  ([path config] (check-all path config nil))
-  ([path config options]
+  ([path config]
    (let [config (conj {:dev true} (merge-config @dev/dev-config config))
-         results (run-impl options path config)]
+         results (run-impl path config)]
      (seq (:diagnostics results)))))
 
 (defmacro expect-match
   ([expected s] `(expect-match ~expected ~s nil))
   ([expected s config]
-   `(let [diagnostics# (check-all ~s ~config nil)]
+   `(let [diagnostics# (check-all ~s ~config)]
       (expect (~'match? ~expected diagnostics#)))))
 
 (s/fdef expect-match

@@ -263,46 +263,45 @@
       (into [] xf paths))))
 
 (defn build-result-map
-  [ctx files start-time]
+  [ctx files]
   (let [all-diagnostics @(:diagnostics ctx)
         grouped-diagnostics (group-by (juxt :filename :line :column :rule-name) all-diagnostics)
         filtered-diagnostics (mapv* (comp first val) grouped-diagnostics)
         checked-files (into [] (distinct) @(:checked-files ctx))
-        file-strs (mapv* str files)
-        total-time (int (- (System/currentTimeMillis) start-time))]
+        file-strs (mapv* str files)]
     {:diagnostics filtered-diagnostics
      :files file-strs
      :checked-files checked-files
      :config (:config ctx)
-     :total-time total-time
      :exit (if (pos? (count filtered-diagnostics)) 1 0)}))
 
 (defn run-impl
   "Actually perform check"
-  ([options paths] (run-impl options paths nil))
-  ([options paths config]
-   (let [start-time (System/currentTimeMillis)
-         config (or config (load-config options))
-         rules-by-type (prepare-rules config (or (:rules @global-rules) {}))
-         ctx (prepare-context rules-by-type config)
-         files (resolve-files-from-paths paths)]
-     (check-files! ctx rules-by-type files)
-     (build-result-map ctx files start-time))))
+  [paths config]
+  (let [rules-by-type (prepare-rules config (or (:rules @global-rules) {}))
+        ctx (prepare-context rules-by-type config)
+        files (resolve-files-from-paths paths)]
+    (check-files! ctx rules-by-type files)
+    (build-result-map ctx files)))
 
 (defn run
   "Convert command line args to usable options, pass to runner, print output."
   [args]
   (try
-    (let [{:keys [options paths exit-message ok]} (validate-opts args)]
+    (let [start-time (System/currentTimeMillis)
+          {:keys [options paths exit-message ok]} (validate-opts args)
+          config (load-config options)]
       (cond
         exit-message
         (do (when-not (:quiet options) (println exit-message))
             {:exit (if ok 0 1)})
         (:auto-gen-config options)
         (let [all-enabled (update-vals @default-config #(assoc % :enabled true))]
-          (spit-config (run-impl options paths all-enabled)))
+          (spit-config (run-impl paths all-enabled)))
         :else
-        (let [{:keys [config diagnostics total-time] :as results} (run-impl options paths)]
+        (let [{:keys [config diagnostics] :as results} (run-impl paths config)
+              total-time (int (- (System/currentTimeMillis) start-time))
+              results (assoc results :total-time total-time)]
           (print-results config diagnostics total-time)
           results)))
     (catch Exception ex

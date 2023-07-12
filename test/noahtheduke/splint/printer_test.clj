@@ -201,7 +201,21 @@
 (defexpect special-characters-test
   (let [f (slurp (io/file "corpus" "special_characters.clj"))
         parsed (parser/parse-file {:contents f :ext :clj})]
-    (expect (= "[@a\n @(a)\n #(+ 1 %1)\n #=(+ 1 2)\n #\"a\"\n #'a\n #'(a b)\n `a\n `(a b)\n ~a\n ~(a b)\n ~@a\n ~@(a b)]"
+    (expect (= (format "[%s]"
+                       (->> ["@a"
+                             "@(a)"
+                             "#(+ 1 %1)"
+                             "#=(+ 1 2)"
+                             "#\"a\""
+                             "#'a"
+                             "#'(a b)"
+                             "`a"
+                             "`(a b)"
+                             "~a"
+                             "~(a b)"
+                             "~@a"
+                             "~@(a b)"]
+                           (str/join "\n ")))
      (->> (sut/revert-splint-reader-macros parsed)
           (pp/pprint)
           (with-out-str)

@@ -9,30 +9,28 @@
     [noahtheduke.splint.clojure-ext.core :refer [->list postwalk*]]))
 
 (defn- render-deref [[_ sexp]]
-  (list `deref sexp))
+  (symbol (str "@" (print-str sexp))))
 
 (defn- render-fn [[_fn _args sexp]]
-  (symbol (str "#" (with-out-str (print sexp)))))
+  (symbol (str "#" (print-str sexp))))
 
-(defn- render-read-eval [sexp]
-  (symbol (str "#=" (with-out-str (print (fnext sexp))))))
+(defn- render-read-eval [[_ sexp]]
+  (symbol (str "#=" (print-str sexp))))
 
 (defn- render-re-pattern [[_ sexp]]
-  (if (string? sexp)
-    (re-pattern (str sexp))
-    (list `re-pattern sexp)))
+  (symbol (str "#" (pr-str sexp))))
 
 (defn- render-var [[_ sexp]]
-  (list 'var sexp))
+  (symbol (str "#'" (print-str sexp))))
 
 (defn- render-syntax-quote [[_ sexp]]
-  (symbol (str "`" sexp)))
+  (symbol (str "`" (print-str sexp))))
 
 (defn- render-unquote [[_ sexp]]
-  (symbol (str "~" (with-out-str (print sexp)))))
+  (symbol (str "~" (print-str sexp))))
 
 (defn- render-unquote-splicing [[_ sexp]]
-  (symbol (str "~@" (with-out-str (print sexp)))))
+  (symbol (str "~@" (print-str sexp))))
 
 (defn- uplift [sexp]
   (if (seq? sexp)
@@ -51,14 +49,14 @@
     (fn [sexp]
       (if (seq? sexp)
         (if-let [f (case (first sexp)
-                     splint/deref render-deref
-                     splint/fn render-fn
-                     splint/read-eval render-read-eval
-                     splint/re-pattern render-re-pattern
-                     splint/var render-var
-                     splint/syntax-quote render-syntax-quote
-                     splint/unquote render-unquote
-                     splint/unquote-splicing render-unquote-splicing
+                     splint/deref #'render-deref
+                     splint/fn #'render-fn
+                     splint/read-eval #'render-read-eval
+                     splint/re-pattern #'render-re-pattern
+                     splint/var #'render-var
+                     splint/syntax-quote #'render-syntax-quote
+                     splint/unquote #'render-unquote
+                     splint/unquote-splicing #'render-unquote-splicing
                      ; else
                      nil)]
           (uplift (f sexp))

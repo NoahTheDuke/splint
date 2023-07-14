@@ -7,14 +7,14 @@
   (:require
     [clojure.java.io :as io]
     [clojure.string :as str]
-    [noahtheduke.splint.parser :refer [parse-file]]
-    [noahtheduke.splint.pattern :refer [simple-type]]
     [noahtheduke.splint.cli :refer [validate-opts]]
     [noahtheduke.splint.clojure-ext.core :refer [mapv* pmap* run!*]]
     [noahtheduke.splint.config :as conf]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.parser :refer [parse-file]]
     [noahtheduke.splint.printer :refer [print-results]]
-    [noahtheduke.splint.rules :refer [global-rules]])
+    [noahtheduke.splint.rules :refer [global-rules]]
+    [noahtheduke.splint.utils :refer [simple-type]])
   (:import
     (clojure.lang ExceptionInfo)
     (java.io File)

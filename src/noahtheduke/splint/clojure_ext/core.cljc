@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.clojure-ext.core
   (:require
-    [noahtheduke.splint.pattern :refer [simple-type]])
+    [noahtheduke.splint.utils :refer [simple-type]])
   (:import
     (java.util.concurrent Executors Future)
     #?@(:bb []

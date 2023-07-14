@@ -6,6 +6,7 @@
   (:require
     [clojure.spec.alpha :as s]
     [noahtheduke.splint.pattern :as p]
+    [noahtheduke.splint.utils :refer [simple-type]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.replace :refer [postwalk-splicing-replace]]))
 
@@ -32,7 +33,7 @@
     (assert (not (and pattern patterns))
             "defrule cannot define both :pattern and :patterns")
     (when patterns
-      (assert (apply = (map p/simple-type patterns))
+      (assert (apply = (map simple-type patterns))
               "All :patterns should have the same `simple-type`"))
     (assert (not (and replace on-match))
             "defrule cannot define both :replace and :on-match")
@@ -41,8 +42,8 @@
           genre (namespace full-name)
           init-type (or init-type
                         (if pattern
-                          (p/simple-type pattern)
-                          (p/simple-type (first patterns))))]
+                          (simple-type pattern)
+                          (simple-type (first patterns))))]
       `(let [rule# {:name ~rule-name
                     :genre ~genre
                     :full-name '~full-name

@@ -4,10 +4,11 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.thread-macro-one-arg
   (:require
-    [noahtheduke.splint.pattern :refer [non-coll? simple-type]]
     [noahtheduke.splint.config :refer [get-config]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+    [noahtheduke.splint.pattern :refer [non-coll?]]
+    [noahtheduke.splint.rules :refer [defrule]]
+    [noahtheduke.splint.utils :refer [simple-type]]))
 
 (set! *warn-on-reflection* true)
 

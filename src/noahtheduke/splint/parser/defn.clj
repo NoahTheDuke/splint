@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.parser.defn
   (:require
-    [noahtheduke.splint.pattern :refer [drop-quote]]))
+    [noahtheduke.splint.utils :refer [drop-quote]]))
 
 (set! *warn-on-reflection* true)
 

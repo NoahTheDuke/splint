@@ -5,10 +5,10 @@
 (ns ^:no-doc noahtheduke.splint.rules.naming.conventional-aliases
   (:require
     [clojure.set :as set]
-    [noahtheduke.splint.parser.ns :refer [deps-from-libspec]]
-    [noahtheduke.splint.pattern :refer [drop-quote]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+    [noahtheduke.splint.parser.ns :refer [deps-from-libspec]]
+    [noahtheduke.splint.rules :refer [defrule]]
+    [noahtheduke.splint.utils :refer [drop-quote]]))
 
 (set! *warn-on-reflection* true)
 

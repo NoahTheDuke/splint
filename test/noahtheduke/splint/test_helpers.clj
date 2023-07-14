@@ -16,8 +16,8 @@
     [noahtheduke.splint.config :refer [merge-config]]
     [noahtheduke.splint.dev :as dev]
     [noahtheduke.splint.parser :refer [parse-file]]
-    [noahtheduke.splint.pattern :refer [drop-quote]]
-    [noahtheduke.splint.runner :refer [run-impl]])
+    [noahtheduke.splint.runner :refer [run-impl]]
+    [noahtheduke.splint.utils :refer [drop-quote]])
   (:import
     (java.io File)
     (java.nio.file Files)

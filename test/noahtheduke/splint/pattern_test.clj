@@ -8,20 +8,6 @@
     [noahtheduke.splint.pattern :as sut]
     [noahtheduke.splint.test-helpers :refer [parse-string]]))
 
-(defexpect simple-type-test
-  (doseq [[input t] '[[nil :nil]
-                      [true :boolean]
-                      [1 :number]
-                      ["a" :string]
-                      [:a :keyword]
-                      [a :symbol]
-                      [(1 2 3) :list]
-                      [[1 2 3] :vector]
-                      [{1 2} :map]
-                      [#{1 2 3} :set]
-                      [#"asdf" java.util.regex.Pattern]]]
-    (expect (sut/simple-type input) t)))
-
 (defexpect read-dispatch-test
   (expecting "simple types"
     (doseq [[input t] '[[nil :nil]

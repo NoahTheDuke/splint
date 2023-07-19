@@ -49,6 +49,7 @@
 (defmulti read-form
   "Implementation of the main logic of [[pattern]]. Requires form and retval
   symbols to be provided to allow for recursion."
+  {:arglists '([sexp form retval])}
   #'read-dispatch)
 
 (defmacro pattern

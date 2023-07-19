@@ -8,6 +8,8 @@
         borkdude/edamame {:mvn/version "1.3.22"}
         camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
         com.github.clj-easy/graal-build-time {:mvn/version "0.1.4"}
+        pangloss/pattern {:git/url "https://github.com/pangloss/pattern"
+                          :git/sha "1148123a14159cb310ce6f947709f790bb9adf63"}
         org.clojure/data.json {:mvn/version "2.4.0"}}
  :aliases
  {:run {:extra-paths ["classes"]

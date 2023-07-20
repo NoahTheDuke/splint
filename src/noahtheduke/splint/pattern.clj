@@ -108,7 +108,7 @@
                  (requiring-resolve (symbol "noahtheduke.splint.rules.helpers" pred)))
         bind (when bind (symbol bind))]
     `(let [form# ~form
-           result# (~(deref pred) form#)]
+           result# (~pred form#)]
        (when (and result# ~(some? bind))
          (vswap! ~retval assoc '~bind form#))
        result#)))
@@ -170,7 +170,7 @@
                     `(<= ~(- (count sexp) 2) (count ~children-form))
                     `(= ~(count sexp) (count ~children-form)))]
     `(let [~children-form ~form]
-       (and (~(deref (resolve f)) ~children-form)
+       (and (~f ~children-form)
             ~size-pred
             ~@preds))))
 

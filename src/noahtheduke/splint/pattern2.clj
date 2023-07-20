@@ -1,6 +1,12 @@
-(ns noahtheduke.splint.pattern2 
+; This Source Code Form is subject to the terms of the Mozilla Public
+; License, v. 2.0. If a copy of the MPL was not distributed with this
+; file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+(ns noahtheduke.splint.pattern2
   (:require
+    [pattern :refer [compile-pattern]]
     [noahtheduke.splint.utils :refer [drop-quote simple-type]]
+    [noahtheduke.splint.pattern :as p]
     [clojure.string :as str]))
 
 (defn read-dispatch
@@ -23,7 +29,7 @@
          :list (case (first pattern)
                  quote :quote
                  ? :bind-one
-                 ; ??
+                 ?? :bind-many
                  ; else
                  :list)
          ; else
@@ -83,10 +89,12 @@
 (defn match-binding
   "Pattern must be a symbol in ?x form already."
   [ctx pattern form]
-  `(if-let [existing# ^clojure.lang.MapEntry (find ~ctx '~pattern)]
-     (when (= (.val existing#) ~form)
-       ~ctx)
-     (assoc ~ctx '~pattern ~form)))
+  (let [children-form (gensym "bind-form-")]
+    `(let [~children-form ~form]
+       (if-let [existing# ^clojure.lang.MapEntry (find ~ctx '~pattern)]
+         (when (= (.val existing#) ~children-form)
+           ~ctx)
+         (assoc ~ctx '~pattern ~children-form)))))
 
 (defn match-pred
   [ctx form pred bind]
@@ -96,7 +104,7 @@
                  (requiring-resolve (symbol "noahtheduke.splint.rules.helpers" pred-name)))
         bind (when-not (#{'_ '?_} bind) (symbol (str "?" bind)))]
     `(let [form# ~form
-           result# (~(deref pred) form#)]
+           result# (~pred form#)]
        (when result#
          ~(if (some? bind)
             (match-binding ctx bind form)
@@ -113,22 +121,109 @@
       :else
       (throw (ex-info "Predicate must be a symbol" {:pred pred})))))
 
+(defn match-many
+  [ctx pattern]
+  (let [pattern (if (symbol? pattern) ['?? (subs (str pattern) 2)] pattern)
+        [_?sym bind & [pred]] pattern
+        body-form (gensym "many-form-")
+        pred-check (if pred `(every? ~pred ~body-form) true)]
+    `(fn [~ctx form# cont#]
+       (let [max-len# (count form#)]
+         (loop [i# 0
+                ~body-form (vec (take i# form#))]
+           (when (<= i# max-len#)
+             (or (and ~pred-check
+                      (let [~ctx ~(match-binding ctx (symbol (str "?" bind)) body-form)]
+                        (cont# ~ctx (drop i# form#))))
+                 (recur (inc i#)
+                        (if (< (count ~body-form) max-len#)
+                          (conj ~body-form (nth form# (count ~body-form)))
+                          ~body-form)))))))))
+
+(defn- match-single-binds
+  [ctx children-form items]
+  (mapcat
+    (fn [item]
+      [ctx `(when ~ctx
+              ~(read-form ctx item `(first ~children-form)))
+       children-form `(when ~ctx
+                        (next ~children-form))])
+    items))
+
+(defn match-single
+  "Checks multiple single-element values at once.
+
+  Instead of generating a big `and` like in v1, this rebinds ctx and the
+  children-form for each pattern, returning `nil` if one of the patterns
+  doesn't match and somewhat short-circuiting the rest of the checks.
+
+  Relies on the output of the single-element pattern functions and expects them
+  to return the ctx object iff there's a match."
+  [ctx items]
+  (let [children-form (gensym "many-normal-form-")
+        binds (match-single-binds ctx children-form items)]
+    `(fn [~ctx ~children-form cont#]
+       (let [~@binds]
+         (when ~ctx
+           (cont# ~ctx ~children-form))))))
+
+(defn seq-match-step
+  "Inspired by segment-matcher from pangloss/pattern."
+  [ctx form fns]
+  (cond
+    (seq fns) ((first fns)
+               ctx
+               form
+               (fn [ctx new-form]
+                 (seq-match-step ctx new-form (next fns))))
+    (empty? form) ctx))
+
+(defn variable-seq-match [ctx pattern form]
+  (let [pattern (mapv (juxt read-dispatch identity) pattern)
+        min-length (->> pattern
+                        (remove #(#{:bind-many} (first %)))
+                        count)
+        children-form (gensym "list-form-")
+        fns (->> pattern
+                 (partition-by #(#{:bind-many} (first %)))
+                 (mapv
+                   (fn [items]
+                     (let [t (ffirst items)
+                           items (mapv second items)]
+                       (if (= :bind-many t)
+                         (mapcat
+                           identity
+                           (for [item items]
+                             [(gensym "many-fn-") (match-many ctx item)]))
+                         [(gensym "single-fn-") (match-single ctx items)]))))
+                 (mapcat identity))
+        fn-names (take-nth 2 fns)
+        type? (if (list? pattern) `list? `vector?)]
+    `(let [~children-form ~form]
+       (and (~type? ~children-form)
+            (<= ~min-length (count ~children-form))
+            (let [~@fns]
+              (seq-match-step ~ctx ~children-form ~(vec fn-names)))))))
+
+(defn simple-seq-match [ctx pattern form]
+  (let [children-form (gensym "list-form-")
+        binds (match-single-binds ctx children-form pattern)
+        type? (if (list? pattern) `list? `vector?)]
+    `(let [~children-form ~form]
+       (and (~type? ~children-form)
+            (= ~(count pattern) (count ~children-form))
+            (let [~@binds]
+              ~ctx)))))
+
 (defmethod read-form :list [ctx pattern form]
-  (let [types (mapv read-dispatch pattern)
-        min-length (count (remove #{:bind-many} types))
-        variable-length? (some #{:bind-many} types)]
-    (if variable-length?
-      ctx
-      (let [children-form (gensym "list-form-")
-            preds (keep-indexed
-                    (fn [idx item]
-                      (let [n (repeat idx `next)]
-                        (read-form ctx item `(-> ~@n first ~children-form))))
-                    pattern)]
-        `(let [~children-form ~form]
-           (and (list? ~children-form)
-                (= ~min-length (count ~children-form))
-                ~@preds))))))
+  (if (some #(#{:bind-many} (read-dispatch %)) pattern)
+      (variable-seq-match ctx pattern form)
+      (simple-seq-match ctx pattern form)))
+
+(defmethod read-form :vector [ctx pattern form]
+  (if (some #(#{:bind-many} (read-dispatch %)) pattern)
+      (variable-seq-match ctx pattern form)
+      (simple-seq-match ctx pattern form)))
 
 (defmacro pattern
   "Parse a provided pattern s-expression into a function that checks each
@@ -146,5 +241,15 @@
        (let [~ctx {}]
          (or ~(read-form ctx (drop-quote pattern) form) nil)))))
 
-(let [pat (pattern '(a ?b ??a))]
-  (pat :a))
+(def p1 (compile-pattern '[(? a true?) 1 2 ??b]))
+(def p2 (pattern '[(? a true?) 1 2 ??b]))
+(def p3 (p/pattern '[%true?%-?a 1 2 &&. ?b]))
+(p2 '[true 1 2 d])
+
+(do
+  (user/quick-bench (p1 '[true 1 2 d]))
+  (flush)
+  (user/quick-bench (p2 '[true 1 2 d]))
+  (flush)
+  (user/quick-bench (p3 '[true 1 2 d]))
+  )

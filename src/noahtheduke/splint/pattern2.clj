@@ -4,10 +4,9 @@
 
 (ns noahtheduke.splint.pattern2
   (:require
-    [pattern :refer [compile-pattern]]
-    [noahtheduke.splint.utils :refer [drop-quote simple-type]]
-    [noahtheduke.splint.pattern :as p]
-    [clojure.string :as str]))
+    [noahtheduke.splint.utils :refer [drop-quote simple-type]]))
+
+(def specials #{:?+ :?* :??})
 
 (defn read-dispatch
   "Same as [[simple-type]] except that :symbol and :list provide hints about
@@ -19,17 +18,24 @@
      (if (and smeta (smeta :splint/lit))
        type
        (case type
-         :symbol (if (#{'_ '?_} pattern)
-                   :any
-                   (let [pat-name (name pattern)]
-                     (cond
-                       (str/starts-with? pat-name "??") :bind-many
-                       (str/starts-with? pat-name "?") :bind-one
-                       :else :symbol)))
+         :symbol (let [pat-name (name pattern)]
+                   (case [(.charAt pat-name 0)
+                          (when (< 1 (count pat-name))
+                            (.charAt pat-name 1))]
+                     [\_ nil] :any
+                     [\? \_] :any
+                     [\? \+] :?+
+                     [\? \*] :?*
+                     [\? \?] :??
+                     [\? nil] :?
+                     ; else
+                     :symbol))
          :list (case (first pattern)
                  quote :quote
-                 ? :bind-one
-                 ?? :bind-many
+                 ? :?
+                 ?* :?*
+                 ?+ :?+
+                 ?? :??
                  ; else
                  :list)
          ; else
@@ -110,7 +116,7 @@
             (match-binding ctx bind form)
             ctx)))))
 
-(defmethod read-form :bind-one [ctx pattern form]
+(defmethod read-form :? [ctx pattern form]
   (let [pattern (if (symbol? pattern) ['? (subs (str pattern) 1)] pattern)
         [_?sym bind & [pred]] pattern]
     (cond
@@ -121,11 +127,11 @@
       :else
       (throw (ex-info "Predicate must be a symbol" {:pred pred})))))
 
-(defn match-many
+(defn match-star
   [ctx pattern]
-  (let [pattern (if (symbol? pattern) ['?? (subs (str pattern) 2)] pattern)
+  (let [pattern (if (symbol? pattern) ['?* (subs (str pattern) 2)] pattern)
         [_?sym bind & [pred]] pattern
-        body-form (gensym "many-form-")
+        body-form (gensym "star-form-")
         pred-check (if pred `(every? ~pred ~body-form) true)]
     `(fn [~ctx form# cont#]
        (let [max-len# (count form#)]
@@ -139,6 +145,38 @@
                         (if (< (count ~body-form) max-len#)
                           (conj ~body-form (nth form# (count ~body-form)))
                           ~body-form)))))))))
+
+(defn match-plus
+  [ctx pattern]
+  (let [pattern (if (symbol? pattern) ['?+ (subs (str pattern) 2)] pattern)
+        [_?sym bind & [pred]] pattern
+        body-form (gensym "plus-form-")
+        pred-check (if pred `(every? ~pred ~body-form) true)]
+    `(fn [~ctx form# cont#]
+       (let [max-len# (count form#)]
+         (loop [i# 1
+                ~body-form (vec (take i# form#))]
+           (when (<= i# max-len#)
+             (or (and ~pred-check
+                      (let [~ctx ~(match-binding ctx (symbol (str "?" bind)) body-form)]
+                        (cont# ~ctx (drop i# form#))))
+                 (recur (inc i#)
+                        (if (< (count ~body-form) max-len#)
+                          (conj ~body-form (nth form# (count ~body-form)))
+                          ~body-form)))))))))
+
+(defn match-optional
+  [ctx pattern]
+  (let [pattern (if (symbol? pattern) ['?? (subs (str pattern) 2)] pattern)
+        [_?sym bind & [_pred]] pattern
+        body-form (gensym "optional-form-")]
+    `(fn [~ctx form# cont#]
+       (let [ctx# ~(match-binding ctx (symbol (str "?" bind)) '())]
+         (or (cont# ctx# form#)
+             (when (seq form#)
+               (let [~body-form (take 1 form#)
+                     ~ctx ~(match-binding ctx (symbol (str "?" bind)) body-form)]
+                 (cont# ~ctx (drop 1 form#)))))))))
 
 (defn- match-single-binds
   [ctx children-form items]
@@ -181,20 +219,32 @@
 (defn variable-seq-match [ctx pattern form]
   (let [pattern (mapv (juxt read-dispatch identity) pattern)
         min-length (->> pattern
-                        (remove #(#{:bind-many} (first %)))
+                        (remove #(specials (first %)))
                         count)
-        children-form (gensym "list-form-")
+        children-form (gensym "variable-seq-form-")
         fns (->> pattern
-                 (partition-by #(#{:bind-many} (first %)))
+                 (partition-by #(specials (first %)))
                  (mapv
                    (fn [items]
                      (let [t (ffirst items)
                            items (mapv second items)]
-                       (if (= :bind-many t)
+                       (case t
+                         :?+
                          (mapcat
                            identity
                            (for [item items]
-                             [(gensym "many-fn-") (match-many ctx item)]))
+                             [(gensym "plus-fn-") (match-plus ctx item)]))
+                         :?*
+                         (mapcat
+                           identity
+                           (for [item items]
+                             [(gensym "star-fn-") (match-star ctx item)]))
+                         :??
+                         (mapcat
+                           identity
+                           (for [item items]
+                             [(gensym "optional-fn-") (match-optional ctx item)]))
+                         ; else
                          [(gensym "single-fn-") (match-single ctx items)]))))
                  (mapcat identity))
         fn-names (take-nth 2 fns)
@@ -206,7 +256,7 @@
               (seq-match-step ~ctx ~children-form ~(vec fn-names)))))))
 
 (defn simple-seq-match [ctx pattern form]
-  (let [children-form (gensym "list-form-")
+  (let [children-form (gensym "simple-seq-form-")
         binds (match-single-binds ctx children-form pattern)
         type? (if (list? pattern) `list? `vector?)]
     `(let [~children-form ~form]
@@ -215,15 +265,16 @@
             (let [~@binds]
               ~ctx)))))
 
+(defmacro seq-match [ctx pattern form]
+  `(if (some #(specials (read-dispatch %)) ~pattern)
+     (variable-seq-match ~ctx ~pattern ~form)
+     (simple-seq-match ~ctx ~pattern ~form)))
+
 (defmethod read-form :list [ctx pattern form]
-  (if (some #(#{:bind-many} (read-dispatch %)) pattern)
-      (variable-seq-match ctx pattern form)
-      (simple-seq-match ctx pattern form)))
+  (seq-match ctx pattern form))
 
 (defmethod read-form :vector [ctx pattern form]
-  (if (some #(#{:bind-many} (read-dispatch %)) pattern)
-      (variable-seq-match ctx pattern form)
-      (simple-seq-match ctx pattern form)))
+  (seq-match ctx pattern form))
 
 (defmacro pattern
   "Parse a provided pattern s-expression into a function that checks each
@@ -241,15 +292,17 @@
        (let [~ctx {}]
          (or ~(read-form ctx (drop-quote pattern) form) nil)))))
 
-(def p1 (compile-pattern '[(? a true?) 1 2 ??b]))
-(def p2 (pattern '[(? a true?) 1 2 ??b]))
-(def p3 (p/pattern '[%true?%-?a 1 2 &&. ?b]))
-(p2 '[true 1 2 d])
+(comment
+  (require '[pattern :refer [compile-pattern]]
+           '[noahtheduke.splint.pattern :as p])
+  (def p0 (p/pattern '[%true?%-?a 1 2 &&. ?b]))
+  (def p1 (compile-pattern '[(? a true?) ??b 1 2 ??c]))
+  (def p2 (pattern '[1 ??a 3]))
+  (p2 '[1 2 3])
 
-(do
-  (user/quick-bench (p1 '[true 1 2 d]))
-  (flush)
-  (user/quick-bench (p2 '[true 1 2 d]))
-  (flush)
-  (user/quick-bench (p3 '[true 1 2 d]))
+  #_(do (user/quick-bench (p0 '[true 1 2]))
+      (flush)
+      (user/quick-bench (p1 '[true 1 2]))
+      (flush)
+      (user/quick-bench (p2 '[true 1 2])))
   )

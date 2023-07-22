@@ -19,6 +19,6 @@
   ; good
   (let [a 1 b 2] (println a) (println b))
   "
-  {:pattern2 '(let ?binding (do ?*exprs))
+  {:pattern '(let ?binding (do ?*exprs))
    :message "Unnecessary `do` in `let` body."
    :replace '(let ?binding &&. ?exprs)})

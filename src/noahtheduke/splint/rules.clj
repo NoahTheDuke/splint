@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules
   (:require
     [clojure.spec.alpha :as s]
-    [noahtheduke.splint.pattern2 :as p]
+    [noahtheduke.splint.pattern :as p]
     [noahtheduke.splint.utils :refer [simple-type]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.replace :refer [postwalk-splicing-replace]]))
@@ -28,10 +28,7 @@
   * EITHER `:pattern` or `:patterns`,
   * EITHER `:replace` or `:on-match`"
   [rule-name docs opts]
-  (let [{:keys [pattern patterns
-                pattern2 patterns2
-                on-match replace
-                message init-type
+  (let [{:keys [pattern patterns replace on-match message init-type
                 min-clojure-version]} opts]
     (assert (not (and pattern patterns))
             "defrule cannot define both :pattern and :patterns")
@@ -44,24 +41,21 @@
           rule-name (name full-name)
           genre (namespace full-name)
           init-type (or init-type
-                        (if (or pattern pattern2)
-                          (simple-type (or pattern pattern2))
-                          (simple-type (first (or patterns patterns2)))))]
+                        (if pattern
+                          (simple-type pattern)
+                          (simple-type (first patterns))))]
       `(let [rule# {:name ~rule-name
                     :genre ~genre
                     :full-name '~full-name
                     :docstring ~docs
                     :init-type ~init-type
-                    :pattern-raw ~(or pattern patterns pattern2 patterns2)
+                    :pattern-raw ~(or pattern patterns)
                     :replace-raw ~replace
                     :message ~message
                     :min-clojure-version ~min-clojure-version
                     :pattern (when ~(some? pattern) (p/pattern ~pattern))
                     :patterns (when ~(some? patterns)
                                 ~(mapv #(list `p/pattern %) patterns))
-                    :pattern2 (when ~(some? pattern2) (p/pattern ~pattern2))
-                    :patterns2 (when ~(some? patterns2)
-                                 ~(mapv #(list `p/pattern %) patterns2))
                     :on-match (or ~on-match (replace->diagnostic ~replace))}]
          (swap! global-rules #(-> %
                                   (assoc-in [:rules '~full-name] rule#)
@@ -72,13 +66,11 @@
 (s/def ::docs string?)
 (s/def ::pattern any?)
 (s/def ::patterns (s/and vector? (s/+ any?)))
-(s/def ::pattern2 any?)
-(s/def ::patterns2 (s/and vector? (s/+ any?)))
 (s/def ::replace any?)
 (s/def ::on-match (s/and seq? #(= "fn" (name (first %)))))
 (s/def ::message string?)
 (s/def ::init-type keyword?)
-(s/def ::opts (s/keys :req-un [(or ::pattern ::patterns ::pattern2 ::patterns2)
+(s/def ::opts (s/keys :req-un [(or ::pattern ::patterns)
                                (or ::replace ::on-match)]
                       :opt-un [::message ::init-type]))
 

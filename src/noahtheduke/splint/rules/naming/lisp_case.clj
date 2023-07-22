@@ -32,7 +32,7 @@
   (def some-var ...)
   (defn some-fun ...)
   "
-  {:pattern2 '((? def def*??) (? name incorrect-name?) ?*args)
+  {:pattern '((? def def*??) (? name incorrect-name?) ?*args)
    :message "Prefer kebab-case over other cases for top-level definitions."
    :on-match (fn [ctx rule form {:syms [?def ?name ?args]}]
                (when (nil? (:parent-form ctx))

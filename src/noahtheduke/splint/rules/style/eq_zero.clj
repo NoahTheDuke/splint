@@ -27,8 +27,8 @@
   ; good
   (zero? num)
   "
-  {:patterns2 ['((? _ eq?) 0 ?x)
-               '((? _ eq?) ?x 0)]
+  {:patterns ['((? _ eq?) 0 ?x)
+              '((? _ eq?) ?x 0)]
    :message "Use `zero?` instead of recreating it."
    :replace '(zero? ?x)})
 

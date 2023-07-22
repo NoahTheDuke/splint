@@ -19,6 +19,6 @@
   ; good
   (when x (println :a) (println :b) :c)
   "
-  {:pattern2 '(when ?x (do ?*y))
+  {:pattern '(when ?x (do ?*y))
    :message "Unnecessary `do` in `when` body."
    :replace '(when ?x ?y)})

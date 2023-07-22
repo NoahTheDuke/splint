@@ -19,6 +19,6 @@
   ; good
   (while (some-func) (println 1) (println 2) (recur))
   "
-  {:pattern2 '(loop [] (when ?test ?*exprs (recur)))
+  {:pattern '(loop [] (when ?test ?*exprs (recur)))
    :message "Use `while` instead of recreating it."
    :replace '(while ?test ?exprs)})

@@ -3,7 +3,9 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 (ns noahtheduke.splint.rules.helpers
-  "Functions available by default in patterns.")
+  "Functions available by default in patterns."
+  (:require
+    [noahtheduke.splint.pattern :as-alias p]))
 
 (set! *warn-on-reflection* true)
 
@@ -13,7 +15,7 @@
 
   Instead, attach metadata to the captured rest arg and look for it in rules."
   [sexp]
-  (:noahtheduke.splint.pattern/rest (meta sexp)))
+  (::p/rest (meta sexp)))
 
 (defn deref?? [sexp]
   (case sexp

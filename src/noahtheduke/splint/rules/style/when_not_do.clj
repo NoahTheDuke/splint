@@ -19,6 +19,6 @@
   ; good
   (when-not x (println :a) (println :b) :c)
   "
-  {:pattern2 '(when-not ?x (do ?*y) (?? _ nil?))
+  {:pattern '(when-not ?x (do ?*y) (?? _ nil?))
    :message "Unnecessary `do` in `when-not` body."
    :replace '(when-not ?x ?y)})

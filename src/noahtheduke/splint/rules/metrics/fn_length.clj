@@ -75,7 +75,7 @@
      10)
   ) ;; <- ends here
   "
-  {:pattern2 '((? _ defn??) ?*args)
+  {:pattern '((? _ defn??) ?*args)
    :on-match (fn [ctx rule form bindings]
                (when-let [defn-form (:splint/defn-form (meta form))]
                  (let [config (get-config ctx rule)]

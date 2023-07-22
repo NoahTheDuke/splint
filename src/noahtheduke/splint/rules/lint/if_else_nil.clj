@@ -21,9 +21,9 @@
   ; good
   (when (some-func) :a)
   "
-  {:patterns2 ['(if ?x ?y nil)
-               '(if ?x (do ?*y))
-               '(if ?x ?y)]
+  {:patterns ['(if ?x ?y nil)
+              '(if ?x (do ?*y))
+              '(if ?x ?y)]
    :message "Use `when` which doesn't require specifying the else branch."
    :on-match (fn [ctx rule form {:syms [?x ?y]}]
                (let [new-form (if (rest-arg? ?y)

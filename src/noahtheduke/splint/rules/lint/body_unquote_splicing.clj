@@ -40,8 +40,8 @@
   # good
   `(binding [max mymax] (let [res# (do ~@body)] res#))
   "
-  {:patterns2 ['((? f only-body) (splint/unquote-splicing ?body))
-               '((? f init-arg) ?init-arg (splint/unquote-splicing ?body))]
+  {:patterns ['((? f only-body) (splint/unquote-splicing ?body))
+              '((? f init-arg) ?init-arg (splint/unquote-splicing ?body))]
    :message "Wrap ~@/unquote-splicing in `(let [res# (do ...)] res#)` to avoid unhygenic macro expansion."
    :on-match (fn [ctx rule form {:syms [?f ?init-arg ?body]}]
                (when (symbol? ?body)

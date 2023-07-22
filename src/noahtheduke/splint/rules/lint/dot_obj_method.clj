@@ -28,7 +28,7 @@
   ; good
   (.method obj args)
   "
-  {:pattern2 '(. ?obj (? method symbol-not-class?) ?*args)
+  {:pattern '(. ?obj (? method symbol-not-class?) ?*args)
    :message "Intention is clearer with `.method` form."
    :on-match (fn [ctx rule form {:syms [?obj ?method ?args]}]
                (let [replace-form `(~(symbol (str "." ?method)) ~?obj ~@?args)]

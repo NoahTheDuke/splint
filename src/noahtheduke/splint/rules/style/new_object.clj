@@ -20,7 +20,7 @@
   ; good
   (java.util.ArrayList. 100)
   "
-  {:pattern2 '(new ?class ?*args)
+  {:pattern '(new ?class ?*args)
    :message "dot creation is preferred."
    :on-match (fn [ctx rule form {:syms [?class ?args]}]
                (let [class-dot (symbol (str ?class "."))

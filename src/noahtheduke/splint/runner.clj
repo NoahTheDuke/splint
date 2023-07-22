@@ -61,9 +61,9 @@
   Use `reduced` to early exit when checking multiple patterns as we don't
   want to create multiple diagnostics for a single form and rule."
   [ctx rule form]
-  (if-let [pattern (or (:pattern rule) (:pattern2 rule))]
+  (if-let [pattern (or (:pattern rule) (:pattern rule))]
     (check-pattern ctx rule pattern form)
-    (let [patterns (or (:patterns rule) (:patterns2 rule))]
+    (let [patterns (or (:patterns rule) (:patterns rule))]
       (reduce
         (fn [_ pattern]
           (when-let [result (check-pattern ctx rule pattern form)]

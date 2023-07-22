@@ -19,6 +19,6 @@
   ; good
   (loop [] (println 1) (println 2))
   "
-  {:pattern2 '(loop ?binding (do ?*exprs))
+  {:pattern '(loop ?binding (do ?*exprs))
    :message "Unnecessary `do` in `loop` body."
    :replace '(loop ?binding ?exprs)})

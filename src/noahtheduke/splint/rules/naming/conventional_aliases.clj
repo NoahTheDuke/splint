@@ -139,7 +139,7 @@
   # good
   (:require [clojure.string :as str])
   "
-  {:pattern2 '(:require ?*args)
+  {:pattern '(:require ?*args)
    :message "Prefer community standard aliases."
    :on-match (fn [ctx rule form _bindings]
                (when (check-parent ctx)

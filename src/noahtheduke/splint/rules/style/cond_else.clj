@@ -33,6 +33,6 @@
     (< 5 num) (println 5)
     :else (println 0))
   "
-  {:pattern2 '(cond (?+ pairs not-else) (? _ not-else-other) ?else)
+  {:pattern '(cond (?+ pairs not-else) (? _ not-else-other) ?else)
    :message "Use `:else` as the catch-all branch."
    :replace '(cond ?pairs :else ?else)})

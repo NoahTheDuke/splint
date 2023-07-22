@@ -20,6 +20,6 @@
   ; good
   (when (seq ?x) &&. ?y)
   "
-  {:pattern2 '(when-not (empty? ?x) ?*y)
+  {:pattern '(when-not (empty? ?x) ?*y)
    :message "`seq` is idiomatic, gotta learn to love it."
    :replace '(when (seq ?x) ?y)})

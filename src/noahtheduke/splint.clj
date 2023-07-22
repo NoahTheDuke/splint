@@ -8,7 +8,6 @@
   (:gen-class)
   (:require
     [noahtheduke.splint.pattern]
-    [noahtheduke.splint.pattern2]
     [noahtheduke.splint.rules]
     [noahtheduke.splint.rules.helpers]
     [noahtheduke.splint.runner :as runner])

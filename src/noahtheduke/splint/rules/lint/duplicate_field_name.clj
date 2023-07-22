@@ -21,7 +21,7 @@
   # good
   (defrecord Foo [a b c])
   "
-  {:pattern2 '(defrecord ?name (? fields vector?) ?*body)
+  {:pattern '(defrecord ?name (? fields vector?) ?*body)
    :on-match (fn [ctx rule form {:syms [?fields]}]
                (when (not= (count ?fields) (count (set ?fields)))
                  (->diagnostic ctx rule form {:message "Duplicate field has been found"})))})

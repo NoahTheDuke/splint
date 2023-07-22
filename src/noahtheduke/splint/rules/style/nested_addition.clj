@@ -26,6 +26,6 @@
   (+ x y z)
   (+ x y z a)
   "
-  {:pattern2 '((? p +?) ?x (?p ?*xs))
+  {:pattern '((? p +?) ?x (?p ?*xs))
    :message "Use the variadic arity of `+`."
    :replace '(?p ?x ?xs)})

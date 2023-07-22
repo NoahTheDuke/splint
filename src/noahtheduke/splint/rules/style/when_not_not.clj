@@ -19,6 +19,6 @@
   ; good
   (when x y z)
   "
-  {:pattern2 '(when-not (not ?x) ?*y)
+  {:pattern '(when-not (not ?x) ?*y)
    :message "Use `when` instead of double negation."
    :replace '(when ?x ?y)})

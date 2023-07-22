@@ -26,6 +26,6 @@
   ; good
   (clojure.string/join x)
   "
-  {:pattern2 '(apply str (? coll not-special?))
+  {:pattern '(apply str (? coll not-special?))
    :message "Use `clojure.string/join` instead of recreating it."
    :replace '(clojure.string/join ?coll)})

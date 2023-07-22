@@ -4,7 +4,7 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.prefer-clj-string
   (:require
-    [noahtheduke.splint.pattern2 :as p]
+    [noahtheduke.splint.pattern :as p]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.replace :refer [postwalk-splicing-replace]]
     [noahtheduke.splint.rules :refer [defrule]]))
@@ -59,7 +59,7 @@
   # good
   (clojure.string/upper-case \"hello world\")
   "
-  {:pattern2 '((? sym symbol?) ?*args)
+  {:pattern '((? sym symbol?) ?*args)
    :message "Use the `clojure.string` function instead of interop."
    :on-match (fn [ctx rule form {:syms [?sym ?args]}]
                (if-let [binds ((:pattern capitalize??) form)]

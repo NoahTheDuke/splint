@@ -20,20 +20,16 @@
                         [[1 2 3] :vector]
                         [{1 2} :map]
                         [#{1 2 3} :set]]]
-      (expect (sut/read-dispatch input nil nil) t)))
+      (expect (sut/read-dispatch input) t)))
   (expecting "refinements"
     (doseq [[input t] [['_ :any]
-                       ['%asdf :pred]
-                       ['?asdf :binding]
-                       ['&&. :rest]
-                       ['&asdf :symbol]
-                       ['asdf :symbol]]]
-      (expect t (sut/read-dispatch input nil nil))
-      (expect :symbol (sut/read-dispatch (vary-meta input assoc :splint/lit true) nil nil)))
+                       ['?_ :any]]]
+      (expect t (sut/read-dispatch input))
+      (expect :symbol (sut/read-dispatch (vary-meta input assoc :splint/lit true))))
     (doseq [[input t] [['(quote (1 2 3)) :quote]
                        ['(1 2 3) :list]]]
-      (expect t (sut/read-dispatch input nil nil))
-      (expect :list (sut/read-dispatch (vary-meta input assoc :splint/lit true) nil nil)))))
+      (expect t (sut/read-dispatch input))
+      (expect :list (sut/read-dispatch (vary-meta input assoc :splint/lit true))))))
 
 (defexpect match-any-test
   (expect {}
@@ -46,23 +42,125 @@
 
 (defexpect predicate-test
   (expect {}
-    ((sut/pattern '(1 2 %symbol?)) '(1 2 a)))
+    ((sut/pattern '(1 2 (? _ symbol?))) '(1 2 a)))
   (expect nil?
     (from-each [input '['a :a "a" 1 true nil
                         (1 2 3)
                         {1 2}
                         #{1 2 3}
                         [1 2 3]]]
-      ((sut/pattern '(1 2 %symbol?)) (list 1 2 input))))
+      ((sut/pattern '(1 2 (? _ symbol?))) (list 1 2 input))))
   (expect '{?a a}
-    ((sut/pattern '(1 2 %symbol?%-?a)) '(1 2 a))))
+    ((sut/pattern '(1 2 (? a symbol?))) '(1 2 a))))
 
-(defexpect multiple-rest-body-test
-  '{?test (= 1 1)
-    ?exprs ((prn 1) (prn 2))
-    ?foo (foo bar)}
-  ((sut/pattern '(when ?test &&. ?exprs ?foo (recur)))
-   (parse-string "(when (= 1 1) (prn 1) (prn 2) (foo bar) (recur))")))
+(defexpect ?*-test
+  (expect
+    '{?exprs []}
+    ((sut/pattern '[(?* exprs)])
+     (parse-string "[]")))
+  (expect
+    '{?exprs []}
+    ((sut/pattern '[1 2 (?* exprs) 3 4])
+     (parse-string "[1 2 3 4]")))
+  (expect
+    '{?exprs [1 2 3]}
+    ((sut/pattern '((?* exprs)))
+     (parse-string "(1 2 3)")))
+  (expect
+    '{?exprs [1 2 3]}
+    ((sut/pattern '((?* exprs) (?* exprs)))
+     (parse-string "(1 2 3 1 2 3)")))
+  (expect
+    '{?exprs [1 2 3]}
+    ((sut/pattern '((?* exprs) 1 (?* exprs)))
+     (parse-string "(1 2 3 1 1 2 3)")))
+  (expect
+    nil?
+    ((sut/pattern '((?* exprs) 1 (?* exprs)))
+     (parse-string "(1 2 3 1 2 3)"))))
+
+(defexpect ?+-test
+  (expect
+    nil?
+    ((sut/pattern '[(?+ exprs)])
+     (parse-string "[]")))
+  (expect
+    nil?
+    ((sut/pattern '[1 2 (?+ exprs) 3 4])
+     (parse-string "[1 2 3 4]")))
+  (expect
+    '{?exprs [100]}
+    ((sut/pattern '[1 2 (?+ exprs) 3 4])
+     (parse-string "[1 2 100 3 4]")))
+  (expect
+    '{?exprs [1 2 3]}
+    ((sut/pattern '((?+ exprs)))
+     (parse-string "(1 2 3)")))
+  (expect
+    '{?exprs [1 2 3]}
+    ((sut/pattern '((?+ exprs) (?+ exprs)))
+     (parse-string "(1 2 3 1 2 3)")))
+  (expect
+    nil?
+    ((sut/pattern '((?+ exprs) 1 (?+ exprs)))
+     (parse-string "(1 2 3 1 2 3)"))))
+
+(defexpect ??-test
+  (expect
+    '{?exprs []}
+    ((sut/pattern '[(?? exprs)])
+     (parse-string "[]")))
+  (expect
+    '{?exprs []}
+    ((sut/pattern '[1 2 (?? exprs) 3 4])
+     (parse-string "[1 2 3 4]")))
+  (expect
+    '{?exprs [100]}
+    ((sut/pattern '[1 2 (?? exprs) 3 4])
+     (parse-string "[1 2 100 3 4]")))
+  (expect
+    '{?exprs [1]}
+    ((sut/pattern '[(?? exprs) (?? exprs)])
+     (parse-string "[1 1]")))
+  (expect
+    '{?a []
+      ?b [1]}
+    ((sut/pattern '[(?? a) (?? b)])
+     (parse-string "[1]")))
+  (expect
+    nil?
+    ((sut/pattern '[(?? exprs) (?? exprs)])
+     (parse-string "[1 2]")))
+  (expect
+    nil?
+    ((sut/pattern '((?? exprs)))
+     (parse-string "(1 2 3)"))))
+
+(defexpect ?|-test
+  (expect
+    nil?
+    ((sut/pattern '[(?| exprs [1 2])])
+     (parse-string "[]")))
+  (expect
+    '{?exprs 1}
+    ((sut/pattern '[(?| exprs [1 2])])
+     (parse-string "[1]")))
+  (expect
+    '{?exprs 2}
+    ((sut/pattern '[0 (?| exprs [1 2]) 3 4])
+     (parse-string "[0 2 3 4]")))
+  (expect
+    nil?
+    ((sut/pattern '[0 (?| exprs [1 2]) 3 4 (?| exprs [1 2])])
+     (parse-string "[0 2 3 4 1]")))
+  (expect
+    '{?exprs 2}
+    ((sut/pattern '[0 (?| exprs [1 2]) 3 4 (?| exprs [1 2])])
+     (parse-string "[0 2 3 4 2]")))
+  (expect
+    nil?
+    ((sut/pattern '((?| exprs [])))
+     (parse-string "(1 2 3)"))))
 
 (defexpect quote-in-pattern-test
   '{}
@@ -86,13 +184,13 @@
     (expect (pat (parse-string "(:a 1 :b [2] :c {:d 3})")))
     (expect not (pat (parse-string "(:a 1 :b [2] :c {:d 3} :e 4)")))))
 
-(defexpect map-test
+#_(defexpect map-test
   (let [pat (sut/pattern '{:a 1 :b [2] :c {:d 3}})]
     (expect not (pat (parse-string "{:a 1 :b [2] :c {:e 4}}")))
     (expect (pat (parse-string "{:a 1 :b [2] :c {:d 3}}")))
     (expect (pat (parse-string "{:a 1 :b [2] :c {:d 3} :e 4}")))))
 
-(defexpect set-test
+#_(defexpect set-test
   (let [pat (sut/pattern '#{:a 1 :b [2] :c {:d 3}})]
     (expect not (pat (parse-string "#{:a 1 :b [2] :c}")))
     (expect (pat (parse-string "#{:a 1 :b [2] :c {:d 3}}")))

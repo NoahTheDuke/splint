@@ -38,7 +38,7 @@
   # good
   (case elem (a b c) elem nil)
   "
-  {:pattern2 '((? sfn set?) ?elem)
+  {:pattern '((? sfn set?) ?elem)
    :message "Prefer `case` to set literal with constant members."
    :on-match (fn [ctx rule form {:syms [?sfn ?elem]}]
                (when (and (not (list? ?elem))

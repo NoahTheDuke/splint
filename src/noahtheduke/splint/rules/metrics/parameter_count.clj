@@ -57,7 +57,7 @@
   # good
   (defn example [a b c & args] ...)
   "
-  {:pattern '(%defn-fn?? &&. ?args)
+  {:pattern2 '((? _ defn-fn??) ?*args)
    :on-match (fn [ctx rule form bindings]
                (when-let [defn-form (:splint/defn-form (meta form))]
                  (let [config (get-config ctx rule)

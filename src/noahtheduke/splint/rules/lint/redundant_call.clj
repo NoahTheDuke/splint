@@ -49,7 +49,7 @@
   ; good
   x
   "
-  {:pattern '(%right-fn?%-?the-fn ?x)
+  {:pattern2 '((? the-fn right-fn?) ?x)
    :on-match (fn [ctx rule form {:syms [?the-fn ?x]}]
                (when-not (check-parent ctx)
                  (let [message (format "Single-arg `%s` always returns the arg." ?the-fn)]

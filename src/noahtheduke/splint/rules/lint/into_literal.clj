@@ -31,7 +31,7 @@
   ; good
   (set coll)
   "
-  {:pattern '(into %set-or-vec?%-?literal ?coll)
+  {:pattern2 '(into (? literal set-or-vec?) ?coll)
    :on-match (fn [ctx rule form {:syms [?literal ?coll]}]
                (let [replace-form (list (if (set? ?literal) 'set 'vec) ?coll)
                      message (format "Use `%s` instead of recreating it."

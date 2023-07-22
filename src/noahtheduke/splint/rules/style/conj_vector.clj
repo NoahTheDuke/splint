@@ -19,6 +19,6 @@
   ; good
   (vector :a b {:c 1})
   "
-  {:pattern '(conj [] &&. ?x)
+  {:pattern2 '(conj [] ?+x)
    :message "Use `vector` instead of recreating it."
-   :replace '(vector &&. ?x)})
+   :replace '(vector ?x)})

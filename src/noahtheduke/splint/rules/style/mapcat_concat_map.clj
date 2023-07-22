@@ -21,6 +21,6 @@
   (mapcat x y)
   (mapcat x y z)
   "
-  {:pattern '(apply concat (map ?x &&. ?y))
+  {:pattern2 '(apply concat (map ?x ?*y))
    :message "Use `mapcat` instead of recreating it."
-   :replace '(mapcat ?x &&. ?y)})
+   :replace '(mapcat ?x ?y)})

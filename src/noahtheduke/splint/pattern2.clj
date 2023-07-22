@@ -4,9 +4,15 @@
 
 (ns noahtheduke.splint.pattern2
   (:require
+    [noahtheduke.splint.pattern :as-alias p]
     [noahtheduke.splint.utils :refer [drop-quote simple-type]]))
 
-(def specials #{:?+ :?* :??})
+(def special? #{:?+ :?* :?? :?|})
+
+(defn literal?
+  "Is a given simple-type a literal/non-special?"
+  [t]
+  (#{:nil :boolean :char :number :keyword :string :symbol :quote :list :map :set} t))
 
 (defn read-dispatch
   "Same as [[simple-type]] except that :symbol and :list provide hints about
@@ -18,8 +24,9 @@
      (if (and smeta (smeta :splint/lit))
        type
        (case type
-         :symbol (let [pat-name (name pattern)]
-                   (case [(.charAt pat-name 0)
+         :symbol (let [pat-name (name pattern)
+                       char0 (.charAt pat-name 0)]
+                   (case [char0
                           (when (< 1 (count pat-name))
                             (.charAt pat-name 1))]
                      [\_ nil] :any
@@ -27,15 +34,18 @@
                      [\? \+] :?+
                      [\? \*] :?*
                      [\? \?] :??
-                     [\? nil] :?
+                     [\? \|] :?|
                      ; else
-                     :symbol))
+                     (if (= \? char0)
+                       :?
+                       :symbol)))
          :list (case (first pattern)
                  quote :quote
                  ? :?
                  ?* :?*
                  ?+ :?+
                  ?? :??
+                 ?| :?|
                  ; else
                  :list)
          ; else
@@ -55,6 +65,10 @@
 
 (defmethod read-form :any [ctx _pattern _form]
   ctx)
+
+(defmethod read-form :nil [ctx _pattern form]
+  `(when (nil? ~form)
+     ~ctx))
 
 (defmethod read-form :boolean [ctx pattern form]
   `(when (identical? ~pattern ~form)
@@ -93,28 +107,27 @@
               ~(read-form ctx interior-pattern children-form))))))
 
 (defn match-binding
-  "Pattern must be a symbol in ?x form already."
-  [ctx pattern form]
+  "Pattern must be a symbol in ?x style already."
+  [ctx bind form]
   (let [children-form (gensym "bind-form-")]
-    `(let [~children-form ~form]
-       (if-let [existing# ^clojure.lang.MapEntry (find ~ctx '~pattern)]
-         (when (= (.val existing#) ~children-form)
-           ~ctx)
-         (assoc ~ctx '~pattern ~children-form)))))
+    `(if (#{'~'_ '~'?_} '~bind)
+       ~ctx
+       (let [~children-form ~form]
+         (if-let [existing# ^clojure.lang.MapEntry (find ~ctx '~bind)]
+           (when (= (val existing#) ~children-form)
+             ~ctx)
+           (assoc ~ctx '~bind ~children-form))))))
 
 (defn match-pred
-  [ctx form pred bind]
+  [ctx bind form pred]
   (let [pred-name (name pred)
         pred (or (requiring-resolve (symbol (or (namespace pred) (str *ns*)) pred-name))
                  (resolve (symbol "clojure.core" pred-name))
                  (requiring-resolve (symbol "noahtheduke.splint.rules.helpers" pred-name)))
-        bind (when-not (#{'_ '?_} bind) (symbol (str "?" bind)))]
-    `(let [form# ~form
-           result# (~pred form#)]
-       (when result#
-         ~(if (some? bind)
-            (match-binding ctx bind form)
-            ctx)))))
+        children-form (gensym "pred-form-")]
+    `(let [~children-form ~form]
+       (when (~pred ~children-form)
+         ~(match-binding ctx bind children-form)))))
 
 (defmethod read-form :? [ctx pattern form]
   (let [pattern (if (symbol? pattern) ['? (subs (str pattern) 1)] pattern)
@@ -123,7 +136,7 @@
       (nil? pred)
       (match-binding ctx (symbol (str "?" bind)) form)
       (symbol? pred)
-      (match-pred ctx form pred bind)
+      (match-pred ctx (symbol (str "?" bind)) form pred)
       :else
       (throw (ex-info "Predicate must be a symbol" {:pred pred})))))
 
@@ -133,18 +146,19 @@
         [_?sym bind & [pred]] pattern
         body-form (gensym "star-form-")
         pred-check (if pred `(every? ~pred ~body-form) true)]
-    `(fn [~ctx form# cont#]
-       (let [max-len# (count form#)]
-         (loop [i# 0
-                ~body-form (vec (take i# form#))]
-           (when (<= i# max-len#)
-             (or (and ~pred-check
-                      (let [~ctx ~(match-binding ctx (symbol (str "?" bind)) body-form)]
-                        (cont# ~ctx (drop i# form#))))
-                 (recur (inc i#)
-                        (if (< (count ~body-form) max-len#)
-                          (conj ~body-form (nth form# (count ~body-form)))
-                          ~body-form)))))))))
+    [(gensym "star-fn-")
+     `(fn [~ctx form# cont#]
+        (let [max-len# (count form#)]
+          (loop [i# 0
+                 ~body-form (vary-meta (vec (take i# form#)) assoc ::p/rest true)]
+            (when (<= i# max-len#)
+              (or (and ~pred-check
+                       (let [~ctx ~(match-binding ctx (symbol (str "?" bind)) body-form)]
+                         (cont# ~ctx (drop i# form#))))
+                  (recur (inc i#)
+                         (if (< (count ~body-form) max-len#)
+                           (conj ~body-form (nth form# (count ~body-form)))
+                           ~body-form)))))))]))
 
 (defn match-plus
   [ctx pattern]
@@ -152,31 +166,68 @@
         [_?sym bind & [pred]] pattern
         body-form (gensym "plus-form-")
         pred-check (if pred `(every? ~pred ~body-form) true)]
-    `(fn [~ctx form# cont#]
-       (let [max-len# (count form#)]
-         (loop [i# 1
-                ~body-form (vec (take i# form#))]
-           (when (<= i# max-len#)
-             (or (and ~pred-check
-                      (let [~ctx ~(match-binding ctx (symbol (str "?" bind)) body-form)]
-                        (cont# ~ctx (drop i# form#))))
-                 (recur (inc i#)
-                        (if (< (count ~body-form) max-len#)
-                          (conj ~body-form (nth form# (count ~body-form)))
-                          ~body-form)))))))))
+    [(gensym "plus-fn-")
+     `(fn [~ctx form# cont#]
+        (let [max-len# (count form#)]
+          (loop [i# 1
+                 ~body-form (vary-meta (vec (take i# form#)) assoc ::p/rest true)]
+            (when (<= i# max-len#)
+              (or (and ~pred-check
+                       (let [~ctx ~(match-binding ctx (symbol (str "?" bind)) body-form)]
+                         (cont# ~ctx (drop i# form#))))
+                  (recur (inc i#)
+                         (if (< (count ~body-form) max-len#)
+                           (conj ~body-form (nth form# (count ~body-form)))
+                           ~body-form)))))))]))
 
 (defn match-optional
   [ctx pattern]
   (let [pattern (if (symbol? pattern) ['?? (subs (str pattern) 2)] pattern)
-        [_?sym bind & [_pred]] pattern
-        body-form (gensym "optional-form-")]
-    `(fn [~ctx form# cont#]
-       (let [ctx# ~(match-binding ctx (symbol (str "?" bind)) '())]
-         (or (cont# ctx# form#)
-             (when (seq form#)
-               (let [~body-form (take 1 form#)
-                     ~ctx ~(match-binding ctx (symbol (str "?" bind)) body-form)]
-                 (cont# ~ctx (drop 1 form#)))))))))
+        [_?sym bind & [pred]] pattern
+        body-form (gensym "optional-form-")
+        pred-check (if pred `(every? ~pred ~body-form) true)]
+    [(gensym "optional-fn-")
+     `(fn [~ctx form# cont#]
+        (let [~body-form (vary-meta () assoc ::p/rest true)]
+          (or (and ~pred-check
+                   (let [ctx# ~(match-binding ctx (symbol (str "?" bind)) body-form)]
+                     (cont# ctx# form#)))
+              (when (seq form#)
+                (let [~body-form (vary-meta (vec (take 1 form#)) assoc ::p/rest true)]
+                  (when ~pred-check
+                    (let [ctx# ~(match-binding ctx (symbol (str "?" bind)) body-form)]
+                      (cont# ctx# (drop 1 form#)))))))))]))
+
+(defn match-alt
+  [ctx pattern]
+  (when (symbol? pattern)
+    (throw (IllegalArgumentException. "Can't use ?| on a symbol")))
+  (when-not (vector? (-> pattern next next first))
+    (throw (IllegalArgumentException. "?| arg must be vector of alts")))
+  (when-not (every? #(literal? (read-dispatch %)) (-> pattern next next first))
+    (throw (IllegalArgumentException. "?| alts must be literals")))
+  (let [[_?sym bind & [alts]] pattern
+        temp-ctx (gensym "temp-ctx-")
+        body-form (gensym "alt-body-form-")
+        binds (mapcat
+                (fn [alt-pattern]
+                  [temp-ctx
+                   `(or ~temp-ctx
+                        (let [~body-form (first ~body-form)]
+                          (when ~(read-form ctx alt-pattern body-form)
+                            ~(match-binding ctx (symbol (str "?" bind)) body-form))))
+                   body-form
+                   `(if ~temp-ctx
+                      (next ~body-form)
+                      ~body-form)])
+                alts)]
+    [(gensym "alt-fn-")
+     `(fn [~ctx ~body-form cont#]
+        (let [~temp-ctx nil
+              ~@binds
+              ~ctx ~temp-ctx]
+          (when ~ctx
+            (cont# ~ctx ~body-form))))]))
 
 (defn- match-single-binds
   [ctx children-form items]
@@ -200,10 +251,11 @@
   [ctx items]
   (let [children-form (gensym "many-normal-form-")
         binds (match-single-binds ctx children-form items)]
-    `(fn [~ctx ~children-form cont#]
-       (let [~@binds]
-         (when ~ctx
-           (cont# ~ctx ~children-form))))))
+    [(gensym "single-fn-")
+     `(fn [~ctx ~children-form cont#]
+        (let [~@binds]
+          (when ~ctx
+            (cont# ~ctx ~children-form))))]))
 
 (defn seq-match-step
   "Inspired by segment-matcher from pangloss/pattern."
@@ -217,35 +269,40 @@
     (empty? form) ctx))
 
 (defn variable-seq-match [ctx pattern form]
-  (let [pattern (mapv (juxt read-dispatch identity) pattern)
-        min-length (->> pattern
-                        (remove #(specials (first %)))
+  (let [pattern-pairs (mapv (juxt read-dispatch identity) pattern)
+        min-length (->> pattern-pairs
+                        (remove #(special? (first %)))
                         count)
         children-form (gensym "variable-seq-form-")
-        fns (->> pattern
-                 (partition-by #(specials (first %)))
+        fns (->> pattern-pairs
+                 (partition-by #(special? (first %)))
                  (mapv
-                   (fn [items]
-                     (let [t (ffirst items)
-                           items (mapv second items)]
+                   (fn [pattern-pairs]
+                     (let [t (ffirst pattern-pairs)
+                           patterns (mapv second pattern-pairs)]
                        (case t
                          :?+
                          (mapcat
                            identity
-                           (for [item items]
-                             [(gensym "plus-fn-") (match-plus ctx item)]))
+                           (for [pattern patterns]
+                             (match-plus ctx pattern)))
                          :?*
                          (mapcat
                            identity
-                           (for [item items]
-                             [(gensym "star-fn-") (match-star ctx item)]))
+                           (for [pattern patterns]
+                             (match-star ctx pattern)))
                          :??
                          (mapcat
                            identity
-                           (for [item items]
-                             [(gensym "optional-fn-") (match-optional ctx item)]))
+                           (for [pattern patterns]
+                             (match-optional ctx pattern)))
+                         :?|
+                         (mapcat
+                           identity
+                           (for [pattern patterns]
+                             (match-alt ctx pattern)))
                          ; else
-                         [(gensym "single-fn-") (match-single ctx items)]))))
+                         (match-single ctx patterns)))))
                  (mapcat identity))
         fn-names (take-nth 2 fns)
         type? (if (list? pattern) `list? `vector?)]
@@ -266,7 +323,7 @@
               ~ctx)))))
 
 (defmacro seq-match [ctx pattern form]
-  `(if (some #(specials (read-dispatch %)) ~pattern)
+  `(if (some #(special? (read-dispatch %)) ~pattern)
      (variable-seq-match ~ctx ~pattern ~form)
      (simple-seq-match ~ctx ~pattern ~form)))
 
@@ -275,6 +332,81 @@
 
 (defmethod read-form :vector [ctx pattern form]
   (seq-match ctx pattern form))
+
+(defn non-coll?
+  "Is a given simple-type a non-collection?"
+  [t]
+  (case t
+    (:nil :boolean :char :number :keyword :string :symbol) true
+    false))
+
+(defmethod read-form :map [ctx pattern form]
+  {:pre [(every? (comp non-coll? simple-type) (keys pattern))]}
+  (let [new-form (gensym "map-form-")
+        binds (mapcat
+                (fn [[k v]]
+                  [ctx
+                   `(when (contains? ~new-form ~k)
+                      ~(read-form ctx v `(~new-form ~k)))])
+                pattern)]
+    `(let [~new-form ~form]
+       (and (map? ~new-form)
+            (<= ~(count (keys pattern)) (count ~new-form))
+            (let [~@binds]
+              ~ctx)))))
+
+(defmethod read-form :set [ctx _pattern _form]
+  `(when (set? ~ctx)
+     ~ctx))
+
+; (defn vec-remove
+;   "remove elem in coll
+;   from: https://stackoverflow.com/a/18319708/3023252"
+;   [pos coll]
+;   (vec (concat (subvec coll 0 pos) (subvec coll (inc pos)))))
+
+;; TODO: implement this with ctx-passing style
+#_(defmethod read-form :set [sexp form retval]
+  (let [new-form (gensym "set-new-form-")
+        [simple-vals complex-vals] (reduce (fn [acc cur]
+                                             (if (non-coll? (simple-type cur))
+                                               (update acc 0 conj cur)
+                                               (update acc 1 conj cur)))
+                                           [[] []]
+                                           sexp)
+        simple-keys-preds (map (fn [k] `(contains? ~new-form ~k)) simple-vals)
+        current-child (gensym "set-current-child-")
+        complex-keys-preds (mapv (fn [k]
+                                   `(fn [~current-child]
+                                      ~(read-form k current-child retval)))
+                                 complex-vals)
+        ]
+    `(when-let [~new-form ~form]
+       (and (set? ~new-form)
+            (<= ~(count sexp) (count ~new-form))
+            (or ~(empty? simple-keys-preds)
+                (and ~@simple-keys-preds))
+            (or ~(empty? complex-keys-preds)
+                ;; loop over both the predicates and the children.
+                ;; for each predicate, compare it against each child
+                ;; until it finds a match, and then remove the child
+                ;; from the list of children and recur.
+                (loop [complex-keys-preds# (seq ~complex-keys-preds)
+                       complex-children#
+                       (vec (for [child# ~new-form
+                                  :when (not (contains? ~(set simple-vals) child#))]
+                              child#))]
+                  (or (empty? complex-keys-preds#)
+                      (when-let [cur-pred# (first complex-keys-preds#)]
+                        (when-let [idx#
+                                   (loop [idx# 0]
+                                     (when-let [cur-child# (nth complex-children# idx# nil)]
+                                       (if (cur-pred# cur-child#)
+                                         idx#
+                                         (recur (inc idx#)))))]
+
+                          (recur (next complex-keys-preds#)
+                                 (vec-remove idx# complex-children#)))))))))))
 
 (defmacro pattern
   "Parse a provided pattern s-expression into a function that checks each
@@ -291,18 +423,3 @@
     `(fn [~form]
        (let [~ctx {}]
          (or ~(read-form ctx (drop-quote pattern) form) nil)))))
-
-(comment
-  (require '[pattern :refer [compile-pattern]]
-           '[noahtheduke.splint.pattern :as p])
-  (def p0 (p/pattern '[%true?%-?a 1 2 &&. ?b]))
-  (def p1 (compile-pattern '[(? a true?) ??b 1 2 ??c]))
-  (def p2 (pattern '[1 ??a 3]))
-  (p2 '[1 2 3])
-
-  #_(do (user/quick-bench (p0 '[true 1 2]))
-      (flush)
-      (user/quick-bench (p1 '[true 1 2]))
-      (flush)
-      (user/quick-bench (p2 '[true 1 2])))
-  )

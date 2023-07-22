@@ -24,7 +24,7 @@
   # good
   (ns noahtheduke.simple)
   "
-  {:pattern '(ns ?ns &&. ?args)
+  {:pattern2 '(ns ?ns ?*args)
    :on-match (fn [ctx rule form {:syms [?ns]}]
                (when (single-segment-ns? ?ns)
                  (let [message

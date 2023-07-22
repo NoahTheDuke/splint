@@ -17,6 +17,7 @@
 (def clj-kondo-diagnostics
   '{lint/assoc-fn 1
     lint/body-unquote-splicing 2
+    lint/dot-class-method 3
     lint/dot-obj-method 1
     lint/fn-wrapper 1
     lint/if-else-nil 42
@@ -40,7 +41,7 @@
     splint/parsing-error 4
     style/apply-str 14
     style/apply-str-interpose 3
-    style/cond-else 5
+    style/cond-else 8
     style/def-fn 2
     style/eq-false 2
     style/eq-true 5
@@ -79,4 +80,4 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 983 (count (:diagnostics results)))))
+    (expect 989 (count (:diagnostics results)))))

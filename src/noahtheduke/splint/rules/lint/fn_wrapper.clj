@@ -34,8 +34,8 @@
   ; good
   (let [f even?] ...)
   "
-  {:patterns ['(%fn?? [?arg] (?fun ?arg))
-              '(%fn?? ([?arg] (?fun ?arg)))]
+  {:patterns2 ['((? _ fn??) [?arg] (?fun ?arg))
+               '((? _ fn??) ([?arg] (?fun ?arg)))]
    :on-match (fn [ctx rule form {:syms [?fun ?args]}]
                (when-not (interop? ?fun)
                  (->diagnostic ctx rule form {:replace-form ?fun

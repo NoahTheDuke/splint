@@ -15,6 +15,8 @@
     '[{:alt (cond (pos? x) (inc x) :else -1)}]
     "(cond (pos? x) (inc x) true -1)")
   (expect-match nil
-    "(cond (pos? x) (inc x) (neg? x) (dec x))")
+    "(cond (pos? x) (inc x) (neg? x) (dec x))"))
+
+(defexpect cond-no-pairs-test
   (expect-match nil
     "(cond :else true)"))

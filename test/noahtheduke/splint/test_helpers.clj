@@ -120,3 +120,8 @@
   `(with-open [~file (io/writer ~file)]
      (binding [*out* ~file]
        ~@(map #(list `println %) body))))
+
+(defn single-rule-config [rule-name]
+  (-> @dev/dev-config
+      (update-vals #(assoc % :enabled false))
+      (update rule-name assoc :enabled true)))

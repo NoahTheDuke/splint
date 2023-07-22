@@ -21,7 +21,7 @@
   # good
   (defn f->c ...)
   "
-  {:pattern '(defn ?f-name &&. ?args)
+  {:pattern2 '(defn ?f-name ?*args)
    :message "Use `->` instead of `to` in the names of conversion functions."
    :on-match (fn [ctx rule form {:syms [?f-name ?args]}]
                (when (str/includes? (str ?f-name) "-to-")

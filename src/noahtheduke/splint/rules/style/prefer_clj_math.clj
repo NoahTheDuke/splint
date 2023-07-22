@@ -88,7 +88,7 @@
   clojure.math/PI
   (clojure.math/atan 45)
   "
-  {:pattern '%math?%-?sym
+  {:pattern2 '(? sym math?)
    :init-type :symbol
    :message "Use the `clojure.math` function instead of interop."
    :min-clojure-version {:major 1 :minor 11}

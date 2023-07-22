@@ -37,7 +37,7 @@
   (ns examples.ns
     (:require [clojure.zip :refer :all]))
   "
-  {:pattern '(ns ?ns &&. ?libspecs)
+  {:pattern2 '(ns ?ns ?*libspecs)
    :on-match (fn [ctx rule form {:syms [?libspecs]}]
                (when-let [use-libs (find-use-libs ?libspecs)]
                  (when-let [message (make-message ctx rule)]

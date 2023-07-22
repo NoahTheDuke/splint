@@ -19,8 +19,8 @@
   ; good
   (remove even? coll)
   "
-  {:patterns ['(filter (complement ?pred) ?coll)
-              '(filter (%fn?? [?arg] (not (?pred ?arg))) ?coll)
-              '(filter (comp not ?pred) ?coll)]
+  {:patterns2 ['(filter (complement ?pred) ?coll)
+               '(filter ((? _ fn??) [?arg] (not (?pred ?arg))) ?coll)
+               '(filter (comp not ?pred) ?coll)]
    :message "Use `remove` instead of recreating it."
    :replace '(remove ?pred ?coll)})

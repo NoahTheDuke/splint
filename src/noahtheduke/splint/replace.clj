@@ -4,13 +4,24 @@
 
 (ns noahtheduke.splint.replace
   (:require
+    [noahtheduke.splint.pattern :as-alias p]
     [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]))
 
 (set! *warn-on-reflection* true)
 
-(defn- splicing-replace [sexp]
-  (let [[front-sexp rest-sexp] (split-with #(not= '&&. %) sexp)]
-    (concat front-sexp (second rest-sexp) (drop 2 rest-sexp))))
+(defn- splicing-replace [item]
+  (let [[front-sexp rest-sexp] (split-with #(not= '&&. %) item)
+        new-item (concat front-sexp (second rest-sexp) (drop 2 rest-sexp))
+        new-item (reduce
+                   (fn [acc cur]
+                     (if (::p/rest (meta cur))
+                       (into acc cur)
+                       (conj acc cur)))
+                   []
+                   new-item)]
+    (if (vector? item)
+      new-item
+      (seq new-item))))
 
 (defn postwalk-splicing-replace [binds replace-form]
   (postwalk*

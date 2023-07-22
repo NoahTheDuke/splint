@@ -19,6 +19,6 @@
   ; good
   (vary-meta x assoc :filename filename)
   "
-  {:pattern '(with-meta ?x (?f (meta ?x) &&. ?args))
+  {:pattern2 '(with-meta ?x (?f (meta ?x) ?*args))
    :message "Use `vary-meta` instead of recreating it."
-   :replace '(vary-meta ?x ?f &&. ?args)})
+   :replace '(vary-meta ?x ?f ?args)})

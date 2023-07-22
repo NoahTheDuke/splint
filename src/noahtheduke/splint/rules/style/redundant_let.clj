@@ -23,7 +23,8 @@
         b 2]
     (println a b))
   "
-  {:pattern '(let %vector?%-?outer-bindings (let %vector?%-?inner-bindings &&. ?body))
+  {:pattern2 '(let (? outer-bindings vector?)
+                (let (? inner-bindings vector?) ?*body))
    :message "Redundant let expressions can be merged."
    :on-match (fn [ctx rule form {:syms [?outer-bindings ?inner-bindings ?body]}]
                (let [new-form (list* 'let

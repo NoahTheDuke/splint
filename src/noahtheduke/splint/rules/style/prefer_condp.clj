@@ -91,7 +91,7 @@
     3 :three
     :big)
   "
-  {:pattern '(cond &&. ?pairs)
+  {:pattern2 '(cond ?*pairs)
    :on-match (fn [ctx rule form {:syms [?pairs]}]
                (when-let [new-form (find-issue ?pairs)]
                  (let [message "Prefer condp when predicate and arguments are the same"]

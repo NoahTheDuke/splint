@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.config :refer [get-config]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.pattern :refer [non-coll?]]
+    [noahtheduke.splint.pattern2 :refer [non-coll?]]
     [noahtheduke.splint.rules :refer [defrule]]
     [noahtheduke.splint.utils :refer [simple-type]]))
 
@@ -19,9 +19,7 @@
       (and (sequential? sexp) (not (vector? sexp)))))
 
 (defn thread-macro? [form]
-  (case form
-    (-> ->>) true
-    false))
+  (#{'-> '->>} form))
 
 (defn make-form [?f ?arg ?form]
   (cond
@@ -64,7 +62,7 @@
   ; good
   (y z x)
   "
-  {:pattern '(%thread-macro?%-?f ?arg ?form)
+  {:pattern2 '((? f thread-macro?) ?arg ?form)
    :on-match (fn [ctx rule form bindings]
                (when (symbol-or-keyword-or-list? ('?form bindings))
                  (condp = (:chosen-style (get-config ctx rule))

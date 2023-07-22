@@ -36,6 +36,7 @@
     style/apply-str 1
     style/apply-str-interpose 1
     style/assoc-assoc 4
+    style/cond-else 3
     style/eq-false 3
     style/eq-nil 5
     style/eq-true 2
@@ -81,5 +82,5 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 1634 (count (:diagnostics results)))
+    (expect 1637 (count (:diagnostics results)))
     (expect 222 (count (:checked-files results)))))

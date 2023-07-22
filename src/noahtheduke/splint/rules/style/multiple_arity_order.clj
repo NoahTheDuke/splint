@@ -27,7 +27,7 @@
     ([x y] (+ x y))
     ([x y & more] (reduce foo (+ x y) more)))
   "
-  {:pattern '(%defn??%-?defn ?name &&. ?args)
+  {:pattern2 '((? defn defn??) ?name ?*args)
    :message "defn arities should be sorted fewest to most arguments."
    :on-match (fn [ctx rule form {:syms [?defn ?name]}]
                (when-let [defn-form (:splint/defn-form (meta form))]

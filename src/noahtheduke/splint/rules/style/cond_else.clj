@@ -9,7 +9,10 @@
 (set! *warn-on-reflection* true)
 
 (defn not-else [form]
-  (and (not= :else form)
+  (not= :else form))
+
+(defn not-else-other [form]
+  (and (not-else form)
        (or (keyword? form)
            (true? form))))
 
@@ -30,6 +33,6 @@
     (< 5 num) (println 5)
     :else (println 0))
   "
-  {:pattern '(cond &&. ?pairs %not-else ?else)
+  {:pattern2 '(cond (?+ pairs not-else) (? _ not-else-other) ?else)
    :message "Use `:else` as the catch-all branch."
-   :replace '(cond &&. ?pairs :else ?else)})
+   :replace '(cond ?pairs :else ?else)})

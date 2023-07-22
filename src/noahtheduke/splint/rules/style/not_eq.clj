@@ -19,7 +19,6 @@
   ; good
   (not= num1 num2)
   "
-  {:pattern '(not (= &&. ?args))
+  {:pattern2 '(not (= ?+args))
    :message "Use `not=` instead of recreating it."
-   :replace '(not= &&. ?args)})
-
+   :replace '(not= ?args)})

@@ -19,6 +19,6 @@
   ; good
   (when-not x :a :b :c)
   "
-  {:pattern '(when (not ?x) &&. ?y)
+  {:pattern2 '(when (not ?x) ?*y)
    :message "Use `when-not` instead of recreating it."
-   :replace '(when-not ?x &&. ?y)})
+   :replace '(when-not ?x ?y)})

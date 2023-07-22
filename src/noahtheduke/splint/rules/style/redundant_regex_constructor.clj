@@ -6,7 +6,7 @@
   (:require
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]
-    [noahtheduke.splint.pattern :refer [pattern]]))
+    [noahtheduke.splint.pattern2 :refer [pattern]]))
 
 (set! *warn-on-reflection* true)
 

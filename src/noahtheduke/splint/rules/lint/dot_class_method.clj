@@ -29,9 +29,8 @@
   ; good
   (Obj/staticMethod args)
   "
-  {:pattern '(. ?class %symbol?%-?method &&. ?args)
+  {:pattern2 '(. (? class symbol-class?) ?method ?*args)
    :message "Intention is clearer with `Obj/staticMethod` form."
-   :on-match (fn [ctx rule form {:syms [?class ?method ?args]}]
-               (when (symbol-class? ?class)
-                 (let [replace-form `(~(symbol (str ?class "/" ?method)) ~@?args)]
-                   (->diagnostic ctx rule form {:replace-form replace-form}))))})
+   :on-match (fn [ctx rule form {:syms [?class ?method ?args] :as binds}]
+               (let [replace-form `(~(symbol (str ?class "/" ?method)) ~@?args)]
+                 (->diagnostic ctx rule form {:replace-form replace-form})))})

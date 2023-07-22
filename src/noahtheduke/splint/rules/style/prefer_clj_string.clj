@@ -4,7 +4,7 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.prefer-clj-string
   (:require
-    [noahtheduke.splint.pattern :as p]
+    [noahtheduke.splint.pattern2 :as p]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.replace :refer [postwalk-splicing-replace]]
     [noahtheduke.splint.rules :refer [defrule]]))
@@ -27,12 +27,13 @@
     false))
 
 (def capitalize??
-  {:pattern (p/pattern '(%to-str?? (%upper-case?? (subs ?s 0 1))
-                                   (%lower-case?? (subs ?s 1))))
+  {:pattern (p/pattern '((? _ to-str??)
+                         ((? _ upper-case??) (subs ?s 0 1))
+                         ((? _ lower-case??) (subs ?s 1))))
    :replace '(clojure.string/capitalize ?s)})
 
 (def reverse??
-  {:pattern (p/pattern '(%to-str?? (.reverse (StringBuilder. ?s))))
+  {:pattern (p/pattern '((? _ to-str??) (.reverse (StringBuilder. ?s))))
    :replace '(clojure.string/reverse ?s)})
 
 (def interop->clj-string
@@ -58,7 +59,7 @@
   # good
   (clojure.string/upper-case \"hello world\")
   "
-  {:pattern '(%symbol?%-?sym &&. ?args)
+  {:pattern2 '((? sym symbol?) ?*args)
    :message "Use the `clojure.string` function instead of interop."
    :on-match (fn [ctx rule form {:syms [?sym ?args]}]
                (if-let [binds ((:pattern capitalize??) form)]

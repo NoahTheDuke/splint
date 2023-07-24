@@ -55,6 +55,7 @@
     noahtheduke.splint.rules.naming.single-segment-namespace
 
     noahtheduke.splint.rules.performance.assoc-many
+    noahtheduke.splint.rules.performance.get-in-literals
     noahtheduke.splint.rules.performance.get-keyword
 
     noahtheduke.splint.rules.style.apply-str

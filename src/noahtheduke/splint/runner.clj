@@ -33,7 +33,7 @@
         error-msg (str "Splint encountered an error: " message)]
     (->diagnostic
       nil
-      {:full-name (or (:rule-name data) 'splint/error)}
+      {:full-name 'splint/error}
       (:form data)
       {:message error-msg
        :filename (:filename data)})))

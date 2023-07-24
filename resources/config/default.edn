@@ -259,6 +259,12 @@
   :updated "1.3.0"
   :guide-ref "#no-single-segment-namespaces"}
 
+ performance/assoc-many
+ {:description "Avoid calling assoc with multiple pairs."
+  :enabled false
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  ;; Style Rules
 
  style/apply-str

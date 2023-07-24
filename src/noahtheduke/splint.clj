@@ -54,6 +54,8 @@
     noahtheduke.splint.rules.naming.record-name
     noahtheduke.splint.rules.naming.single-segment-namespace
 
+    noahtheduke.splint.rules.performance.assoc-many
+
     noahtheduke.splint.rules.style.apply-str
     noahtheduke.splint.rules.style.apply-str-interpose
     noahtheduke.splint.rules.style.apply-str-reverse

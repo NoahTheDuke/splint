@@ -259,8 +259,16 @@
   :updated "1.3.0"
   :guide-ref "#no-single-segment-namespaces"}
 
+ ;; Performance Rules
+
  performance/assoc-many
  {:description "Avoid calling assoc with multiple pairs."
+  :enabled false
+  :added "<<next>>"
+  :updated "<<next>>"}
+
+ performance/get-keyword
+ {:description "Use keywords as functions instead of the polymorphic function `get`."
   :enabled false
   :added "<<next>>"
   :updated "<<next>>"}

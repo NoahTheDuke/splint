@@ -19,4 +19,4 @@ performance genre
 
 * [x] `(assoc m :k1 v1 :k2 v2 ...)` -> `(-> m (assoc :k1 v1) (assoc :k2 v2) ...)`
 * [] `(get-in m [:k1 :k2 :k3])` -> `(-> m :k1 :k2 :k3)`
-* [] `(get m :k)` -> `(:k m)`
+* [x] `(get m :k)` -> `(:k m)`

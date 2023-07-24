@@ -18,6 +18,7 @@ The third is adding `performance` rules. These are off by default and are design
 ### New Rules
 
 - `performance/assoc-many`: Prefer `(-> m (assoc :k1 1) (assoc :k2 2))` over `(assoc m :k1 1 :k2 2)`.
+- `performance/get-keyword`: Prefer `(:some-key m)` over `(get m :some-key)`.
 
 ### Added
 

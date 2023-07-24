@@ -28,12 +28,14 @@
     (.setStackTrace (.getStackTrace ex))))
 
 (defn runner-error->diagnostic [^Exception ex]
-  (let [message (str/trim (or (ex-message ex) ""))
-        data (ex-data ex)
+  (let [data (ex-data ex)
+        message (str/trim (or (:message data)
+                              (ex-message ex)
+                              ""))
         error-msg (str "Splint encountered an error: " message)]
     (->diagnostic
       nil
-      {:full-name 'splint/error}
+      {:full-name (or (:error-name data) 'splint/error)}
       (:form data)
       {:message error-msg
        :filename (:filename data)})))
@@ -90,7 +92,10 @@
         (catch Exception ex
           (conj acc (runner-error->diagnostic
                       (exception->ex-info ex {:form form
-                                              :rule-name (:full-name rule)
+                                              :message (format
+                                                         "%s (during rule '%s')"
+                                                         (ex-message ex)
+                                                         (:full-name rule))
                                               :filename (:filename ctx)}))))))
     nil
     rules))
@@ -177,7 +182,7 @@
       (let [data (ex-data ex)]
         (if (= :edamame/error (:type data))
           (let [data (assoc data
-                            :rule-name 'splint/parsing-error
+                            :error-name 'splint/parsing-error
                             :filename file
                             :form (with-meta [] {:line (:line data)
                                                  :column (:column data)}))
@@ -185,7 +190,7 @@
                 diagnostic (-> (runner-error->diagnostic ex)
                                (assoc :form nil))]
             (update ctx :diagnostics swap! conj diagnostic))
-          (let [ex (exception->ex-info ex {:rule-name 'splint/unknown-error
+          (let [ex (exception->ex-info ex {:error-name 'splint/unknown-error
                                            :filename file})
                 diagnostic (runner-error->diagnostic ex)]
             (update ctx :diagnostics swap! conj diagnostic)))))))

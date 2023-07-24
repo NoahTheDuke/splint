@@ -25,7 +25,8 @@
                 (:chosen-style %))
      true))
 
-(s/def ::config-key (s/and qualified-symbol? #(#{"lint" "metrics" "naming" "style"} (namespace %))))
+(s/def ::config-key (s/and qualified-symbol? #(#{"lint" "metrics" "naming" "performance" "style"}
+                                                (namespace %))))
 (s/def ::config-opts
   (s/and (s/keys :req-un [::description ::enabled ::added ::updated]
                  :opt-un [::guide-ref ::link ::supported-styles ::chosen-style])

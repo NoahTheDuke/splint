@@ -33,6 +33,7 @@
     naming/conventional-aliases 33
     naming/conversion-functions 28
     naming/predicate 15
+    performance/assoc-many 724
     style/apply-str 1
     style/apply-str-interpose 1
     style/assoc-assoc 4
@@ -82,5 +83,5 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 1637 (count (:diagnostics results)))
+    (expect 2361 (count (:diagnostics results)))
     (expect 222 (count (:checked-files results)))))

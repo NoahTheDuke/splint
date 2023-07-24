@@ -16,16 +16,14 @@
     :validate [#{"simple" "full" "clj-kondo" "markdown" "json" "json-pretty" "edn"}
                "Not a valid output format (simple, full, clj-kondo, markdown, json, json-pretty, edn)"]]
    [nil "--[no-]parallel" "Run splint in parallel. Default to true."]
-   [nil "--config TYPE" "DEPRECATED: Pretty-print the config: diff, local, full."
-    :validate [#{"diff" "local" "full"}
-               "Not a valid selection (diff, local, full)."]]
+   ["-q" "--quiet" "Print no diagnostics, only summary."]
+   ["-s" "--silent" "Don't print suggestions or summary."]
+   [nil "--errors" "Only print error diagnostics."]
    [nil "--print-config TYPE" "Pretty-print the config: diff, local, full."
     :validate [#{"diff" "local" "full"}
                "Not a valid selection (diff, local, full)."]]
-   [nil "--auto-gen-config" "Generate a passing config file for chosen paths."]
-   ["-q" "--quiet" "Print no suggestions, only summary."]
    [nil "--[no-]summary" "Don't print summary. Default to true."]
-   ["-s" "--silent" "Don't print suggestions or summary."]
+   [nil "--auto-gen-config" "Generate a passing config file for chosen paths."]
    ["-h" "--help" "Print help information."]
    ["-v" "--version" "Print version information."]])
 
@@ -55,7 +53,7 @@
 (defn print-config
   [options]
   (let [{:keys [file local]} (find-local-config)
-        kind (or (:config options) (:print-config options))
+        kind (:print-config options)
         result (case kind
                  "diff" (second (data/diff @default-config local))
                  "local" local

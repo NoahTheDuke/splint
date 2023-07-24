@@ -138,10 +138,18 @@
   (let [diagnostic (update diagnostic :filename str)]
     (pp/pprint (into (sorted-map) diagnostic))))
 
+(defn error-diagnostic [diagnostic]
+  (#{'splint/error
+     'splint/parsing-error
+     'splint/unknown-error} (:rule-name diagnostic)))
+
 (defn print-results
   [{:keys [config diagnostics checked-files total-time]}]
   (when-not (or (:quiet config) (:silent config))
-    (let [printer (get-method print-find (:output config))]
+    (let [printer (get-method print-find (:output config))
+          diagnostics (if (:errors config)
+                        (filter error-diagnostic diagnostics)
+                        diagnostics)]
       (doseq [diagnostic (sort-by :filename diagnostics)]
         (printer nil diagnostic))
       (flush)))
@@ -152,8 +160,8 @@
     (printf "Linting took %sms, checked %s files, %s style warnings%s\n"
             total-time
             (count checked-files)
-            (count (remove #(= 'splint/error (:rule-name %)) diagnostics))
-            (if-let [errors (seq (filter #(= 'splint/error (:rule-name %)) diagnostics))]
+            (count (remove error-diagnostic diagnostics))
+            (if-let [errors (seq (filter error-diagnostic diagnostics))]
               (format ", %s errors" (count errors))
               ""))
     (flush)))

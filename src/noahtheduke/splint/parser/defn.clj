@@ -91,19 +91,23 @@
                           (list)))
                     ;; Otherwise, just use the existing list (which will have
                     ;; location data already).
-                    (list? (first fdecl)) fdecl)
-            ; post-attr-map
-            m (if (map? (last fdecl))
-                (conj m (last fdecl))
-                m)
-            fdecl (if (map? (last fdecl))
-                    (apply list (butlast fdecl))
-                    fdecl)
-            m (assoc m :arities fdecl)
-            m (when fdecl
-                (if (contains? m :arglists)
-                  (update m :arglists drop-quote)
-                  (assoc m :arglists (sigs fdecl))))
-            m (when m
-                (conj (or (meta fname) {}) m))]
-        m))))
+                    (and (list? (first fdecl))
+                         (vector? (ffirst fdecl))) fdecl
+                    ;; Explicitly, if given a faulty defn form, kick out
+                    :else nil)]
+        (when fdecl
+          (let [; post-attr-map
+                m (if (map? (last fdecl))
+                    (conj m (last fdecl))
+                    m)
+                fdecl (if (map? (last fdecl))
+                        (apply list (butlast fdecl))
+                        fdecl)
+                m (assoc m :arities fdecl)
+                m (when fdecl
+                    (if (contains? m :arglists)
+                      (update m :arglists drop-quote)
+                      (assoc m :arglists (sigs fdecl))))
+                m (when m
+                    (conj (or (meta fname) {}) m))]
+            m))))))

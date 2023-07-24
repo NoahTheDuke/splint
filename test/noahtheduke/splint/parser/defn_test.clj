@@ -43,9 +43,16 @@
         {:splint/name multiple-bodies
          :arities (([a] a) ([a b] (+ a b)))
          :arglists ([a] [a b])}
+        {:splint/name multiple-bodies-docstrings
+         :doc "This is a docstring"
+         :arities (([a] a) ([a b] (+ a b)))
+         :arglists ([a] [a b])}
         {:splint/name arglist-metadata
          :arglists ([a] [a b] [a b c])
-         :arities (([& args] (apply + args)))}]
+         :arities (([& args] (apply + args)))}
+        {:splint/name error-bad-docstring
+         :arities (([a] "asdf" a))
+         :arglists ([a])}]
       (->> (io/file "corpus" "arglists.clj")
            (slurp)
            (parse-string-all)

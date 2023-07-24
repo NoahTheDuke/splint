@@ -35,6 +35,21 @@
 
 (defn multiple-bodies ([a] a) ([a b] (+ a b)))
 
+(defn multiple-bodies-docstrings
+  "This is a docstring"
+  ([a] a)
+  ([a b] (+ a b)))
+
 (defn arglist-metadata
   {:arglists '([a] [a b] [a b c])}
   [& args] (apply + args))
+
+#_:clj-kondo/ignore
+(defn error-bad-args (a) a)
+
+#_:clj-kondo/ignore
+(defn error-empty)
+
+#_:clj-kondo/ignore
+(defn error-bad-docstring
+  [a] "asdf" a)

@@ -176,17 +176,18 @@
     (catch Exception ex
       (let [data (ex-data ex)]
         (if (= :edamame/error (:type data))
-          (let [ex (ex-info (ex-message ex)
-                            (assoc data
-                                   :rule-name 'splint/parsing-error
-                                   :filename file
-                                   :form (with-meta [] {:line (:line data)
-                                                        :column (:column data)}))
-                            ex)
+          (let [data (assoc data
+                            :rule-name 'splint/parsing-error
+                            :filename file
+                            :form (with-meta [] {:line (:line data)
+                                                 :column (:column data)}))
+                ex (exception->ex-info ex data)
                 diagnostic (-> (runner-error->diagnostic ex)
                                (assoc :form nil))]
             (update ctx :diagnostics swap! conj diagnostic))
-          (let [diagnostic (runner-error->diagnostic ex)]
+          (let [ex (exception->ex-info ex {:rule-name 'splint/unknown-error
+                                           :filename file})
+                diagnostic (runner-error->diagnostic ex)]
             (update ctx :diagnostics swap! conj diagnostic)))))))
 
 (defn slurp-file [file-obj]

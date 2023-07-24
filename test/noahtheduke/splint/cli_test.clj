@@ -75,11 +75,7 @@
   (expect
     (match? {:exit-message #"Full:"
              :ok true}
-            (sut/validate-opts ["--print-config" "full"])))
-  (expect
-    (match? {:exit-message #"DEPRECATION WARNING:"
-             :ok true}
-            (sut/validate-opts ["--config" "diff"]))))
+            (sut/validate-opts ["--print-config" "full"]))))
 
 (defexpect paths-test
   (expect

@@ -5,10 +5,13 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 The big feature here is adding support to run `splint` without specifying paths. Now Splint will read the `deps.edn` or `project.clj` file in the current directory and check the paths in the base definition as well as `:dev` and `:test` aliases/profiles if no path argument is given. Splint still doesn't support specifying paths in `.splint.edn`, nor does it allow for using paths from a project file as well as additional paths when called, but those are planned.
 
+The second big change is moving from 
+
 ### Breaking
 
 - Moved `spat.parser` to `splint.parser`.
 - Moved `spat.pattern` to `splint.pattern`. RIP `spat`, you treated me well for 9 months, but keeping `spat` and `splint` separate is no longer helpful.
+- Switched to the new pattern system, updated all rules.
 
 ### Added
 

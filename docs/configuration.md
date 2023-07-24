@@ -7,6 +7,7 @@
 * `--print-config TYPE`: Print the absolute path of the loaded config, and prints the contents of the loaded config according to the chosen type: `diff` for the difference between default and loaded config file, `local` for the contents of the loaded config file, and `full` for the merged default and loaded config file.
 * `-q`, `--quiet`: Print no suggestions, only summary.
 * `-s`, `--silent`: Print no suggestions or summary.
+* `--errors`: Limits printed diagnostics to parsing or internal Splint errors.
 * `-h`, `--help`: Print the command line options.
 * `-v`, `--version`: Print the current version.
 

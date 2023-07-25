@@ -10,7 +10,7 @@
   ["Configuration" {:file "docs/configuration.md"}]
   ["Rules" {:file "docs/rules.md"}
    ["Patterns" {:file "docs/patterns.md"}]]
-  ["Rule Documentation" {}
+  ["Rule Documentation" {:file "docs/genre-overview.md"}
    ["Lint" {:file "docs/rules/lint.md"}]
    ["Metrics" {:file "docs/rules/metrics.md"}]
    ["Naming" {:file "docs/rules/naming.md"}]

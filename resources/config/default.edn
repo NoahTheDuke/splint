@@ -264,27 +264,27 @@
  performance/assoc-many
  {:description "Avoid calling assoc with multiple pairs."
   :enabled false
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.10.0"
+  :updated "1.10.0"}
 
  performance/avoid-satisfies
  {:description "Avoid use of `satisfies?` as it is extremely slow."
   :enabled false
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.10.0"
+  :updated "1.10.0"
   :link "https://bsless.github.io/datahike-datalog-parser"}
 
  performance/get-in-literals
  {:description "Use keywords as functions instead of `get-in`."
   :enabled false
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.10.0"
+  :updated "1.10.0"}
 
  performance/get-keyword
  {:description "Use keywords as functions instead of the polymorphic function `get`."
   :enabled false
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.10.0"
+  :updated "1.10.0"}
 
  ;; Style Rules
 
@@ -544,8 +544,8 @@
  style/redundant-regex-constructor
  {:description "Rely on regex literal."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.10.0"
+  :updated "1.10.0"}
 
  style/set-literal-as-fn
  {:description "Prefer `case` to using `(#{:a :b :c} x)`."

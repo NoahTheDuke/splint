@@ -10,7 +10,7 @@
     [noahtheduke.splint]
     [noahtheduke.splint.config :refer [default-config]]
     [noahtheduke.splint.rules :refer [global-rules]]
-    [noahtheduke.splint.pattern :refer [simple-type]]))
+    [noahtheduke.splint.utils :refer [simple-type]]))
 
 (defn get-config [rule]
   (@default-config (:full-name rule)))

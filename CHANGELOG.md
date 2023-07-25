@@ -3,6 +3,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## v1.10.0
+
 The big feature here is adding support to run `splint` without specifying paths. Now Splint will read the `deps.edn` or `project.clj` file in the current directory and check the paths in the base definition as well as `:dev` and `:test` aliases/profiles if no path argument is given. Splint still doesn't support specifying paths in `.splint.edn`, nor does it allow for using paths from a project file as well as additional paths when called, but those are planned.
 
 The second big change is moving from the old DSL to the new `pangloss/pattern` inspired DSL. More flexible, more usable, overall better.
@@ -21,6 +23,7 @@ The third is adding `performance` rules. These are off by default and are design
 - `performance/avoid-satisfies`: Do not use `clojure.core/satisfies?`, full stop.
 - `performance/get-in-literals`: Prefer `(-> m :k1 :k2 :k3)` over `(get-in m [:k1 :k2 :k3])`.
 - `performance/get-keyword`: Prefer `(:k m)` over `(get m :k)`.
+- `style/redundant-regex-constructor`: Prefer `#"abc"` over `(re-pattern #"abc")`.
 
 ### Added
 

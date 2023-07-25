@@ -938,6 +938,26 @@ Directly nested lets can be merged into a single let block.
 
 ---
 
+## style/redundant-regex-constructor
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 1.10.0        | 1.10.0          |
+
+Clojure regex literals (#"") are passed to `java.util.regex.Pattern/compile` at read time. `re-pattern` checks if the given arg is a Pattern, making it a no-op when given a regex literal.
+
+### Examples
+
+```clojure
+# bad
+(re-pattern #".*")
+
+# good
+#".*"
+```
+
+---
+
 ## style/set-literal-as-fn
 
 | Enabled by default | Version Added | Version Updated |

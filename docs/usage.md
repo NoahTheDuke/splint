@@ -4,7 +4,7 @@ Running `splint` with no arguments or `--help` will print the help:
 
 ```text
 $ clojure -M:splint
-splint v1.7.0
+splint v1.10.0
 
 Usage:
   splint [options] [path...]

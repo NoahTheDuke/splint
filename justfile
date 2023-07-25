@@ -46,7 +46,7 @@ test-all *args:
 # Builds the uberjar, builds the jar, sends the jar to clojars
 @deploy version:
     echo 'Running tests'
-    just test
+    just test-all
     echo 'Setting new version {{version}}'
     just set-version {{version}}
     echo 'Rendering docs'

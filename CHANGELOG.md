@@ -7,7 +7,7 @@ The big feature here is adding support to run `splint` without specifying paths.
 
 The second big change is moving from the old DSL to the new `pangloss/pattern` inspired DSL. More flexible, more usable, overall better.
 
-The third is adding `performance` rules. These are off by default and are designed for those who want to pinch their cycles.
+The third is adding `performance` rules. These are off by default and are designed for those who want to pinch their cycles. Some affect common code (`get-in`) and some are much more rare (`satisfies`), but they're all designed to help you be mindful of slower paths.
 
 ### Breaking
 
@@ -18,8 +18,9 @@ The third is adding `performance` rules. These are off by default and are design
 ### New Rules
 
 - `performance/assoc-many`: Prefer `(-> m (assoc :k1 1) (assoc :k2 2))` over `(assoc m :k1 1 :k2 2)`.
-- `performance/get-keyword`: Prefer `(:k m)` over `(get m :k)`.
+- `performance/avoid-satisfies`: Do not use `clojure.core/satisfies?`, full stop.
 - `performance/get-in-literals`: Prefer `(-> m :k1 :k2 :k3)` over `(get-in m [:k1 :k2 :k3])`.
+- `performance/get-keyword`: Prefer `(:k m)` over `(get m :k)`.
 
 ### Added
 

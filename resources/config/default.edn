@@ -267,6 +267,13 @@
   :added "<<next>>"
   :updated "<<next>>"}
 
+ performance/avoid-satisfies
+ {:description "Avoid use of `satisfies?` as it is extremely slow."
+  :enabled false
+  :added "<<next>>"
+  :updated "<<next>>"
+  :link "https://bsless.github.io/datahike-datalog-parser"}
+
  performance/get-in-literals
  {:description "Use keywords as functions instead of `get-in`."
   :enabled false

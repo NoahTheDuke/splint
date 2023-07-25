@@ -39,6 +39,7 @@
     naming/record-name 1
     naming/single-segment-namespace 80
     performance/assoc-many 312
+    performance/avoid-satisfies 2
     performance/get-keyword 14
     splint/parsing-error 4
     style/apply-str 14
@@ -82,4 +83,4 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 1315 (count (:diagnostics results)))))
+    (expect 1317 (count (:diagnostics results)))))

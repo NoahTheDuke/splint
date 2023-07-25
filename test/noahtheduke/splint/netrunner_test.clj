@@ -34,7 +34,7 @@
     naming/conversion-functions 28
     performance/get-keyword 5
     naming/predicate 15
-    performance/assoc-many 724
+    performance/assoc-many 244
     style/apply-str 1
     style/apply-str-interpose 1
     style/assoc-assoc 4
@@ -84,5 +84,5 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 2366 (count (:diagnostics results)))
+    (expect 1886 (count (:diagnostics results)))
     (expect 222 (count (:checked-files results)))))

@@ -3,6 +3,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Fixed
+
+- `performance/assoc-many` should only trigger when there are more than 1 pair.
+
 ## v1.10.0
 
 The big feature here is adding support to run `splint` without specifying paths. Now Splint will read the `deps.edn` or `project.clj` file in the current directory and check the paths in the base definition as well as `:dev` and `:test` aliases/profiles if no path argument is given. Splint still doesn't support specifying paths in `.splint.edn`, nor does it allow for using paths from a project file as well as additional paths when called, but those are planned.

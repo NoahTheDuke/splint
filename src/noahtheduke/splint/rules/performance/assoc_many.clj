@@ -4,10 +4,39 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.performance.assoc-many
   (:require
+    [noahtheduke.splint.clojure-ext.core :refer [mapv* ->list]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
+
+(defn even-pairs
+  "Used in a thread-first macro."
+  [ctx rule form ?pairs]
+  (when-let [parent-form (:parent-form ctx)]
+    (when (= '-> (first parent-form))
+      (let [new-pairs (->> ?pairs
+                           (partition 2)
+                           (mapv* #(list 'assoc (first %) (second %))))
+            new-form (reduce
+                       (fn [acc cur]
+                         (if (= form cur)
+                           (into acc new-pairs)
+                           (conj acc cur)))
+                       []
+                       parent-form)]
+        (->diagnostic ctx rule parent-form
+                      {:replace-form (->list new-form)})))))
+
+(defn odd-pairs
+  "Used in a thread-first macro."
+  [ctx rule form ?pairs]
+  (let [new-form (apply
+                   list '-> (nth ?pairs 0)
+                   (->> (subvec ?pairs 1)
+                        (partition 2)
+                        (mapv* #(list 'assoc (first %) (second %)))))]
+    (->diagnostic ctx rule form {:replace-form new-form})))
 
 (defrule performance/assoc-many
   "Assoc takes multiple pairs but relies on `seq` stepping. This is slower than
@@ -24,12 +53,12 @@
       (assoc :k2 2)
       (assoc :k3 3))
   "
-  {:pattern '(assoc ?m ?*keys)
+  {:pattern '(assoc ?*pairs)
    :message "Faster to call assoc multiple times."
-   :on-match (fn [ctx rule form {:syms [?m ?keys]}]
-               (let [new-form (apply
-                                list '-> ?m
-                                (->> ?keys
-                                     (partition 2)
-                                     (map #(list 'assoc (first %) (second %)))))]
-                 (->diagnostic ctx rule form {:replace-form new-form})))})
+   :on-match (fn [ctx rule form {:syms [?pairs]}]
+               (let [cnt (count ?pairs)]
+                 (if (even? cnt)
+                   (when (< 2 cnt)
+                     (even-pairs ctx rule form ?pairs))
+                   (when (< 3 cnt)
+                     (odd-pairs ctx rule form ?pairs)))))})

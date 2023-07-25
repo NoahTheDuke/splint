@@ -16,4 +16,7 @@
     "(defn foo
     ([x] (foo x 1))
     ([x y & more] (reduce foo (+ x y) more))
-    ([x y] (+ x y)))"))
+    ([x y] (+ x y)))")
+  (expect-match
+    nil
+    "(defn foo ([a] 1) [a b])"))

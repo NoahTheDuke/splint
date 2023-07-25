@@ -31,8 +31,8 @@
    :message "defn arities should be sorted fewest to most arguments."
    :on-match (fn [ctx rule form {:syms [?defn ?name]}]
                (when-let [defn-form (:splint/defn-form (meta form))]
-                 (let [arglists (drop-quote (:arglists defn-form))]
-                   (when (not= arglists (sort-by count arglists))
+                 (when-let [arglists (drop-quote (:arglists defn-form))]
+                   (when-not (= arglists (sort-by count arglists))
                      (let [new-arities (sort-by (comp count first) (:arities defn-form))
                            new-form (list* ?defn ?name new-arities)]
                        (->diagnostic ctx rule form {:replace-form new-form}))))))})

@@ -32,7 +32,11 @@
         message (str/trim (or (:message data)
                               (ex-message ex)
                               ""))
-        error-msg (str "Splint encountered an error: " message)]
+        error-msg (format "Splint encountered an error%s: %s"
+                          (if-let [rule-name (:rule-name data)]
+                            (str " during '" rule-name)
+                            "")
+                          message)]
     (->diagnostic
       nil
       {:full-name (or (:error-name data) 'splint/error)}
@@ -92,10 +96,8 @@
         (catch Exception ex
           (conj acc (runner-error->diagnostic
                       (exception->ex-info ex {:form form
-                                              :message (format
-                                                         "%s (during rule '%s')"
-                                                         (ex-message ex)
-                                                         (:full-name rule))
+                                              :rule-name (:full-name rule)
+                                              :message (ex-message ex)
                                               :filename (:filename ctx)}))))))
     nil
     rules))

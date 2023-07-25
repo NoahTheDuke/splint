@@ -11,11 +11,11 @@
 (defn- sigs
   "Adapted from clojure.core/sigs"
   [fdecl]
-  (let [asig 
+  (let [asig
         (fn [fdecl]
           (let [arglist (first fdecl)
                 ;elide implicit macro args
-                arglist (if (= '&form (first arglist)) 
+                arglist (if (= '&form (first arglist))
                           (subvec arglist 2 (count arglist))
                           arglist)
                 body (next fdecl)]
@@ -65,7 +65,7 @@
                     ;; gotta do it ourselves here.
                     ;;
                     ;; At this point, fdecl is either:
-                    ;; - a single arity: ([] 1 2 3) 
+                    ;; - a single arity: ([] 1 2 3)
                     ;; - a single arity wrapped in a list: (([] 1 2 3))
                     ;; - multiple arities (each wrapped in a list): (([] 1 2 3) ([a] a 1 2 3))
                     ;; If it's the first, that means when we create the wrapped
@@ -92,7 +92,7 @@
                     ;; Otherwise, just use the existing list (which will have
                     ;; location data already).
                     (and (list? (first fdecl))
-                         (vector? (ffirst fdecl))) fdecl
+                         (every? #(vector? (first %)) fdecl)) fdecl
                     ;; Explicitly, if given a faulty defn form, kick out
                     :else nil)]
         (when fdecl

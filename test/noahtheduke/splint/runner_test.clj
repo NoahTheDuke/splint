@@ -30,7 +30,7 @@
   (expect-match
     [{:rule-name 'splint/error
       :form '(very-special-symbol :do-not-match)
-      :message "Splint encountered an error: matched (during rule 'dev/throws-on-match')"}]
+      :message "Splint encountered an error during 'dev/throws-on-match: matched"}]
     "(very-special-symbol :do-not-match)")
   (expect-match
     [{:rule-name 'naming/single-segment-namespace
@@ -44,7 +44,7 @@
       :filename (io/file "corpus/throw_in_middle.clj")}
      {:rule-name 'splint/error
       :form '(very-special-symbol :do-not-match)
-      :message "Splint encountered an error: matched (during rule 'dev/throws-on-match')"
+      :message "Splint encountered an error during 'dev/throws-on-match: matched"
       :alt nil
       :line 7
       :column 1

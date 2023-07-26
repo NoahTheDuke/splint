@@ -3,11 +3,16 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 {
- dev/sorted-rules-require {:enabled true}
- dev/throws-on-match {:enabled true}
+ dev {:enabled true}
+ lint {:enabled true}
+ metrics {:enabled true}
+ naming {:enabled true}
+ performance {:enabled true}
+ style {:enabled true}
+
  lint/thread-macro-one-arg {:enabled false}
- metrics/parameter-count {:enabled true
-                          :count 5}
- performance/dot-equals {:enabled true}
+ lint/warn-on-reflection {:enabled false}
+ metrics/fn-length {:enabled false}
+ metrics/parameter-count {:count 5}
  style/set-literal-as-fn {:enabled false}
 }

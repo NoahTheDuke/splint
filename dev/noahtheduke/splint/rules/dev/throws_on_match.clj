@@ -6,6 +6,8 @@
   (:require
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defrule dev/throws-on-match
   "Rules in `noahtheduke.splint` must be in sorted order."
   {:pattern '(very-special-symbol :do-not-match)

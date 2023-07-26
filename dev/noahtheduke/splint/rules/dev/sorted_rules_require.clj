@@ -7,6 +7,8 @@
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defrule dev/sorted-rules-require
   "Rules in `noahtheduke.splint` must be in sorted order."
   {:pattern '(ns noahtheduke.splint ?*args)

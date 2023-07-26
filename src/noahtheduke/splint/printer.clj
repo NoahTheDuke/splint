@@ -8,6 +8,8 @@
     [clojure.pprint :as pp]
     [noahtheduke.splint.clojure-ext.core :refer [->list postwalk*]]))
 
+(set! *warn-on-reflection* true)
+
 (defn- render-deref [[_ sexp]]
   (symbol (str "@" (print-str sexp))))
 

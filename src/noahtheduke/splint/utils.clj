@@ -18,7 +18,7 @@
   (simple-type
     [sexp]
     "Because Clojure doesn't have this built-in, we must do it the slow way: take
-    an object and return a keyword representing that object:
+    an object and return a keyword representing that object.
 
     ```clojure
     nil -> :nil

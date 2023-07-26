@@ -6,6 +6,8 @@
   (:require
     [noahtheduke.splint.utils :refer [drop-quote simple-type]]))
 
+(set! *warn-on-reflection* true)
+
 (def special? #{:?+ :?* :?? :?|})
 
 (defn literal?

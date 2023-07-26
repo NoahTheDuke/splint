@@ -11,6 +11,8 @@
     [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]
     [noahtheduke.splint.config :refer [default-config find-local-config load-config splint-version]]))
 
+(set! *warn-on-reflection* true)
+
 (def cli-options
   [["-o" "--output FMT" "Output format: simple, full, clj-kondo, markdown, json, json-pretty, edn."
     :validate [#{"simple" "full" "clj-kondo" "markdown" "json" "json-pretty" "edn"}

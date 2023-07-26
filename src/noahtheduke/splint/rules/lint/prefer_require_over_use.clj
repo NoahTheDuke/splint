@@ -8,6 +8,8 @@
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defn find-use-libs [?libspecs]
   (->> ?libspecs
        (filter #(and (sequential? ?libspecs) (= :use (first %))))

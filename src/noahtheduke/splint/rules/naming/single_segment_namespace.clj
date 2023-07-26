@@ -8,6 +8,8 @@
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
+(set! *warn-on-reflection* true)
+
 (defn single-segment-ns? [sexp]
   (let [ns-str (str sexp)]
     (not (or (str/includes? ns-str ".")

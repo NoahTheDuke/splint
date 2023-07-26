@@ -73,10 +73,10 @@
 (defexpect ^:integration clj-kondo-test
   (let [clj-kondo (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2023.05.26")
         results (run-impl [clj-kondo]
-                          (assoc all-enabled-config
-                                 :silent true
-                                 :parallel false
-                                 :clojure-version *clojure-version*))]
+                          (-> all-enabled-config
+                              (assoc :silent true)
+                              (assoc :parallel false)
+                              (assoc :clojure-version *clojure-version*)))]
     (expect
       (match?
         (m/equals clj-kondo-diagnostics)

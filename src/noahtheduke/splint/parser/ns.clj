@@ -6,6 +6,8 @@
   (:require
     [noahtheduke.splint.utils :refer [drop-quote]]))
 
+(set! *warn-on-reflection* true)
+
 (defmulti derive-aliases first :default 'ns)
 
 (defn quoted? [form]

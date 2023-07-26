@@ -11,6 +11,8 @@
   (defrecord Diagnostic
     [rule-name form message alt line column end-row end-col filename])")
 
+(set! *warn-on-reflection* true)
+
 (defrecord Diagnostic [rule-name form message alt line column end-row end-col filename])
 
 (defn ->diagnostic

@@ -11,6 +11,8 @@
     [potemkin :refer [import-vars]]
     [taoensso.tufte :as tufte]))
 
+(set! *warn-on-reflection* true)
+
 (import-vars
   [clojure.tools.namespace.repl
    refresh-all]

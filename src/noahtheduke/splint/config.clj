@@ -142,8 +142,11 @@
         m (re-matcher pat version)
         _ (.matches m)
         qualifier (.group m "qualifier")
-        snapshot (if (= qualifier "SNAPSHOT") qualifier (.group m "snapshot"))
-        qualifier (when-not (= qualifier "SNAPSHOT") qualifier)]
+        snapshot (if (.equals "SNAPSHOT" qualifier)
+                   qualifier
+                   (.group m "snapshot"))
+        qualifier (when-not (.equals "SNAPSHOT" qualifier)
+                    qualifier)]
     {:major (parse-long (.group m "major"))
      :minor (parse-long (.group m "minor"))
      :incremental (parse-long (.group m "incremental"))

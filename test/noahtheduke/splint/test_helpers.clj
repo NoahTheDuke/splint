@@ -32,23 +32,23 @@
           actual-path (str/split (.getAbsolutePath (io/file actual)) #"/")]
       (if (= this-path actual-path)
         {::result/type :match
-         ::value actual
-         ::weight 0}
+         ::result/value actual
+         ::result/weight 0}
         {::result/type :mismatch
-         ::value actual
-         ::weight 1}))
+         ::result/value actual
+         ::result/weight 1}))
     (instance? File actual)
     (if (.equals (.getName this) (.getName ^File actual))
       {::result/type :match
-       ::value actual
-       ::weight 0}
+       ::result/value actual
+       ::result/weight 0}
       {::result/type :mismatch
-       ::value actual
-       ::weight 1})
+       ::result/value actual
+       ::result/weight 1})
     :else
     {::result/type :mismatch
-     ::value actual
-     ::weight 1}))
+     ::result/value actual
+     ::result/weight 1}))
 
 (extend-protocol Matcher
   File

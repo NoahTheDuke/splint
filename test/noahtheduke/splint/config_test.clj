@@ -31,7 +31,7 @@
       {:enabled false}
       (from-each [c (->> (sut/merge-config config {'style {:enabled false}})
                          (vals)
-                         (filter #(= "style" (namespace (:rule-name % :a)))))]
+                         (filter #(.equals "style" (namespace (:rule-name % :a)))))]
         (in c)))
     (expect
       (match? {'style/plus-one {:enabled true}}

@@ -29,7 +29,7 @@
   * EITHER `:replace` or `:on-match`"
   [rule-name docs opts]
   (let [{:keys [pattern patterns replace on-match message init-type
-                min-clojure-version]} opts]
+                min-clojure-version ext]} opts]
     (assert (not (and pattern patterns))
             "defrule cannot define both :pattern and :patterns")
     (when patterns
@@ -37,6 +37,11 @@
               "All :patterns should have the same `simple-type`"))
     (assert (not (and replace on-match))
             "defrule cannot define both :replace and :on-match")
+    (when ext
+      (assert (or (and (set? ext)
+                       (every? keyword? ext))
+                  (keyword? ext))
+              ":ext must be a keyword or set of keywords"))
     (let [full-name rule-name
           rule-name (name full-name)
           genre (namespace full-name)
@@ -53,6 +58,9 @@
                     :replace-raw ~replace
                     :message ~message
                     :min-clojure-version ~min-clojure-version
+                    :ext ~(cond
+                            (set? ext) ext
+                            (keyword? ext) #{ext})
                     :pattern (when ~(some? pattern) (p/pattern ~pattern))
                     :patterns (when ~(some? patterns)
                                 ~(mapv #(list `p/pattern %) patterns))
@@ -67,7 +75,7 @@
 (s/def ::pattern any?)
 (s/def ::patterns (s/and vector? (s/+ any?)))
 (s/def ::replace any?)
-(s/def ::on-match (s/and seq? #(= "fn" (name (first %)))))
+(s/def ::on-match (s/and seq? #(.equals "fn" (name (first %)))))
 (s/def ::message string?)
 (s/def ::init-type keyword?)
 (s/def ::opts (s/keys :req-un [(or ::pattern ::patterns)

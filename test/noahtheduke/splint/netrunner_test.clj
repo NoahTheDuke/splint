@@ -32,6 +32,7 @@
     metrics/parameter-count 204
     naming/conventional-aliases 33
     naming/conversion-functions 28
+    performance/dot-equals 1040
     performance/get-keyword 5
     naming/predicate 15
     performance/assoc-many 244
@@ -84,5 +85,5 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 1886 (count (:diagnostics results)))
+    (expect 2926 (count (:diagnostics results)))
     (expect 222 (count (:checked-files results)))))

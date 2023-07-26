@@ -19,7 +19,7 @@
 
 (defn build-default-config []
   (let [dev-rules (->> (keys (:rules @global-rules))
-                       (filter #(= "dev" (namespace %)))
+                       (filter #(.equals "dev" (namespace %)))
                        (map (fn [r] (clojure.lang.MapEntry. r {:enabled true})))
                        (into {}))
         default-rules (config/read-default-config)]

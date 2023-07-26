@@ -274,6 +274,12 @@
   :updated "1.10.0"
   :link "https://bsless.github.io/datahike-datalog-parser"}
 
+ performance/dot-equals
+ {:description "Rely on `.equals` when comparing against string literals."
+  :enabled false
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  performance/get-in-literals
  {:description "Use keywords as functions instead of `get-in`."
   :enabled false

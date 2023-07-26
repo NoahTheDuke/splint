@@ -164,6 +164,21 @@
       nil)
     nil))
 
+(defn pre-filter-rules
+  "Fully remove disabled rules or rules that don't apply to the current filetype."
+  [ctx rules-by-type]
+  (let [ext (:ext ctx)]
+    (update-vals
+      rules-by-type
+      (fn [rules]
+        (into []
+              (keep (fn [rule]
+                      (if (:ext rule)
+                        (when (contains? (:ext rule) ext)
+                          rule)
+                        rule)))
+              rules)))))
+
 (defn parse-and-check-file
   "Parse the given file and then check each form."
   [ctx rules-by-type {:keys [ext ^File file contents] :as file-obj}]
@@ -173,7 +188,8 @@
                     (update :checked-files swap! conj file)
                     (assoc :ext ext)
                     (assoc :filename file)
-                    (assoc :file-str contents))]
+                    (assoc :file-str contents))
+            rules-by-type (pre-filter-rules ctx rules-by-type)]
         ;; Check any full-file rules
         (when-let [file-rules (:file rules-by-type)]
           (check-form ctx file-rules parsed-file))
@@ -183,11 +199,11 @@
     (catch Exception ex
       (let [data (ex-data ex)]
         (if (= :edamame/error (:type data))
-          (let [data (assoc data
-                            :error-name 'splint/parsing-error
-                            :filename file
-                            :form (with-meta [] {:line (:line data)
-                                                 :column (:column data)}))
+          (let [data (-> data
+                         (assoc :error-name 'splint/parsing-error)
+                         (assoc :filename file)
+                         (assoc :form (with-meta [] {:line (:line data)
+                                                     :column (:column data)})))
                 ex (exception->ex-info ex data)
                 diagnostic (-> (runner-error->diagnostic ex)
                                (assoc :form nil))]

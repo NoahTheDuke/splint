@@ -56,6 +56,7 @@
 
     noahtheduke.splint.rules.performance.assoc-many
     noahtheduke.splint.rules.performance.avoid-satisfies
+    noahtheduke.splint.rules.performance.dot-equals
     noahtheduke.splint.rules.performance.get-in-literals
     noahtheduke.splint.rules.performance.get-keyword
 

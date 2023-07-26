@@ -16,8 +16,8 @@
 (defn ->diagnostic
   "Create and return a new diagnostic."
   ([ctx rule form] (->diagnostic ctx rule form nil))
-  ([ctx rule form {:keys [replace-form message filename]}]
-   (let [form-meta (meta form)]
+  ([ctx rule form {:keys [replace-form message filename form-meta]}]
+   (let [form-meta (or form-meta (meta form))]
      (->Diagnostic
        (:full-name rule)
        form

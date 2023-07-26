@@ -25,7 +25,10 @@
   {:pattern '[(ns ?*ns-args) ?warn ?*rest-of-file]
    :init-type :file
    :message "*warn-on-reflection* should be immediately after ns declaration."
+   :ext :clj
    :on-match (fn [ctx rule form {:syms [?warn ?rest-of-file] :as binds}]
-               (when (= :clj (:ext ctx))
-                 (when-not (= '(set! *warn-on-reflection* true) ?warn)
-                   (->diagnostic ctx rule ?warn (select-keys (meta form) [:filename])))))})
+               (when-not (= '(set! *warn-on-reflection* true) ?warn)
+                 (->diagnostic ctx rule
+                               nil
+                               {:form-meta (meta ?warn)
+                                :filename (:filename (meta form))})))})

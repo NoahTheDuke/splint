@@ -8,5 +8,6 @@
  lint/thread-macro-one-arg {:enabled false}
  metrics/parameter-count {:enabled true
                           :count 5}
+ performance/dot-equals {:enabled true}
  style/set-literal-as-fn {:enabled false}
 }

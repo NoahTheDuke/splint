@@ -5,7 +5,7 @@ When used in a project as a library, put it in an alias to make it easier to inv
 ## Clojure CLI
 
 ```clojure
-:aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.10.0"}
+:aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.10.1"}
                                 org.clojure/clojure {:mvn/version "1.11.1"}}
                    :main-opts ["-m" "noahtheduke.splint"]}}
 ```
@@ -17,7 +17,7 @@ Run with `clojure -M:splint [args...]`.
 Add this to `project.clj`:
 
 ```clojure
-:profiles {:dev {:dependencies [[io.github.noahtheduke/splint "1.10.0"]
+:profiles {:dev {:dependencies [[io.github.noahtheduke/splint "1.10.1"]
                                 [org.clojure/clojure "1.11.1"]]}}
 :aliases {"splint" ["run" "-m" "noahtheduke.splint"]}
 ```
@@ -34,7 +34,7 @@ In the meantime, it runs fast on babashka and can be installed using `bbin`:
 $ bbin install io.github.noahtheduke/splint
 {:coords
  #:git{:url "https://github.com/noahtheduke/splint",
-       :tag "v1.10.0",
+       :tag "v1.10.1",
        :sha "..."},
  :lib io.github.noahtheduke/splint}
 ```

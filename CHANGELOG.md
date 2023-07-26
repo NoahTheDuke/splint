@@ -3,6 +3,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## v1.10.1
+
 ### Fixed
 
 - `performance/assoc-many` should only trigger when there are more than 1 pair.

@@ -12,6 +12,7 @@
     [noahtheduke.splint.config :as conf]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.parser :refer [parse-file]]
+    [noahtheduke.splint.path-matcher :refer [matches]]
     [noahtheduke.splint.printer :refer [print-results]]
     [noahtheduke.splint.rules :refer [global-rules]]
     [noahtheduke.splint.utils :refer [simple-type]])
@@ -164,6 +165,19 @@
       nil)
     nil))
 
+(defn right-ext? [ext rule]
+  (if (:ext rule)
+    (when (contains? (:ext rule) ext)
+      rule)
+    rule))
+
+(defn right-path? [ctx rule]
+  (when rule
+    (if-let [excludes (some-> rule :config :excludes)]
+      (when (not-any? #(matches % (:filename ctx)) excludes)
+        rule)
+      rule)))
+
 (defn pre-filter-rules
   "Fully remove disabled rules or rules that don't apply to the current filetype."
   [ctx rules-by-type]
@@ -173,10 +187,9 @@
       (fn [rules]
         (into []
               (keep (fn [rule]
-                      (if (:ext rule)
-                        (when (contains? (:ext rule) ext)
-                          rule)
-                        rule)))
+                      (some->> rule
+                               (right-ext? ext)
+                               (right-path? ctx))))
               rules)))))
 
 (defn parse-and-check-file
@@ -283,7 +296,7 @@
     (when (< i (dec (count filename)))
       (subs filename (inc i)))))
 
-(defn resolve-files-from-paths [paths]
+(defn resolve-files-from-paths [ctx paths]
   (if (or (string? paths) (instance? java.io.File paths))
     (let [p paths]
       (cond
@@ -294,7 +307,11 @@
     (let [xf (comp (mapcat #(file-seq (io/file %)))
                    (distinct)
                    (mapcat (fn [^File file]
-                             (when (.isFile file)
+                             (when
+                               (and (.isFile file)
+                                    (if-let [excludes (-> ctx :config :global :excludes)]
+                                      (not-any? #(matches % file) excludes)
+                                      true))
                                (case (get-extension file)
                                  "cljc"
                                  [{:features #{:clj} :ext :cljc :file file}
@@ -325,7 +342,7 @@
   [paths config]
   (let [rules-by-type (prepare-rules config (or (:rules @global-rules) {}))
         ctx (prepare-context rules-by-type config)
-        files (resolve-files-from-paths paths)]
+        files (resolve-files-from-paths ctx paths)]
     (check-files! ctx rules-by-type files)
     (build-result-map ctx files)))
 

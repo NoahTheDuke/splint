@@ -9,6 +9,11 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - `style/into-transducer`: Prefer `(into [] (map f) coll)` to `(into [] (map f coll))`.
 - `style/trivial-for`: Prefer `(map f items)` over `(for [item items] (f item))`.
 
+### Added
+
+- `global` top-level `.splint.edn` config that applies to all rules.
+- Support `:excludes` in both `global` and rules-specific configs. Accepts a vector of [java.nio.file.FileSystem/getPathMatcher](https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-) globs or regexes. When in `global`, matching files are removed from being processed at all. When in a specific rule, the rule is disabled before matching files are checked. This ensures that no extra work is done.
+
 ## v1.10.1
 
 ### Fixed

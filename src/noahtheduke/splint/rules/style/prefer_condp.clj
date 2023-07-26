@@ -27,7 +27,7 @@
                           (butlast all-pairs)
                           all-pairs)]
           ;; Skip simple built-in macros
-          (when-not (case pred-f (and or) true false)
+          (when-not (#{'and 'or 'instance?} pred-f)
             (when-let [test-exprs
                        (reduce
                          (fn [acc [cur-pred cur-branch]]

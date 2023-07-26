@@ -7,9 +7,10 @@
   to library functions."
   (:gen-class)
   (:require
+    [noahtheduke.splint.path-matcher]
     [noahtheduke.splint.pattern]
-    [noahtheduke.splint.rules]
     [noahtheduke.splint.rules.helpers]
+    [noahtheduke.splint.rules]
     [noahtheduke.splint.runner :as runner])
   (:require
     ;; # Rules

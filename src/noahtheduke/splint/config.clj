@@ -7,6 +7,8 @@
     [clojure.java.io :as io]
     [clojure.string :as str]
     [edamame.core :as e]
+    [noahtheduke.splint.clojure-ext.core :refer [mapv*]]
+    [noahtheduke.splint.path-matcher :refer [->matcher]]
     [noahtheduke.splint.rules :refer [global-rules]])
   (:import
     (java.io File)))
@@ -68,6 +70,19 @@
      :quiet quiet
      :silent silent}))
 
+(defn make-rule-config [rule genre-config local-config]
+  (let [combined-rule
+        (cond-> rule
+          genre-config (conj genre-config)
+          local-config (conj local-config))
+        combined-rule
+        (cond-> combined-rule
+          (seq (:includes combined-rule))
+          (update :includes #(mapv* ->matcher %))
+          (seq (:excludes combined-rule))
+          (update :excludes #(mapv* ->matcher %)))]
+    combined-rule))
+
 (defn merge-config
   "Merge the local config file into the default.
 
@@ -76,14 +91,15 @@
 
   If .splint.edn has both `'output` and `:output`, it will use `'output`."
   [default local]
-  (let [;; Select whole genres from local config
+  (let [;; Select all settings that apply globally
+        global (make-rule-config ('global local {}) nil nil)
+        ;; Select whole genres from local config
         whole-genres (select-keys local (map symbol (:genres @global-rules)))
-        ;; Select non-opts, non-genres as a `volatile!`
+        ;; Select non-opts, non-genres
         local-rules (into {} (filter (comp qualified-symbol? key)) local)
         ;; For each rule in the defaults:
         ;; * Merge (left to right) the default config,
         ;;   the whole genre config, and the local config for that rule.
-        ;; * Remove that rule's entry from the local-rules map.
         ;; * Add the merged rule config into the new config.
         new-config (->> default
                         (reduce-kv
@@ -91,15 +107,16 @@
                             (let [genre (symbol (namespace k))
                                   genre-config (whole-genres genre)
                                   local-config (local-rules k)
-                                  rule-config (cond-> (assoc v :rule-name k)
-                                                genre-config (conj genre-config)
-                                                local-config (conj local-config))]
+                                  rule-config (make-rule-config
+                                                (assoc v :rule-name k)
+                                                genre-config
+                                                local-config)]
                               (assoc! m k rule-config)))
                           (transient {}))
                         (persistent!))
-        ;; If there are custom local rules that aren't in the defaults,
-        ;; just merge them directly into the new config.
-        new-config (conj local-rules new-config)
+        new-config (-> {:global global}
+                       (conj local-rules)
+                       (conj new-config))
         ;; Merge in the cli opts to the new config.
         opts (get-opts-from-config local)]
     (conj new-config opts)))

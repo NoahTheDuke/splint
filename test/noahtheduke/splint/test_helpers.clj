@@ -27,71 +27,6 @@
 
 (set! *warn-on-reflection* true)
 
-(defn file-match [^File this actual]
-  (cond
-    (string? actual)
-    (let [this-path (str/split (.getAbsolutePath this) (re-pattern File/separator))
-          actual-path (str/split (.getAbsolutePath (io/file actual)) #"/")]
-      (if (= this-path actual-path)
-        {::result/type :match
-         ::result/value actual
-         ::result/weight 0}
-        {::result/type :mismatch
-         ::result/value (->Mismatch this actual)
-         ::result/weight 1}))
-    (instance? File actual)
-    (if (.equals (.getName this) (.getName ^File actual))
-      {::result/type :match
-       ::result/value actual
-       ::result/weight 0}
-      {::result/type :mismatch
-       ::result/value (->Mismatch this actual)
-       ::result/weight 1})
-    :else
-    {::result/type :mismatch
-     ::result/value (->Mismatch this actual)
-     ::result/weight 1}))
-
-(defn path-matcher-match [^Matcher this actual]
-  (cond
-    (string? actual)
-    (let [this-pattern (:pattern this)]
-      (if (= this-pattern actual)
-        {::result/type :match
-         ::result/value actual
-         ::result/weight 0}
-        {::result/type :mismatch
-         ::result/value (->Mismatch this-pattern actual)
-         ::result/weight 1}))
-    (instance? Matcher actual)
-    (let [this-pattern (:pattern this)
-          actual-pattern (:pattern actual)]
-      (if (= this-pattern actual-pattern)
-        {::result/type :match
-         ::result/value actual-pattern
-         ::result/weight 0}
-        {::result/type :mismatch
-         ::result/value (->Mismatch this-pattern actual-pattern)
-         ::result/weight 1}))
-    :else
-    {::result/type :mismatch
-     ::result/value (->Mismatch (list '->Matcher (:pattern this)) actual)
-     ::result/weight 1}))
-
-(extend-protocol mc/Matcher
-  File
-  (-matcher-for
-    ([this] this)
-    ([this _] this))
-  (-name [_] 'file-match)
-  (-match [this actual] (file-match this actual))
-  Matcher
-  (-matcher-for
-    ([this] this)
-    ([this _] this))
-  (-name [_] 'path-matcher-match)
-  (-match [this actual] (path-matcher-match this actual)))
-
 (defn check-all
   ([path] (check-all path nil))
   ([path config]
@@ -159,3 +94,68 @@
   (-> @dev/dev-config
       (update-vals #(assoc % :enabled false))
       (update rule-name assoc :enabled true)))
+
+(defn file-match [^File this actual]
+  (cond
+    (instance? File actual)
+    (if (.equals (.getName this) (.getName ^File actual))
+      {::result/type :match
+       ::result/value actual
+       ::result/weight 0}
+      {::result/type :mismatch
+       ::result/value (->Mismatch this actual)
+       ::result/weight 1})
+    (string? actual)
+    (let [this-path (str/split (.getAbsolutePath this) (re-pattern File/separator))
+          actual-path (str/split (.getAbsolutePath (io/file actual)) #"/")]
+      (if (= this-path actual-path)
+        {::result/type :match
+         ::result/value actual
+         ::result/weight 0}
+        {::result/type :mismatch
+         ::result/value (->Mismatch this actual)
+         ::result/weight 1}))
+    :else
+    {::result/type :mismatch
+     ::result/value (->Mismatch this actual)
+     ::result/weight 1}))
+
+(defn path-matcher-match [^Matcher this actual]
+  (cond
+    (instance? Matcher actual)
+    (let [this-pattern (:pattern this)
+          actual-pattern (:pattern actual)]
+      (if (= this-pattern actual-pattern)
+        {::result/type :match
+         ::result/value actual-pattern
+         ::result/weight 0}
+        {::result/type :mismatch
+         ::result/value (->Mismatch this-pattern actual-pattern)
+         ::result/weight 1}))
+    (string? actual)
+    (let [this-pattern (:pattern this)]
+      (if (= this-pattern actual)
+        {::result/type :match
+         ::result/value actual
+         ::result/weight 0}
+        {::result/type :mismatch
+         ::result/value (->Mismatch this-pattern actual)
+         ::result/weight 1}))
+    :else
+    {::result/type :mismatch
+     ::result/value (->Mismatch (list '->Matcher (:pattern this)) actual)
+     ::result/weight 1}))
+
+(extend-protocol mc/Matcher
+  File
+  (-matcher-for
+    ([this] this)
+    ([this _] this))
+  (-name [_] 'file-match)
+  (-match [this actual] (file-match this actual))
+  Matcher
+  (-matcher-for
+    ([this] this)
+    ([this _] this))
+  (-name [_] 'path-matcher-match)
+  (-match [this actual] (path-matcher-match this actual)))

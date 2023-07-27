@@ -3,6 +3,8 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 (ns noahtheduke.splint.path-matcher
+  (:require
+    [clojure.string :as str]) 
   (:import
     (java.io File)
     (java.nio.file FileSystem FileSystems Path PathMatcher)))
@@ -14,7 +16,7 @@
 (defprotocol Match
   (matches [matcher file-or-path] "Check if file-or-path matches glob."))
 
-(defrecord Matcher [^PathMatcher pm]
+(defrecord Matcher [^PathMatcher pm ^String pattern]
   Match
   (matches [_ file-or-path]
     (cond
@@ -29,4 +31,8 @@
                        (type file-or-path)))))))
 
 (defn ->matcher ^Matcher [syntax-and-pattern]
-  (->Matcher (.getPathMatcher fs syntax-and-pattern)))
+  (if (or (str/starts-with? syntax-and-pattern "glob:")
+          (str/starts-with? syntax-and-pattern "regex:"))
+    (->Matcher (.getPathMatcher fs syntax-and-pattern) syntax-and-pattern)
+    (let [syntax-and-pattern (str "glob:" syntax-and-pattern)]
+      (->Matcher (.getPathMatcher fs syntax-and-pattern) syntax-and-pattern))))

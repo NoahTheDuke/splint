@@ -86,5 +86,5 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 2926 (count (:diagnostics results)))
+    (expect 2928 (count (:diagnostics results)))
     (expect 222 (count (:checked-files results)))))

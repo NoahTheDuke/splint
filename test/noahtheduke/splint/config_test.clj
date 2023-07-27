@@ -7,7 +7,8 @@
     [expectations.clojure.test :refer [defexpect expect from-each in expecting]]
     [matcher-combinators.test :refer [match?]]
     [noahtheduke.splint.config :as sut]
-    [noahtheduke.splint.test-helpers :refer [with-temp-files print-to-file!]]))
+    [noahtheduke.splint.test-helpers :refer [with-temp-files print-to-file!]]
+    [noahtheduke.splint.path-matcher :refer [->matcher]]))
 
 (defexpect load-config-test
   (expect (match? {:parallel true :output "full"}
@@ -37,6 +38,17 @@
       (match? {'style/plus-one {:enabled true}}
               (sut/merge-config config {'style {:enabled false}
                                         'style/plus-one {:enabled true}})))))
+
+(defexpect global-config-test
+  (expect (match? {:global {:excludes [(->matcher "glob:foo")]}}
+                  (sut/load-config {'global {:excludes ["foo"]}} nil)))
+  (expect (match? {:global {:excludes [(->matcher "glob:foo")]}}
+                  (sut/load-config {'global {:excludes ["glob:foo"]}} nil)))
+  (expect (match? {:global {:excludes [(->matcher "regex:foo")]}}
+                  (sut/load-config {'global {:excludes ["regex:foo"]}} nil)))
+  (expect (match? {:global {:excludes [(->matcher "glob:foo")
+                                       (->matcher "regex:foo")]}}
+                  (sut/load-config {'global {:excludes ["foo" "regex:foo"]}} nil))))
 
 (defexpect read-project-file-edn-test
   (with-temp-files [deps-edn "deps.edn"]

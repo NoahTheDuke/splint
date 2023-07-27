@@ -4,10 +4,13 @@
 
 (ns noahtheduke.splint.path-matcher-test
   (:require
+    [noahtheduke.splint.test-helpers]
+    [clojure.java.io :as io]
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.path-matcher :as sut]
-    [clojure.java.io :as io]))
+    [matcher-combinators.test :refer [match?]]
+    [noahtheduke.splint.path-matcher :as sut]))
 
 (defexpect path-matcher-test
   (expect (sut/matches (sut/->matcher "glob:foo") (io/file "foo")))
-  (expect (sut/matches (sut/->matcher "glob:foo") (.toPath (io/file "foo")))))
+  (expect (sut/matches (sut/->matcher "glob:foo") (.toPath (io/file "foo"))))
+  (expect (match? (sut/->matcher "glob:foo") (sut/->matcher "foo"))))

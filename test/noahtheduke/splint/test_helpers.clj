@@ -4,14 +4,15 @@
 
 (ns noahtheduke.splint.test-helpers
   (:require
+    matcher-combinators.test
     noahtheduke.splint
     noahtheduke.splint.rules.helpers
-    matcher-combinators.test
     [clojure.java.io :as io]
     [clojure.spec.alpha :as s]
     [clojure.string :as str]
     [expectations.clojure.test :refer [expect]]
-    [matcher-combinators.core :refer [Matcher]]
+    [matcher-combinators.core :as mc]
+    [matcher-combinators.model :refer [->Mismatch]]
     [matcher-combinators.result :as-alias result]
     [noahtheduke.splint.config :refer [merge-config]]
     [noahtheduke.splint.dev :as dev]
@@ -21,7 +22,8 @@
   (:import
     (java.io File)
     (java.nio.file Files)
-    (java.nio.file.attribute FileAttribute)))
+    (java.nio.file.attribute FileAttribute)
+    (noahtheduke.splint.path_matcher Matcher)))
 
 (set! *warn-on-reflection* true)
 
@@ -35,7 +37,7 @@
          ::result/value actual
          ::result/weight 0}
         {::result/type :mismatch
-         ::result/value actual
+         ::result/value (->Mismatch this actual)
          ::result/weight 1}))
     (instance? File actual)
     (if (.equals (.getName this) (.getName ^File actual))
@@ -43,20 +45,52 @@
        ::result/value actual
        ::result/weight 0}
       {::result/type :mismatch
-       ::result/value actual
+       ::result/value (->Mismatch this actual)
        ::result/weight 1})
     :else
     {::result/type :mismatch
-     ::result/value actual
+     ::result/value (->Mismatch this actual)
      ::result/weight 1}))
 
-(extend-protocol Matcher
+(defn path-matcher-match [^Matcher this actual]
+  (cond
+    (string? actual)
+    (let [this-pattern (:pattern this)]
+      (if (= this-pattern actual)
+        {::result/type :match
+         ::result/value actual
+         ::result/weight 0}
+        {::result/type :mismatch
+         ::result/value (->Mismatch this-pattern actual)
+         ::result/weight 1}))
+    (instance? Matcher actual)
+    (let [this-pattern (:pattern this)
+          actual-pattern (:pattern actual)]
+      (if (= this-pattern actual-pattern)
+        {::result/type :match
+         ::result/value actual-pattern
+         ::result/weight 0}
+        {::result/type :mismatch
+         ::result/value (->Mismatch this-pattern actual-pattern)
+         ::result/weight 1}))
+    :else
+    {::result/type :mismatch
+     ::result/value (->Mismatch (list '->Matcher (:pattern this)) actual)
+     ::result/weight 1}))
+
+(extend-protocol mc/Matcher
   File
   (-matcher-for
     ([this] this)
     ([this _] this))
   (-name [_] 'file-match)
-  (-match [this actual] (file-match this actual)))
+  (-match [this actual] (file-match this actual))
+  Matcher
+  (-matcher-for
+    ([this] this)
+    ([this _] this))
+  (-name [_] 'path-matcher-match)
+  (-match [this actual] (path-matcher-match this actual)))
 
 (defn check-all
   ([path] (check-all path nil))
@@ -117,8 +151,8 @@
 (defmacro print-to-file!
   "Print "
   [file & body]
-  `(with-open [~file (io/writer ~file)]
-     (binding [*out* ~file]
+  `(with-open [file# (io/writer ~file)]
+     (binding [*out* file#]
        ~@(map #(list `println %) body))))
 
 (defn single-rule-config [rule-name]

@@ -5,7 +5,17 @@
 (ns noahtheduke.splint.rules.{{genre}}.{{rule-name}}-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
+
+(set! *warn-on-reflection* true)
+
+(defn config [] (single-rule-config '{{genre}}/{{rule-name}}))
 
 (defexpect {{rule-name}}-test
-  (expect-match [] ""))
+  (expect-match
+    [{:rule-name '{{genre}}/{{rule-name}}
+      :form nil
+      :message ""
+      :alt nil}]
+    "()"
+    (config)))

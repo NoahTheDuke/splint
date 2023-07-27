@@ -105,6 +105,7 @@
     noahtheduke.splint.rules.style.set-literal-as-fn
     noahtheduke.splint.rules.style.single-key-in
     noahtheduke.splint.rules.style.tostring
+    noahtheduke.splint.rules.style.trivial-for
     noahtheduke.splint.rules.style.update-in-assoc
     noahtheduke.splint.rules.style.useless-do
     noahtheduke.splint.rules.style.when-do

@@ -3,6 +3,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## New Rules
+
+- `style/trivial-for`: Prefer `(map f items)` over `(for [item items] (f item))`.
+
 ## v1.10.1
 
 ### Fixed

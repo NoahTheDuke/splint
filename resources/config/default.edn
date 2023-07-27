@@ -571,6 +571,12 @@
   :added "0.1"
   :updated "1.2.0"}
 
+ style/trivial-for
+ {:description "Prefer `map` over trivial `for`."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  style/update-in-assoc
  {:description "Prefer `assoc-in` to using `assoc` as the `f` in an `update-in`."
   :enabled true

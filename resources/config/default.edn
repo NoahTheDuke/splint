@@ -389,7 +389,8 @@
  {:description "Prefer `(into [] (map f) coll)` to `(into [] (map f coll))`."
   :enabled false
   :added "<<next>>"
-  :updated "<<next>>"}
+  :updated "<<next>>"
+  :link "https://bsless.github.io/code-smells"}
 
  style/let-do
  {:description "`let` has an implicit `do`."
@@ -587,7 +588,8 @@
  {:description "Prefer `map` over trivial `for`."
   :enabled true
   :added "<<next>>"
-  :updated "<<next>>"}
+  :updated "<<next>>"
+  :link "https://bsless.github.io/code-smells"}
 
  style/update-in-assoc
  {:description "Prefer `assoc-in` to using `assoc` as the `f` in an `update-in`."

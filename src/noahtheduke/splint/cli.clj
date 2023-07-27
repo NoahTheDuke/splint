@@ -17,14 +17,14 @@
   [["-o" "--output FMT" "Output format: simple, full, clj-kondo, markdown, json, json-pretty, edn."
     :validate [#{"simple" "full" "clj-kondo" "markdown" "json" "json-pretty" "edn"}
                "Not a valid output format (simple, full, clj-kondo, markdown, json, json-pretty, edn)"]]
-   [nil "--[no-]parallel" "Run splint in parallel. Default to true."]
+   [nil "--[no-]parallel" "Run splint in parallel. Defaults to true."]
    ["-q" "--quiet" "Print no diagnostics, only summary."]
    ["-s" "--silent" "Don't print suggestions or summary."]
+   [nil "--[no-]summary" "Don't print summary. Defaults to true."]
    [nil "--errors" "Only print error diagnostics."]
    [nil "--print-config TYPE" "Pretty-print the config: diff, local, full."
     :validate [#{"diff" "local" "full"}
                "Not a valid selection (diff, local, full)."]]
-   [nil "--[no-]summary" "Don't print summary. Default to true."]
    [nil "--auto-gen-config" "Generate a passing config file for chosen paths."]
    ["-h" "--help" "Print help information."]
    ["-v" "--version" "Print version information."]])

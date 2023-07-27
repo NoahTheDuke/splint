@@ -19,6 +19,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Added `min`, `max`, and `distinct?` to `lint/redundant-call`.
 
+### Fixed
+
+- Project file now accepts all reader macros.
+
 ## v1.10.1
 
 ### Fixed

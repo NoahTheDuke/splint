@@ -26,10 +26,7 @@
   If :multiple is not provided, returns a single value or throws if file contains more than 1 value."
   ([file] (slurp-edn file nil))
   ([file {:keys [multiple]}]
-   (let [parse-opts {:read-eval identity
-                     :regex true
-                     :fn true}
-         v (e/parse-string-all (slurp file) parse-opts)]
+   (let [v (e/parse-string-all (slurp file) {:all true})]
      (cond
        multiple (not-empty v)
        (< 1 (count v))

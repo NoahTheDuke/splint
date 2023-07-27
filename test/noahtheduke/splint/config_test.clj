@@ -170,3 +170,18 @@
                                  :snapshot nil}
                :paths []}
               (sut/read-project-file deps-edn project-clj)))))
+
+(defexpect parse-project-file-features-test
+  (with-temp-files [project-clj "project.clj"]
+    (print-to-file!
+      project-clj
+      "(defproject foo nil
+        :dependencies [[org.clojure/clojure \"1.10.0\"]]
+        :unquote ~foo
+        :unquote-splicing [~@(map inc (range 100))]
+        :read-eval #=(+ 1 2)
+        :regex #\".*\"
+        :fn #(+ % %)
+        :var #'abc)")
+    (expect
+      (sut/read-project-file nil project-clj))))

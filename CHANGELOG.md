@@ -5,6 +5,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## New Rules
 
+- `style/into-transducer`: Prefer `(into [] (map f) coll)` to `(into [] (map f coll))`.
 - `style/trivial-for`: Prefer `(map f items)` over `(for [item items] (f item))`.
 
 ## v1.10.1

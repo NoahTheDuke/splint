@@ -48,6 +48,7 @@
     style/filter-vec-filterv 1
     style/first-first 2
     style/first-next 1
+    style/into-transducer 2
     style/minus-one 7
     style/multiple-arity-order 2
     style/nested-addition 1

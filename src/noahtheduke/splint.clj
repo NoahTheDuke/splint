@@ -75,6 +75,7 @@
     noahtheduke.splint.rules.style.filter-vec-filterv
     noahtheduke.splint.rules.style.first-first
     noahtheduke.splint.rules.style.first-next
+    noahtheduke.splint.rules.style.into-transducer
     noahtheduke.splint.rules.style.let-do
     noahtheduke.splint.rules.style.mapcat-apply-apply
     noahtheduke.splint.rules.style.mapcat-concat-map

@@ -385,6 +385,12 @@
   :added "0.1"
   :updated "1.2.0"}
 
+ style/into-transducer
+ {:description "Prefer `(into [] (map f) coll)` to `(into [] (map f coll))`."
+  :enabled false
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  style/let-do
  {:description "`let` has an implicit `do`."
   :enabled true

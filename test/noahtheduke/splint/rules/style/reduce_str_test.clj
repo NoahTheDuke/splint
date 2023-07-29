@@ -2,25 +2,25 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.splint.rules.style.apply-str-test
+(ns noahtheduke.splint.rules.style.reduce-str-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'style/apply-str))
+(defn config [] (single-rule-config 'style/reduce-str))
 
-(defexpect apply-str-test
+(defexpect reduce-str-test
   (expect-match
-    '[{:alt (clojure.string/join x)}]
-    "(apply str x)"
+    [{:rule-name 'style/reduce-str
+      :form '(reduce str x)
+      :message "Use `clojure.string/join` for efficient string concatenation."
+      :alt '(clojure.string/join x)}]
+    "(reduce str x)"
     (config))
   (expect-match
-    nil
-    "(apply str (reverse x))"
-    (config))
-  (expect-match
-    nil
-    "(apply str (interpose x))"
+    [{:form '(reduce str "" x)
+      :alt '(clojure.string/join x)}]
+    "(reduce str \"\" x)"
     (config)))

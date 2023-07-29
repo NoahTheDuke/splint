@@ -11,7 +11,8 @@
   (doseq [given ["(-> x)" "(->> x)"
                  "(cond-> x)" "(cond->> x)"
                  "(some-> x)" "(some->> x)"
-                 "(comp x)" "(partial x)" "(merge x)"]]
+                 "(comp x)" "(partial x)" "(merge x)"
+                 "(min x)" "(max x)" "(distinct? x)"]]
     (expect-match '[{:alt x}] given))
   (expect-match nil "(-> a b (merge c))")
   (expect-match nil "(case elem (-> ->>) true false)"))

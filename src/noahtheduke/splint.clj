@@ -102,6 +102,7 @@
     noahtheduke.splint.rules.style.prefer-clj-string
     noahtheduke.splint.rules.style.prefer-condp
     noahtheduke.splint.rules.style.prefer-vary-meta
+    noahtheduke.splint.rules.style.reduce-str
     noahtheduke.splint.rules.style.redundant-let
     noahtheduke.splint.rules.style.redundant-regex-constructor
     noahtheduke.splint.rules.style.set-literal-as-fn

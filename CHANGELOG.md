@@ -3,16 +3,21 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
-## New Rules
+### New Rules
 
 - `performance/dot-equals`: Prefer `(.equals "foo" bar)` to `(= "foo" bar)`. Only cares about string literals right now.
 - `style/into-transducer`: Prefer `(into [] (map f) coll)` to `(into [] (map f coll))`.
 - `style/trivial-for`: Prefer `(map f items)` over `(for [item items] (f item))`.
+- `style/reduce-str`: Prefer `(clojure.string/join coll)` over `(reduce str coll)`.
 
 ### Added
 
 - `global` top-level `.splint.edn` config that applies to all rules.
 - Support `:excludes` in both `global` and rules-specific configs. Accepts a vector of [java.nio.file.FileSystem/getPathMatcher](https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-) globs or regexes. When in `global`, matching files are removed from being processed at all. When in a specific rule, the rule is disabled before matching files are checked.
+
+### Changed
+
+- Added `min`, `max`, and `distinct?` to `lint/redundant-call`.
 
 ## v1.10.1
 

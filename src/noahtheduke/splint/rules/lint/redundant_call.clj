@@ -10,9 +10,12 @@
 (set! *warn-on-reflection* true)
 
 (defn right-fn? [sexp]
-  (case sexp
-    (-> ->> cond-> cond->> some-> some->> comp partial merge) true
-    false))
+  (#{'-> '->>
+     'cond-> 'cond->>
+     'some-> 'some->>
+     'comp 'partial 'merge
+     'min 'max 'distinct?}
+    sexp))
 
 (defn check-parent [ctx]
   (when-let [parent-form (:parent-form ctx)]
@@ -32,6 +35,7 @@
   * `cond->`, `cond->>`
   * `some->`, `some->>`
   * `comp`, `partial`, `merge`
+  * `min`, `max`, `distinct?`
 
   Examples:
 
@@ -45,6 +49,9 @@
   (comp x)
   (partial x)
   (merge x)
+  (min x)
+  (max x)
+  (distinct? x)
 
   ; good
   x

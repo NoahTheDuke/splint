@@ -10,13 +10,11 @@
 
 (defn not-special? [form]
   (if (list? form)
-    (case (first form)
-      (reverse interpose) false
-      true)
+    (not (#{'reverse 'interpose} (first form)))
     true))
 
 (defrule style/apply-str
-  "Check for round-about clojure.string/reverse.
+  "`apply` takes a collection and Check for round-about `clojure.string/join`.
 
   Examples:
 

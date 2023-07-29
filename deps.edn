@@ -22,6 +22,17 @@
                      com.taoensso/tufte {:mvn/version "2.4.5"}
                      potemkin/potemkin {:mvn/version "0.4.6"}
                      org.clojure/tools.gitlibs {:mvn/version "2.5.190"}}}
+  :repl {:extra-deps {nrepl/nrepl {:mvn/version "1.0.0"}
+                      com.bhauman/rebel-readline {:mvn/version "0.1.4"}}
+         :main-opts  ["-m" "nrepl.cmdline"
+                      "--interactive"
+                      "-f" "rebel-readline.main/-main"]}
+  :test {:extra-paths ["test"]
+         :extra-deps {com.github.seancorfield/expectations {:mvn/version "2.0.165"}
+                      nubank/matcher-combinators {:mvn/version "3.8.5"}
+                      io.github.cognitect-labs/test-runner {:git/tag "v0.5.1"
+                                                            :git/sha "dfb30dd"}}}
+  :runner {:main-opts ["-m" "noahtheduke.splint.utils.test-runner"]}
   :profile {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.0.3"}
                          com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.3.0"}}
             :jvm-opts ["-Djdk.attach.allowAttachSelf"
@@ -33,12 +44,6 @@
          :jvm-opts ["-Dclojure.storm.traceEnable=true"
                     "-Dclojure.storm.instrumentEnable=true"
                     "-Dclojure.storm.instrumentOnlyPrefixes=user,noahtheduke"]}
-  :test {:extra-paths ["test"]
-         :extra-deps {com.github.seancorfield/expectations {:mvn/version "2.0.165"}
-                      nubank/matcher-combinators {:mvn/version "3.8.5"}
-                      io.github.cognitect-labs/test-runner {:git/tag "v0.5.1"
-                                                            :git/sha "dfb30dd"}}}
-  :runner {:main-opts ["-m" "noahtheduke.splint.utils.test-runner"]}
   :build {:deps {io.github.clojure/tools.build {:git/tag "v0.9.4"
                                                 :git/sha "76b78fe"}
                  slipset/deps-deploy {:mvn/version "0.2.1"}}

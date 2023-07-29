@@ -5,6 +5,7 @@
 (ns user
   (:require
     [clj-java-decompiler.core :as decompiler]
+    [clojure.main :as main]
     [clojure.tools.namespace.repl :as tns]
     [criterium.core :as criterium]
     [noahtheduke.splint.dev]
@@ -12,6 +13,8 @@
     [taoensso.tufte :as tufte]))
 
 (set! *warn-on-reflection* true)
+
+(apply require main/repl-requires)
 
 (import-vars
   [clojure.tools.namespace.repl

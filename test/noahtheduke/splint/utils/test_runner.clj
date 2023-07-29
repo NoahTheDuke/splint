@@ -1,6 +1,6 @@
 ; Adapted from clojure.core and cognitect.test-runner
 ; Clojure: Copyright © Rich Hickey, ELP 1.0
-; Cognitect test-runner: Copyright © 2018-2022 Cognitect, ELP 1.0
+; Cognitect test-runner: Copyright © Cognitect, ELP 1.0
 ; Modifications licensed under ELP 1.0
 
 (ns noahtheduke.splint.utils.test-runner
@@ -31,10 +31,10 @@
   [expr]
   `(let [start# (System/currentTimeMillis)
          ret# ~expr
-         time# (int (- (System/currentTimeMillis) start#))]
+         time# (bigdec (/ (- (System/currentTimeMillis) start#) 1000))]
      {:result ret#
       :elapsed time#
-      :string (str "Elapsed time: " time# " msecs")}))
+      :string (str "Elapsed time: " time# " secs")}))
 
 ;; Don't print namespaces or summary
 (defmethod t/report :begin-test-ns [_])
@@ -44,14 +44,16 @@
   "Adapted from cognitect.test-runner"
   [& args]
   (let [args (cli/parse-opts args ctr/cli-options)]
-    (if (:errors args)
+    (cond
+      (:errors args)
       (do (doseq [e (:errors args)]
             (println e))
           (#'ctr/help args)
           nil)
-      (if (-> args :options :test-help)
-        (do (#'ctr/help args) nil)
-        (time-data-map (:result (with-out-str-data-map (ctr/test (:options args)))))))))
+      (-> args :options :test-help)
+      (do (#'ctr/help args) nil)
+      :else
+      (time-data-map (:result (with-out-str-data-map (ctr/test (:options args))))))))
 
 (defn- print-summary
   "Adapted from clojure.test/report :summary"

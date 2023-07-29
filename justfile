@@ -12,7 +12,7 @@ compile: clean
     clojure -M -e "(compile 'noahtheduke.splint)"
 
 repl arg="":
-    clojure -M:dev:test{{arg}}:repl/rebel
+    clojure -M:dev:test{{arg}}:repl
 
 dev-run *args:
     clojure -M:dev:test:run {{args}}

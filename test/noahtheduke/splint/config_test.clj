@@ -203,7 +203,9 @@
          :content
          (str/join
            "\n"
-           [";; Splint configuration auto-generated on 2023-07-28."
+           [(format ";; Splint configuration auto-generated on %s."
+                    (.format (java.text.SimpleDateFormat. "yyyy-MM-dd")
+                             (java.util.Date.)))
             ";; All failing rules have been disabled and can be enabled as time allows."
             ""
             "{"

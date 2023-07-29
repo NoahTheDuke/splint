@@ -28,6 +28,7 @@
     style/eq-false 1
     style/eq-nil 2
     style/eq-true 2
+    style/reduce-str 1
     style/redundant-let 2
     style/set-literal-as-fn 1
     style/when-not-call 1})
@@ -46,4 +47,4 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 59 (count (:diagnostics results)))))
+    (expect 60 (count (:diagnostics results)))))

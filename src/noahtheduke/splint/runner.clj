@@ -68,9 +68,9 @@
   Use `reduced` to early exit when checking multiple patterns as we don't
   want to create multiple diagnostics for a single form and rule."
   [ctx rule form]
-  (if-let [pattern (or (:pattern rule) (:pattern rule))]
+  (if-let [pattern (:pattern rule)]
     (check-pattern ctx rule pattern form)
-    (let [patterns (or (:patterns rule) (:patterns rule))]
+    (let [patterns (:patterns rule)]
       (reduce
         (fn [_ pattern]
           (when-let [result (check-pattern ctx rule pattern form)]
@@ -386,8 +386,11 @@
           (throw ex))))))
 
 (comment
+  (dotimes [_ 100]
+    (run ["--silent" "--no-parallel"]))
+  (prn :heck)
   (do (require '[clj-async-profiler.core :as prof])
       (prof/profile
-        (run ["--silent" "--no-parallel" "../netrunner/src"]))
+        (run ["--silent" "--no-parallel"]))
       nil)
   )

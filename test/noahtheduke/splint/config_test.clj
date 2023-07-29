@@ -7,8 +7,10 @@
     [expectations.clojure.test :refer [defexpect expect from-each in expecting]]
     [matcher-combinators.test :refer [match?]]
     [noahtheduke.splint.config :as sut]
-    [noahtheduke.splint.test-helpers :refer [with-temp-files print-to-file!]]
-    [noahtheduke.splint.path-matcher :refer [->matcher]]))
+    [noahtheduke.splint.test-helpers :refer [with-temp-files print-to-file! check-all]]
+    [noahtheduke.splint.path-matcher :refer [->matcher]]
+    [clojure.java.io :as io]
+    [clojure.string :as str]))
 
 (defexpect load-config-test
   (expect (match? {:parallel true :output "full"}
@@ -185,3 +187,37 @@
         :var #'abc)")
     (expect
       (sut/read-project-file nil project-clj))))
+
+(def diagnostics
+  {:diagnostics
+   (check-all (io/file "corpus" "printer_test.clj")
+              '{naming/single-segment-namespace {:enabled false}})})
+
+(defexpect spit-config-test
+  (with-redefs [spit (fn [file content]
+                       {:file file
+                        :content content})]
+    (expect
+      (match?
+        {:file ".splint.edn"
+         :content
+         (str/join
+           "\n"
+           [";; Splint configuration auto-generated on 2023-07-28."
+            ";; All failing rules have been disabled and can be enabled as time allows."
+            ""
+            "{"
+            " ;; Diagnostics count: 1"
+            " ;; Prefer `not=` to `(not (= x y))`."
+            " style/not-eq {:enabled false}"
+            ""
+            " ;; Diagnostics count: 1"
+            " ;; `when` has an implicit `do`."
+            " style/when-do {:enabled false}"
+            ""
+            " ;; Diagnostics count: 1"
+            " ;; Prefer `when-not` to `(when (not x) ...)`."
+            " style/when-not-call {:enabled false}"
+            "}"])}
+
+        (sut/spit-config diagnostics)))))

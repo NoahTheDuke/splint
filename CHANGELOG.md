@@ -22,6 +22,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Fixed
 
 - Project file now accepts all reader macros.
+- `--auto-gen-config`, adds test.
 
 ## v1.10.1
 

@@ -339,12 +339,13 @@
 
 (defn run-impl
   "Actually perform check"
-  [paths config]
-  (let [rules-by-type (prepare-rules config (or (:rules @global-rules) {}))
-        ctx (prepare-context rules-by-type config)
-        files (resolve-files-from-paths ctx paths)]
-    (check-files! ctx rules-by-type files)
-    (build-result-map ctx files)))
+  ([paths config] (run-impl paths config (:rules @global-rules)))
+  ([paths config rules]
+   (let [rules-by-type (prepare-rules config (or rules {}))
+         ctx (prepare-context rules-by-type config)
+         files (resolve-files-from-paths ctx paths)]
+     (check-files! ctx rules-by-type files)
+     (build-result-map ctx files))))
 
 (defn run
   "Convert command line args to usable options, pass to runner, print output."
@@ -369,7 +370,7 @@
             {:exit 1})
         (:auto-gen-config options)
         (let [all-enabled (update-vals @conf/default-config #(assoc % :enabled true))]
-          (conf/spit-config (run-impl paths all-enabled)))
+          (conf/spit-config (run-impl paths config all-enabled)))
         :else
         (let [results (run-impl paths config)
               total-time (int (- (System/currentTimeMillis) start-time))

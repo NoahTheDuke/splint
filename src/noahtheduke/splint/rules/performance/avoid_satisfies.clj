@@ -19,5 +19,4 @@
   "
   {:pattern '(satisfies? ?protocol ?obj)
    :on-match (fn [ctx rule form bindings]
-               (prn bindings)
                (->diagnostic ctx rule form {:message "Avoid using `satisfies?`."}))})

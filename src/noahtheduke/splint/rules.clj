@@ -3,6 +3,12 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 (ns noahtheduke.splint.rules
+  "All rules-related functionality.
+
+  Rules don't actually use defrecord, but act like they do with the following definition:
+
+  (defrecord Rule
+    [name genre full-name docstring init-type pattern-raw replace-raw message min-clojure-version ext pattern patterns on-match])"
   (:require
     [clojure.spec.alpha :as s]
     [noahtheduke.splint.pattern :as p]

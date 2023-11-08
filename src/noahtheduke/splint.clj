@@ -60,6 +60,7 @@
     noahtheduke.splint.rules.performance.dot-equals
     noahtheduke.splint.rules.performance.get-in-literals
     noahtheduke.splint.rules.performance.get-keyword
+    noahtheduke.splint.rules.performance.single-literal-merge
 
     noahtheduke.splint.rules.style.apply-str
     noahtheduke.splint.rules.style.apply-str-interpose

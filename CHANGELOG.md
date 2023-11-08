@@ -6,6 +6,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### New Rules
 
 - `performance/dot-equals`: Prefer `(.equals "foo" bar)` to `(= "foo" bar)`. Only cares about string literals right now.
+- `performance/single-literal-merge`: Prefer `(assoc m :a 1 :b 2)` to `(merge m {:a 1 :b 2})`. Has `:single` and `:multiple` styles, either a single `assoc` call or threaded multiple calls.
 - `style/into-transducer`: Prefer `(into [] (map f) coll)` to `(into [] (map f coll))`.
 - `style/trivial-for`: Prefer `(map f items)` over `(for [item items] (f item))`.
 - `style/reduce-str`: Prefer `(clojure.string/join coll)` over `(reduce str coll)`.

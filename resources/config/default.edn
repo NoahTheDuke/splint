@@ -292,6 +292,14 @@
   :added "1.10.0"
   :updated "1.10.0"}
 
+ performance/single-literal-merge
+ {:description "Prefer assoc over merge when merging a literal."
+  :enabled false
+  :chosen-style :single
+  :supported-styles [:single :multiple]
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  ;; Style Rules
 
  style/apply-str

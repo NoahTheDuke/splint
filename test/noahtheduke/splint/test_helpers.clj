@@ -151,11 +151,11 @@
   (-matcher-for
     ([this] this)
     ([this _] this))
-  (-name [_] 'file-match)
+  (-base-name [_] 'file-match)
   (-match [this actual] (file-match this actual))
   Matcher
   (-matcher-for
     ([this] this)
     ([this _] this))
-  (-name [_] 'path-matcher-match)
+  (-base-name [_] 'path-matcher-match)
   (-match [this actual] (path-matcher-match this actual)))

@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect loop-empty-when-test
   (expect-match
     '[{:alt (while (= 1 1) (prn 1) (prn 2))}]

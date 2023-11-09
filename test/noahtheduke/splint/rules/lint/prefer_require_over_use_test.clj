@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect prefer-require-over-use-test
   (let [config '{lint/prefer-require-over-use {:chosen-style :as}}]
     (expect-match

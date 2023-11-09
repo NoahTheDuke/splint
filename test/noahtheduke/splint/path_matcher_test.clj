@@ -10,6 +10,8 @@
     [matcher-combinators.test :refer [match?]]
     [noahtheduke.splint.path-matcher :as sut]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect path-matcher-test
   (expect (sut/matches (sut/->matcher "glob:foo") (io/file "foo")))
   (expect (sut/matches (sut/->matcher "glob:foo") (.toPath (io/file "foo"))))

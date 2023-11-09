@@ -10,6 +10,8 @@
     [clojure.string :as str]
     [expectations.clojure.test :refer [defexpect expect]]))
 
+(set! *warn-on-reflection* true)
+
 (s/def ::description string?)
 (s/def ::enabled boolean?)
 (s/def ::added string?)

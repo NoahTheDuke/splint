@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect prefer-vary-meta-test
   (expect-match
     '[{:alt (vary-meta x f args)}]

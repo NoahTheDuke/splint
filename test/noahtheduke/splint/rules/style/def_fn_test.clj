@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect def-let-fn-test
   (expect-match
     '[{:alt (let [allowed #{:a :b :c}] (defn check-inclusion [i] (contains? allowed i)))}]

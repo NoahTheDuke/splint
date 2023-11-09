@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect let-if-test
   (expect-match
     '[{:alt (if-let [result (some-func)] (do-stuff result) (other-stuff))}]

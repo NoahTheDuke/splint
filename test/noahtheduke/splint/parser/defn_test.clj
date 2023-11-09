@@ -10,6 +10,8 @@
     [noahtheduke.splint.test-helpers :refer [parse-string-all]]
     [noahtheduke.splint.parser.defn :as sut]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect parse-defn-arglist-metadata-test
   (expect
     (match?

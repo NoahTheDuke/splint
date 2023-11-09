@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
+(set! *warn-on-reflection* true)
+
 (defn config [] (single-rule-config 'style/prefer-condp))
 
 (defexpect prefer-condp-test

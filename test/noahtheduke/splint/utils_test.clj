@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect expect]]
     [noahtheduke.splint.utils :as sut]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect simple-type-test
   (doseq [[input t] '[[nil :nil]
                       [true :boolean]

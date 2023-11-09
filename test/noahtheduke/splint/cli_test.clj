@@ -9,6 +9,8 @@
     [matcher-combinators.test :refer [match?]]
     [noahtheduke.splint.cli :as sut]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect help-message-test
   (expect
     (match? {:exit-message #"splint v.*\n\nUsage"

@@ -12,6 +12,8 @@
     [noahtheduke.splint.runner :as sut]
     [matcher-combinators.test :refer [match?]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect ignore-rules-test
   (expect-match nil "#_:splint/disable (+ 1 x)"))
 

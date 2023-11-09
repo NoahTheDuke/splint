@@ -9,6 +9,8 @@
     [clojure.tools.cli :as cli]
     [cognitect.test-runner :as ctr]))
 
+(set! *warn-on-reflection* true)
+
 (defmacro with-out-str-data-map
   "Adapted from clojure.core/with-out-str.
 

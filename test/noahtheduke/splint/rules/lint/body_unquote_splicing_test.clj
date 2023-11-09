@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect only-body-test
   (doseq [input '[delay dosync future lazy-cat lazy-seq pvalues
                   with-loading-context]]

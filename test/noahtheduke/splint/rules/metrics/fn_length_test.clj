@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (def config
   '{metrics/fn-length {:enabled true}
     style/multiple-arity-order {:enabled false}})

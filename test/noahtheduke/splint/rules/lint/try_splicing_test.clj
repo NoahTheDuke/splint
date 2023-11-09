@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect try-splicing-test
   (expect-match
     '[{:alt (try (do (splint/unquote-splicing body)) (finally :true))}]

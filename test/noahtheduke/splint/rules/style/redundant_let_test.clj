@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect redundant-let-test
   (expect-match
     '[{:alt (let [a 1 b 2] (println a b))}]

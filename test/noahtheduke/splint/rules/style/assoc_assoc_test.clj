@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect assoc-assoc-key-coll-test
   (expect-match
     '[{:alt (assoc-in coll [:k1 :k2] v)}]

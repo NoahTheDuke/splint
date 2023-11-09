@@ -11,6 +11,8 @@
     [noahtheduke.splint.config :refer [default-config]]
     [noahtheduke.splint.runner :refer [run-impl]]))
 
+(set! *warn-on-reflection* true)
+
 (def all-enabled-config
   (update-vals @default-config #(assoc % :enabled true)))
 

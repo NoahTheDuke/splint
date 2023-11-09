@@ -9,6 +9,8 @@
     [matcher-combinators.test :refer [match?]]
     [noahtheduke.splint.test-helpers :refer [parse-string parse-string-all]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect unknown-tagged-literals-test
   '[{splint/tagged-literal (sql/raw [1 2 3])}
     {splint/tagged-literal (unknown [4])}]

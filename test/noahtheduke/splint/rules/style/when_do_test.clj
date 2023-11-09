@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect when-do-test
   (expect-match
     '[{:alt (when x y)} {:rule-name style/useless-do}]

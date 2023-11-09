@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect set-literal-as-fn-test
   (expect-match
     '[{:alt (case elem (a b c) elem nil)}]

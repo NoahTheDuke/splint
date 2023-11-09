@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect fn-wrapper-test
   (expect-match '[{:alt f}] "(fn* [arg] (f arg))")
   (expect-match '[{:alt f}] "(fn [arg] (f arg))")

@@ -13,6 +13,8 @@
     [noahtheduke.splint.parser :as parser]
     [clojure.pprint :as pp]))
 
+(set! *warn-on-reflection* true)
+
 (def diagnostics
   (check-all (io/file "corpus" "printer_test.clj")
              '{naming/single-segment-namespace {:enabled false}}))

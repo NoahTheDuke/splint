@@ -8,6 +8,8 @@
     [noahtheduke.splint.pattern :as sut]
     [noahtheduke.splint.test-helpers :refer [parse-string]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect read-dispatch-test
   (expecting "simple types"
     (doseq [[input t] '[[nil :nil]

@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect prefer-clj-math-test
   (expect-match
     '[{:alt (clojure.string/reverse "hello world")}]

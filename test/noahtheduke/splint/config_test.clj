@@ -12,6 +12,8 @@
     [clojure.java.io :as io]
     [clojure.string :as str]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect load-config-test
   (expect (match? {:parallel true :output "full"}
                   (sut/load-config nil)))

@@ -10,6 +10,8 @@
     [noahtheduke.splint.rules :refer [global-rules]]
     [noahtheduke.splint.runner :refer [run]]))
 
+(set! *warn-on-reflection* true)
+
 (def all-enabled-config
   (update-vals @default-config #(assoc % :enabled true)))
 

@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect expect]]
     [noahtheduke.splint.replace :as sut]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect postwalk-splicing-replace-test
   (expect '(splint/deref b)
     (sut/postwalk-splicing-replace {'?a 'b} '(splint/deref ?a)))

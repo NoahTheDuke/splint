@@ -6,6 +6,8 @@
   (:require [expectations.clojure.test :refer [defexpect expect from-each]]
             [noahtheduke.splint.parser.ns :as sut]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect parse-ns-import-test
   (expect
     '{:imports

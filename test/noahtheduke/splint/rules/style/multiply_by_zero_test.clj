@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect multiply-by-0-test
   (expect-match [{:alt 0}] "(* x 0)")
   (expect-match [{:alt 0}] "(* 0 x)"))

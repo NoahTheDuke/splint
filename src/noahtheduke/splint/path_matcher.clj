@@ -11,7 +11,7 @@
 
 (set! *warn-on-reflection* true)
 
-(def ^FileSystem fs (FileSystems/getDefault))
+(defonce ^FileSystem fs (FileSystems/getDefault))
 
 (defprotocol Match
   (matches [matcher file-or-path] "Check if file-or-path matches glob."))

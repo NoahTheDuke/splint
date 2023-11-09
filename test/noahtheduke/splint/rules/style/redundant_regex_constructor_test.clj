@@ -7,6 +7,8 @@
     [expectations.clojure.test :refer [defexpect expecting]]
     [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
+(set! *warn-on-reflection* true)
+
 (defexpect redundant-regex-constructor-test
   (expect-match
     [{:message "Rely on regex literal directly."

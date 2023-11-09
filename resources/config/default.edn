@@ -576,9 +576,9 @@
 
  style/set-literal-as-fn
  {:description "Prefer `case` to using `(#{:a :b :c} x)`."
-  :enabled true
+  :enabled false
   :added "0.1.119"
-  :updated "1.0"}
+  :updated "<<next>>"}
 
  style/single-key-in
  {:description "Prefer `assoc` to `assoc-in` when given a single element vec."

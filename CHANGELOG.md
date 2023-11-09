@@ -19,6 +19,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Changed
 
 - Added `min`, `max`, and `distinct?` to `lint/redundant-call`.
+- Change `style/set-literal-as-fn` default to `false`. It's not idiomatic and I don't know that it's any faster either.
 
 ### Fixed
 

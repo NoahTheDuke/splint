@@ -4,17 +4,21 @@
 
 (ns noahtheduke.splint.rules.style.set-literal-as-fn-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [expectations.clojure.test :refer [defexpect]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
+
+(defn config [] (single-rule-config 'style/set-literal-as-fn))
 
 (defexpect set-literal-as-fn-test
   (expect-match
     '[{:alt (case elem (a b c) elem nil)}]
-    "(#{'a 'b 'c} elem)")
+    "(#{'a 'b 'c} elem)"
+    (config))
   (expect-match
     '[{:alt (case elem (nil 1 :b c) elem nil)}]
-    "(#{nil 1 :b 'c} elem)")
-  (expect-match nil "(#{'a 'b c} elem)")
-  (expect-match nil "(#{'a 'b 'c '(1 2 3)} elem)"))
+    "(#{nil 1 :b 'c} elem)"
+    (config))
+  (expect-match nil "(#{'a 'b c} elem)" (config))
+  (expect-match nil "(#{'a 'b 'c '(1 2 3)} elem)" (config)))

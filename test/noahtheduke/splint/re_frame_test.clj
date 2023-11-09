@@ -25,6 +25,7 @@
     naming/single-segment-namespace 1
     performance/assoc-many 2
     performance/avoid-satisfies 2
+    performance/single-literal-merge 1
     style/eq-false 1
     style/eq-nil 2
     style/eq-true 2
@@ -47,4 +48,4 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 60 (count (:diagnostics results)))))
+    (expect 61 (count (:diagnostics results)))))

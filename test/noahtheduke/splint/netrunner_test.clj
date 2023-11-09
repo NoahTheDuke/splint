@@ -34,6 +34,7 @@
     naming/conversion-functions 28
     performance/dot-equals 1040
     performance/get-keyword 5
+    performance/single-literal-merge 12
     naming/predicate 15
     performance/assoc-many 244
     style/apply-str 1
@@ -86,5 +87,5 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 2928 (count (:diagnostics results)))
+    (expect 2940 (count (:diagnostics results)))
     (expect 222 (count (:checked-files results)))))

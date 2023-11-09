@@ -42,6 +42,7 @@
     performance/avoid-satisfies 2
     performance/dot-equals 123
     performance/get-keyword 14
+    performance/single-literal-merge 9
     splint/parsing-error 4
     style/apply-str 14
     style/apply-str-interpose 3
@@ -84,4 +85,4 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 1208 (count (:diagnostics results)))))
+    (expect 1217 (count (:diagnostics results)))))

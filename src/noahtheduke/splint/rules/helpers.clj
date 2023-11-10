@@ -18,50 +18,44 @@
   (::p/rest (meta sexp)))
 
 (defn deref?? [sexp]
-  (case sexp
-    (deref splint/deref) true
-    false))
+  (and (symbol? sexp)
+       (#{"deref" "splint/deref"} (name sexp))))
 
 (defn syntax-quote?? [sexp]
-  (= 'splint/syntax-quote sexp))
+  (and (symbol? sexp)
+       (.equals "splint/syntax-quote" (name sexp))))
 
 (defn unquote?? [sexp]
-  (case sexp
-    (unquote splint/unquote) true
-    false))
+  (and (symbol? sexp)
+       (#{"unquote" "splint/unquote"} (name sexp))))
 
 (defn unquote-splicing?? [sexp]
-  (case sexp
-    (unquote-splicing splint/unquote-splicing) true
-    false))
+  (and (symbol? sexp)
+       (#{"unquote-splicing" "splint/unquote-splicing"} (name sexp))))
 
 (defn var?? [sexp]
-  (case sexp
-    (var splint/var) true
-    false))
+  (and (symbol? sexp)
+       (#{"var" "splint/var"} (name sexp))))
 
 (defn read-eval?? [sexp]
-  (= 'splint/read-eval sexp))
+  (and (symbol? sexp)
+       (.equals "splint/read-eval" (name sexp))))
 
 (defn fn?? [sexp]
-  (case sexp
-    (fn fn* splint/fn) true
-    false))
+  (and (symbol? sexp)
+       (#{"fn" "fn*" "splint/fn"} (name sexp))))
 
 (defn defn?? [sexp]
-  (case sexp
-    (defn defn-) true
-    false))
+  (and (symbol? sexp)
+       (#{"defn" "defn-"} (name sexp))))
 
 (defn defn-fn?? [sexp]
-  (case sexp
-    (defn defn- fn fn* splint/fn) true
-    false))
+  (and (symbol? sexp)
+       (#{"defn" "defn-" "fn" "fn*" "splint/fn"} (name sexp))))
 
 (defn re-pattern?? [sexp]
-  (case sexp
-    (re-pattern splint/re-pattern) true
-    false))
+  (and (symbol? sexp)
+       (#{"re-pattern" "splint/re-pattern"} (name sexp))))
 
 (def ^:private built-in-classes
   '#{;; bare

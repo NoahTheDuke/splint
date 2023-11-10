@@ -32,6 +32,7 @@
     lint/prefer-require-over-use 4
     lint/thread-macro-one-arg 85
     lint/try-splicing 2
+    lint/underscore-in-namespace 1
     lint/warn-on-reflection 229
     metrics/fn-length 314
     metrics/parameter-count 48
@@ -87,4 +88,4 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 1217 (count (:diagnostics results)))))
+    (expect 1218 (count (:diagnostics results)))))

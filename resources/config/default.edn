@@ -185,6 +185,11 @@
   :updated "1.0"
   :link "https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"}
 
+ lint/underscore-in-namespace
+ {:description "Underscores in namespaces can lead to problems so should be avoided."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
 
  lint/warn-on-reflection
  {:description "Always set *warn-on-reflection* to avoid reflection in interop."

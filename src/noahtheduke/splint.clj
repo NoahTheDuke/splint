@@ -43,6 +43,7 @@
     noahtheduke.splint.rules.lint.take-repeatedly
     noahtheduke.splint.rules.lint.thread-macro-one-arg
     noahtheduke.splint.rules.lint.try-splicing
+    noahtheduke.splint.rules.lint.underscore-in-namespace
     noahtheduke.splint.rules.lint.warn-on-reflection
 
     noahtheduke.splint.rules.metrics.fn-length

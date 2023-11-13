@@ -151,25 +151,44 @@
     (with-meta obj meta)
     obj))
 
-(defn walk*
-  [inner outer form]
-  (case (simple-type form)
-    (:nil :boolean :char :number :string :keyword :symbol) (outer form)
-    :list (with-meta* (outer (->list (mapv* inner form))) (meta form))
-    :map (with-meta*
-           (outer
-             (->> form
-                  (reduce-kv
-                    (fn [m k v]
-                      (assoc! m (inner k) (inner v)))
-                    (transient {}))
-                  (persistent!)))
-           (meta form))
-    :set (with-meta* (outer (into #{} (map inner) form)) (meta form))
-    :vector (with-meta* (outer (mapv* inner form)) (meta form))
-    ; else
-    (throw (ex-info "Unimplemented type: " {:type (simple-type form)
-                                            :form form}))))
+(defprotocol Walk
+  (walk* [form inner outer]
+    "Protocol version of postwalk"))
+
+(extend-protocol Walk
+  ; literals
+  nil (walk* [form _inner outer] (outer form))
+  Boolean (walk* [form _inner outer] (outer form))
+  Character (walk* [form _inner outer] (outer form))
+  Number (walk* [form _inner outer] (outer form))
+  String (walk* [form _inner outer] (outer form))
+  clojure.lang.Keyword (walk* [form _inner outer] (outer form))
+  clojure.lang.Symbol (walk* [form _inner outer] (outer form))
+  ; reader macros
+  clojure.lang.IPersistentMap
+  (walk* [form inner outer]
+    (with-meta*
+      (outer
+        (->> form
+             (reduce-kv
+               (fn [m k v]
+                 (assoc! m (inner k) (inner v)))
+               (transient {}))
+             (persistent!)))
+      (meta form)))
+  clojure.lang.IPersistentSet
+  (walk* [form inner outer]
+    (with-meta* (outer (into #{} (map inner) form)) (meta form)))
+  clojure.lang.IPersistentVector
+  (walk* [form inner outer]
+    (with-meta* (outer (mapv* inner form)) (meta form)))
+  clojure.lang.ISeq
+  (walk* [form inner outer]
+    (with-meta* (outer (->list (mapv* inner form))) (meta form)))
+  ; else
+  Object (walk* [form _inner _outer]
+           (throw (ex-info "Unimplemented type: " {:type (simple-type form)
+                                                   :form form}))))
 
 (defn postwalk*
   "More efficient and meta-preserving clojure.walk/postwalk.
@@ -179,4 +198,4 @@
   (clojure.walk/postwalk identity big-map) => 72 us
   (postwalk* identity big-map) => 25 us"
   [f form]
-  (walk* #(postwalk* f %) f form))
+  (walk* form #(postwalk* f %) f))

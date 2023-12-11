@@ -14,7 +14,7 @@
     true))
 
 (defrule style/apply-str
-  "`apply` takes a collection and Check for round-about `clojure.string/join`.
+  "Check for round-about `clojure.string/join`.
 
   Examples:
 

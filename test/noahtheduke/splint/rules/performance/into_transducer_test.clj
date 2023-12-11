@@ -2,20 +2,20 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.splint.rules.style.into-transducer-test
+(ns noahtheduke.splint.rules.performance.into-transducer-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
     [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]
-    [noahtheduke.splint.rules.style.into-transducer :refer [transducers]]))
+    [noahtheduke.splint.rules.performance.into-transducer :refer [transducers]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'style/into-transducer))
+(defn config [] (single-rule-config 'performance/into-transducer))
 
 (defexpect into-transducer-test
   (doseq [t transducers]
     (expect-match
-      [{:rule-name 'style/into-transducer
+      [{:rule-name 'performance/into-transducer
         :form (list 'into [] (list t 'f '(range 100)))
         :message "Rely on the transducer form."
         :alt (list 'into [] (list t 'f) '(range 100))}]

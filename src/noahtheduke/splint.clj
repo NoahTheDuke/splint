@@ -61,6 +61,7 @@
     noahtheduke.splint.rules.performance.dot-equals
     noahtheduke.splint.rules.performance.get-in-literals
     noahtheduke.splint.rules.performance.get-keyword
+    noahtheduke.splint.rules.performance.into-transducer
     noahtheduke.splint.rules.performance.single-literal-merge
 
     noahtheduke.splint.rules.style.apply-str
@@ -78,7 +79,6 @@
     noahtheduke.splint.rules.style.filter-vec-filterv
     noahtheduke.splint.rules.style.first-first
     noahtheduke.splint.rules.style.first-next
-    noahtheduke.splint.rules.style.into-transducer
     noahtheduke.splint.rules.style.let-do
     noahtheduke.splint.rules.style.mapcat-apply-apply
     noahtheduke.splint.rules.style.mapcat-concat-map

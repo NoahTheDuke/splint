@@ -34,11 +34,12 @@
     metrics/parameter-count 204
     naming/conventional-aliases 33
     naming/conversion-functions 28
-    performance/dot-equals 1040
-    performance/get-keyword 5
-    performance/single-literal-merge 12
     naming/predicate 15
     performance/assoc-many 244
+    performance/dot-equals 1040
+    performance/get-keyword 5
+    performance/into-transducer 2
+    performance/single-literal-merge 12
     style/apply-str 1
     style/apply-str-interpose 1
     style/assoc-assoc 4
@@ -51,7 +52,6 @@
     style/filter-vec-filterv 1
     style/first-first 2
     style/first-next 1
-    style/into-transducer 2
     style/minus-one 7
     style/multiple-arity-order 2
     style/nested-addition 1

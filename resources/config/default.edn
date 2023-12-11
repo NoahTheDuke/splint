@@ -297,6 +297,13 @@
   :added "1.10.0"
   :updated "1.10.0"}
 
+ performance/into-transducer
+ {:description "Prefer `(into [] (map f) coll)` to `(into [] (map f coll))`."
+  :enabled false
+  :added "<<next>>"
+  :updated "<<next>>"
+  :link "https://bsless.github.io/code-smells"}
+
  performance/single-literal-merge
  {:description "Prefer assoc over merge when merging a literal."
   :enabled false
@@ -397,13 +404,6 @@
   :enabled true
   :added "0.1"
   :updated "1.2.0"}
-
- style/into-transducer
- {:description "Prefer `(into [] (map f) coll)` to `(into [] (map f coll))`."
-  :enabled false
-  :added "<<next>>"
-  :updated "<<next>>"
-  :link "https://bsless.github.io/code-smells"}
 
  style/let-do
  {:description "`let` has an implicit `do`."

@@ -188,8 +188,8 @@
  lint/underscore-in-namespace
  {:description "Underscores in namespaces can lead to problems so should be avoided."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.11"
+  :updated "1.11"}
 
  lint/warn-on-reflection
  {:description "Always set *warn-on-reflection* to avoid reflection in interop."
@@ -282,8 +282,8 @@
  performance/dot-equals
  {:description "Rely on `.equals` when comparing against string literals."
   :enabled false
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.11"
+  :updated "1.11"}
 
  performance/get-in-literals
  {:description "Use keywords as functions instead of `get-in`."
@@ -300,8 +300,8 @@
  performance/into-transducer
  {:description "Prefer `(into [] (map f) coll)` to `(into [] (map f coll))`."
   :enabled false
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.11"
+  :updated "1.11"
   :link "https://bsless.github.io/code-smells"}
 
  performance/single-literal-merge
@@ -309,8 +309,8 @@
   :enabled false
   :chosen-style :single
   :supported-styles [:single :multiple]
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.11"
+  :updated "1.11"}
 
  ;; Style Rules
 
@@ -564,8 +564,8 @@
  style/reduce-str
  {:description "Use clojure.string for efficient string concatenation."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.11"
+  :updated "1.11"}
 
  style/redundant-let
  {:description "Merge nested `let`s."
@@ -583,7 +583,7 @@
  {:description "Prefer `case` to using `(#{:a :b :c} x)`."
   :enabled false
   :added "0.1.119"
-  :updated "<<next>>"}
+  :updated "1.11"}
 
  style/single-key-in
  {:description "Prefer `assoc` to `assoc-in` when given a single element vec."
@@ -600,8 +600,8 @@
  style/trivial-for
  {:description "Prefer `map` over trivial `for`."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.11"
+  :updated "1.11"
   :link "https://bsless.github.io/code-smells"}
 
  style/update-in-assoc

@@ -6,7 +6,7 @@
 | ------------------ | ------------- | --------------- |
 | true               | 0.1           | 1.2.0           |
 
-Check for round-about clojure.string/reverse.
+Check for round-about `clojure.string/join`.
 
 ### Examples
 
@@ -915,6 +915,34 @@ gathered and rendered into a `condp`.
 
 ---
 
+## style/reduce-str
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 1.11          | 1.11            |
+
+`reduce` calls the provided function on every element in the provided
+collection. Because of how `str` is implemented, a new string is created
+every time it's called. Better to rely on `clojure.string/join`'s efficient
+StringBuilder and collection traversal.
+
+Additionally, the 2-arity form of `reduce` returns the first item without
+calling `str` on it if it only has one item total, which is
+generally not what is expected when calling `str` on something.
+
+### Examples
+
+```clojure
+; bad
+(reduce str x)
+(reduce str "" x)
+
+; good
+(clojure.string/join x)
+```
+
+---
+
 ## style/redundant-let
 
 | Enabled by default | Version Added | Version Updated |
@@ -962,7 +990,7 @@ Clojure regex literals (#"") are passed to `java.util.regex.Pattern/compile` at 
 
 | Enabled by default | Version Added | Version Updated |
 | ------------------ | ------------- | --------------- |
-| true               | 0.1.119       | 1.0             |
+| false              | 0.1.119       | 1.11            |
 
 Sets can be used as functions and they're converted to static items when
 they contain constants, making them fairly fast. However, they're not as fast
@@ -1018,6 +1046,31 @@ Convert `(.toString)` to `(str)`.
 ; good
 (str x)
 ```
+
+---
+
+## style/trivial-for
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 1.11          | 1.11            |
+
+`for` is a complex and weighty macro. When simply applying a function to each element, better to rely on other built-ins.
+
+### Examples
+
+```clojure
+# bad
+(for [item items]
+  (f item))
+
+# good
+(map f items)
+```
+
+### Reference
+
+* <https://bsless.github.io/code-smells>
 
 ---
 

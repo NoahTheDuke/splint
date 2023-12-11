@@ -558,6 +558,7 @@ Current list of clojure.core functions this linter checks:
 * `cond->`, `cond->>`
 * `some->`, `some->>`
 * `comp`, `partial`, `merge`
+* `min`, `max`, `distinct?`
 
 ### Examples
 
@@ -572,6 +573,9 @@ Current list of clojure.core functions this linter checks:
 (comp x)
 (partial x)
 (merge x)
+(min x)
+(max x)
+(distinct? x)
 
 ; good
 x
@@ -662,6 +666,28 @@ to force it into 'expression position'.
 ### Reference
 
 * <https://blog.ambrosebs.com/2022/09/08/break-your-macros.html>
+
+---
+
+## lint/underscore-in-namespace
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 1.11          | 1.11            |
+
+Due to munging rules, underscores in namespaces can confuse tools and
+libraries which expect that underscores in class names should be dashes in
+Clojure.
+
+### Examples
+
+```clojure
+# bad
+(ns foo_bar.baz_qux)
+
+# good
+(ns foo-bar.baz-qux)
+```
 
 ---
 

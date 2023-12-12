@@ -4,7 +4,6 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.prefer-require-over-use
   (:require
-    [noahtheduke.splint.config :refer [get-config]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
@@ -15,8 +14,8 @@
        (filter #(and (sequential? ?libspecs) (= :use (first %))))
        (seq)))
 
-(defn make-message [ctx rule]
-  (condp = (:chosen-style (get-config ctx rule))
+(defn make-message [rule]
+  (condp = (:chosen-style (:config rule))
     :as "Use (:require [some.lib :as l]) over (:use some.lib)"
     :refer "Use (:require [some.lib :refer [...]]) over (:use some.lib)"
     :all "Use (:require [some.lib :refer :all]) over (:use some.lib)"
@@ -42,6 +41,6 @@
   {:pattern '(ns ?ns ?*libspecs)
    :on-match (fn [ctx rule form {:syms [?libspecs]}]
                (when-let [use-libs (find-use-libs ?libspecs)]
-                 (when-let [message (make-message ctx rule)]
+                 (when-let [message (make-message rule)]
                    (for [_use-body use-libs]
                      (->diagnostic ctx rule form {:message message})))))})

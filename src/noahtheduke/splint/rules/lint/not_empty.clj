@@ -4,7 +4,6 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.not-empty
   (:require
-    [noahtheduke.splint.config :refer [get-config]]
     [noahtheduke.splint.rules :refer [defrule]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]))
 
@@ -37,6 +36,6 @@
   "
   {:pattern '(not (empty? ?x))
    :on-match (fn [ctx rule form bindings]
-               (condp = (:chosen-style (get-config ctx rule))
+               (condp = (:chosen-style (:config rule))
                  :seq (seq-diagnostic ctx rule form bindings)
                  :not-empty (not-empty-diagnostic ctx rule form bindings)))})

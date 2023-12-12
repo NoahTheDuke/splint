@@ -124,7 +124,10 @@
    (conj (merge-config @default-config local)
          options)))
 
-(defn get-config [_ctx rule]
+(defn get-config
+  {:doc "Return merged config for a specific rule."
+   :deprecated "1.11"}
+  [_ctx rule]
   (:config rule))
 
 (defn spit-config [{:keys [diagnostics]}]

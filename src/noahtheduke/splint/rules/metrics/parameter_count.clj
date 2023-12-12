@@ -4,7 +4,6 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.metrics.parameter-count
   (:require
-    [noahtheduke.splint.config :refer [get-config]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
@@ -60,7 +59,7 @@
   {:pattern '((? _ defn-fn??) ?*args)
    :on-match (fn [ctx rule form _bindings]
                (when-let [defn-form (:splint/defn-form (meta form))]
-                 (let [config (get-config ctx rule)
+                 (let [config (:config rule)
                        config-count (:count config)
                        chosen-style (:chosen-style config)]
                    (->> (:arglists defn-form)

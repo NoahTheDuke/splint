@@ -4,7 +4,6 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.performance.single-literal-merge
   (:require
-    [noahtheduke.splint.config :refer [get-config]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
@@ -13,7 +12,7 @@
 (defn select-style [ctx rule]
   (if (:enabled ('performance/assoc-many (:config ctx)))
     :multiple
-    (:chosen-style (get-config ctx rule))))
+    (:chosen-style (:config rule))))
 
 (defn single-assoc [?given ?literal]
   (list* 'assoc ?given

@@ -4,7 +4,6 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.metrics.fn-length
   (:require
-    [noahtheduke.splint.config :refer [get-config]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.rules :refer [defrule]]))
 
@@ -78,7 +77,7 @@
   {:pattern '((? _ defn??) ?*args)
    :on-match (fn [ctx rule form bindings]
                (when-let [defn-form (:splint/defn-form (meta form))]
-                 (let [config (get-config ctx rule)]
+                 (let [config (:config rule)]
                    (condp = (:chosen-style config)
                      :defn (defn-size ctx config rule form)
                      :body (body-size ctx config rule defn-form)))))})

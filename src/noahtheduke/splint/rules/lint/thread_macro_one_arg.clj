@@ -4,7 +4,6 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.thread-macro-one-arg
   (:require
-    [noahtheduke.splint.config :refer [get-config]]
     [noahtheduke.splint.diagnostic :refer [->diagnostic]]
     [noahtheduke.splint.pattern :refer [non-coll?]]
     [noahtheduke.splint.rules :refer [defrule]]
@@ -65,7 +64,7 @@
   {:pattern '((? f thread-macro?) ?arg ?form)
    :on-match (fn [ctx rule form bindings]
                (when (symbol-or-keyword-or-list? ('?form bindings))
-                 (condp = (:chosen-style (get-config ctx rule))
+                 (condp = (:chosen-style (:config rule))
                    :inline (make-diagnostic ctx rule form bindings)
                    :avoid-collections (when (non-coll? (simple-type ('?arg bindings)))
                                         (make-diagnostic ctx rule form bindings)))))})

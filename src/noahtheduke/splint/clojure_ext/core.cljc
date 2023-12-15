@@ -95,6 +95,14 @@
     (user/quick-bench (mapv* inc voll))
     ))
 
+(defn keepv
+  "Wrapper around `(into [] (keep f) coll) cuz that's annoying to write. Short-circuits on nil and empty Counted collections."
+  [f coll]
+  (if (or (nil? coll)
+          (and (instance? clojure.lang.Counted coll) (zero? (count coll))))
+    []
+    (into [] (keep f) coll)))
+
 (defn run!*
   "Efficient version of run! which operates directly on the sequence
   instead of Clojure's reduce abstraction. Does not respond to `reduced`.

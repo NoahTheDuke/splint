@@ -3,6 +3,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## v1.11
+
 ### New Rules
 
 - `lint/underscore-in-namespace`: Prefer `(ns foo-bar)` to `(ns foo_bar)`.

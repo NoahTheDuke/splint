@@ -202,11 +202,11 @@
                       ; else
                       nil)
           other-paths (case (::type project-map)
-                        :deps-edn (let [aliases (:aliases project-map)]
+                        :deps-edn (when-let [aliases (:aliases project-map)]
                                     (into (some-> aliases :dev :extra-paths)
                                           (some-> aliases :test :extra-paths)))
                         :project-clj
-                        (let [profiles (:profiles project-map)]
+                        (when-let [profiles (:profiles project-map)]
                           (concat
                             (when (map? (:dev profiles))
                               (into (some-> profiles :dev :source-paths)

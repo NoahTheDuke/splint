@@ -227,7 +227,9 @@
             (update ctx :diagnostics swap! conj diagnostic)))))))
 
 (defn slurp-file [file-obj]
-  (assoc file-obj :contents (slurp (:file file-obj))))
+  (if (:contents file-obj)
+   file-obj
+   (assoc file-obj :contents (slurp (:file file-obj)))))
 
 (defn check-files-parallel [ctx rules-by-type files]
   (pmap* #(parse-and-check-file ctx rules-by-type (slurp-file %)) files))
@@ -239,8 +241,6 @@
   "Call into the relevant `check-path-X` function, depending on the given config."
   [ctx rules-by-type files]
   (cond
-    (-> ctx :config :dev)
-    (parse-and-check-file ctx rules-by-type (first files))
     (-> ctx :config :parallel)
     (check-files-parallel ctx rules-by-type files)
     :else
@@ -296,33 +296,42 @@
     (when (< i (dec (count filename)))
       (subs filename (inc i)))))
 
+(defn- make-path-obj [path]
+  (cond
+    (map? path)
+    (mapcat (fn [^File file]
+              (when (.isFile file)
+                (case (get-extension file)
+                  "cljc"
+                  [{:features #{:clj} :ext :cljc :file file}
+                   {:features #{:cljs} :ext :cljc :file file}]
+                  "clj"
+                  [{:features #{:clj} :ext :clj :file file}]
+                  "cljs"
+                  [{:features #{:cljs} :ext :cljs :file file}]
+                  ; else
+                  nil)))
+          (file-seq (io/file (:path path))))
+    (string? path)
+    [{:file (io/file "example.clj")
+      :contents path
+      :features #{:clj}
+      :ext :clj}]
+    (instance? java.io.File path)
+    [{:file path
+      :contents (slurp path)
+      :features #{:clj}
+      :ext :clj}]))
+
 (defn resolve-files-from-paths [ctx paths]
-  (if (or (string? paths) (instance? java.io.File paths))
-    (let [p paths]
-      (cond
-        (instance? java.io.File p)
-        [{:features #{:clj} :ext :clj :file p :contents (slurp p)}]
-        (string? p)
-        [{:features #{:clj} :ext :clj :file (io/file "example.clj") :contents p}]))
-    (let [xf (comp (mapcat #(file-seq (io/file %)))
-                   (distinct)
-                   (mapcat (fn [^File file]
-                             (when
-                               (and (.isFile file)
-                                    (if-let [excludes (-> ctx :config :global :excludes)]
-                                      (not-any? #(matches % file) excludes)
-                                      true))
-                               (case (get-extension file)
-                                 "cljc"
-                                 [{:features #{:clj} :ext :cljc :file file}
-                                  {:features #{:cljs} :ext :cljc :file file}]
-                                 "clj"
-                                 [{:features #{:clj} :ext :clj :file file}]
-                                 "cljs"
-                                 [{:features #{:cljs} :ext :cljs :file file}]
-                                 ; else
-                                 nil)))))]
-      (into [] xf paths))))
+  (let [excludes (-> ctx :config :global :excludes)
+        xf (comp (mapcat make-path-obj)
+                 (distinct)
+                 (filter (fn [file-obj]
+                           (if excludes
+                             (not-any? #(matches % (:file file-obj)) excludes)
+                             true))))]
+    (into [] xf paths)))
 
 (defn build-result-map
   [ctx files]
@@ -338,7 +347,7 @@
      :exit (if (pos? (count filtered-diagnostics)) 1 0)}))
 
 (defn run-impl
-  "Actually perform check"
+  "Actually perform check."
   ([paths config] (run-impl paths config (:rules @global-rules)))
   ([paths config rules]
    (let [rules-by-type (prepare-rules config (or rules {}))
@@ -355,7 +364,8 @@
           {:keys [options paths exit-message ok]} (validate-opts args)
           project-file (conf/read-project-file
                          (io/file "deps.edn") (io/file "project.clj"))
-          paths (or (not-empty paths) (:paths project-file))
+          paths (mapv* #(hash-map :path %)
+                       (or (not-empty paths) (:paths project-file)))
           config (assoc (conf/load-config options)
                         :clojure-version (or (:clojure-version project-file)
                                              *clojure-version*))]

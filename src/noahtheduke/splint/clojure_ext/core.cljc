@@ -8,7 +8,9 @@
   (:import
     (java.util.concurrent Executors Future)
     #?@(:bb []
-        :clj ([clojure.lang LazilyPersistentVector]))))
+        :clj ([clojure.lang LazilyPersistentVector]))
+    (java.io File)
+    (java.nio.file PathMatcher)))
 
 (set! *warn-on-reflection* true)
 
@@ -193,6 +195,8 @@
   clojure.lang.ISeq
   (walk* [form inner outer]
     (with-meta* (outer (->list (mapv* inner form))) (meta form)))
+  File (walk* [form _inner outer] (outer form))
+  PathMatcher (walk* [form _inner outer] (outer form))
   ; else
   Object (walk* [form _inner _outer]
            (throw (ex-info "Unimplemented type: " {:type (simple-type form)

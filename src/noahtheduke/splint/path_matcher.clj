@@ -4,35 +4,46 @@
 
 (ns noahtheduke.splint.path-matcher
   (:require
-    [clojure.string :as str]) 
+    [clojure.string :as str])
   (:import
     (java.io File)
-    (java.nio.file FileSystem FileSystems Path PathMatcher)))
+    (java.nio.file FileSystem FileSystems PathMatcher)))
 
 (set! *warn-on-reflection* true)
 
 (defonce ^FileSystem fs (FileSystems/getDefault))
 
 (defprotocol Match
-  (matches [matcher file-or-path] "Check if file-or-path matches glob."))
+  (-matches [matcher file-or-path] "Check if file-or-path matches pattern."))
 
-(defrecord Matcher [^PathMatcher pm ^String pattern]
-  Match
-  (matches [_ file-or-path]
-    (cond
-      (instance? File file-or-path)
-      (.matches pm (.toPath ^File file-or-path))
-      (instance? Path file-or-path)
-      (.matches pm ^Path file-or-path)
-      :else
-      (throw (IllegalArgumentException.
-               (format "%s is not File but %s."
-                       file-or-path
-                       (type file-or-path)))))))
+(defrecord MatchHolder [pattern input])
 
-(defn ->matcher ^Matcher [syntax-and-pattern]
-  (if (or (str/starts-with? syntax-and-pattern "glob:")
-          (str/starts-with? syntax-and-pattern "regex:"))
-    (->Matcher (.getPathMatcher fs syntax-and-pattern) syntax-and-pattern)
-    (let [syntax-and-pattern (str "glob:" syntax-and-pattern)]
-      (->Matcher (.getPathMatcher fs syntax-and-pattern) syntax-and-pattern))))
+(extend-protocol Match
+  PathMatcher
+  (-matches [m file]
+    (.matches m (.toPath ^File file)))
+  java.util.regex.Pattern
+  (-matches [m file]
+    (let [m (re-matcher m (str file))]
+      (.find m)))
+  String
+  (-matches [m file]
+    (str/includes? (str file) m)))
+
+(defn matches [matcher file]
+  (-matches (:pattern matcher) file))
+
+(defn re-find-matcher [input]
+  (re-pattern (str/replace-first input "re-find:" "")))
+
+(defn ->matcher [input]
+  (cond
+    (or (str/starts-with? input "glob:")
+        (str/starts-with? input "regex:"))
+    (->MatchHolder (.getPathMatcher fs input) input)
+    (str/starts-with? input "re-find:")
+    (->MatchHolder (re-find-matcher input) input)
+    (str/starts-with? input "string:")
+    (->MatchHolder (str/replace-first input "string:" "") input)
+    :else
+    (->MatchHolder (re-find-matcher input) (str "re-find:" input))))

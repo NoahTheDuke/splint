@@ -18,23 +18,24 @@
     [noahtheduke.splint.dev :as dev]
     [noahtheduke.splint.parser :refer [parse-file]]
     [noahtheduke.splint.runner :refer [run-impl]]
-    [noahtheduke.splint.utils :refer [drop-quote]])
+    [noahtheduke.splint.utils :refer [drop-quote]]
+    )
   (:import
     (java.io File)
-    (java.nio.file Files)
+    (java.nio.file Files FileVisitor FileVisitResult)
     (java.nio.file.attribute FileAttribute)
-    (noahtheduke.splint.path_matcher Matcher)))
+    (noahtheduke.splint.path_matcher MatchHolder)))
 
 (set! *warn-on-reflection* true)
 
 (defn check-all
   ([path] (check-all path nil))
   ([path config]
-   (let [config (conj {:dev true
-                       :clojure-version (or (:clojure-version config)
+   (let [config (conj {:clojure-version (or (:clojure-version config)
                                             *clojure-version*)}
                       (merge-config @dev/dev-config config))
-         results (run-impl path config)]
+         paths (if (sequential? path) path [path])
+         results (run-impl paths config)]
      (seq (:diagnostics results)))))
 
 (defmacro expect-match
@@ -44,10 +45,10 @@
       (expect (~'match? ~expected diagnostics#)))))
 
 (s/fdef expect-match
-        :args (s/cat :expected (s/or :nil nil? :vector #(vector? (drop-quote %)))
-                     :s any?
-                     :config (s/? any?))
-        :ret any?)
+  :args (s/cat :expected (s/or :nil nil? :vector #(vector? (drop-quote %)))
+               :s any?
+               :config (s/? any?))
+  :ret any?)
 
 (defn parse-string-all
   "Wrapper around [[parse-file]] to consume a string instead of a file"
@@ -60,17 +61,29 @@
   (first (parse-string-all s)))
 
 (defmacro with-temp-files
-  [bindings & body]
-  (let [paths (take-nth 2 (drop 1 bindings))
+  "Initialize a temp directory with given files, bind the files to the given
+  symbols, execute the body with those bound, then delete the directory.
+  file-binds are pairs of simple-symbols and strings. The symbols will be
+  available in the body, and the strings will be interpreted as file paths
+  (with optionally specified parent directories).
+
+  (with-temp-files
+    [core \"src/noahtheduke/core.clj\"]
+    (spit core \"(ns noahtheduke.core)\"))"
+  [file-binds & body]
+  (let [paths (take-nth 2 (drop 1 file-binds))
         temp-dir (gensym)
         temp-files (map
                      (fn [path]
                        [(gensym)
-                        `(Files/createFile (.toPath (io/file (str ~temp-dir) ~path))
-                                           (into-array FileAttribute []))])
+                        `(let [f# (io/file (str ~temp-dir) ~path)]
+                           (Files/createDirectories (.toPath (io/file (.getParent f#)))
+                                                    (into-array FileAttribute []))
+                           (Files/createFile (.toPath f#)
+                                             (into-array FileAttribute [])))])
                      paths)
-        binds (mapcat (fn [b f] [b f])
-                      (take-nth 2 bindings)
+        binds (mapcat vector
+                      (take-nth 2 file-binds)
                       (map (fn [[path _]] `(io/file (str ~path)))
                            temp-files))]
     `(let [~temp-dir (Files/createTempDirectory
@@ -79,12 +92,32 @@
            ~@binds]
        (try (let [res# (do ~@body)] res#)
             (finally
-              (doseq [f# ~(mapv first temp-files)]
-                (Files/deleteIfExists f#))
-              (Files/deleteIfExists ~temp-dir))))))
+              (Files/walkFileTree
+                ~temp-dir
+                #{}
+                Integer/MAX_VALUE
+                (reify FileVisitor
+                  (preVisitDirectory [_ dir# attrs#]
+                    FileVisitResult/CONTINUE)
+                  (postVisitDirectory [_ dir# attrs#]
+                    (Files/deleteIfExists dir#)
+                    FileVisitResult/CONTINUE)
+                  (visitFile [_ path# attrs#]
+                    (Files/deleteIfExists path#)
+                    FileVisitResult/CONTINUE)
+                  (visitFileFailed [_ path# ex#]
+                    FileVisitResult/CONTINUE))
+                ))))))
+
+(s/def ::binding (s/cat :file-name simple-symbol? :path string?))
+(s/def ::bindings (s/and vector? #(even? (count %)) (s/* ::binding)))
+(s/fdef with-temp-files
+  :args (s/cat :bindings ::bindings
+               :body (s/* any?))
+  :ret any?)
 
 (defmacro print-to-file!
-  "Print "
+  "Print the result from each form in body, write them to the file."
   [file & body]
   `(with-open [file# (io/writer ~file)]
      (binding [*out* file#]
@@ -120,11 +153,11 @@
      ::result/value (->Mismatch this actual)
      ::result/weight 1}))
 
-(defn path-matcher-match [^Matcher this actual]
+(defn path-matcher-match [this actual]
   (cond
-    (instance? Matcher actual)
-    (let [this-pattern (:pattern this)
-          actual-pattern (:pattern actual)]
+    (instance? MatchHolder actual)
+    (let [this-pattern (:input this)
+          actual-pattern (:input actual)]
       (if (= this-pattern actual-pattern)
         {::result/type :match
          ::result/value actual-pattern
@@ -133,7 +166,7 @@
          ::result/value (->Mismatch this-pattern actual-pattern)
          ::result/weight 1}))
     (string? actual)
-    (let [this-pattern (:pattern this)]
+    (let [this-pattern (:input this)]
       (if (= this-pattern actual)
         {::result/type :match
          ::result/value actual
@@ -143,7 +176,7 @@
          ::result/weight 1}))
     :else
     {::result/type :mismatch
-     ::result/value (->Mismatch (list '->Matcher (:pattern this)) actual)
+     ::result/value (->Mismatch (list '->MatchHolder (:input this)) actual)
      ::result/weight 1}))
 
 (extend-protocol mc/Matcher
@@ -153,9 +186,9 @@
     ([this _] this))
   (-base-name [_] 'file-match)
   (-match [this actual] (file-match this actual))
-  Matcher
+  MatchHolder
   (-matcher-for
     ([this] this)
     ([this _] this))
-  (-base-name [_] 'path-matcher-match)
+  (-base-name [_] 'match-holder-match)
   (-match [this actual] (path-matcher-match this actual)))

@@ -43,16 +43,27 @@
               (sut/merge-config config {'style {:enabled false}
                                         'style/plus-one {:enabled true}})))))
 
+(defn get-global [a]
+  (select-keys a [:global]))
+
 (defexpect global-config-test
+  (expect (match? {:global {:excludes [(->matcher "foo")]}}
+                  (get-global (sut/load-config {'global {:excludes ["foo"]}} nil))))
   (expect (match? {:global {:excludes [(->matcher "glob:foo")]}}
-                  (sut/load-config {'global {:excludes ["foo"]}} nil)))
-  (expect (match? {:global {:excludes [(->matcher "glob:foo")]}}
-                  (sut/load-config {'global {:excludes ["glob:foo"]}} nil)))
+                  (get-global (sut/load-config {'global {:excludes ["glob:foo"]}} nil))))
   (expect (match? {:global {:excludes [(->matcher "regex:foo")]}}
-                  (sut/load-config {'global {:excludes ["regex:foo"]}} nil)))
-  (expect (match? {:global {:excludes [(->matcher "glob:foo")
-                                       (->matcher "regex:foo")]}}
-                  (sut/load-config {'global {:excludes ["foo" "regex:foo"]}} nil))))
+                  (get-global (sut/load-config {'global {:excludes ["regex:foo"]}} nil))))
+  (expect (match? {:global {:excludes [(->matcher "re-find:foo")]}}
+                  (get-global (sut/load-config {'global {:excludes ["re-find:foo"]}} nil))))
+  (expect (match? {:global {:excludes [(->matcher "string:foo")]}}
+                  (get-global (sut/load-config {'global {:excludes ["string:foo"]}} nil))))
+  (expecting "default is re-find"
+    (expect (match? {:global {:excludes [(->matcher "re-find:foo")]}}
+                    (get-global (sut/load-config {'global {:excludes ["foo"]}} nil)))))
+  (expecting "can handle multiple"
+    (expect (match? {:global {:excludes [(->matcher "foo")
+                                         (->matcher "regex:foo")]}}
+                    (get-global (sut/load-config {'global {:excludes ["foo" "regex:foo"]}} nil))))))
 
 (defexpect read-project-file-edn-test
   (with-temp-files [deps-edn "deps.edn"]

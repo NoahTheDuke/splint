@@ -17,7 +17,25 @@ The following command-line options can be set: `output`, `parallel`, `quiet`, `s
 
 ## Excluding files
 
-`splint` checks every file recursively from the derived or provided file paths. This isn't always desirable, so specific paths or path globs can be excluded using `{:excludes []}`. `:excludes` takes a vector of strings that it uses to exclude matching files. It relies on Java's [java.nio.file.PathMatcher](https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-) glob or regex syntax, and will default to `"glob:"` if the syntax portion is not specified.
+`splint` checks every file recursively from the derived or provided file paths. This isn't always desirable, so specific paths or path globs can be excluded using `{:excludes []}`. `:excludes` takes a vector of strings that it uses to exclude matching files. The strings can optionally specify a syntax to use in the form `prefix:pattern`. The supported syntaxes are:
+
+| Prefix | Syntax | Match full path? | Notes |
+| --- | --- | --- | --- |
+| `glob` | [FileSystem.getPathMatcher](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)) | Yes | Uses [PathMatcher](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/PathMatcher.html)'s `matches`. |
+| `regex` | [java.util.regex.Pattern](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/regex/Pattern.html) | Yes | Uses [PathMatcher](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/PathMatcher.html)'s `matches`. |
+| `re-find` | [java.util.regex.Pattern](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/regex/Pattern.html) | No | So-named to match the behavior of [clojure.core/re-find](https://clojure.github.io/clojure/clojure.core-api.html#clojure.core/re-find). |
+| `string` | N/A | No | A fixed string checked against the full file path with [clojure.string/includes?](https://clojure.github.io/clojure/clojure.string-api.html#clojure.string/includes?).
+
+If the prefix is not provided, the string is treated as the `re-find` syntax.
+
+### Example nmatching logic
+
+* `glob:foo.clj` matches `foo.clj` but does not match `aa/foo.clj`. `glob:**/foo.clj` matches `foo.clj` and `aa/foo.clj`.
+* `regex:foo.clj` matches `foo.clj` but does not match `aa/foo.clj`. `regex:.*/foo.clj` matches `foo.clj` and `aa/foo.clj`.
+* `re-find:foo.clj` matches `foo.clj` and `aa/foo.clj` and `aa/foo-clj`.
+* `string:foo.clj` matches `foo.clj` and `aa/foo.clj` but does not match `foo-clj` or `aa/foo-clj`.
+
+### Example config usage
 
 ```clojure
 {global {:excludes ["foo" "glob:**/bar.clj" "regex:[a-z].clj"]}

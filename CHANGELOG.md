@@ -3,6 +3,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## Added
+
+- `re-find:` and `string:` syntaxes for path `:excludes`. `re-find` uses `clojure.core/re-find`, so the regex doesn't have to match the entire file path, just any portion. `string` uses `clojure.string/includes?`, so a fixed string anywhere in the file path.
+
 ## v1.11
 
 ### New Rules

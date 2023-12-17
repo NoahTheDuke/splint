@@ -39,7 +39,7 @@
                "  splint [options] -- [path...]"
                ""
                "Options:"
-               (#'cli/summarize specs)
+               (cli/summarize specs)
                ""]]
     {:exit-message (str/join \newline lines)
      :ok true}))

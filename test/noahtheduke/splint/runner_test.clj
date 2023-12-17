@@ -6,11 +6,11 @@
   (:require
     [clojure.java.io :as io]
     [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match]]
+    [matcher-combinators.test :refer [match?]]
     [noahtheduke.splint.dev :as dev]
     [noahtheduke.splint.rules :refer [global-rules]]
     [noahtheduke.splint.runner :as sut]
-    [matcher-combinators.test :refer [match?]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (set! *warn-on-reflection* true)
 

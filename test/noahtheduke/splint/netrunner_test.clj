@@ -9,7 +9,7 @@
     [matcher-combinators.matchers :as m]
     [matcher-combinators.test :refer [match?]]
     [noahtheduke.splint.config :refer [default-config]]
-    [noahtheduke.splint.runner :as runner]))
+    [noahtheduke.splint.runner :refer [run-impl]]))
 
 (set! *warn-on-reflection* true)
 
@@ -76,12 +76,11 @@
 
 (defexpect ^:integration netrunner-test
   (let [netrunner (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "114")
-        results (runner/run-impl
-                  [netrunner]
-                  (-> all-enabled-config
-                      (assoc :silent true)
-                      (assoc :parallel false)
-                      (assoc :clojure-version *clojure-version*)))]
+        results (run-impl [{:path netrunner}]
+                          (-> all-enabled-config
+                              (assoc :silent true)
+                              (assoc :parallel false)
+                              (assoc :clojure-version *clojure-version*)))]
     (expect
       (match?
         (m/equals netrunner-diagnostics)

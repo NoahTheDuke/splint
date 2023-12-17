@@ -76,7 +76,7 @@
 
 (defexpect ^:integration clj-kondo-test
   (let [clj-kondo (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2023.05.26")
-        results (run-impl [clj-kondo]
+        results (run-impl [{:path clj-kondo}]
                           (-> all-enabled-config
                               (assoc :silent true)
                               (assoc :parallel false)

@@ -3,7 +3,7 @@
 [![Clojars Project](https://img.shields.io/clojars/v/io.github.noahtheduke/splint.svg)](https://clojars.org/io.github.noahtheduke/splint)
 [![cljdoc badge](https://cljdoc.org/badge/io.github.noahtheduke/splint)](https://cljdoc.org/d/io.github.noahtheduke/splint)
 
-**Splint** is a Clojure linter focused on style and code shape. It aims to warn about many of the guidelines in the [Clojure Style Guide][style guide]. It is inspired by the Ruby linter [Rubocop][rubocop] and the Clojure linter [Kibit][kibit].
+**Splint** is a Clojure linter focused on style and code shape. It aims to warn about many of the guidelines in the [Clojure Style Guide][style guide]. It is inspired by the Ruby linter [RuboCop][rubocop] and the Clojure linter [Kibit][kibit].
 
 [style guide]: https://guide.clojure.style
 

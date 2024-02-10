@@ -1,11 +1,18 @@
 # Change Log
+
 This changelog is loose. Versions are not semantic, they are incremental. Splint is not meant to be infrastructure, so don't rely on it like infrastructure; it is a helpful development tool.
 
 ## Unreleased
 
-## Added
+## v1.12
+
+### Added
 
 - `re-find:` and `string:` syntaxes for path `:excludes`. `re-find` uses `clojure.core/re-find`, so the regex doesn't have to match the entire file path, just any portion. `string` uses `clojure.string/includes?`, so a fixed string anywhere in the file path.
+
+### Changed
+
+- Updated [edamame][edamame] to v1.4.25 in support of the new Clojure 1.12 `^[]`/`:param-tags` feature.
 
 ## v1.11
 

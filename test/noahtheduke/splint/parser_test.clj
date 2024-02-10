@@ -43,3 +43,8 @@
   (expect
     (match? {:splint/defn-form absent}
             (meta (parse-string "(defn-partial abc (+ 1 2 3))")))))
+
+(defexpect clojure-1.12-test
+  (let [ret (parse-string "(map ^[int] Integer/hash (range 10))")]
+    (expect '(map Integer/hash (range 10)) ret)
+    (expect (match? {:param-tags ['int]} (meta (second ret))))))

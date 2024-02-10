@@ -5,7 +5,7 @@
 {:paths ["src" "resources"]
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
         org.clojure/tools.cli {:mvn/version "1.0.219"}
-        borkdude/edamame {:mvn/version "1.3.22"}
+        borkdude/edamame {:mvn/version "1.4.25"}
         camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
         com.github.clj-easy/graal-build-time {:mvn/version "0.1.4"}
         org.clojure/data.json {:mvn/version "2.4.0"}}

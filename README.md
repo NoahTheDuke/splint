@@ -1,3 +1,5 @@
+<img src="images/snake_parens.svg" alt="splint icon" width="200" align="right">
+
 # Splint
 
 [![Clojars Project](https://img.shields.io/clojars/v/io.github.noahtheduke/splint.svg)](https://clojars.org/io.github.noahtheduke/splint)

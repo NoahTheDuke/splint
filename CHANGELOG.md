@@ -14,7 +14,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Add support for `lint/prefer-method-values` in `performance/dot-equals`.
 - Switch `new_rule.tmpl` to use `deftest`. `defexpect` is a thin wrapper and has the annoying "if given two non-expect entries, wrap in expect", which doesn't work when we use custom expect macros.
 
-## v1.12
+## v1.12 - 2024-02-09
 
 ### Added
 
@@ -24,7 +24,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Updated [edamame][edamame] to v1.4.25 in support of the new Clojure 1.12 `^[]`/`:param-tags` feature.
 
-## v1.11
+## v1.11 - 2023-12-11
 
 ### New Rules
 
@@ -50,13 +50,13 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Project file now accepts all reader macros.
 - `--auto-gen-config`, adds test.
 
-## v1.10.1
+## v1.10.1 - 2023-07-25
 
 ### Fixed
 
 - `performance/assoc-many` should only trigger when there are more than 1 pair.
 
-## v1.10.0
+## v1.10.0 - 2023-07-25
 
 The big feature here is adding support to run `splint` without specifying paths. Now Splint will read the `deps.edn` or `project.clj` file in the current directory and check the paths in the base definition as well as `:dev` and `:test` aliases/profiles if no path argument is given. Splint still doesn't support specifying paths in `.splint.edn`, nor does it allow for using paths from a project file as well as additional paths when called, but those are planned.
 
@@ -104,7 +104,7 @@ The third is adding `performance` rules. These are off by default and are design
 - Rely on undefined behavior in `symbol` to correctly print unprintable special characters by converting sexprs to strings and then converting those to symbols.
 - Move `simple-type` and `drop-quote` to `splint.utils`.
 
-## v1.9.0
+## v1.9.0 - 2023-06-09
 
 ### New Rules
 
@@ -129,7 +129,7 @@ The third is adding `performance` rules. These are off by default and are design
 
 - Correctly print special characters/clojure.core vars (`@`, not `splint/deref`, etc).
 
-## v1.8.0
+## v1.8.0 - 2023-05-30
 
 ### New rules
 
@@ -150,7 +150,7 @@ The third is adding `performance` rules. These are off by default and are design
 - `json` and `json-pretty` keys are now sorted.
 - Small performance improvements to patterns.
 
-## v1.7.0
+## v1.7.0 - 2023-05-26
 
 ### New Rules
 
@@ -180,13 +180,13 @@ The third is adding `performance` rules. These are off by default and are design
 - Add pre- and post- `attr-maps` to `defn` metadata when parsing `defn` forms.
 - Added license headers where necessary.
 
-## v1.6.1
+## v1.6.1 - 2023-05-22
 
 ### Fixed
 
 - Re-fix deploy script.
 
-## v1.6.0
+## v1.6.0 - 2023-05-22
 
 ### Added
 
@@ -204,7 +204,7 @@ The third is adding `performance` rules. These are off by default and are design
 - Correctly merge cli and local options ([#5](https://github.com/NoahTheDuke/splint/issues/5)).
 - Edge cases for `lint/if-not-do`, `style/when-not-do`.
 
-## v1.5.0
+## v1.5.0 - 2023-05-12
 
 ### New Rules
 
@@ -227,14 +227,14 @@ The third is adding `performance` rules. These are off by default and are design
 - Skip `#(.someMethod %)` in `lint/fn-wrapper`.
 - Skip `and` and `or` in `style/prefer-condp`.
 
-## v1.4.1
+## v1.4.1 - 2023-05-12
 
 ### Fixed
 
 - Fix `io/resource` issue.
 - Remove `.class` files from `jar`.
 
-## v1.4.0
+## v1.4.0 - 2023-05-08
 
 ### Added
 
@@ -247,20 +247,20 @@ The third is adding `performance` rules. These are off by default and are design
 - "Fix" error messages. Honestly, I'm not great at these so I'm not entirely sure how to best display this stuff.
 - Skip `#(do [%1 %2])` in `style/useless-do`, add docstring note about it.
 
-## v1.3.2
+## v1.3.2 - 2023-04-28
 
 ### Fixed
 
 - Babashka compatibility
 - Set up Github CI
 
-## v1.3.1
+## v1.3.1 - 2023-04-27
 
 ### Fixed
 
 - Links in docs for style guide.
 
-## v1.3.0
+## v1.3.0 - 2023-04-27
 
 ### New Rules
 
@@ -270,13 +270,13 @@ The third is adding `performance` rules. These are off by default and are design
 - `naming/lisp-case`: Prefer kebab-case over other cases for top-level definitions. Relies on [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).
 - `style/multiple-arity-order`: Function definitions should have multiple arities sorted fewest arguments to most: `(defn foo ([a] 1) ([a b] 2) ([a b & more] 3))`
 
-## v1.2.4
+## v1.2.4 - 2023-04-24
 
 ### Fixed
 
 - Parsing bug in `lint/fn-wrapper` introduced in v1.2.3.
 
-## v1.2.3
+## v1.2.3 - 2023-04-24
 
 ### Added
 
@@ -296,7 +296,7 @@ The third is adding `performance` rules. These are off by default and are design
 - Fix [#2](https://github.com/NoahTheDuke/splint/issues/2), false positive on interop fn-wrappers.
 - Lots of small namespace parsing fixes.
 
-## v1.2.2
+## v1.2.2 - 2023-04-13
 
 ### Fixed
 
@@ -304,7 +304,7 @@ The third is adding `performance` rules. These are off by default and are design
 - Bump `edamame` to v1.3.21 to handle `#:: {:a 1}` auto-resolved namespaced maps with spaces between the colons and the map literal.
 - Use correct url in install docs. (Thanks [@dpassen](https://github.com/dpassen))
 
-## v1.2.1
+## v1.2.1 - 2023-04-07
 
 ### Added
 
@@ -323,7 +323,7 @@ The third is adding `performance` rules. These are off by default and are design
 - Correctly render bare links in rule docs.
 - Correctly export clojars info in `deploy` justfile recipe.
 
-## v1.2.0
+## v1.2.0 - 2023-04-06
 
 ### Added
 
@@ -379,14 +379,14 @@ The third is adding `performance` rules. These are off by default and are design
 
 - Add `ctx` as first argument to `:on-match` functions to pass in config to rules. Update functions in `splint.runner` as necessary.
 
-## v1.1.1
+## v1.1.1 - 2023-03-31
 
 ### Changed
 
 - Update Rule Documentation.
 - Include new documentation in cljdoc.edn
 
-## v1.1.0
+## v1.1.0 - 2023-03-31
 
 ### Added
 
@@ -400,13 +400,13 @@ The third is adding `performance` rules. These are off by default and are design
 - Attempt to resolve predicates in calling namespace first, then in `clojure.core`, then in `noahtheduke.splint.rules.helpers`.
 - Rename read-dispatch type from `:var` to `:binding`.
 
-## v1.0.1
+## v1.0.1 - 2023-03-22
 
 ### Fixed
 
 - Run linting over syntax-quoted forms again.
 
-## v1.0
+## v1.0 - 2023-03-22
 
 ### New Rules
 
@@ -431,7 +431,7 @@ The third is adding `performance` rules. These are off by default and are design
 - `style/prefer-condp`: Only runs if given more than 1 predicate branch.
 - `style/set-literal-as-fn`: Allow quoted symbols in sets.
 
-## v0.1.119
+## v0.1.119 - 2023-03-16
 Actually wrote out something of a changelog.
 
 ### New Rules

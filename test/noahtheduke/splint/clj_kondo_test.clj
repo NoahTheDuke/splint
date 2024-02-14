@@ -29,6 +29,7 @@
     lint/let-if 8
     lint/let-when 2
     lint/missing-body-in-when 2
+    lint/prefer-method-values 362
     lint/prefer-require-over-use 4
     lint/thread-macro-one-arg 85
     lint/try-splicing 2
@@ -88,4 +89,4 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 1218 (count (:diagnostics results)))))
+    (expect 1580 (count (:diagnostics results)))))

@@ -6,7 +6,13 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ### New Rules
 
+- `lint/prefer-method-values`: Prefer `(^[] String/toUpperCase "noah")` to `(.toUpperCase "noah")`.
 - `lint/require-explicit-param-tags`: Prefer `(^[File] File/mkdir (io/file \"a\"))` to `(File/mkdir (io/file \"a\"))`. Prefer `(^[String String] File/createTempFile \"abc\" \"b\")` to `(^[_ _] File/createTempFile \"abc\" \"b\")`. Has `:missing`, `:wildcard`, and `:both` styles, which check for lack of any `:param-tags`, usage of `_` in a `:param-tags`, and both. Defaults to `:wildcard`.
+
+### Changed
+
+- Add support for `lint/prefer-method-values` in `performance/dot-equals`.
+- Switch `new_rule.tmpl` to use `deftest`. `defexpect` is a thin wrapper and has the annoying "if given two non-expect entries, wrap in expect", which doesn't work when we use custom expect macros.
 
 ## v1.12
 

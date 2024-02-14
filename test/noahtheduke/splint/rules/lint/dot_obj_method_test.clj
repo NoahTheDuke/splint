@@ -4,12 +4,17 @@
 
 (ns noahtheduke.splint.rules.lint.dot-obj-method-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match]]))
+    [clojure.test :refer [deftest]]
+    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect dot-obj-usage-test
+(defn config [] (single-rule-config 'lint/dot-obj-method))
+
+(deftest dot-obj-usage-test
   (expect-match
-    '[{:alt (.method obj 1 2 3)}]
-    "(. obj method 1 2 3)"))
+    [{:form '(. obj method 1 2 3)
+      :message "Intention is clearer with `.method` form."
+      :alt '(.method obj 1 2 3)}]
+    "(. obj method 1 2 3)"
+    (config)))

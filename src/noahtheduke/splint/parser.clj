@@ -4,19 +4,26 @@
 
 (ns noahtheduke.splint.parser
   (:require
+    [clojure.string :as str]
     [edamame.core :as e]
     [edamame.impl.read-fn :as read-fn]
     [noahtheduke.splint.parser.defn :refer [parse-defn]]
-    [noahtheduke.splint.parser.ns :refer [parse-ns]]))
+    [noahtheduke.splint.parser.ns :refer [parse-ns]]
+    [noahtheduke.splint.vendor :refer [default-imports]]))
 
 (set! *warn-on-reflection* true)
 
 (defn get-fqns [ns-state ns_]
   (or (get-in @ns-state [:imports ns_])
-      (get clojure.lang.RT/DEFAULT_IMPORTS ns_)))
+      (get default-imports ns_)))
 
 (defn attach-import-meta [obj ns-state]
-  (if-let [ns_ (and (symbol? obj) (some-> obj namespace symbol))]
+  (if-let [ns_ (and (symbol? obj)
+                    (some-> obj
+                            namespace
+                            (str/split #"\.")
+                            last
+                            symbol))]
     (if-let [fqns (get-fqns ns-state ns_)]
       (vary-meta obj assoc :splint/import-ns fqns)
       obj)

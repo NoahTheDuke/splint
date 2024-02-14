@@ -149,6 +149,13 @@
   :supported-styles [:seq :not-empty]
   :guide-ref "#nil-punning"}
 
+ lint/prefer-method-values
+ {:description "Use uniform Class/member syntax when writing interop."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"
+  :link "https://insideclojure.org/2024/02/12/method-values"}
+
  lint/prefer-require-over-use
  {:description "`use` is conventionally deprecated."
   :enabled true

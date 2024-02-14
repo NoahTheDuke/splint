@@ -10,6 +10,7 @@
  performance {:enabled true}
  style {:enabled true}
 
+ lint/prefer-method-values {:enabled false} ; gotta wait for babashka
  lint/thread-macro-one-arg {:enabled false}
  metrics/fn-length {:enabled false}
  metrics/parameter-count {:count 5}

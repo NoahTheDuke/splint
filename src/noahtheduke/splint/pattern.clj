@@ -209,16 +209,28 @@
     (throw (IllegalArgumentException. "?| alts must be literals")))
   (let [[_?sym bind & [alts]] pattern
         temp-ctx (gensym "temp-ctx-")
+        reduced' (gensym "alt-sentinel-")
         body-form (gensym "alt-body-form-")
+        ;; We need to early exit but this is in a let-bind, so the best thing we can do is
+        ;; use a "reduced"-like sentinel that we only set to true when we've made a match.
+        ;; Branches and outcomes:
+        ;; * temp-ctx is nil and the current alt-pattern doesn't match, so we
+        ;;   return nil, setting reduced' to nil.
+        ;; * temp-ctx is nil and the current alt-pattern does match, so we
+        ;;   return [(match-binding ...) true], setting reduced' to true.
+        ;; * temp-ctx is truthy, so we return [temp-ctx], setting reduced to nil.
+        ;; Only in the second branch do we call `(next body-form)`. That way,
+        ;; we only consume a single item from the current body.
         binds (mapcat
                 (fn [alt-pattern]
-                  [temp-ctx
-                   `(or ~temp-ctx
+                  [[temp-ctx reduced']
+                   `(if ~temp-ctx
+                      [~temp-ctx]
                         (let [~body-form (first ~body-form)]
                           (when ~(read-form ctx alt-pattern body-form)
-                            ~(match-binding ctx (symbol (str "?" bind)) body-form))))
+                            [~(match-binding ctx (symbol (str "?" bind)) body-form) true])))
                    body-form
-                   `(if ~temp-ctx
+                   `(if (and ~temp-ctx ~reduced')
                       (next ~body-form)
                       ~body-form)])
                 alts)]
@@ -283,25 +295,13 @@
                            patterns (mapv second pattern-pairs)]
                        (case t
                          :?+
-                         (mapcat
-                           identity
-                           (for [pattern patterns]
-                             (match-plus ctx pattern)))
+                         (mapcat #(match-plus ctx %) patterns)
                          :?*
-                         (mapcat
-                           identity
-                           (for [pattern patterns]
-                             (match-star ctx pattern)))
+                         (mapcat #(match-star ctx %) patterns)
                          :??
-                         (mapcat
-                           identity
-                           (for [pattern patterns]
-                             (match-optional ctx pattern)))
+                         (mapcat #(match-optional ctx %) patterns)
                          :?|
-                         (mapcat
-                           identity
-                           (for [pattern patterns]
-                             (match-alt ctx pattern)))
+                         (mapcat #(match-alt ctx %) patterns)
                          ; else
                          (match-single ctx patterns)))))
                  (mapcat identity))

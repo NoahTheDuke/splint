@@ -5,16 +5,18 @@
 (ns noahtheduke.splint.rules.lint.fn-wrapper-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
+(defn config [] (single-rule-config 'lint/fn-wrapper))
+
 (defexpect fn-wrapper-test
-  (expect-match '[{:alt f}] "(fn* [arg] (f arg))")
-  (expect-match '[{:alt f}] "(fn [arg] (f arg))")
-  (expect-match '[{:alt f}] "#(f %)"))
+  (expect-match '[{:alt f}] "(fn* [arg] (f arg))" (config))
+  (expect-match '[{:alt f}] "(fn [arg] (f arg))" (config))
+  (expect-match '[{:alt f}] "#(f %)") (config))
 
 (defexpect interop-static-test
-  (expect-match nil "#(Integer/parseInt %)")
-  (expect-match nil "(do (import (java.util.regex Pattern)) #(Pattern/compile %))")
-  (expect-match nil "#(.getPath %)"))
+  (expect-match nil "#(Integer/parseInt %)" (config))
+  (expect-match nil "(do (import (java.util.regex Pattern)) #(Pattern/compile %))" (config))
+  (expect-match nil "#(.getPath %)" (config)))

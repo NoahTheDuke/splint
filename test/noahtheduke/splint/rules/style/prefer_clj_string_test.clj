@@ -5,14 +5,17 @@
 (ns noahtheduke.splint.rules.style.prefer-clj-string-test
   (:require
     [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match]]))
+    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
+
+(defn config [] (single-rule-config 'style/prefer-clj-string))
 
 (defexpect prefer-clj-math-test
   (expect-match
     '[{:alt (clojure.string/reverse "hello world")}]
-    "(str (.reverse (StringBuilder. \"hello world\")))")
+    "(str (.reverse (StringBuilder. \"hello world\")))"
+    (config))
   (expect-match
     '[{:alt (clojure.string/capitalize s)}
       {:rule-name style/prefer-clj-string
@@ -33,10 +36,12 @@
        :column 34
        :end-row 1
        :end-col 59}]
-    "(str (.toUpperCase (subs s 0 1)) (.toLowerCase (subs s 1)))")
+    "(str (.toUpperCase (subs s 0 1)) (.toLowerCase (subs s 1)))"
+    (config))
   (expect-match
     '[{:alt (clojure.string/upper-case "hello world")}]
-    "(.toUpperCase \"hello world\")")
+    "(.toUpperCase \"hello world\")"
+    (config))
   #_(expect-match
     '[{:alt (str x)}]
     "(.toString x)"))

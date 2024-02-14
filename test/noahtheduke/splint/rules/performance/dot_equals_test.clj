@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.performance.dot-equals-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
+    [clojure.test :refer [deftest]]
     [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'performance/dot-equals))
 
-(defexpect dot-equals-test
+(deftest dot-equals-test
   (expect-match
     [{:rule-name 'performance/dot-equals
       :form '(= "foo" bar)
@@ -34,3 +34,19 @@
     nil
     "(= foo bar)"
     (config)))
+
+(deftest prefer-method-values-interaction-test
+  (expect-match
+    [{:rule-name 'performance/dot-equals
+      :form '(= "foo" bar)
+      :message "Rely on `String/equals` when comparing against string literals."
+      :alt '(String/equals "foo" bar)}]
+    "(= \"foo\" bar)"
+    (update (config) 'lint/prefer-method-values assoc :enabled true))
+  (expect-match
+    [{:rule-name 'performance/dot-equals
+      :form '(= bar "foo")
+      :message "Rely on `String/equals` when comparing against string literals."
+      :alt '(String/equals "foo" bar)}]
+    "(= bar \"foo\")"
+    (update (config) 'lint/prefer-method-values assoc :enabled true)))

@@ -18,6 +18,7 @@
 
 (def re-frame-diagnostics
   '{lint/if-else-nil 2
+    lint/prefer-method-values 1
     lint/thread-macro-one-arg 15
     lint/try-splicing 1
     lint/warn-on-reflection 4
@@ -50,4 +51,4 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 61 (count (:diagnostics results)))))
+    (expect 62 (count (:diagnostics results)))))

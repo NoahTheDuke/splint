@@ -84,9 +84,13 @@
 (s/def ::on-match (s/and seq? #(.equals "fn" (name (first %)))))
 (s/def ::message string?)
 (s/def ::init-type keyword?)
+(s/def ::major int?)
+(s/def ::minor int?)
+(s/def ::incremental int?)
+(s/def ::min-clojure-version (s/keys :opt-un [::major ::minor ::incremental]))
 (s/def ::opts (s/keys :req-un [(or ::pattern ::patterns)
                                (or ::replace ::on-match)]
-                      :opt-un [::message ::init-type]))
+                      :opt-un [::message ::init-type ::min-clojure-version]))
 
 (s/fdef defrule
   :args (s/cat :rule-name ::rule-name

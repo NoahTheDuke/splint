@@ -164,6 +164,15 @@
   :added "0.1"
   :updated "0.1"}
 
+ lint/require-explicit-param-tags
+ {:description "Require explicit :param-tags on method values."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"
+  :chosen-style :wildcard
+  :supported-styles [:both :missing :wildcard]
+  :link "https://insideclojure.org/2024/02/12/method-values"}
+
  lint/take-repeatedly
  {:description "`repeatedly` has an arity for limiting the number of repeats with `take`."
   :enabled true

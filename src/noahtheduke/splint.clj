@@ -40,6 +40,7 @@
     noahtheduke.splint.rules.lint.not-empty
     noahtheduke.splint.rules.lint.prefer-require-over-use
     noahtheduke.splint.rules.lint.redundant-call
+    noahtheduke.splint.rules.lint.require-explicit-param-tags
     noahtheduke.splint.rules.lint.take-repeatedly
     noahtheduke.splint.rules.lint.thread-macro-one-arg
     noahtheduke.splint.rules.lint.try-splicing

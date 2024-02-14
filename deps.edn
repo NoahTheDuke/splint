@@ -3,7 +3,7 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 {:paths ["src" "resources"]
- :deps {org.clojure/clojure {:mvn/version "1.11.1"}
+ :deps {org.clojure/clojure {:mvn/version "1.12.0-alpha7"}
         org.clojure/tools.cli {:mvn/version "1.0.219"}
         borkdude/edamame {:mvn/version "1.4.25"}
         camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}

@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### New Rules
+
+- `lint/require-explicit-param-tags`: Prefer `(^[File] File/mkdir (io/file \"a\"))` to `(File/mkdir (io/file \"a\"))`. Prefer `(^[String String] File/createTempFile \"abc\" \"b\")` to `(^[_ _] File/createTempFile \"abc\" \"b\")`. Has `:missing`, `:wildcard`, and `:both` styles, which check for lack of any `:param-tags`, usage of `_` in a `:param-tags`, and both. Defaults to `:wildcard`.
+
 ## v1.12
 
 ### Added

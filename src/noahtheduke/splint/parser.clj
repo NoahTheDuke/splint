@@ -11,9 +11,13 @@
 
 (set! *warn-on-reflection* true)
 
+(defn get-fqns [ns-state ns_]
+  (or (get-in @ns-state [:imports ns_])
+      (get clojure.lang.RT/DEFAULT_IMPORTS ns_)))
+
 (defn attach-import-meta [obj ns-state]
   (if-let [ns_ (and (symbol? obj) (some-> obj namespace symbol))]
-    (if-let [fqns (get-in @ns-state [:imports ns_])]
+    (if-let [fqns (get-fqns ns-state ns_)]
       (vary-meta obj assoc :splint/import-ns fqns)
       obj)
     obj))

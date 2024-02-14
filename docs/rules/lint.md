@@ -506,6 +506,35 @@ Empty loops with nested when can be `while`.
 
 ---
 
+## lint/prefer-method-values
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 1.13          | 1.13            |
+
+**NOTE**: Requires Clojure version 1.12.0.
+
+Uniform qualified method values are a new syntax for calling into java code. They must resolve to a single static or instance method and to help with that, a new metadata syntax can be used: `^[]` aka `^{:param-tags []}`. Types are specified with classes, each corrosponding to an argument in the target method: `(^[long String] SomeClass/someMethod 1 "Hello world!")`. It compiles to a direct call without any reflection, guaranteeing optimal performance.
+
+If it doesn't resolve to a single method, then the Clojure compiler throws a syntax error (IllegalArgumentException). Such ahead-of-time compilation checking is a powerful and helpful tool in writing correct and performant code. Given that, it is preferable to exclusively use method values.
+
+### Examples
+
+```clojure
+; bad
+(.toUpperCase "noah")
+(. "noah" toUpperCase)
+
+; good
+(^[] String/toUpperCase "noah")
+```
+
+### Reference
+
+* <https://insideclojure.org/2024/02/12/method-values>
+
+---
+
 ## lint/prefer-require-over-use
 
 | Enabled by default | Version Added | Version Updated |
@@ -587,7 +616,7 @@ x
 
 | Enabled by default | Version Added | Version Updated |
 | ------------------ | ------------- | --------------- |
-| true               | <<next>>      | <<next>>        |
+| false              | 1.13          | 1.13            |
 
 **NOTE**: Requires Clojure version 1.12.0.
 

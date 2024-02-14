@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## v1.13 - 2024-02-14
+
 ### New Rules
 
 - `lint/prefer-method-values`: Prefer `(^[] String/toUpperCase "noah")` to `(.toUpperCase "noah")`.

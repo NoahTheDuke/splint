@@ -55,6 +55,8 @@ Avoid use of `satisfies?` as it is extremely slow. Restructure your code to rely
 
 Currently only checks string literals.
 
+If `lint/prefer-method-values` is enabled, then the suggestion will use that syntax.
+
 ### Examples
 
 ```clojure
@@ -63,6 +65,7 @@ Currently only checks string literals.
 
 ; good
 (.equals "foo" s)
+(String/equals "foo" s)
 ```
 
 ---

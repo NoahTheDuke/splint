@@ -152,8 +152,8 @@
  lint/prefer-method-values
  {:description "Use uniform Class/member syntax when writing interop."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.13"
+  :updated "1.13"
   :link "https://insideclojure.org/2024/02/12/method-values"}
 
  lint/prefer-require-over-use
@@ -173,9 +173,9 @@
 
  lint/require-explicit-param-tags
  {:description "Require explicit :param-tags on method values."
-  :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"
+  :enabled false
+  :added "1.13"
+  :updated "1.13"
   :chosen-style :wildcard
   :supported-styles [:both :missing :wildcard]
   :link "https://insideclojure.org/2024/02/12/method-values"}

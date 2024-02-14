@@ -143,21 +143,21 @@ It's nice when the default branch is consistent.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (def check-inclusion
   (let [allowed #{:a :b :c}]
     (fn [i] (contains? allowed i))))
 
-# good
+; good
 (let [allowed #{:a :b :c}]
   (defn check-inclusion [i]
     (contains? allowed i)))
 
-# bad
+; bad
 (def some-func
   (fn [i] (+ i 100)))
 
-# good
+; good
 (defn some-func [i]
   (+ i 100))
 ```
@@ -443,13 +443,13 @@ Sort the arities of a function from fewest to most arguments.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (defn foo
   ([x] (foo x 1))
   ([x y & more] (reduce foo (+ x y) more))
   ([x y] (+ x y)))
 
-# good
+; good
 (defn foo
   ([x] (foo x 1))
   ([x y] (+ x y))
@@ -767,11 +767,11 @@ Use `boolean` if you must return `true` or `false` from an expression.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (if some-val true false)
 (if (some-func) true false)
 
-# good
+; good
 (boolean some-val)
 (boolean (some-func))
 ```
@@ -795,11 +795,11 @@ Prefer clojure.math to interop.
 ### Examples
 
 ```clojure
-# bad
+; bad
 Math/PI
 (Math/atan 45)
 
-# good
+; good
 clojure.math/PI
 (clojure.math/atan 45)
 ```
@@ -821,10 +821,10 @@ Prefer clojure.math to interop.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (.toUpperCase "hello world")
 
-# good
+; good
 (clojure.string/upper-case "hello world")
 ```
 
@@ -860,28 +860,28 @@ gathered and rendered into a `condp`.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (cond
   (= 1 x) :one
   (= 2 x) :two
   (= 3 x) :three
   (= 4 x) :four)
 
-# good
+; good
 (condp = x
   1 :one
   2 :two
   3 :three
   4 :four)
 
-# bad
+; bad
 (cond
   (= 1 x) :one
   (= 2 x) :two
   (= 3 x) :three
   :else :big)
 
-# good
+; good
 (condp = x
   1 :one
   2 :two
@@ -954,7 +954,7 @@ Directly nested lets can be merged into a single let block.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (let [a 1]
   (let [b 2]
     (println a b)))
@@ -977,10 +977,10 @@ Clojure regex literals (#"") are passed to `java.util.regex.Pattern/compile` at 
 ### Examples
 
 ```clojure
-# bad
+; bad
 (re-pattern #".*")
 
-# good
+; good
 #".*"
 ```
 
@@ -999,10 +999,10 @@ as [[case]] and their meaning is less clear at first glance.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (#{'a 'b 'c} elem)
 
-# good
+; good
 (case elem (a b c) elem nil)
 ```
 
@@ -1060,11 +1060,11 @@ Convert `(.toString)` to `(str)`.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (for [item items]
   (f item))
 
-# good
+; good
 (map f items)
 ```
 

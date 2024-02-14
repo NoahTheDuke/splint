@@ -14,21 +14,21 @@
 
   Examples:
 
-  # bad
+  ; bad
   (def check-inclusion
     (let [allowed #{:a :b :c}]
       (fn [i] (contains? allowed i))))
 
-  # good
+  ; good
   (let [allowed #{:a :b :c}]
     (defn check-inclusion [i]
       (contains? allowed i)))
 
-  # bad
+  ; bad
   (def some-func
     (fn [i] (+ i 100)))
 
-  # good
+  ; good
   (defn some-func [i]
     (+ i 100))
   "

@@ -39,21 +39,21 @@
   Examples:
 
   ;; :positional style (default)
-  # bad
+  ; bad
   (defn example [a b c d e] ...)
   (defn example ([a b c d e] ...) ([a b c d e f g] ...))
   (defn example [a b c d e & args] ...)
 
-  # good
+  ; good
   (defn example [a b c d] ...)
   (defn example ([a b c] ...) ([a b c e] ...))
   (defn example [a b c d & args] ...)
 
   ;; :include-rest style
-  # bad
+  ; bad
   (defn example [a b c d & args] ...)
 
-  # good
+  ; good
   (defn example [a b c & args] ...)
   "
   {:pattern '((? _ defn-fn??) ?*args)

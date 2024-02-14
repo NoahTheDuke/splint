@@ -53,10 +53,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (.toUpperCase \"hello world\")
 
-  # good
+  ; good
   (clojure.string/upper-case \"hello world\")
   "
   {:pattern '((? sym symbol?) ?*args)

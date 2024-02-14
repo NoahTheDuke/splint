@@ -38,10 +38,10 @@ For example, `style/style/set-literal-as-fn`:
 
   Examples:
 
-  # bad
+  ; bad
   (#{'a 'b 'c} elem)
 
-  # good
+  ; good
   (case elem (a b c) elem nil)
   "
 ```

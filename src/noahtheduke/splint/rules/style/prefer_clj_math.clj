@@ -80,11 +80,11 @@
 
   Examples:
 
-  # bad
+  ; bad
   Math/PI
   (Math/atan 45)
 
-  # good
+  ; good
   clojure.math/PI
   (clojure.math/atan 45)
   "

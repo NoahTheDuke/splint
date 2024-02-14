@@ -11,10 +11,10 @@ Through community and core practices over the years, various core libraries have
 ### Examples
 
 ```clojure
-# bad
+; bad
 (:require [clojure.string :as string])
 
-# good
+; good
 (:require [clojure.string :as str])
 ```
 
@@ -35,10 +35,10 @@ Use `->` instead of `to` in the names of conversion functions.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (defn f-to-c ...)
 
-# good
+; good
 (defn f->c ...)
 ```
 
@@ -59,11 +59,11 @@ Use lisp-case for function and variable names. (Replacement is generated with `c
 ### Examples
 
 ```clojure
-# bad
+; bad
 (def someVar ...)
 (def some_fun ...)
 
-# good
+; good
 (def some-var ...)
 (defn some-fun ...)
 ```
@@ -90,11 +90,11 @@ a 'p' (such as `map`).
 ### Examples
 
 ```clojure
-# bad
+; bad
 (defn palindrome-p ...)
 (defn is-palindrome ...)
 
-# good
+; good
 (defn palindrome? ...)
 ```
 
@@ -115,10 +115,10 @@ Records should use PascalCase.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (defrecord foo [a b c])
 
-# good
+; good
 (defrecord Foo [a b c])
 ```
 
@@ -139,10 +139,10 @@ Namespaces exist to disambiguate names. Using a single segment namespace puts yo
 ### Examples
 
 ```clojure
-# bad
+; bad
 (ns simple)
 
-# good
+; good
 (ns noahtheduke.simple)
 ```
 

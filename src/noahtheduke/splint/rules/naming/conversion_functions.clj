@@ -15,10 +15,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (defn f-to-c ...)
 
-  # good
+  ; good
   (defn f->c ...)
   "
   {:pattern '(defn ?f-name ?*args)

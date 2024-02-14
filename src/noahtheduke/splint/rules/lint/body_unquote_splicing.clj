@@ -34,10 +34,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   `(binding [max mymax] ~@body)
 
-  # good
+  ; good
   `(binding [max mymax] (let [res# (do ~@body)] res#))
   "
   {:patterns ['((? f only-body) (splint/unquote-splicing ?body))

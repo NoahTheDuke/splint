@@ -20,10 +20,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (defrecord foo [a b c])
 
-  # good
+  ; good
   (defrecord Foo [a b c])
   "
   {:pattern '(defrecord ?record-name ?*args)

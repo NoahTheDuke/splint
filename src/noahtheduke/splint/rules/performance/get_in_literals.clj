@@ -13,10 +13,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (get-in m [:some-key1 :some-key2 :some-key3])
 
-  # good
+  ; good
   (-> m :some-key1 :some-key2 :some-key3)
   "
   {:pattern '(get-in m [(?+ keys keyword?)])

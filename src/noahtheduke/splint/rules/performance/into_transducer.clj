@@ -21,10 +21,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (into [] (map inc (range 100)))
 
-  # good
+  ; good
   (into [] (map inc) (range 100))
   "
   {:pattern '(into [] ((? trans transducers) ?f ?coll))

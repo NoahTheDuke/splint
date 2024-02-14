@@ -13,10 +13,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (get m :some-key)
 
-  # good
+  ; good
   (:some-key m)
   "
   {:pattern '(get ?m (? k keyword?))

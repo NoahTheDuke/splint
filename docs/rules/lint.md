@@ -36,10 +36,10 @@ a `do` to force it into 'expression position'.
 ### Examples
 
 ```clojure
-# bad
+; bad
 `(binding [max mymax] ~@body)
 
-# good
+; good
 `(binding [max mymax] (let [res# (do ~@body)] res#))
 ```
 
@@ -144,10 +144,10 @@ with the same name, but it's good to catch these things early too.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (defrecord Foo [a b a])
 
-# good
+; good
 (defrecord Foo [a b c])
 ```
 
@@ -517,11 +517,11 @@ In the `ns` form prefer `:require :as` over `:require :refer` over `:require :re
 ### Examples
 
 ```clojure
-# bad
+; bad
 (ns examples.ns
   (:use clojure.zip))
 
-# good
+; good
 (ns examples.ns
   (:require [clojure.zip :as zip]))
 (ns examples.ns
@@ -580,6 +580,65 @@ Current list of clojure.core functions this linter checks:
 ; good
 x
 ```
+
+---
+
+## lint/require-explicit-param-tags
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | <<next>>      | <<next>>        |
+
+**NOTE**: Requires Clojure version 1.12.0.
+
+Uniform qualified method values are a new syntax for calling into java code.
+They must resolve to a single static or instance method and to help with
+that, a new metadata syntax can be used: `^[]` aka `^{:param-tags []}`. Types
+are specified with classes, each corrosponding to an argument in the target
+method: `(^[long String] SomeClass/someMethod 1 "Hello world!")`
+
+If `:param-tags` is left off of a method value, then the compiler treats it
+as taking no arguments (a 0-arity static method or a 1-arity instance method
+with the instance being the first argument). And an `_` can be used as
+a wild-card in the cases where there is only a single applicable method (no
+overloads).
+
+These last two features are where there can be trouble. If, for whatever
+reason, the Java library adds an overload on type, then both the lack of
+`:param-tags` and a wild-card can lead to ambiguity. This is a rare occurence
+but risky/annoying enough that it's better to be explicit overall.
+
+The styles are named after what they're looking for:
+
+* `:missing` checks that there exists a `:param-tags` on a method value.
+* `:wildcard` checks that there are no usages of `_` in an existing `:param-tags`.
+* `:both` checks both conditions.
+
+### Examples
+
+```clojure
+; bad (chosen style :both or :missing)
+(java.io.File/mkdir (clojure.java.io/file "a"))
+
+; bad (chosen style :both or :wildcard)
+(^[_ _] java.io.File/createTempFile "abc" "b")
+
+; good (chosen style :both or :missing)
+(^[] java.io.File/mkdir (clojure.java.io/file "a"))
+
+; good (chosen style :both or :wildcard (default))
+(^[String String] java.io.File/createTempFile "abc" "b")
+```
+
+### Configurable Attributes
+
+| Name            | Default     | Options                          |
+| --------------- | ----------- | -------------------------------- |
+| `:chosen-style` | `:wildcard` | `:both`, `:missing`, `:wildcard` |
+
+### Reference
+
+* <https://insideclojure.org/2024/02/12/method-values>
 
 ---
 
@@ -656,10 +715,10 @@ to force it into 'expression position'.
 ### Examples
 
 ```clojure
-# bad
+; bad
 `(try ~@body (finally :true))
 
-# good
+; good
 `(try (do ~@body) (finally :true))
 ```
 
@@ -682,10 +741,10 @@ Clojure.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (ns foo_bar.baz_qux)
 
-# good
+; good
 (ns foo-bar.baz-qux)
 ```
 
@@ -703,11 +762,11 @@ be at the top of every file out of caution.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (ns foo.bar)
 (defn baz [a b] (+ a b))
 
-# good
+; good
 (ns foo.bar)
 (set! *warn-on-reflection* true)
 (defn baz [a b] (+ a b))

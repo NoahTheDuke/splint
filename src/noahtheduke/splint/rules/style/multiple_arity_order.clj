@@ -15,13 +15,13 @@
 
   Examples:
 
-  # bad
+  ; bad
   (defn foo
     ([x] (foo x 1))
     ([x y & more] (reduce foo (+ x y) more))
     ([x y] (+ x y)))
 
-  # good
+  ; good
   (defn foo
     ([x] (foo x 1))
     ([x y] (+ x y))

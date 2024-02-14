@@ -26,11 +26,11 @@
 
   Examples:
 
-  # bad
+  ; bad
   (ns examples.ns
     (:use clojure.zip))
 
-  # good
+  ; good
   (ns examples.ns
     (:require [clojure.zip :as zip]))
   (ns examples.ns

@@ -13,11 +13,11 @@
 
   Examples:
 
-  # bad
+  ; bad
   (for [item items]
     (f item))
 
-  # good
+  ; good
   (map f items)
   "
   {:pattern '(for [?item ?items] (?f ?item))

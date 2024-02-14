@@ -12,10 +12,10 @@ relying on multiple `assoc` invocations.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (assoc m :k1 1 :k2 2 :k3 3)
 
-# good
+; good
 (-> m
     (assoc :k1 1)
     (assoc :k2 2)
@@ -35,7 +35,7 @@ Avoid use of `satisfies?` as it is extremely slow. Restructure your code to rely
 ### Examples
 
 ```clojure
-# bad
+; bad
 (satisfies? Foo :bar)
 ```
 
@@ -58,10 +58,10 @@ Currently only checks string literals.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (= "foo" s)
 
-# good
+; good
 (.equals "foo" s)
 ```
 
@@ -78,10 +78,10 @@ Currently only checks string literals.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (get-in m [:some-key1 :some-key2 :some-key3])
 
-# good
+; good
 (-> m :some-key1 :some-key2 :some-key3)
 ```
 
@@ -98,10 +98,10 @@ Currently only checks string literals.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (get m :some-key)
 
-# good
+; good
 (:some-key m)
 ```
 
@@ -120,10 +120,10 @@ efficiently applied in between.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (into [] (map inc (range 100)))
 
-# good
+; good
 (into [] (map inc) (range 100))
 ```
 
@@ -150,10 +150,10 @@ consistent.
 ### Examples
 
 ```clojure
-# bad
+; bad
 (merge m {:a 1 :b 2 :c 3})
 
-# good
+; good
 (assoc m :a 1 :b 2 :c 3)
 ```
 

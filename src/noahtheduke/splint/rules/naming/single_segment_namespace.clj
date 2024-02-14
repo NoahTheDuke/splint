@@ -20,10 +20,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (ns simple)
 
-  # good
+  ; good
   (ns noahtheduke.simple)
   "
   {:pattern '(ns ?ns ?*args)

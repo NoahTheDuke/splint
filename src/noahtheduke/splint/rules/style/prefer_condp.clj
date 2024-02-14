@@ -63,28 +63,28 @@
 
   Examples:
 
-  # bad
+  ; bad
   (cond
     (= 1 x) :one
     (= 2 x) :two
     (= 3 x) :three
     (= 4 x) :four)
 
-  # good
+  ; good
   (condp = x
     1 :one
     2 :two
     3 :three
     4 :four)
 
-  # bad
+  ; bad
   (cond
     (= 1 x) :one
     (= 2 x) :two
     (= 3 x) :three
     :else :big)
 
-  # good
+  ; good
   (condp = x
     1 :one
     2 :two

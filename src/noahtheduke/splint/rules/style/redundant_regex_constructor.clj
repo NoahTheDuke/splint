@@ -17,10 +17,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (re-pattern #\".*\")
 
-  # good
+  ; good
   #\".*\"
   "
   {:pattern '(re-pattern ?pat)

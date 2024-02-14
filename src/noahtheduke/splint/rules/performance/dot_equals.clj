@@ -15,10 +15,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (= \"foo\" s)
 
-  # good
+  ; good
   (.equals \"foo\" s)
   "
   {:patterns ['(= (? string string?) ?any)

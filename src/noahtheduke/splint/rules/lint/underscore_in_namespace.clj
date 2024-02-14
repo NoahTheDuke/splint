@@ -17,10 +17,10 @@
 
   Examples:
 
-  # bad
+  ; bad
   (ns foo_bar.baz_qux)
 
-  # good
+  ; good
   (ns foo-bar.baz-qux)"
   {:pattern '(ns ?ns-sym ?*_)
    :message "Avoid underscores in namespaces."

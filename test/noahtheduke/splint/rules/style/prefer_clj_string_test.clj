@@ -20,8 +20,7 @@
     '[{:alt (clojure.string/capitalize s)}
       {:rule-name style/prefer-clj-string
        :form (.toUpperCase (subs s 0 1))
-       :message
-       "Use the `clojure.string` function instead of interop."
+       :message "Use the `clojure.string` function instead of interop."
        :alt (clojure.string/upper-case (subs s 0 1))
        :line 1
        :column 6
@@ -29,8 +28,7 @@
        :end-col 33}
       {:rule-name style/prefer-clj-string
        :form (.toLowerCase (subs s 1))
-       :message
-       "Use the `clojure.string` function instead of interop."
+       :message "Use the `clojure.string` function instead of interop."
        :alt (clojure.string/lower-case (subs s 1))
        :line 1
        :column 34

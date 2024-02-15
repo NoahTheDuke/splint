@@ -13,9 +13,9 @@
 
 (deftest conversion-functions-test
   (expect-match
-    [{:form '(defn f-to-c [a] {:a a})
+    [{:form '(defn f-to-c ...)
       :message "Use `->` instead of `to` in the names of conversion functions."
-      :alt '(defn f->c [a] {:a a})}]
+      :alt '(defn f->c ...)}]
     "(defn f-to-c [a] {:a a})"
     (config))
   (expect-match

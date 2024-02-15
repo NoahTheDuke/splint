@@ -28,10 +28,12 @@
   (defn f->c ...)
   (defn expect-f-to-c ...)
   "
-  {:pattern '(defn (? f-name to??) ?*args)
+  {:pattern '((? _ defn??) (? f-name to??) ?*_)
    :message "Use `->` instead of `to` in the names of conversion functions."
-   :on-match (fn [ctx rule form {:syms [?f-name ?args]}]
+   :on-match (fn [ctx rule form {:syms [?f-name]}]
                (let [[head tail] (str/split (name ?f-name) #"-to-")]
                  (when (and tail (not (str/includes? head "-")))
-                   (let [new-form (list* 'defn (symbol (str head "->" tail)) ?args)]
-                     (->diagnostic ctx rule form {:replace-form new-form})))))})
+                   (let [form (list 'defn ?f-name '...)
+                         new-form (list 'defn (symbol (str/replace (str ?f-name) "-to-" "->")) '...)]
+                     (->diagnostic ctx rule form {:replace-form new-form
+                                                  :form-meta (meta form)})))))})

@@ -19,8 +19,7 @@
 
 (defn attach-import-meta [obj ns-state]
   (if-let [ns_ (and (symbol? obj)
-                    (some-> obj
-                            namespace
+                    (some-> (or (namespace obj) (name obj))
                             (str/split #"\.")
                             last
                             symbol))]

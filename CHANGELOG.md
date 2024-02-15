@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Fixed
+
+- Correctly suggest `Obj/staticMethod` when given `(. Obj (staticMethod))` in `lint/dot-class-usage`.
+
 ## v1.13 - 2024-02-14
 
 ### New Rules

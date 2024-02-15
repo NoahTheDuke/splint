@@ -3,7 +3,7 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 {:paths ["src" "resources"]
- :deps {org.clojure/clojure {:mvn/version "1.12.0-alpha7"}
+ :deps {org.clojure/clojure {:mvn/version "1.11.1"}
         org.clojure/tools.cli {:mvn/version "1.0.219"}
         borkdude/edamame {:mvn/version "1.4.25"}
         camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
@@ -23,9 +23,11 @@
                      potemkin/potemkin {:mvn/version "0.4.6"}
                      org.clojure/tools.gitlibs {:mvn/version "2.5.190"}}}
   :repl {:extra-deps {nrepl/nrepl {:mvn/version "1.0.0"}
-                      com.bhauman/rebel-readline {:mvn/version "0.1.4"}}
+                      com.bhauman/rebel-readline {:mvn/version "0.1.4"}
+                      cider/cider-nrepl {:mvn/version "0.42.1"}}
          :main-opts  ["-m" "nrepl.cmdline"
                       "--interactive"
+                      "--middleware" "[cider.nrepl/cider-middleware]"
                       "-f" "rebel-readline.main/-main"]}
   :test {:extra-paths ["test"]
          :extra-deps {com.github.seancorfield/expectations {:mvn/version "2.0.165"}

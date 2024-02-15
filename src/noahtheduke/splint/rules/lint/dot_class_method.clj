@@ -11,11 +11,12 @@
 
 (defn symbol-class? [sym]
   (and (symbol? sym)
-       (let [sym (pr-str sym)
-             idx (.lastIndexOf sym ".")]
-         (if (neg? idx)
-           (Character/isUpperCase ^char (first sym))
-           (Character/isUpperCase ^char (nth sym (inc idx)))))))
+       (:splint/import-ns (meta sym))))
+
+(defn method?? [sexp]
+  (or (symbol? sexp)
+      (and (list? sexp)
+           (= 1 (count sexp)))))
 
 (defrule lint/dot-class-method
   "Using the `Obj/staticMethod` form maps the method call to Clojure's natural function
@@ -25,12 +26,14 @@
 
   ; bad
   (. Obj staticMethod args)
+  (. Obj (staticMethod) args)
 
   ; good
   (Obj/staticMethod args)
   "
-  {:pattern '(. (? class symbol-class?) ?method ?*args)
+  {:pattern '(. (? class symbol-class?) (? method method??) ?*args)
    :message "Intention is clearer with `Obj/staticMethod` form."
    :on-match (fn [ctx rule form {:syms [?class ?method ?args] :as binds}]
-               (let [replace-form `(~(symbol (str ?class "/" ?method)) ~@?args)]
+               (let [?method (if (list? ?method) (first ?method) ?method)
+                     replace-form `(~(symbol (str ?class "/" ?method)) ~@?args)]
                  (->diagnostic ctx rule form {:replace-form replace-form})))})

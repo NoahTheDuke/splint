@@ -7,6 +7,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Fixed
 
 - Correctly suggest `Obj/staticMethod` when given `(. Obj (staticMethod))` in `lint/dot-class-usage`.
+- Only suggest `naming/conversion-functions` when there's no `-` in the part before `-to-`. (Will warn on `f-to-g`, will not warn on `expect-f-to-c`.)
 
 ## v1.13 - 2024-02-14
 

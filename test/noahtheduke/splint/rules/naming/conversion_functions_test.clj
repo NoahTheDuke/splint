@@ -4,12 +4,21 @@
 
 (ns noahtheduke.splint.rules.naming.conversion-functions-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match]]))
+    [clojure.test :refer [deftest]]
+    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect conversion-functions-test
+(defn config [] (single-rule-config 'naming/conversion-functions))
+
+(deftest conversion-functions-test
   (expect-match
-    '[{:alt (defn f->c [a] {:a a})}]
-    "(defn f-to-c [a] {:a a})"))
+    [{:form '(defn f-to-c [a] {:a a})
+      :message "Use `->` instead of `to` in the names of conversion functions."
+      :alt '(defn f->c [a] {:a a})}]
+    "(defn f-to-c [a] {:a a})"
+    (config))
+  (expect-match
+    nil
+    "(defn expect-f-to-c [a] {:a a})"
+    (config)))

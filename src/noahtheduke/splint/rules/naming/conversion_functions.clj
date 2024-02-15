@@ -10,8 +10,14 @@
 
 (set! *warn-on-reflection* true)
 
+(defn to?? [sym]
+  (and (symbol? sym)
+       (str/includes? (name sym) "-to-")))
+
 (defrule naming/conversion-functions
   "Use `->` instead of `to` in the names of conversion functions.
+
+  Will only warn when there is no `-` before the `-to-`.
 
   Examples:
 
@@ -20,10 +26,12 @@
 
   ; good
   (defn f->c ...)
+  (defn expect-f-to-c ...)
   "
-  {:pattern '(defn ?f-name ?*args)
+  {:pattern '(defn (? f-name to??) ?*args)
    :message "Use `->` instead of `to` in the names of conversion functions."
    :on-match (fn [ctx rule form {:syms [?f-name ?args]}]
-               (when (str/includes? (str ?f-name) "-to-")
-                 (let [new-form (list* 'defn (symbol (str/replace (str ?f-name) "-to-" "->")) ?args)]
-                   (->diagnostic ctx rule form {:replace-form new-form}))))})
+               (let [[head tail] (str/split (name ?f-name) #"-to-")]
+                 (when (and tail (not (str/includes? head "-")))
+                   (let [new-form (list* 'defn (symbol (str head "->" tail)) ?args)]
+                     (->diagnostic ctx rule form {:replace-form new-form})))))})

@@ -4,6 +4,7 @@
 
 (ns noahtheduke.splint.pattern
   (:require
+    [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]
     [noahtheduke.splint.utils :refer [drop-quote simple-type]]))
 
 (set! *warn-on-reflection* true)
@@ -15,6 +16,24 @@
   [t]
   (#{:nil :boolean :char :number :keyword :string :symbol :quote :list :map :set} t))
 
+(defn read-dispatch-symbol
+  "Return the special type of a special symbol, or :symbol if normal."
+  [sym]
+  (let [sym-name (name sym)
+        char0 (.charAt sym-name 0)]
+    (case [char0
+           (when (< 1 (count sym-name))
+             (.charAt sym-name 1))]
+      [\_ nil] :any
+      [\? \+] :?+
+      [\? \*] :?*
+      [\? \?] :??
+      [\? \|] :?|
+      ; else
+      (if (identical? \? char0)
+        :?
+        :symbol))))
+
 (defn read-dispatch
   "Same as [[simple-type]] except that :symbol and :list provide hints about
   their contents. Can be skipped by adding the metadata `:splint/lit`."
@@ -25,21 +44,7 @@
      (if (and smeta (smeta :splint/lit))
        type
        (case type
-         :symbol (let [pat-name (name pattern)
-                       char0 (.charAt pat-name 0)]
-                   (case [char0
-                          (when (< 1 (count pat-name))
-                            (.charAt pat-name 1))]
-                     [\_ nil] :any
-                     [\? \_] :any
-                     [\? \+] :?+
-                     [\? \*] :?*
-                     [\? \?] :??
-                     [\? \|] :?|
-                     ; else
-                     (if (= \? char0)
-                       :?
-                       :symbol)))
+         :symbol (read-dispatch-symbol pattern)
          :list (case (first pattern)
                  quote :quote
                  ? :?
@@ -131,8 +136,7 @@
          ~(match-binding ctx bind children-form)))))
 
 (defmethod read-form :? [ctx pattern form]
-  (let [pattern (if (symbol? pattern) ['? (subs (str pattern) 1)] pattern)
-        [_?sym bind & [pred]] pattern]
+  (let [[_?sym bind & [pred]] pattern]
     (cond
       (nil? pred)
       (match-binding ctx (symbol (str "?" bind)) form)
@@ -143,8 +147,7 @@
 
 (defn match-star
   [ctx pattern]
-  (let [pattern (if (symbol? pattern) ['?* (subs (str pattern) 2)] pattern)
-        [_?sym bind & [pred]] pattern
+  (let [[_?sym bind & [pred]] pattern
         body-form (gensym "star-form-")
         pred-check (if pred `(every? ~pred ~body-form) true)]
     [(gensym "star-fn-")
@@ -163,8 +166,7 @@
 
 (defn match-plus
   [ctx pattern]
-  (let [pattern (if (symbol? pattern) ['?+ (subs (str pattern) 2)] pattern)
-        [_?sym bind & [pred]] pattern
+  (let [[_?sym bind & [pred]] pattern
         body-form (gensym "plus-form-")
         pred-check (if pred `(every? ~pred ~body-form) true)]
     [(gensym "plus-fn-")
@@ -183,8 +185,7 @@
 
 (defn match-optional
   [ctx pattern]
-  (let [pattern (if (symbol? pattern) ['?? (subs (str pattern) 2)] pattern)
-        [_?sym bind & [pred]] pattern
+  (let [[_?sym bind & [pred]] pattern
         body-form (gensym "optional-form-")
         pred-check (if pred `(every? ~pred ~body-form) true)]
     [(gensym "optional-fn-")
@@ -201,46 +202,43 @@
 
 (defn match-alt
   [ctx pattern]
-  (when (symbol? pattern)
-    (throw (IllegalArgumentException. "Can't use ?| on a symbol")))
-  (when-not (vector? (-> pattern next next first))
-    (throw (IllegalArgumentException. "?| arg must be vector of alts")))
-  (when-not (every? #(literal? (read-dispatch %)) (-> pattern next next first))
-    (throw (IllegalArgumentException. "?| alts must be literals")))
-  (let [[_?sym bind & [alts]] pattern
-        temp-ctx (gensym "temp-ctx-")
-        reduced' (gensym "alt-sentinel-")
-        body-form (gensym "alt-body-form-")
-        ;; We need to early exit but this is in a let-bind, so the best thing we can do is
-        ;; use a "reduced"-like sentinel that we only set to true when we've made a match.
-        ;; Branches and outcomes:
-        ;; * temp-ctx is nil and the current alt-pattern doesn't match, so we
-        ;;   return nil, setting reduced' to nil.
-        ;; * temp-ctx is nil and the current alt-pattern does match, so we
-        ;;   return [(match-binding ...) true], setting reduced' to true.
-        ;; * temp-ctx is truthy, so we return [temp-ctx], setting reduced to nil.
-        ;; Only in the second branch do we call `(next body-form)`. That way,
-        ;; we only consume a single item from the current body.
-        binds (mapcat
-                (fn [alt-pattern]
-                  [[temp-ctx reduced']
-                   `(if ~temp-ctx
-                      [~temp-ctx]
+  (let [[_?sym bind alts] pattern]
+    (when-not (or (vector? alts)
+                  (every? #(literal? (read-dispatch %)) alts))
+      (throw (IllegalArgumentException. "?| alts must be a vector of literals")))
+    (let [temp-ctx (gensym "temp-ctx-")
+          reduced' (gensym "alt-sentinel-")
+          body-form (gensym "alt-body-form-")
+          ;; We need to early exit but this is in a let-bind, so the best thing we can do is
+          ;; use a "reduced"-like sentinel that we only set to true when we've made a match.
+          ;; Branches and outcomes:
+          ;; * temp-ctx is nil and the current alt-pattern doesn't match, so we
+          ;;   return nil, setting reduced' to nil.
+          ;; * temp-ctx is nil and the current alt-pattern does match, so we
+          ;;   return [(match-binding ...) true], setting reduced' to true.
+          ;; * temp-ctx is truthy, so we return [temp-ctx], setting reduced to nil.
+          ;; Only in the second branch do we call `(next body-form)`. That way,
+          ;; we only consume a single item from the current body.
+          binds (mapcat
+                  (fn [alt-pattern]
+                    [[temp-ctx reduced']
+                     `(if ~temp-ctx
+                        [~temp-ctx]
                         (let [~body-form (first ~body-form)]
                           (when ~(read-form ctx alt-pattern body-form)
                             [~(match-binding ctx (symbol (str "?" bind)) body-form) true])))
-                   body-form
-                   `(if (and ~temp-ctx ~reduced')
-                      (next ~body-form)
-                      ~body-form)])
-                alts)]
-    [(gensym "alt-fn-")
-     `(fn [~ctx ~body-form cont#]
-        (let [~temp-ctx nil
-              ~@binds
-              ~ctx ~temp-ctx]
-          (when ~ctx
-            (cont# ~ctx ~body-form))))]))
+                     body-form
+                     `(if (and ~temp-ctx ~reduced')
+                        (next ~body-form)
+                        ~body-form)])
+                  alts)]
+      [(gensym "alt-fn-")
+       `(fn [~ctx ~body-form cont#]
+          (let [~temp-ctx nil
+                ~@binds
+                ~ctx ~temp-ctx]
+            (when ~ctx
+              (cont# ~ctx ~body-form))))])))
 
 (defn- match-single-binds
   [ctx children-form items]
@@ -409,6 +407,41 @@
                           (recur (next complex-keys-preds#)
                                  (vec-remove idx# complex-children#)))))))))))
 
+(defn expand-specials [pattern]
+  (postwalk*
+    (fn [obj]
+      (if (symbol? obj)
+        (let [special-type (read-dispatch-symbol obj)]
+          (case special-type
+            (:symbol :any) obj
+            :? (let [sym-name (str obj)]
+                 (cond
+                   (= 1 (count sym-name)) obj
+                   ;; If given `?_`, short-circuit to just _
+                   (.equals "?_" sym-name) '_
+                   :else
+                   (list '? (symbol (subs sym-name 1)))))
+            :?+ (let [sym-name (str obj)]
+                  (if (= 2 (count sym-name))
+                    obj
+                    (list '?+ (symbol (subs sym-name 2)))))
+            :?* (let [sym-name (str obj)]
+                  (if (= 2 (count sym-name))
+                    obj
+                    (list '?* (symbol (subs sym-name 2)))))
+            :?? (let [sym-name (str obj)]
+                  (if (= 2 (count sym-name))
+                    obj
+                    (list '?? (symbol (subs sym-name 2)))))
+            :?| (let [sym-name (str obj)]
+                  (if (= 2 (count sym-name))
+                    obj
+                    (throw (IllegalArgumentException. "Can't use ?| on a symbol"))))
+            ; else
+            (throw (IllegalArgumentException. (str "Unreachable, found with " obj)))))
+        obj))
+    pattern))
+
 (defmacro pattern
   "Parse a provided pattern s-expression into a function that checks each
   element and sub-element of the form as a whole predicate. Makes semi-smart
@@ -420,7 +453,10 @@
   have the bindings as keys."
   [pattern]
   (let [form (gensym "form-")
-        ctx (gensym "ctx-")]
+        ctx (gensym "ctx-")
+        pattern' (-> pattern
+                     (drop-quote)
+                     (expand-specials))]
     `(fn [~form]
        (let [~ctx {}]
-         (or ~(read-form ctx (drop-quote pattern) form) nil)))))
+         (or ~(read-form ctx pattern' form) nil)))))

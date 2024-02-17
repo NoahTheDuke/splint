@@ -4,27 +4,29 @@
 
 (ns noahtheduke.splint.rules.lint.assoc-fn-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
+    [clojure.test :refer [deftest]]
     [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'lint/assoc-fn))
 
-(defexpect assoc-fn-key-coll-test
+(deftest assoc-fn-key-coll-test
   (expect-match
-    '[{:alt (update coll :k f ?*args)}]
-    "(assoc coll :k (f (:k coll) args))"
+    '[{:alt (update coll :k f arg)}]
+    "(assoc coll :k (f (:k coll) arg))"
     (config)))
 
-(defexpect assoc-fn-coll-key-test
+(deftest assoc-fn-coll-key-test
   (expect-match
-    '[{:alt (update coll :k f ?*args)}]
-    "(assoc coll :k (f (coll :k) args))"
+    '[{:alt (update coll :k f arg1 arg2)}]
+    "(assoc coll :k (f (coll :k) arg1 arg2))"
     (config)))
 
-(defexpect assoc-fn-get-test
+(deftest assoc-fn-get-test
   (expect-match
-    '[{:alt (update coll :k f ?*args)}]
-    "(assoc coll :k (f (get coll :k) args))"
+    [{:form '(assoc coll :k (f (get coll :k) arg1 arg2 arg3))
+      :message "Use `update` instead of recreating it."
+      :alt '(update coll :k f arg1 arg2 arg3)}]
+    "(assoc coll :k (f (get coll :k) arg1 arg2 arg3))"
     (config)))

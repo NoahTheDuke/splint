@@ -6,9 +6,22 @@ The goal of the pattern DSL is ease of writing patterns. Because we can rely on 
 
 ## High-level description
 
-The macro [`noahtheduke.splint.pattern/pattern`] builds the matching function. It takes a quoted form (either a single literal or a collection with arbitrarily nested data) and returns a function that will either match the given shape or return `nil`.
+The macro [`noahtheduke.splint.pattern/pattern`] builds the matching function. It takes a quoted form (either a single literal or a collection with arbitrarily nested data) and returns a function that will either match the given shape or return `nil`. The input form can be made of literals or special patterns (detailed below) or (most commonly) a combination of both. For example:
 
 [`noahtheduke.splint.pattern/pattern`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.splint.pattern#pattern
+
+
+
+```clojure
+(def matcher (pat/pattern '(a b ?+c (?| d [1 2 3]))))
+
+(= '{?a foo
+     ?b :bar
+     ?c 100
+     ?d 2}
+   (matcher '(foo :bar 100 2)))
+; => true
+```
 
 ## Types
 
@@ -32,7 +45,7 @@ Inside of a pattern, each element has roughly the same "type" as in Clojure, usi
 
 ## Special patterns
 
-Some symbols are treated differently as part of the Pattern DSL. These are useful when writing more complex patterns.
+Some forms are treated differently as part of the Pattern DSL. These are useful when writing more complex patterns.
 
 Special patterns are in the shape of `(sym binding opts)`. Some have shorted forms. Any time there is a binding, if the given binding symbol doesn't start with a question mark, it is changed to have one: `(? x)` puts `?x` in the returned map from `pattern`.
 
@@ -42,7 +55,7 @@ Special patterns are in the shape of `(sym binding opts)`. Some have shorted for
 * `??` is the same as `?*` (short form `??x`) but matches only zero or one items.
 * `?|` binds a single value as `?`, but requires the third arg to be a vector of simple types, which it will try to match left-to-right: `(?| x [a b c])` will only match `a`, `b`, or `c`, but not `d`. Due to the required vector, there is no short form.
 
-The binding `_` or short form `?_` are special: they match anything like a regular binding but don't create bindings in the map returned by `pattern`. They also don't unify with each other, so `[_ 1 _]` matches both `[0 1 0]` and `[0 1 2]`.
+The binding `_` is special: it matches anything like a regular binding but doesn't create bindings in the map returned by `pattern`. It also doesn't unify with itself, so `[_ 1 _]` matches both `[0 1 0]` and `[0 1 2]`.
 
 All predicates are resolved using `clojure.core/requiring-resolve`. It first tries to resolve with `clojure.core`, then with `noahtheduke.splint.rules.helpers`, then with the current namespace. If it can't resolve to a function, an `ExceptionInfo` is thrown.
 

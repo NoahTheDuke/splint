@@ -23,9 +23,9 @@
   global-rules
   (atom {:rules {} :genres #{}}))
 
-(defn replace->diagnostic [replace-map]
+(defn replace->diagnostic [replace-form]
   (fn [ctx rule form binds]
-    (let [replaced-form (postwalk-splicing-replace binds replace-map)]
+    (let [replaced-form (postwalk-splicing-replace binds replace-form)]
       (->diagnostic ctx rule form {:replace-form replaced-form}))))
 
 (defmacro defrule

@@ -25,10 +25,8 @@
                         [#{1 2 3} :set]]]
       (expect (sut/read-dispatch input) t)))
   (expecting "refinements"
-    (doseq [[input t] [['_ :any]
-                       ['?_ :any]]]
-      (expect t (sut/read-dispatch input))
-      (expect :symbol (sut/read-dispatch (vary-meta input assoc :splint/lit true))))
+    (expect :any (sut/read-dispatch '_))
+    (expect :symbol (sut/read-dispatch (vary-meta '_ assoc :splint/lit true)))
     (doseq [[input t] [['(quote (1 2 3)) :quote]
                        ['(1 2 3) :list]]]
       (expect t (sut/read-dispatch input))
@@ -47,7 +45,7 @@
   (expect {}
     ((sut/pattern '(1 2 (? _ symbol?))) '(1 2 a)))
   (expect nil?
-    (from-each [input '['a :a "a" 1 true nil
+    (from-each [input '[:a "a" 1 true nil
                         (1 2 3)
                         {1 2}
                         #{1 2 3}
@@ -212,3 +210,14 @@
     (expect not (pat (parse-string "[:a 1 :b [2] :c {:e 4}]")))
     (expect (pat (parse-string "[:a 1 :b [2] :c {:d 3}]")))
     (expect not (pat (parse-string "[:a 1 :b [2] :c {:d 3} :e 4]")))))
+
+(deftest expand-specials-test
+  (expect 'a (sut/expand-specials 'a))
+  (expect '(a b c) (sut/expand-specials '(a b c)))
+  (expect '(a _ c) (sut/expand-specials '(a _ c)))
+  (expect '(a (b) c) (sut/expand-specials '(a (b) c)))
+  (expect '(a (? b) c) (sut/expand-specials '(a ?b c)))
+  (expect '(a (?+ b) c) (sut/expand-specials '(a ?+b c)))
+  (expect '(a (?* b) c) (sut/expand-specials '(a ?*b c)))
+  (expect '(a (?? b) c) (sut/expand-specials '(a ??b c)))
+  (expect IllegalArgumentException (sut/expand-specials '(a ?|b c))))

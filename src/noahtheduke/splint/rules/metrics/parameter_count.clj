@@ -56,7 +56,8 @@
   ; good
   (defn example [a b c & args] ...)
   "
-  {:pattern '((? _ defn-fn??) ?*args)
+  {:pattern '(? _)
+   :init-type :list
    :on-match (fn [ctx rule form _bindings]
                (when-let [defn-form (:splint/defn-form (meta form))]
                  (let [config (:config rule)

@@ -4,10 +4,18 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Changed
+
+- General performance increases in rules: `naming/conversion-function`, `style/prefer-clj-string`, `lint/warn-on-reflection`, `style/single-key-in`, `metrics/parameter-count`.
+- Remove documentation about `?_` short form, as it's covered by the existing `?` and `_` binding rules.
+- Expand `?foo` short-forms in patterns to their `(? foo)` special form. Simplifies matching functions, makes the pattern DSL more consistent. Now `?|foo` will throw immediately instead of part-way through macroexpansion.
+- Updated pattern docs with a small example at the top.
+
 ### Fixed
 
 - Correctly suggest `Obj/staticMethod` when given `(. Obj (staticMethod))` in `lint/dot-class-usage`.
 - Only suggest `naming/conversion-functions` when there's no `-` in the part before `-to-`. (Will warn on `f-to-g`, will not warn on `expect-f-to-c`.)
+- Correctly render args in `lint/assoc-fn`.
 
 ## v1.13 - 2024-02-14
 

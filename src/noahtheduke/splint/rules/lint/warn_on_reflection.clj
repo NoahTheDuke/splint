@@ -24,13 +24,14 @@
   (set! *warn-on-reflection* true)
   (defn baz [a b] (+ a b))
   "
-  {:pattern '[(ns ?*ns-args) ?warn ?*rest-of-file]
+  {:pattern '(? file)
    :init-type :file
    :message "*warn-on-reflection* should be immediately after ns declaration."
    :ext :clj
-   :on-match (fn [ctx rule form {:syms [?warn ?rest-of-file] :as binds}]
-               (when-not (= '(set! *warn-on-reflection* true) ?warn)
-                 (->diagnostic ctx rule
-                               nil
-                               {:form-meta (meta ?warn)
-                                :filename (:filename (meta form))})))})
+   :on-match (fn [ctx rule form {:syms [?file]}]
+               (let [[ns-args ?warn] ?file]
+                 (when-not (= '(set! *warn-on-reflection* true) ?warn)
+                   (->diagnostic ctx rule
+                                 nil
+                                 {:form-meta (meta ?warn)
+                                  :filename (:filename (meta form))}))))})

@@ -105,6 +105,7 @@ position.
 ```clojure
 ; bad
 (. Obj staticMethod args)
+(. Obj (staticMethod) args)
 
 ; good
 (Obj/staticMethod args)

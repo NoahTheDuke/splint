@@ -38,6 +38,17 @@
 (defrule style/prefer-clj-string
   "Prefer clojure.string to interop.
 
+  | method | clojure.string |
+  | --- | --- |
+  | `.contains` | `clojure.string/includes?` |
+  | `.endsWith` | `clojure.string/ends-with?` |
+  | `.replace` | `clojure.string/replace` |
+  | `.split` | `clojure.string/split` |
+  | `.startsWith` | `clojure.string/starts-with?` |
+  | `.toLowerCase` | `clojure.string/lower-case` |
+  | `.toUpperCase` | `clojure.string/upper-case` |
+  | `.trim` | `clojure.string/trim` |
+
   Examples:
 
   ; bad
@@ -52,7 +63,7 @@
               '((? _ to-str??) (.reverse (StringBuilder. ?rev)))
               '((? plain interop-symbol?) ?*args)]
    :message "Use the `clojure.string` function instead of interop."
-   :on-match (fn [ctx rule form {:syms [?plain ?args ?cap ?rev]}]
+   :on-match (fn [ctx rule form {:syms [?cap ?rev ?plain ?args]}]
                (cond
                  ?cap
                  (let [new-form (list 'clojure.string/capitalize ?cap)]

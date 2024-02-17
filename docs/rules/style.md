@@ -816,7 +816,18 @@ clojure.math/PI
 | ------------------ | ------------- | --------------- |
 | true               | 1.9.0         | 1.9.0           |
 
-Prefer clojure.math to interop.
+Prefer clojure.string to interop.
+
+| method | clojure.string |
+| --- | --- |
+| `.contains` | `clojure.string/includes?` |
+| `.endsWith` | `clojure.string/ends-with?` |
+| `.replace` | `clojure.string/replace` |
+| `.split` | `clojure.string/split` |
+| `.startsWith` | `clojure.string/starts-with?` |
+| `.toLowerCase` | `clojure.string/lower-case` |
+| `.toUpperCase` | `clojure.string/upper-case` |
+| `.trim` | `clojure.string/trim` |
 
 ### Examples
 

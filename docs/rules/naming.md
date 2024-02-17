@@ -32,6 +32,8 @@ Through community and core practices over the years, various core libraries have
 
 Use `->` instead of `to` in the names of conversion functions.
 
+Will only warn when there is no `-` before the `-to-`.
+
 ### Examples
 
 ```clojure
@@ -40,6 +42,7 @@ Use `->` instead of `to` in the names of conversion functions.
 
 ; good
 (defn f->c ...)
+(defn expect-f-to-c ...)
 ```
 
 ### Reference

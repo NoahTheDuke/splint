@@ -9,16 +9,10 @@
 
 (set! *warn-on-reflection* true)
 
-(defn getter [form]
-  (case form
-    (assoc-in get-in update-in) true
-    false))
-
-(defn setter [?f]
-  (case ?f
-    assoc-in 'assoc
-    get-in 'get
-    update-in 'update))
+(def multi->single
+  '{assoc-in assoc
+    get-in get
+    update-in update})
 
 (defrule style/single-key-in
   "`assoc-in` loops over the args, calling `assoc` for each key. If given a single key,
@@ -32,9 +26,10 @@
   ; good
   (assoc coll :k 10)
   "
-  {:pattern '((? f getter) ?coll [?key] ?*vals)
+  {:pattern '((? f multi->single) ?coll [?key] ?*vals)
    :on-match (fn [ctx rule form {:syms [?f ?coll ?key ?vals]}]
-               (let [new-form (list* (setter ?f) ?coll ?key ?vals)
-                     message (format "Use `%s` instead of recreating it." (setter ?f))]
+               (let [f (multi->single ?f)
+                     new-form (list* f ?coll ?key ?vals)
+                     message (format "Use `%s` instead of recreating it." f)]
                  (->diagnostic ctx rule form {:replace-form new-form
-                                          :message message})))})
+                                              :message message})))})

@@ -54,7 +54,7 @@
   * The first test-expr is a list with 3 forms.
   * The function of every test-expr must match the test-expr of the first
     test-expr.
-    * The last test-expr isn't checked if it is `true` or a keyword.
+  * The last test-expr isn't checked if it is `true` or a keyword.
   * The last argument of every test-expr must match the last argument of the
     first test-expr.
 

@@ -27,14 +27,13 @@
     lint/into-literal 40
     lint/let-if 3
     lint/let-when 1
-    lint/prefer-method-values 84
     lint/redundant-call 3
     lint/thread-macro-one-arg 71
-    lint/warn-on-reflection 169
+    lint/warn-on-reflection 170
     metrics/fn-length 485
     metrics/parameter-count 204
     naming/conventional-aliases 33
-    naming/conversion-functions 28
+    naming/conversion-functions 11
     naming/predicate 15
     performance/assoc-many 244
     performance/dot-equals 1040
@@ -89,5 +88,5 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 3024 (count (:diagnostics results)))
+    (expect 2924 (count (:diagnostics results)))
     (expect 222 (count (:checked-files results)))))

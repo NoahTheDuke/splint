@@ -4,77 +4,101 @@
 
 (ns noahtheduke.splint.rules.lint.thread-macro-one-arg-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match]]))
+    [clojure.test :refer [deftest]]
+    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect thread-first-1-arg-test
+(defn config [& [style]]
+  (cond-> (single-rule-config 'lint/thread-macro-one-arg)
+    style (assoc-in ['lint/thread-macro-one-arg :chosen-style] style)))
+
+(deftest thread-first-1-arg-test
   (expect-match
     '[{:alt (form arg)}]
-    "(-> arg form)")
+    "(-> arg form)"
+    (config))
   (expect-match
     '[{:alt (form arg)}]
-    "(-> arg (form))")
+    "(-> arg (form))"
+    (config))
   (expect-match
     '[{:alt (form arg 10)}]
-    "(-> arg (form 10))"))
+    "(-> arg (form 10))"
+    (config)))
 
-(defexpect thread-last-1-arg-test
+(deftest thread-last-1-arg-test
   (expect-match
     '[{:alt (form arg)}]
-    "(->> arg form)")
+    "(->> arg form)"
+    (config))
   (expect-match
     '[{:alt (form arg)}]
-    "(->> arg (form))")
+    "(->> arg (form))"
+    (config))
   (expect-match
     '[{:alt (form 10 arg)}]
-    "(->> arg (form 10))"))
+    "(->> arg (form 10))"
+    (config)))
 
-(defexpect thread-style-inline-test
-  (let [config '{lint/thread-macro-one-arg {:chosen-style :inline}}]
-    (expect-match
-      '[{:alt (form arg)}]
-      "(-> arg form)" config)
-    (expect-match
-      '[{:alt (form [arg])}]
-      "(-> [arg] form)" config)
-    (expect-match
-      '[{:alt (form {:a arg})}]
-      "(-> {:a arg} form)" config)
-    (expect-match
-      '[{:alt (form #{arg})}]
-      "(-> #{arg} form)" config)
-    (expect-match
-      '[{:alt (form arg)}]
-      "(->> arg form)" config)
-    (expect-match
-      '[{:alt (form [arg])}]
-      "(->> [arg] form)" config)
-    (expect-match
-      '[{:alt (form {:a arg})}]
-      "(->> {:a arg} form)" config)
-    (expect-match
-      '[{:alt (form #{arg})}]
-      "(->> #{arg} form)" config)))
+(deftest thread-style-inline-test
+  (expect-match
+    '[{:alt (form arg)}]
+    "(-> arg form)"
+    (config :inline))
+  (expect-match
+    '[{:alt (form [arg])}]
+    "(-> [arg] form)"
+    (config :inline))
+  (expect-match
+    '[{:alt (form {:a arg})}]
+    "(-> {:a arg} form)"
+    (config :inline))
+  (expect-match
+    '[{:alt (form #{arg})}]
+    "(-> #{arg} form)"
+    (config :inline))
+  (expect-match
+    '[{:alt (form arg)}]
+    "(->> arg form)"
+    (config :inline))
+  (expect-match
+    '[{:alt (form [arg])}]
+    "(->> [arg] form)"
+    (config :inline))
+  (expect-match
+    '[{:alt (form {:a arg})}]
+    "(->> {:a arg} form)"
+    (config :inline))
+  (expect-match
+    '[{:alt (form #{arg})}]
+    "(->> #{arg} form)"
+    (config :inline)))
 
-(defexpect thread-style-avoid-collections-test
-  (let [config '{lint/thread-macro-one-arg {:chosen-style :avoid-collections}}]
-    (expect-match
-      '[{:alt (form arg)}]
-      "(-> arg form)" config)
-    (expect-match nil
-      "(-> [arg] form)" config)
-    (expect-match nil
-      "(-> {:a arg} form)" config)
-    (expect-match nil
-      "(-> #{arg} form)" config)
-    (expect-match
-      '[{:alt (form arg)}]
-      "(->> arg form)" config)
-    (expect-match nil
-      "(->> [arg] form)" config)
-    (expect-match nil
-      "(->> {:a arg} form)" config)
-    (expect-match nil
-      "(->> #{arg} form)" config)))
+(deftest thread-style-avoid-collections-test
+  (expect-match
+    '[{:alt (form arg)}]
+    "(-> arg form)"
+    (config :avoid-collections))
+  (expect-match nil
+    "(-> [arg] form)"
+    (config :avoid-collections))
+  (expect-match nil
+    "(-> {:a arg} form)"
+    (config :avoid-collections))
+  (expect-match nil
+    "(-> #{arg} form)"
+    (config :avoid-collections))
+  (expect-match
+    '[{:alt (form arg)}]
+    "(->> arg form)"
+    (config :avoid-collections))
+  (expect-match nil
+    "(->> [arg] form)"
+    (config :avoid-collections))
+  (expect-match nil
+    "(->> {:a arg} form)"
+    (config :avoid-collections))
+  (expect-match nil
+    "(->> #{arg} form)"
+    (config :avoid-collections)))

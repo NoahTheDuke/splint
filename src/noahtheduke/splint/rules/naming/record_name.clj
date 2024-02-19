@@ -26,12 +26,11 @@
   ; good
   (defrecord Foo [a b c])
   "
-  {:pattern '(defrecord ?record-name ?*args)
+  {:pattern '(defrecord (? record-name lower-case-name?) ?*args)
    :message "Records should start with an uppercase letter."
    :on-match (fn [ctx rule form {:syms [?record-name ?args]}]
-               (when (lower-case-name? ?record-name)
-                 (let [new-record-name (symbol
-                                         (str (subs (str/upper-case (str ?record-name)) 0 1)
-                                              (subs (str ?record-name) 1)))
-                       new-form (list* 'defrecord new-record-name ?args)]
-                   (->diagnostic ctx rule form {:replace-form new-form}))))})
+               (let [new-record-name (symbol
+                                       (str (subs (str/upper-case (str ?record-name)) 0 1)
+                                            (subs (str ?record-name) 1)))
+                     new-form (list* 'defrecord new-record-name ?args)]
+                 (->diagnostic ctx rule form {:replace-form new-form})))})

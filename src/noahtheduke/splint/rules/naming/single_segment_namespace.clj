@@ -26,10 +26,8 @@
   ; good
   (ns noahtheduke.simple)
   "
-  {:pattern '(ns ?ns ?*args)
+  {:pattern '(ns (? ns single-segment-ns?) ?*args)
    :on-match (fn [ctx rule form {:syms [?ns]}]
-               (when (single-segment-ns? ?ns)
-                 (let [message
-                       (format "%s is a single segment. Consider adding an additional segment."
-                               ?ns)]
-                   (->diagnostic ctx rule form {:message message}))))})
+               (let [message
+                     (format "%s is a single segment. Consider adding an additional segment." ?ns)]
+                 (->diagnostic ctx rule form {:message message})))})

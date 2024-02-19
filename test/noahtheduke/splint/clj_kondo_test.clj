@@ -19,7 +19,7 @@
 (def clj-kondo-diagnostics
   '{lint/assoc-fn 1
     lint/body-unquote-splicing 2
-    lint/dot-class-method 3
+    lint/dot-class-method 2
     lint/dot-obj-method 1
     lint/fn-wrapper 1
     lint/if-else-nil 42
@@ -29,12 +29,11 @@
     lint/let-if 8
     lint/let-when 2
     lint/missing-body-in-when 2
-    lint/prefer-method-values 362
     lint/prefer-require-over-use 4
     lint/thread-macro-one-arg 85
     lint/try-splicing 2
     lint/underscore-in-namespace 1
-    lint/warn-on-reflection 229
+    lint/warn-on-reflection 246
     metrics/fn-length 314
     metrics/parameter-count 48
     naming/conventional-aliases 14
@@ -51,7 +50,8 @@
     style/apply-str 14
     style/apply-str-interpose 3
     style/cond-else 8
-    style/def-fn 2
+    naming/conversion-functions 2
+    style/def-fn 3
     style/eq-false 2
     style/eq-true 5
     style/eq-zero 2
@@ -81,12 +81,12 @@
                           (-> all-enabled-config
                               (assoc :silent true)
                               (assoc :parallel false)
-                              (assoc :clojure-version *clojure-version*)))]
+                              (assoc :clojure-version *clojure-version*)))
+        diagnostics (->> results
+                         :diagnostics
+                         (group-by :rule-name))]
     (expect
       (match?
         (m/equals clj-kondo-diagnostics)
-        (->> results
-             :diagnostics
-             (group-by :rule-name)
-             (#(update-vals % count)))))
-    (expect 1580 (count (:diagnostics results)))))
+        (update-vals diagnostics count)))
+    (expect 1237 (count (:diagnostics results)))))

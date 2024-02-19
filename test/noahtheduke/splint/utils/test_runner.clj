@@ -7,7 +7,8 @@
   (:require
     [clojure.test :as t]
     [clojure.tools.cli :as cli]
-    [cognitect.test-runner :as ctr]))
+    [cognitect.test-runner :as ctr]
+    [noahtheduke.splint.dev]))
 
 (set! *warn-on-reflection* true)
 

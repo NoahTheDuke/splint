@@ -38,9 +38,8 @@
   ; good
   (defn palindrome? ...)
   "
-  {:pattern '((? defn defn??) ?name ?*args)
+  {:pattern '((? defn defn??) (? name bad-name?) ?*args)
    :message "Use a question mark instead of other language idioms."
    :on-match (fn [ctx rule form {:syms [?defn ?name ?args]}]
-               (when (bad-name? ?name)
-                 (let [new-form (list* ?defn (symbol (good-name ?name)) ?args)]
-                   (->diagnostic ctx rule form {:replace-form new-form}))))})
+               (let [new-form (list* ?defn (symbol (good-name ?name)) ?args)]
+                 (->diagnostic ctx rule form {:replace-form new-form})))})

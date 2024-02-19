@@ -4,19 +4,25 @@
 
 (ns noahtheduke.splint.rules.naming.predicate-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match]]))
+    [clojure.test :refer [deftest]]
+    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect predicate-test
+(defn config [] (single-rule-config 'naming/predicate))
+
+(deftest predicate-test
+  (expect-match
+    [{:form '(defn is-palindrome [a] true)
+      :alt '(defn palindrome? [a] true)}]
+    "(defn is-palindrome [a] true)"
+    (config))
   (expect-match
     '[{:alt (defn palindrome? [a] true)}]
-    "(defn is-palindrome [a] true)")
+    "(defn palindrome-p [a] true)"
+    (config))
+  (expect-match nil "(defn palindrome? [a] true)" (config))
   (expect-match
     '[{:alt (defn palindrome? [a] true)}]
-    "(defn palindrome-p [a] true)")
-  (expect-match nil "(defn palindrome? [a] true)")
-  (expect-match
-    '[{:alt (defn palindrome? [a] true)}]
-    "(defn is-palindrome? [a] true)"))
+    "(defn is-palindrome? [a] true)"
+    (config)))

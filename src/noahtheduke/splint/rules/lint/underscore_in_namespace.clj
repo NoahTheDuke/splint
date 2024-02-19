@@ -10,6 +10,9 @@
 
 (set! *warn-on-reflection* true)
 
+(defn includes-underscore? [?ns-sym]
+  (str/includes? (str ?ns-sym) "_"))
+
 (defrule lint/underscore-in-namespace
   "Due to munging rules, underscores in namespaces can confuse tools and
   libraries which expect that underscores in class names should be dashes in
@@ -22,10 +25,9 @@
 
   ; good
   (ns foo-bar.baz-qux)"
-  {:pattern '(ns ?ns-sym ?*_)
+  {:pattern '(ns (? ns-sym includes-underscore?) ?*_)
    :message "Avoid underscores in namespaces."
    :on-match (fn [ctx rule form {:syms [?ns-sym]}]
-               (when (str/includes? (str ?ns-sym) "_")
-                 (let [new-namespace (symbol (str/replace (str ?ns-sym) "_" "-"))]
-                   (->diagnostic ctx rule form {:replace-form new-namespace
-                                                :form-meta (meta ?ns-sym)}))))})
+               (let [new-namespace (symbol (str/replace (str ?ns-sym) "_" "-"))]
+                 (->diagnostic ctx rule form {:replace-form new-namespace
+                                              :form-meta (meta ?ns-sym)})))})

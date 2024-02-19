@@ -6,7 +6,23 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ### Changed
 
-- General performance increases in rules: `naming/conversion-function`, `style/prefer-clj-string`, `lint/warn-on-reflection`, `style/single-key-in`, `metrics/parameter-count`.
+- General performance increases in rules:
+
+  - `lint/body-unquote-splicing`
+  - `lint/underscore-in-namespace`
+  - `lint/warn-on-reflection`
+  - `metrics/parameter-count`
+  - `naming/conversion-function`
+  - `naming/predicate`
+  - `naming/record-name`
+  - `naming/single-segment-namespace`
+  - `style/def-fn`
+  - `style/prefer-clj-string`
+  - `style/prefer-condp`
+  - `style/single-key-in`
+  - `style/tostring`
+  - `style/useless-do`
+
 - Remove documentation about `?_` short form, as it's covered by the existing `?` and `_` binding rules.
 - Expand `?foo` short-forms in patterns to their `(? foo)` special form. Simplifies matching functions, makes the pattern DSL more consistent. Now `?|foo` will throw immediately instead of part-way through macroexpansion.
 - Updated pattern docs with a small example at the top.

@@ -19,6 +19,6 @@
   ; good
   (str x)
   "
-  {:pattern '((?| f [.toString String/toString]) ?x)
+  {:pattern '((?| _ [.toString String/toString]) ?x)
    :message "Use `str` instead of interop."
    :replace '(str ?x)})

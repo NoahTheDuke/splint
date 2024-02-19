@@ -38,10 +38,13 @@ test-all *args:
 @gen-docs:
     clojure -M:gen-docs
 
+today := `date +%F`
+
 # Set version, change all instances of <<next>> to version
-@set-version version:
+set-version version:
     echo '{{version}}' > resources/SPLINT_VERSION
     fd '.(clj|edn|md)' . -x sd '<<next>>' '{{version}}' {}
+    sd '## Unreleased' '## Unreleased\n\n## {{version}} - {{today}}' CHANGELOG.md
 
 @clojars:
     env CLOJARS_USERNAME='noahtheduke' CLOJARS_PASSWORD=`cat ../clojars.txt` clojure -T:build deploy
@@ -54,15 +57,13 @@ test-all *args:
     just set-version {{version}}
     echo 'Rendering docs'
     just gen-docs
-    echo 'Update changelog'
-    # TODO
+    echo 'Commit and tag'
     git commit -a -m 'Bump version for release'
     git tag v{{version}}
+    echo 'Pushing to github'
     git push
     git push --tags
     echo 'Building uber'
     clojure -T:build uber
     echo 'Deploying to clojars'
     just clojars
-    echo 'Building native image'
-    scripts/compile

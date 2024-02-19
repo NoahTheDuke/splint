@@ -113,6 +113,14 @@
      (parse-string "[]")))
   (expect
     '{?exprs []}
+    ((sut/pattern '(if x y (?? exprs nil?)))
+     (parse-string "(if x y)")))
+  (expect
+    '{?exprs [nil]}
+    ((sut/pattern '(if x y (?? exprs nil?)))
+     (parse-string "(if x y nil)")))
+  (expect
+    '{?exprs []}
     ((sut/pattern '[1 2 (?? exprs) 3 4])
      (parse-string "[1 2 3 4]")))
   (expect

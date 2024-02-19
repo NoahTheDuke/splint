@@ -203,35 +203,19 @@
 (defn match-alt
   [ctx pattern]
   (let [[_?sym bind alts] pattern]
-    (when-not (or (vector? alts)
-                  (every? #(literal? (read-dispatch %)) alts))
+    (when-not (and (vector? alts)
+                   (every? #(literal? (read-dispatch %)) alts))
       (throw (IllegalArgumentException. "?| alts must be a vector of literals")))
     (let [temp-ctx (gensym "temp-ctx-")
-          reduced' (gensym "alt-sentinel-")
           body-form (gensym "alt-body-form-")
-          ;; We need to early exit but this is in a let-bind, so the best thing we can do is
-          ;; use a "reduced"-like sentinel that we only set to true when we've made a match.
-          ;; Branches and outcomes:
-          ;; * temp-ctx is nil and the current alt-pattern doesn't match, so we
-          ;;   return nil, setting reduced' to nil.
-          ;; * temp-ctx is nil and the current alt-pattern does match, so we
-          ;;   return [(match-binding ...) true], setting reduced' to true.
-          ;; * temp-ctx is truthy, so we return [temp-ctx], setting reduced to nil.
-          ;; Only in the second branch do we call `(next body-form)`. That way,
-          ;; we only consume a single item from the current body.
-          binds (mapcat
-                  (fn [alt-pattern]
-                    [[temp-ctx reduced']
-                     `(if ~temp-ctx
-                        [~temp-ctx]
-                        (let [~body-form (first ~body-form)]
-                          (when ~(read-form ctx alt-pattern body-form)
-                            [~(match-binding ctx (symbol (str "?" bind)) body-form) true])))
-                     body-form
-                     `(if (and ~temp-ctx ~reduced')
-                        (next ~body-form)
-                        ~body-form)])
-                  alts)]
+          binds [temp-ctx
+                 `(let [~body-form (first ~body-form)]
+                    (when ((quote ~(set alts)) ~body-form)
+                      ~(match-binding ctx (symbol (str "?" bind)) body-form)))
+                 body-form
+                 `(if ~temp-ctx
+                    (next ~body-form)
+                    ~body-form)]]
       [(gensym "alt-fn-")
        `(fn [~ctx ~body-form cont#]
           (let [~temp-ctx nil

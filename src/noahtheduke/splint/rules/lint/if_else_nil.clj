@@ -10,6 +10,10 @@
 
 (set! *warn-on-reflection* true)
 
+(defn not-do [form]
+  (not (and (list? form)
+            (= 'do (first form)))))
+
 (defrule lint/if-else-nil
   "Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
 
@@ -21,9 +25,8 @@
   ; good
   (when (some-func) :a)
   "
-  {:patterns ['(if ?x ?y nil)
-              '(if ?x (do ?*y))
-              '(if ?x ?y)]
+  {:patterns ['(if ?x (? y not-do) (?? _ nil?))
+              '(if ?x (do ?*y) (?? _ nil?))]
    :message "Use `when` which doesn't require specifying the else branch."
    :on-match (fn [ctx rule form {:syms [?x ?y]}]
                (let [new-form (if (rest-arg? ?y)

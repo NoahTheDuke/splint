@@ -8,6 +8,9 @@
 
 (set! *warn-on-reflection* true)
 
+(defn str-empty? [form]
+  (.equals "" form))
+
 (defrule style/reduce-str
   "`reduce` calls the provided function on every element in the provided
   collection. Because of how `str` is implemented, a new string is created
@@ -27,7 +30,6 @@
   ; good
   (clojure.string/join x)
   "
-  {:patterns ['(reduce str ?coll)
-              '(reduce str "" ?coll)]
+  {:pattern '(reduce str (?? _ str-empty?) ?coll)
    :message "Use `clojure.string/join` for efficient string concatenation."
    :replace '(clojure.string/join ?coll)})

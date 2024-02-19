@@ -9,9 +9,7 @@
 (set! *warn-on-reflection* true)
 
 (defn eq? [form]
-  (case form
-    (= ==) true
-    false))
+  ('#{= ==} form))
 
 (defrule style/eq-zero
   "`zero?` exists so use it.

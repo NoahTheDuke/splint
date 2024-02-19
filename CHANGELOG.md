@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## v1.14.0 - 2024-02-19
+
 ### Changed
 
 - General performance increases in rules:

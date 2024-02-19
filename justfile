@@ -43,6 +43,9 @@ test-all *args:
     echo '{{version}}' > resources/SPLINT_VERSION
     fd '.(clj|edn|md)' . -x sd '<<next>>' '{{version}}' {}
 
+@clojars:
+    env CLOJARS_USERNAME='noahtheduke' CLOJARS_PASSWORD=`cat ../clojars.txt` clojure -T:build deploy
+
 # Builds the uberjar, builds the jar, sends the jar to clojars
 @deploy version:
     echo 'Running tests'
@@ -60,7 +63,6 @@ test-all *args:
     echo 'Building uber'
     clojure -T:build uber
     echo 'Deploying to clojars'
-    env CLOJARS_USERNAME='noahtheduke' CLOJARS_PASSWORD=`cat ../clojars.txt` \
-        clojure -T:build deploy
+    just clojars
     echo 'Building native image'
     scripts/compile

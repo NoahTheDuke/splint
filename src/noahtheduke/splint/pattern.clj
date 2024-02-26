@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.pattern
   (:require
-    [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]
+    [noahtheduke.splint.clojure-ext.core :refer [postwalk* vary-meta*]]
     [noahtheduke.splint.utils :refer [drop-quote simple-type]]))
 
 (set! *warn-on-reflection* true)
@@ -103,9 +103,7 @@
 (defmethod read-form :quote [ctx pattern form]
   (let [children-form (gensym "quote-form-")
         interior-pattern (second pattern)
-        interior-pattern (if (instance? clojure.lang.IObj interior-pattern)
-                           (vary-meta interior-pattern assoc :splint/lit true)
-                           interior-pattern)]
+        interior-pattern (vary-meta* interior-pattern assoc :splint/lit true)]
     `(let [~children-form ~form]
        (and (list? ~children-form)
             (= 'quote (first ~children-form))
@@ -145,9 +143,21 @@
       :else
       (throw (ex-info "Predicate must be a symbol" {:pred pred})))))
 
+(defn match-star-rest
+  [ctx pattern]
+  (let [[_?sym bind pred] pattern
+        body-form (gensym "star-rest-form-")
+        pred-check (if pred `(every? ~pred ~body-form) true)]
+    [(gensym "star-rest-fn-")
+     `(fn [~ctx form# cont#]
+        (let [~body-form (vary-meta (vec form#) assoc ::rest true)]
+          (when ~pred-check
+            (let [~ctx ~(match-binding ctx (symbol (str "?" bind)) body-form)]
+              (cont# ~ctx nil)))))]))
+
 (defn match-star
   [ctx pattern]
-  (let [[_?sym bind & [pred]] pattern
+  (let [[_?sym bind pred] pattern
         body-form (gensym "star-form-")
         pred-check (if pred `(every? ~pred ~body-form) true)]
     [(gensym "star-fn-")
@@ -164,9 +174,22 @@
                            (conj ~body-form (nth form# (count ~body-form)))
                            ~body-form)))))))]))
 
+(defn match-plus-rest
+  [ctx pattern]
+  (let [[_?sym bind pred] pattern
+        body-form (gensym "plus-rest-form-")
+        pred-check (if pred `(every? ~pred ~body-form) true)]
+    [(gensym "plus-rest-fn-")
+     `(fn [~ctx form# cont#]
+        (when (seq form#)
+          (let [~body-form (vary-meta (vec form#) assoc ::rest true)]
+            (when ~pred-check
+              (let [~ctx ~(match-binding ctx (symbol (str "?" bind)) body-form)]
+                (cont# ~ctx nil))))))]))
+
 (defn match-plus
   [ctx pattern]
-  (let [[_?sym bind & [pred]] pattern
+  (let [[_?sym bind pred] pattern
         body-form (gensym "plus-form-")
         pred-check (if pred `(every? ~pred ~body-form) true)]
     [(gensym "plus-fn-")
@@ -265,6 +288,9 @@
 
 (defn variable-seq-match [ctx pattern form]
   (let [pattern-pairs (mapv (juxt read-dispatch identity) pattern)
+        pattern-pairs (update pattern-pairs
+                              (dec (count pattern-pairs))
+                              vary-meta* assoc ::last true)
         min-length (->> pattern-pairs
                         (remove #(special? (first %)))
                         count)
@@ -277,9 +303,15 @@
                            patterns (mapv second pattern-pairs)]
                        (case t
                          :?+
-                         (mapcat #(match-plus ctx %) patterns)
+                         (mapcat #(if (::last (meta %))
+                                    (match-plus-rest ctx %)
+                                    (match-plus ctx %))
+                                 patterns)
                          :?*
-                         (mapcat #(match-star ctx %) patterns)
+                         (mapcat #(if (::last (meta %))
+                                    (match-star-rest ctx %)
+                                    (match-star ctx %))
+                                 patterns)
                          :??
                          (mapcat #(match-optional ctx %) patterns)
                          :?|

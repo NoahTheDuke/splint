@@ -52,13 +52,17 @@
   "Efficient version of mapv which operates directly on the sequence
   instead of Clojure's reduce abstraction.
 
-  (into [] (map inc) nil) => 75 ns
-  (into [] (map inc) (range 1000)) => 17 us
-  (into [] (map inc) (vec (range 1000))) => 17 us
+  (doall (map inc nil)) => 30 ns
+  (doall (map inc (range 1000))) => 32 us
+  (doall (map inc (vec (range 1000)))) => 32 us
 
-  (mapv inc nil) => 70 ns
-  (mapv inc (range 1000)) => 21 us
-  (mapv inc (vec (range 1000))) => 19 us
+  (into [] (map inc) nil) => 100 ns
+  (into [] (map inc) (range 1000)) => 23 us
+  (into [] (map inc) (vec (range 1000))) => 23 us
+
+  (mapv inc nil) => 86 ns
+  (mapv inc (range 1000)) => 15 us
+  (mapv inc (vec (range 1000))) => 15 us
 
   (mapv* inc nil) => 3 ns
   (mapv* inc (range 1000)) => 22 us
@@ -211,3 +215,11 @@
   (postwalk* identity big-map) => 25 us"
   [f form]
   (walk* form #(postwalk* f %) f))
+
+(defn vary-meta*
+  "Like vary-meta but returns the obj if given an object that doesn't support metadata."
+  [obj f & args]
+  (if (instance? clojure.lang.IObj obj)
+    (apply vary-meta obj f args)
+    obj))
+

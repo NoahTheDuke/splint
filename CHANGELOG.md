@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Changed
+
+- Slight change to the patterns, now a final-position `?*` or `?+` will immediately return the rest of the current input instead of accumulating it one-by-one.
+
 ## v1.14.0 - 2024-02-19
 
 ### Changed

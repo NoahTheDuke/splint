@@ -52,6 +52,7 @@
     style/filter-vec-filterv 1
     style/first-first 2
     style/first-next 1
+    style/is-eq-order 17
     style/minus-one 7
     style/multiple-arity-order 2
     style/nested-addition 1
@@ -88,5 +89,5 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 2924 (count (:diagnostics results)))
+    (expect 2941 (count (:diagnostics results)))
     (expect 222 (count (:checked-files results)))))

@@ -37,6 +37,7 @@
     metrics/fn-length 314
     metrics/parameter-count 48
     naming/conventional-aliases 14
+    naming/conversion-functions 2
     naming/lisp-case 3
     naming/predicate 2
     naming/record-name 1
@@ -50,11 +51,11 @@
     style/apply-str 14
     style/apply-str-interpose 3
     style/cond-else 8
-    naming/conversion-functions 2
     style/def-fn 3
     style/eq-false 2
     style/eq-true 5
     style/eq-zero 2
+    style/is-eq-order 19
     style/multiple-arity-order 1
     style/neg-checks 7
     style/new-object 5
@@ -89,4 +90,4 @@
       (match?
         (m/equals clj-kondo-diagnostics)
         (update-vals diagnostics count)))
-    (expect 1237 (count (:diagnostics results)))))
+    (expect 1256 (count (:diagnostics results)))))

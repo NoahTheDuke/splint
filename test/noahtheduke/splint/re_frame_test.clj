@@ -31,6 +31,7 @@
     style/eq-false 1
     style/eq-nil 2
     style/eq-true 2
+    style/is-eq-order 10
     style/reduce-str 1
     style/redundant-let 2
     style/set-literal-as-fn 1
@@ -50,4 +51,4 @@
              :diagnostics
              (group-by :rule-name)
              (#(update-vals % count)))))
-    (expect 63 (count (:diagnostics results)))))
+    (expect 73 (count (:diagnostics results)))))

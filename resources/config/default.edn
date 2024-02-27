@@ -421,6 +421,12 @@
   :added "0.1"
   :updated "1.2.0"}
 
+ style/is-eq-order
+ {:description "With `clojure.test/is`, expected value should be first."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  style/let-do
  {:description "`let` has an implicit `do`."
   :enabled true

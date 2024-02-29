@@ -38,14 +38,14 @@
     (user/quick-bench (apply list voll))
     (user/quick-bench
       (do (apply list coll)
-          (apply list voll)))
+        (apply list voll)))
     (println "->list")
     (user/quick-bench (->list nil))
     (user/quick-bench (->list coll))
     (user/quick-bench (->list (vec (range 1000))))
     (user/quick-bench
       (do (->list coll)
-          (->list voll)))))
+        (->list voll)))))
 
 (defn mapv*
   "Efficient version of mapv which operates directly on the sequence
@@ -71,13 +71,13 @@
   #?(:bb (mapv f coll)
      :clj (let [cnt (count coll)]
             (if (zero? cnt) []
-                (let [new-coll (object-array cnt)
-                      iter (.iterator ^Iterable coll)]
-                  (loop [n 0]
-                    (when (.hasNext iter)
-                      (aset new-coll n (f (.next iter)))
-                      (recur (unchecked-inc n))))
-                  (LazilyPersistentVector/createOwning new-coll))))))
+              (let [new-coll (object-array cnt)
+                    iter (.iterator ^Iterable coll)]
+                (loop [n 0]
+                  (when (.hasNext iter)
+                    (aset new-coll n (f (.next iter)))
+                    (recur (unchecked-inc n))))
+                (LazilyPersistentVector/createOwning new-coll))))))
 
 (comment
   (let [coll (range 1000)
@@ -117,10 +117,10 @@
   #?(:bb (run! f coll)
      :clj (let [cnt (count coll)]
             (if (zero? cnt) []
-                (let [iter (.iterator ^Iterable coll)]
-                  (while (.hasNext iter)
-                    (f (.next iter)))
-                  nil)))))
+              (let [iter (.iterator ^Iterable coll)]
+                (while (.hasNext iter)
+                  (f (.next iter)))
+                nil)))))
 
 #_{:clj-kondo/ignore [:unused-value]}
 (comment

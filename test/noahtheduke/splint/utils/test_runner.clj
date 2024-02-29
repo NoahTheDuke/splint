@@ -51,8 +51,8 @@
       (:errors args)
       (do (doseq [e (:errors args)]
             (println e))
-          (#'ctr/help args)
-          nil)
+        (#'ctr/help args)
+        nil)
       (-> args :options :test-help)
       (do (#'ctr/help args) nil)
       :else
@@ -74,7 +74,7 @@
   (try
     (if-let [results (apply ctr-main args)]
       (do (print-summary results)
-          (System/exit (if (zero? (+ (-> results :result :fail)
-                                    (-> results :result :error))) 0 1)))
+        (System/exit (if (zero? (+ (-> results :result :fail)
+                                  (-> results :result :error))) 0 1)))
       (System/exit 1))
     (finally (shutdown-agents))))

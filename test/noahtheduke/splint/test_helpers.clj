@@ -90,22 +90,22 @@
            ~@(mapcat identity temp-files)
            ~@binds]
        (try (let [res# (do ~@body)] res#)
-            (finally
-              (Files/walkFileTree
-                ~temp-dir
-                #{}
-                Integer/MAX_VALUE
-                (reify FileVisitor
-                  (preVisitDirectory [_ dir# attrs#]
-                    FileVisitResult/CONTINUE)
-                  (postVisitDirectory [_ dir# attrs#]
-                    (Files/deleteIfExists dir#)
-                    FileVisitResult/CONTINUE)
-                  (visitFile [_ path# attrs#]
-                    (Files/deleteIfExists path#)
-                    FileVisitResult/CONTINUE)
-                  (visitFileFailed [_ path# ex#]
-                    FileVisitResult/CONTINUE))))))))
+         (finally
+           (Files/walkFileTree
+             ~temp-dir
+             #{}
+             Integer/MAX_VALUE
+             (reify FileVisitor
+               (preVisitDirectory [_ dir# attrs#]
+                 FileVisitResult/CONTINUE)
+               (postVisitDirectory [_ dir# attrs#]
+                 (Files/deleteIfExists dir#)
+                 FileVisitResult/CONTINUE)
+               (visitFile [_ path# attrs#]
+                 (Files/deleteIfExists path#)
+                 FileVisitResult/CONTINUE)
+               (visitFileFailed [_ path# ex#]
+                 FileVisitResult/CONTINUE))))))))
 
 (s/def ::binding (s/cat :file-name simple-symbol? :path string?))
 (s/def ::bindings (s/and vector? #(even? (count %)) (s/* ::binding)))

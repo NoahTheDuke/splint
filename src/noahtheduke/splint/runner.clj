@@ -372,12 +372,12 @@
       (cond
         exit-message
         (do (when-not (:quiet options) (println exit-message))
-            {:exit (if ok 0 1)})
+          {:exit (if ok 0 1)})
         (empty? paths)
         (do (when-not (:quiet options)
               (println "splint errors:")
               (println "Paths must be provided in a project file (project.clj or deps.edn) or as the final arguments when calling. See --help for details."))
-            {:exit 1})
+          {:exit 1})
         (:auto-gen-config options)
         (let [all-enabled (update-vals @conf/default-config #(assoc % :enabled true))]
           (conf/spit-config (run-impl paths config all-enabled)))
@@ -391,8 +391,8 @@
       (let [data (ex-data ex)]
         (case (:type data)
           :config (do (println "Error reading" (str (:file data)))
-                      (println (ex-message ex))
-                      {:exit 1})
+                    (println (ex-message ex))
+                    {:exit 1})
           ; else
           (throw ex))))))
 
@@ -401,6 +401,6 @@
     (run ["--silent" "--no-parallel"]))
   (prn :heck)
   (do (require '[clj-async-profiler.core :as prof])
-      (prof/profile
-        (run ["--silent" "--no-parallel"]))
-      nil))
+    (prof/profile
+      (run ["--silent" "--no-parallel"]))
+    nil))

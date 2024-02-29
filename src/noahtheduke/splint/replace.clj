@@ -4,8 +4,8 @@
 
 (ns noahtheduke.splint.replace
   (:require
-    [noahtheduke.splint.pattern :as-alias p]
-    [noahtheduke.splint.clojure-ext.core :refer [postwalk* ->list]]))
+   [noahtheduke.splint.pattern :as-alias p]
+   [noahtheduke.splint.clojure-ext.core :refer [postwalk* ->list]]))
 
 (set! *warn-on-reflection* true)
 

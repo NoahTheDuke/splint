@@ -4,19 +4,19 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.dot-class-method
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
 (defn symbol-class? [sym]
   (and (symbol? sym)
-       (:splint/import-ns (meta sym))))
+    (:splint/import-ns (meta sym))))
 
 (defn method?? [sexp]
   (or (symbol? sexp)
-      (and (list? sexp)
-           (= 1 (count sexp)))))
+    (and (list? sexp)
+      (= 1 (count sexp)))))
 
 (defrule lint/dot-class-method
   "Using the `Obj/staticMethod` form maps the method call to Clojure's natural function

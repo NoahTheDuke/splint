@@ -4,8 +4,8 @@
 
 (ns noahtheduke.splint.rules.style.eq-nil-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [expectations.clojure.test :refer [defexpect]]
+   [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (set! *warn-on-reflection* true)
 

@@ -4,8 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.performance.single-literal-merge
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
@@ -16,15 +16,15 @@
 
 (defn single-assoc [?given ?literal]
   (list* 'assoc ?given
-         (->> ?literal
-              (sort-by key)
-              (mapcat identity))))
+    (->> ?literal
+      (sort-by key)
+      (mapcat identity))))
 
 (defn multi-assoc [?given ?literal]
   (list* '-> ?given
-         (->> ?literal
-              (sort-by key)
-              (mapv (fn [[k v]] (list 'assoc k v))))))
+    (->> ?literal
+      (sort-by key)
+      (mapv (fn [[k v]] (list 'assoc k v))))))
 
 (defrule performance/single-literal-merge
   "`clojure.core/merge` is inherently slow. Its major benefit is handling nil

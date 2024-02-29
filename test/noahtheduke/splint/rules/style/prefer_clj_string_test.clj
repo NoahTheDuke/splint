@@ -4,8 +4,8 @@
 
 (ns noahtheduke.splint.rules.style.prefer-clj-string-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
+   [expectations.clojure.test :refer [defexpect]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
@@ -41,5 +41,5 @@
     "(.toUpperCase \"hello world\")"
     (config))
   #_(expect-match
-    '[{:alt (str x)}]
-    "(.toString x)"))
+      '[{:alt (str x)}]
+      "(.toString x)"))

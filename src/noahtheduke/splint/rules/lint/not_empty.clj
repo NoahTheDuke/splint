@@ -4,20 +4,20 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.not-empty
   (:require
-    [noahtheduke.splint.rules :refer [defrule]]
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]))
+   [noahtheduke.splint.rules :refer [defrule]]
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]))
 
 (set! *warn-on-reflection* true)
 
 (defn seq-diagnostic [ctx rule form {:syms [?x]}]
   (->diagnostic ctx rule form
-                {:message "`seq` is idiomatic, gotta learn to love it."
-                 :replace-form (list 'seq ?x)}))
+    {:message "`seq` is idiomatic, gotta learn to love it."
+     :replace-form (list 'seq ?x)}))
 
 (defn not-empty-diagnostic [ctx rule form {:syms [?x]}]
   (->diagnostic ctx rule form
-                {:message "`not-empty` is built-in."
-                 :replace-form (list 'not-empty ?x)}))
+    {:message "`not-empty` is built-in."
+     :replace-form (list 'not-empty ?x)}))
 
 (defrule lint/not-empty?
   "`seq` returns `nil` when given an empty collection. `empty?` is implemented as

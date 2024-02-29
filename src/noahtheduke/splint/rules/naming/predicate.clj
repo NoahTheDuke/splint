@@ -4,16 +4,16 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.naming.predicate
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]
-    [clojure.string :as str]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]
+   [clojure.string :as str]))
 
 (set! *warn-on-reflection* true)
 
 (defn bad-name? [?name]
   (let [?name (str ?name)]
     (or (str/starts-with? ?name "is-")
-        (str/ends-with? ?name "-p"))))
+      (str/ends-with? ?name "-p"))))
 
 (defn good-name [?name]
   (let [?name (str ?name)]

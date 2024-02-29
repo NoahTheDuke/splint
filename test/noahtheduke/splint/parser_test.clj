@@ -4,10 +4,10 @@
 
 (ns noahtheduke.splint.parser-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [matcher-combinators.matchers :refer [absent]]
-    [matcher-combinators.test :refer [match?]]
-    [noahtheduke.splint.test-helpers :refer [parse-string parse-string-all]]))
+   [expectations.clojure.test :refer [defexpect expect]]
+   [matcher-combinators.matchers :refer [absent]]
+   [matcher-combinators.test :refer [match?]]
+   [noahtheduke.splint.test-helpers :refer [parse-string parse-string-all]]))
 
 (set! *warn-on-reflection* true)
 
@@ -25,10 +25,10 @@
 (defexpect discard-metadata-test
   (expect
     (match? {:splint/disable true}
-            (meta (parse-string "#_:splint/disable (foo bar)"))))
+      (meta (parse-string "#_:splint/disable (foo bar)"))))
   (expect
     (match? '{:splint/disable [lint]}
-            (meta (parse-string "#_{:splint/disable [lint]} (foo bar)")))))
+      (meta (parse-string "#_{:splint/disable [lint]} (foo bar)")))))
 
 (defexpect defn-symbol-test
   (expect '(defn example "docstring" [] (+ 1 1))
@@ -39,10 +39,10 @@
                :doc "docstring"
                :arities (([] (+ 1 1)))
                :arglists ([])}}
-            (meta (parse-string "(defn example \"docstring\" [] (+ 1 1))"))))
+      (meta (parse-string "(defn example \"docstring\" [] (+ 1 1))"))))
   (expect
     (match? {:splint/defn-form absent}
-            (meta (parse-string "(defn-partial abc (+ 1 2 3))")))))
+      (meta (parse-string "(defn-partial abc (+ 1 2 3))")))))
 
 (defexpect clojure-1.12-test
   (let [ret (parse-string "(map ^[int] Integer/hash (range 10))")]

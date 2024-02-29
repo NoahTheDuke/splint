@@ -4,7 +4,7 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.cond-else
   (:require
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
@@ -13,8 +13,8 @@
 
 (defn not-else-other [form]
   (and (not-else form)
-       (or (keyword? form)
-           (true? form))))
+    (or (keyword? form)
+      (true? form))))
 
 (defrule style/cond-else
   "It's nice when the default branch is consistent.

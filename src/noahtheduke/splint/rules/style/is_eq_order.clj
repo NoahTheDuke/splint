@@ -11,8 +11,8 @@
 
 (defn call-or-sym? [form]
   (or (symbol? form)
-      (and (list? form)
-           (symbol? (first form)))))
+    (and (list? form)
+      (symbol? (first form)))))
 
 (defn simple-literal? [form]
   (#{:nil :boolean :char :number :keyword :string} (simple-type form)))

@@ -4,10 +4,10 @@
 
 (ns new-rule
   (:require
-    [clojure.string :as str]
-    [clojure.tools.cli :as cli]
-    [selmer.parser :refer [render]]
-    [clojure.java.io :as io]))
+   [clojure.string :as str]
+   [clojure.tools.cli :as cli]
+   [selmer.parser :refer [render]]
+   [clojure.java.io :as io]))
 
 (defn make-new-rule [{n :name}]
   (let [rule-template (slurp (io/file "tasks" "new_rule.tmpl"))
@@ -18,9 +18,9 @@
     (assert (and genre rule-name) (format "Given %s. Gotta qualify the rule name" (pr-str n)))
     (println "Making new rule for" n)
     (let [rule-filename (io/file "src" "noahtheduke" "splint" "rules"
-                                 genre (namespace-munge (str rule-name ".clj")))
+                          genre (namespace-munge (str rule-name ".clj")))
           test-filename (io/file "test" "noahtheduke" "splint" "rules"
-                                 genre (namespace-munge (str rule-name "_test.clj")))]
+                          genre (namespace-munge (str rule-name "_test.clj")))]
       (io/make-parents rule-filename)
       (io/make-parents test-filename)
       (spit rule-filename (render rule-template {:genre genre :rule-name rule-name}))
@@ -41,5 +41,5 @@
           :else {:options options})]
     (if exit-message
       (do (println exit-message)
-          (System/exit 0))
+        (System/exit 0))
       (make-new-rule options))))

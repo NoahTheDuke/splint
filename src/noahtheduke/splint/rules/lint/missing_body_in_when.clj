@@ -4,8 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.missing-body-in-when
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 

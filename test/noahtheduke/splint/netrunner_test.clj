@@ -4,12 +4,12 @@
 
 (ns noahtheduke.splint.netrunner-test
   (:require
-    [clojure.tools.gitlibs :as gl]
-    [expectations.clojure.test :refer [defexpect expect]]
-    [matcher-combinators.matchers :as m]
-    [matcher-combinators.test :refer [match?]]
-    [noahtheduke.splint.config :refer [default-config]]
-    [noahtheduke.splint.runner :refer [run-impl]]))
+   [clojure.tools.gitlibs :as gl]
+   [expectations.clojure.test :refer [defexpect expect]]
+   [matcher-combinators.matchers :as m]
+   [matcher-combinators.test :refer [match?]]
+   [noahtheduke.splint.config :refer [default-config]]
+   [noahtheduke.splint.runner :refer [run-impl]]))
 
 (set! *warn-on-reflection* true)
 
@@ -78,16 +78,16 @@
 (defexpect ^:integration netrunner-test
   (let [netrunner (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "114")
         results (run-impl [{:path netrunner}]
-                          (-> all-enabled-config
-                              (assoc :silent true)
-                              (assoc :parallel false)
-                              (assoc :clojure-version *clojure-version*)))]
+                  (-> all-enabled-config
+                    (assoc :silent true)
+                    (assoc :parallel false)
+                    (assoc :clojure-version *clojure-version*)))]
     (expect
       (match?
         (m/equals netrunner-diagnostics)
         (->> results
-             :diagnostics
-             (group-by :rule-name)
-             (#(update-vals % count)))))
+          :diagnostics
+          (group-by :rule-name)
+          (#(update-vals % count)))))
     (expect 2941 (count (:diagnostics results)))
     (expect 222 (count (:checked-files results)))))

@@ -4,8 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.body-unquote-splicing
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
@@ -21,7 +21,7 @@
 
 (defn init-arg-new-form [?f ?init-arg ?body]
   (list ?f ?init-arg
-        (list 'let ['res# (list 'do (list 'splint/unquote-splicing ?body))] 'res#)))
+    (list 'let ['res# (list 'do (list 'splint/unquote-splicing ?body))] 'res#)))
 
 (defrule lint/body-unquote-splicing
   "A macro that nests an `unquote-splicing` in a macro with a `& body` can lead

@@ -4,12 +4,12 @@
 
 (ns noahtheduke.splint.cli
   (:require
-    [clojure.data :as data]
-    [clojure.pprint :as pp]
-    [clojure.string :as str]
-    [clojure.tools.cli :as cli]
-    [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]
-    [noahtheduke.splint.config :refer [default-config find-local-config load-config splint-version]]))
+   [clojure.data :as data]
+   [clojure.pprint :as pp]
+   [clojure.string :as str]
+   [clojure.tools.cli :as cli]
+   [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]
+   [noahtheduke.splint.config :refer [default-config find-local-config load-config splint-version]]))
 
 (set! *warn-on-reflection* true)
 
@@ -63,15 +63,15 @@
                  ; else
                  "Something has gone wrong")
         result (into (sorted-map)
-                     (update-keys (pick-visible result) (comp symbol name)))]
+                 (update-keys (pick-visible result) (comp symbol name)))]
     {:exit-message
      (format "%s%s%s:\n%s"
-             (if (:config options)
-               "DEPRECATION WARNING: --config should be --print-config\n\n"
-               "")
-             (if file (format "Local config loaded from: %s\n\n" file) "")
-             (str/capitalize kind)
-             (with-out-str (pp/pprint result)))
+       (if (:config options)
+         "DEPRECATION WARNING: --config should be --print-config\n\n"
+         "")
+       (if file (format "Local config loaded from: %s\n\n" file) "")
+       (str/capitalize kind)
+       (with-out-str (pp/pprint result)))
      :ok true}))
 
 (defn print-errors

@@ -4,18 +4,18 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.dot-obj-method
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
 (defn symbol-not-class? [sym]
   (and (symbol? sym)
-       (let [sym (pr-str sym)
-             idx (.lastIndexOf sym ".")]
-         (not (if (neg? idx)
-                (Character/isUpperCase ^char (first sym))
-                (Character/isUpperCase ^char (nth sym (inc idx))))))))
+    (let [sym (pr-str sym)
+          idx (.lastIndexOf sym ".")]
+      (not (if (neg? idx)
+             (Character/isUpperCase ^char (first sym))
+             (Character/isUpperCase ^char (nth sym (inc idx))))))))
 
 (defrule lint/dot-obj-method
   "Using the `.method` form maps the method call to Clojure's natural function position.

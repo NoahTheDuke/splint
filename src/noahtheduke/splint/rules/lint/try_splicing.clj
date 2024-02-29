@@ -4,7 +4,7 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.try-splicing
   (:require
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 

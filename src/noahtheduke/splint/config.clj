@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.config
   (:require
-    [clojure.java.io :as io]
-    [clojure.string :as str]
-    [edamame.core :as e]
-    [noahtheduke.splint.clojure-ext.core :refer [mapv*]]
-    [noahtheduke.splint.path-matcher :refer [->matcher]]
-    [noahtheduke.splint.rules :refer [global-rules]])
+   [clojure.java.io :as io]
+   [clojure.string :as str]
+   [edamame.core :as e]
+   [noahtheduke.splint.clojure-ext.core :refer [mapv*]]
+   [noahtheduke.splint.path-matcher :refer [->matcher]]
+   [noahtheduke.splint.rules :refer [global-rules]])
   (:import
-    (java.io File)))
+   (java.io File)))
 
 (set! *warn-on-reflection* true)
 
@@ -99,21 +99,21 @@
         ;;   the whole genre config, and the local config for that rule.
         ;; * Add the merged rule config into the new config.
         new-config (->> default
-                        (reduce-kv
-                          (fn [m k v]
-                            (let [genre (symbol (namespace k))
-                                  genre-config (whole-genres genre)
-                                  local-config (local-rules k)
-                                  rule-config (make-rule-config
-                                                (assoc v :rule-name k)
-                                                genre-config
-                                                local-config)]
-                              (assoc! m k rule-config)))
-                          (transient {}))
-                        (persistent!))
+                     (reduce-kv
+                       (fn [m k v]
+                         (let [genre (symbol (namespace k))
+                               genre-config (whole-genres genre)
+                               local-config (local-rules k)
+                               rule-config (make-rule-config
+                                             (assoc v :rule-name k)
+                                             genre-config
+                                             local-config)]
+                           (assoc! m k rule-config)))
+                       (transient {}))
+                     (persistent!))
         new-config (-> {:global global}
-                       (conj local-rules)
-                       (conj new-config))
+                     (conj local-rules)
+                     (conj new-config))
         ;; Merge in the cli opts to the new config.
         opts (get-opts-from-config local)]
     (conj new-config opts)))
@@ -122,7 +122,7 @@
   ([options] (load-config (:local (find-local-config)) options))
   ([local options]
    (conj (merge-config @default-config local)
-         options)))
+     options)))
 
 (defn get-config
   {:doc "Return merged config for a specific rule."
@@ -132,20 +132,20 @@
 
 (defn spit-config [{:keys [diagnostics]}]
   (let [rule-strs (->> (group-by :rule-name diagnostics)
-                       (into (sorted-map))
-                       (reduce-kv
-                         (fn [m rule-name diagnostics]
-                           (conj m (str " ;; Diagnostics count: " (count diagnostics)
-                                        "\n ;; " (-> @default-config rule-name :description)
-                                        (when-let [supported-styles (-> @default-config rule-name :supported-styles)]
-                                          (str "\n ;; :supported-styles " (pr-str supported-styles)))
-                                        "\n " (str rule-name) " {:enabled false}")))
-                         []))
+                    (into (sorted-map))
+                    (reduce-kv
+                      (fn [m rule-name diagnostics]
+                        (conj m (str " ;; Diagnostics count: " (count diagnostics)
+                                  "\n ;; " (-> @default-config rule-name :description)
+                                  (when-let [supported-styles (-> @default-config rule-name :supported-styles)]
+                                    (str "\n ;; :supported-styles " (pr-str supported-styles)))
+                                  "\n " (str rule-name) " {:enabled false}")))
+                      []))
         new-config (str/join
                      "\n"
                      [(str ";; Splint configuration auto-generated on "
-                           (.format (java.text.SimpleDateFormat. "yyyy-MM-dd")
-                                    (java.util.Date.)) ".")
+                        (.format (java.text.SimpleDateFormat. "yyyy-MM-dd")
+                          (java.util.Date.)) ".")
                       ";; All failing rules have been disabled and can be enabled as time allows."
                       ""
                       "{"
@@ -176,12 +176,12 @@
     (when-let [version-str
                (case (::type project-map)
                  :deps-edn (some-> (:deps project-map)
-                                   ('org.clojure/clojure)
-                                   :mvn/version)
+                             ('org.clojure/clojure)
+                             :mvn/version)
                  :project-clj (some->> (:dependencies project-map)
-                                       (filter #(= 'org.clojure/clojure (first %)))
-                                       first
-                                       second)
+                                (filter #(= 'org.clojure/clojure (first %)))
+                                first
+                                second)
                  ; else
                  nil)]
       (parse-clojure-version version-str))
@@ -196,24 +196,24 @@
     (let [src-paths (case (::type project-map)
                       :deps-edn (:paths project-map)
                       :project-clj (into (or (:source-paths project-map)
-                                             ["src"])
-                                         (or (:test-paths project-map)
-                                             ["test"]))
+                                           ["src"])
+                                     (or (:test-paths project-map)
+                                       ["test"]))
                       ; else
                       nil)
           other-paths (case (::type project-map)
                         :deps-edn (when-let [aliases (:aliases project-map)]
                                     (into (some-> aliases :dev :extra-paths)
-                                          (some-> aliases :test :extra-paths)))
+                                      (some-> aliases :test :extra-paths)))
                         :project-clj
                         (when-let [profiles (:profiles project-map)]
                           (concat
                             (when (map? (:dev profiles))
                               (into (some-> profiles :dev :source-paths)
-                                    (some-> profiles :dev :test-paths)))
+                                (some-> profiles :dev :test-paths)))
                             (when (map? (:test profiles))
                               (into (some-> profiles :test :source-paths)
-                                    (some-> profiles :test :test-paths)))))
+                                (some-> profiles :test :test-paths)))))
                         ; else
                         nil)]
       (into (vec src-paths) other-paths))))
@@ -228,10 +228,10 @@
           (assoc (slurp-edn deps-edn) ::type :deps-edn)
           (and project-clj (.exists project-clj))
           (let [v (->> (slurp-edn project-clj {:multiple true})
-                       (filter #(and (seq? %) (= 'defproject (first %))))
-                       first
-                       (drop 3)
-                       (apply hash-map))]
+                    (filter #(and (seq? %) (= 'defproject (first %))))
+                    first
+                    (drop 3)
+                    (apply hash-map))]
             (assoc v ::type :project-clj)))]
     {:clojure-version (project-clojure-version project-file)
      :paths (project-paths project-file)}))

@@ -4,8 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.warn-on-reflection
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
@@ -32,6 +32,6 @@
                (let [[ns-args ?warn] ?file]
                  (when-not (= '(set! *warn-on-reflection* true) ?warn)
                    (->diagnostic ctx rule
-                                 nil
-                                 {:form-meta (meta ?warn)
-                                  :filename (:filename (meta form))}))))})
+                     nil
+                     {:form-meta (meta ?warn)
+                      :filename (:filename (meta form))}))))})

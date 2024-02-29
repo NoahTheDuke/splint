@@ -4,15 +4,15 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.prefer-require-over-use
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
 (defn find-use-libs [?libspecs]
   (->> ?libspecs
-       (filter #(and (sequential? ?libspecs) (= :use (first %))))
-       (seq)))
+    (filter #(and (sequential? ?libspecs) (= :use (first %))))
+    (seq)))
 
 (defn make-message [rule]
   (condp = (:chosen-style (:config rule))

@@ -4,8 +4,8 @@
 
 (ns noahtheduke.splint.rules.style.single-key-in-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
+   [expectations.clojure.test :refer [defexpect]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
@@ -15,7 +15,7 @@
   (expect-match
     '[{:form (assoc-in coll [:k] v)
        :message "Use `assoc` instead of recreating it."
-       :alt (assoc coll :k v) }]
+       :alt (assoc coll :k v)}]
     "(assoc-in coll [:k] v)"
     (config))
   (expect-match

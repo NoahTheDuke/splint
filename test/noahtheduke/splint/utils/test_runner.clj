@@ -5,10 +5,10 @@
 
 (ns noahtheduke.splint.utils.test-runner
   (:require
-    [clojure.test :as t]
-    [clojure.tools.cli :as cli]
-    [cognitect.test-runner :as ctr]
-    [noahtheduke.splint.dev]))
+   [clojure.test :as t]
+   [clojure.tools.cli :as cli]
+   [cognitect.test-runner :as ctr]
+   [noahtheduke.splint.dev]))
 
 (set! *warn-on-reflection* true)
 
@@ -75,6 +75,6 @@
     (if-let [results (apply ctr-main args)]
       (do (print-summary results)
           (System/exit (if (zero? (+ (-> results :result :fail)
-                                     (-> results :result :error))) 0 1)))
+                                    (-> results :result :error))) 0 1)))
       (System/exit 1))
     (finally (shutdown-agents))))

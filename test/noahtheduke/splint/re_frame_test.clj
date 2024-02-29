@@ -4,12 +4,12 @@
 
 (ns noahtheduke.splint.re-frame-test
   (:require
-    [clojure.tools.gitlibs :as gl]
-    [expectations.clojure.test :refer [defexpect expect]]
-    [matcher-combinators.matchers :as m]
-    [matcher-combinators.test :refer [match?]]
-    [noahtheduke.splint.config :refer [default-config]]
-    [noahtheduke.splint.runner :refer [run-impl]]))
+   [clojure.tools.gitlibs :as gl]
+   [expectations.clojure.test :refer [defexpect expect]]
+   [matcher-combinators.matchers :as m]
+   [matcher-combinators.test :refer [match?]]
+   [noahtheduke.splint.config :refer [default-config]]
+   [noahtheduke.splint.runner :refer [run-impl]]))
 
 (set! *warn-on-reflection* true)
 
@@ -40,15 +40,15 @@
 (defexpect ^:integration re-frame-test
   (let [re-frame (gl/procure "https://github.com/day8/re-frame.git" 'day8/re-frame "v1.3.0")
         results (run-impl [{:path re-frame}]
-                          (-> all-enabled-config
-                              (assoc :silent true)
-                              (assoc :parallel false)
-                              (assoc :clojure-version *clojure-version*)))]
+                  (-> all-enabled-config
+                    (assoc :silent true)
+                    (assoc :parallel false)
+                    (assoc :clojure-version *clojure-version*)))]
     (expect
       (match?
         (m/equals re-frame-diagnostics)
         (->> results
-             :diagnostics
-             (group-by :rule-name)
-             (#(update-vals % count)))))
+          :diagnostics
+          (group-by :rule-name)
+          (#(update-vals % count)))))
     (expect 73 (count (:diagnostics results)))))

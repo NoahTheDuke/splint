@@ -4,9 +4,9 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.useless-do
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]
-    [noahtheduke.splint.rules.helpers :refer [unquote-splicing??]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]
+   [noahtheduke.splint.rules.helpers :refer [unquote-splicing??]]))
 
 (set! *warn-on-reflection* true)
 
@@ -32,6 +32,6 @@
    :message "Unnecessary `do`."
    :on-match (fn [ctx rule form {:syms [?x]}]
                (let [parent-form (:parent-form ctx)]
-                   (when-not (and (sequential? parent-form)
-                                  (= 'splint/fn (first parent-form)))
-                     (->diagnostic ctx rule form {:replace-form ?x}))))})
+                 (when-not (and (sequential? parent-form)
+                             (= 'splint/fn (first parent-form)))
+                   (->diagnostic ctx rule form {:replace-form ?x}))))})

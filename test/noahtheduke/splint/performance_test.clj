@@ -4,11 +4,11 @@
 
 (ns noahtheduke.splint.performance-test
   (:require
-    [clojure.java.io :as io]
-    [clojure.tools.gitlibs :as gl]
-    [noahtheduke.splint.config :refer [default-config]]
-    [noahtheduke.splint.rules :refer [global-rules]]
-    [noahtheduke.splint.runner :refer [run]]))
+   [clojure.java.io :as io]
+   [clojure.tools.gitlibs :as gl]
+   [noahtheduke.splint.config :refer [default-config]]
+   [noahtheduke.splint.rules :refer [global-rules]]
+   [noahtheduke.splint.runner :refer [run]]))
 
 (set! *warn-on-reflection* true)
 
@@ -36,8 +36,7 @@
     (clj-kondo-analyzer-perf-test)
     (flush)
     (clj-kondo-analyzer-perf-test)
-    (flush))
-  )
+    (flush)))
 
 ; clj-kondo.impl.analyzer: 3146 lines
 

@@ -4,13 +4,13 @@
 
 (ns user
   (:require
-    [clj-java-decompiler.core :as decompiler]
-    [clojure.main :as main]
-    [clojure.tools.namespace.repl :as tns]
-    [criterium.core :as criterium]
-    [noahtheduke.splint.dev]
-    [potemkin :refer [import-vars]]
-    [taoensso.tufte :as tufte]))
+   [clj-java-decompiler.core :as decompiler]
+   [clojure.main :as main]
+   [clojure.tools.namespace.repl :as tns]
+   [criterium.core :as criterium]
+   [noahtheduke.splint.dev]
+   [potemkin :refer [import-vars]]
+   [taoensso.tufte :as tufte]))
 
 (set! *warn-on-reflection* true)
 

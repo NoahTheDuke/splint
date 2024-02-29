@@ -4,8 +4,8 @@
 
 (ns noahtheduke.splint.rules.lint.thread-macro-one-arg-test
   (:require
-    [clojure.test :refer [deftest]]
-    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
+   [clojure.test :refer [deftest]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 

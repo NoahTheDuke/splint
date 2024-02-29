@@ -4,19 +4,19 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.prefer-condp
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
 (defn find-issue [?pairs]
   (when (and (even? (count ?pairs))
-             (list? (first ?pairs))
-             (= 3 (count (first ?pairs))))
+          (list? (first ?pairs))
+          (= 3 (count (first ?pairs))))
     (let [all-pairs (partition 2 ?pairs)
           last-pred-f (first (last all-pairs))
           default? (or (keyword? last-pred-f)
-                       (true? last-pred-f))]
+                     (true? last-pred-f))]
       (when (if default?
               (< 2 (count all-pairs))
               (< 1 (count all-pairs)))
@@ -32,8 +32,8 @@
                        (reduce
                          (fn [acc [cur-pred cur-branch]]
                            (if (and (list? cur-pred)
-                                    (= pred-f (first cur-pred))
-                                    (= expr (last cur-pred)))
+                                 (= pred-f (first cur-pred))
+                                 (= expr (last cur-pred)))
                              (conj acc (second cur-pred) cur-branch)
                              (reduced nil)))
                          []

@@ -24,12 +24,14 @@ run *args:
 test *args:
     clj-kondo --parallel --lint dev src test
     bb run
+    clojure-lsp format --dry
     clojure -M:dev:test:runner -e :integration {{args}}
 
 [no-exit-message]
 test-all *args:
     clj-kondo --parallel --lint dev src test
     bb run
+    clojure-lsp format --dry
     clojure -M:dev:test:runner {{args}}
 
 @new-rule arg:

@@ -4,20 +4,20 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.naming.lisp-case
   (:require
-    [camel-snake-kebab.core :as csk]
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [camel-snake-kebab.core :as csk]
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
 (defn def*?? [sexp]
   (and (symbol? sexp)
-       (#{"def" "defn"} (name sexp))))
+    (#{"def" "defn"} (name sexp))))
 
 (defn incorrect-name? [sexp]
   (let [def*-name (str sexp)]
     (or (some? (re-find #"._." def*-name))
-        (some? (re-find #"[a-z][A-Z]" def*-name)))))
+      (some? (re-find #"[a-z][A-Z]" def*-name)))))
 
 (defrule naming/lisp-case
   "Use lisp-case for function and variable names. (Replacement is generated with `camel-snake-kebab`.)

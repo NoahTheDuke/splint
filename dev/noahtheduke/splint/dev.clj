@@ -4,12 +4,12 @@
 
 (ns noahtheduke.splint.dev
   (:require
-    [clojure.java.io :as io]
-    [nextjournal.beholder :as beholder]
-    [noahtheduke.splint.config :as config]
-    [noahtheduke.splint.rules :refer [global-rules]]
-    [noahtheduke.splint]
-    [taoensso.tufte :as tufte]))
+   [clojure.java.io :as io]
+   [nextjournal.beholder :as beholder]
+   [noahtheduke.splint.config :as config]
+   [noahtheduke.splint.rules :refer [global-rules]]
+   [noahtheduke.splint]
+   [taoensso.tufte :as tufte]))
 
 (set! *warn-on-reflection* true)
 
@@ -19,9 +19,9 @@
 
 (defn build-default-config []
   (let [dev-rules (->> (keys (:rules @global-rules))
-                       (filter #(.equals "dev" (namespace %)))
-                       (map (fn [r] (clojure.lang.MapEntry. r {:enabled true})))
-                       (into {}))
+                    (filter #(.equals "dev" (namespace %)))
+                    (map (fn [r] (clojure.lang.MapEntry. r {:enabled true})))
+                    (into {}))
         default-rules (config/read-default-config)]
     (merge dev-rules default-rules)))
 

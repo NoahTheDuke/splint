@@ -4,8 +4,8 @@
 
 (ns noahtheduke.splint.replace-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.replace :as sut]))
+   [expectations.clojure.test :refer [defexpect expect]]
+   [noahtheduke.splint.replace :as sut]))
 
 (set! *warn-on-reflection* true)
 

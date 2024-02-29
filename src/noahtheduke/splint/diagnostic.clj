@@ -38,5 +38,4 @@
         form ^{:line 1 :column 2 :end-row 3 :end-col 4} '(1 2 3)
         opts {:message "other"}]
     (user/quick-bench
-      (->diagnostic ctx rule form opts)
-      )))
+      (->diagnostic ctx rule form opts))))

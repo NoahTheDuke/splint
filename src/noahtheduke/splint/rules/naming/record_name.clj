@@ -4,16 +4,16 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.naming.record-name
   (:require
-    [clojure.string :as str]
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [clojure.string :as str]
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
 (defn lower-case-name? [sexp]
   (let [record-name (str sexp)]
     (= (subs record-name 0 1)
-       (str/lower-case (subs record-name 0 1)))))
+      (str/lower-case (subs record-name 0 1)))))
 
 (defrule naming/record-name
   "Records should use PascalCase.
@@ -31,6 +31,6 @@
    :on-match (fn [ctx rule form {:syms [?record-name ?args]}]
                (let [new-record-name (symbol
                                        (str (subs (str/upper-case (str ?record-name)) 0 1)
-                                            (subs (str ?record-name) 1)))
+                                         (subs (str ?record-name) 1)))
                      new-form (list* 'defrecord new-record-name ?args)]
                  (->diagnostic ctx rule form {:replace-form new-form})))})

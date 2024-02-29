@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.rules.helpers
   "Functions available by default in patterns."
   (:require
-    [noahtheduke.splint.pattern :as-alias p]))
+   [noahtheduke.splint.pattern :as-alias p]))
 
 (set! *warn-on-reflection* true)
 
@@ -19,43 +19,43 @@
 
 (defn deref?? [sexp]
   (and (symbol? sexp)
-       (#{"deref" "splint/deref"} (name sexp))))
+    (#{"deref" "splint/deref"} (name sexp))))
 
 (defn syntax-quote?? [sexp]
   (and (symbol? sexp)
-       (.equals "splint/syntax-quote" (name sexp))))
+    (.equals "splint/syntax-quote" (name sexp))))
 
 (defn unquote?? [sexp]
   (and (symbol? sexp)
-       (#{"unquote" "splint/unquote"} (name sexp))))
+    (#{"unquote" "splint/unquote"} (name sexp))))
 
 (defn unquote-splicing?? [sexp]
   (and (symbol? sexp)
-       (#{"unquote-splicing" "splint/unquote-splicing"} (name sexp))))
+    (#{"unquote-splicing" "splint/unquote-splicing"} (name sexp))))
 
 (defn var?? [sexp]
   (and (symbol? sexp)
-       (#{"var" "splint/var"} (name sexp))))
+    (#{"var" "splint/var"} (name sexp))))
 
 (defn read-eval?? [sexp]
   (and (symbol? sexp)
-       (.equals "splint/read-eval" (name sexp))))
+    (.equals "splint/read-eval" (name sexp))))
 
 (defn fn?? [sexp]
   (and (symbol? sexp)
-       (#{"fn" "fn*" "splint/fn"} (name sexp))))
+    (#{"fn" "fn*" "splint/fn"} (name sexp))))
 
 (defn defn?? [sexp]
   (and (symbol? sexp)
-       (#{"defn" "defn-"} (name sexp))))
+    (#{"defn" "defn-"} (name sexp))))
 
 (defn defn-fn?? [sexp]
   (and (symbol? sexp)
-       (#{"defn" "defn-" "fn" "fn*" "splint/fn"} (name sexp))))
+    (#{"defn" "defn-" "fn" "fn*" "splint/fn"} (name sexp))))
 
 (defn re-pattern?? [sexp]
   (and (symbol? sexp)
-       (#{"re-pattern" "splint/re-pattern"} (name sexp))))
+    (#{"re-pattern" "splint/re-pattern"} (name sexp))))
 
 (def ^:private built-in-classes
   '#{;; bare

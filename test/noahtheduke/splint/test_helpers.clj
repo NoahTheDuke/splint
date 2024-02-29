@@ -4,27 +4,26 @@
 
 (ns noahtheduke.splint.test-helpers
   (:require
-    matcher-combinators.test
-    noahtheduke.splint
-    noahtheduke.splint.rules.helpers
-    [clojure.java.io :as io]
-    [clojure.spec.alpha :as s]
-    [clojure.string :as str]
-    [expectations.clojure.test :refer [expect]]
-    [matcher-combinators.core :as mc]
-    [matcher-combinators.model :refer [->Mismatch]]
-    [matcher-combinators.result :as-alias result]
-    [noahtheduke.splint.config :refer [merge-config]]
-    [noahtheduke.splint.dev :as dev]
-    [noahtheduke.splint.parser :refer [parse-file]]
-    [noahtheduke.splint.runner :refer [run-impl]]
-    [noahtheduke.splint.utils :refer [drop-quote]]
-    )
+   matcher-combinators.test
+   noahtheduke.splint
+   noahtheduke.splint.rules.helpers
+   [clojure.java.io :as io]
+   [clojure.spec.alpha :as s]
+   [clojure.string :as str]
+   [expectations.clojure.test :refer [expect]]
+   [matcher-combinators.core :as mc]
+   [matcher-combinators.model :refer [->Mismatch]]
+   [matcher-combinators.result :as-alias result]
+   [noahtheduke.splint.config :refer [merge-config]]
+   [noahtheduke.splint.dev :as dev]
+   [noahtheduke.splint.parser :refer [parse-file]]
+   [noahtheduke.splint.runner :refer [run-impl]]
+   [noahtheduke.splint.utils :refer [drop-quote]])
   (:import
-    (java.io File)
-    (java.nio.file Files FileVisitor FileVisitResult)
-    (java.nio.file.attribute FileAttribute)
-    (noahtheduke.splint.path_matcher MatchHolder)))
+   (java.io File)
+   (java.nio.file Files FileVisitor FileVisitResult)
+   (java.nio.file.attribute FileAttribute)
+   (noahtheduke.splint.path_matcher MatchHolder)))
 
 (set! *warn-on-reflection* true)
 
@@ -32,8 +31,8 @@
   ([path] (check-all path nil))
   ([path config]
    (let [config (conj {:clojure-version (or (:clojure-version config)
-                                            *clojure-version*)}
-                      (merge-config @dev/dev-config config))
+                                          *clojure-version*)}
+                  (merge-config @dev/dev-config config))
          paths (if (sequential? path) path [path])
          results (run-impl paths config)]
      (seq (:diagnostics results)))))
@@ -46,8 +45,8 @@
 
 (s/fdef expect-match
   :args (s/cat :expected (s/or :nil nil? :vector #(vector? (drop-quote %)))
-               :s any?
-               :config (s/? any?))
+          :s any?
+          :config (s/? any?))
   :ret any?)
 
 (defn parse-string-all
@@ -78,14 +77,14 @@
                        [(gensym)
                         `(let [f# (io/file (str ~temp-dir) ~path)]
                            (Files/createDirectories (.toPath (io/file (.getParent f#)))
-                                                    (into-array FileAttribute []))
+                             (into-array FileAttribute []))
                            (Files/createFile (.toPath f#)
-                                             (into-array FileAttribute [])))])
+                             (into-array FileAttribute [])))])
                      paths)
         binds (mapcat vector
-                      (take-nth 2 file-binds)
-                      (map (fn [[path _]] `(io/file (str ~path)))
-                           temp-files))]
+                (take-nth 2 file-binds)
+                (map (fn [[path _]] `(io/file (str ~path)))
+                  temp-files))]
     `(let [~temp-dir (Files/createTempDirectory
                        "splint" (into-array FileAttribute []))
            ~@(mapcat identity temp-files)
@@ -106,14 +105,13 @@
                     (Files/deleteIfExists path#)
                     FileVisitResult/CONTINUE)
                   (visitFileFailed [_ path# ex#]
-                    FileVisitResult/CONTINUE))
-                ))))))
+                    FileVisitResult/CONTINUE))))))))
 
 (s/def ::binding (s/cat :file-name simple-symbol? :path string?))
 (s/def ::bindings (s/and vector? #(even? (count %)) (s/* ::binding)))
 (s/fdef with-temp-files
   :args (s/cat :bindings ::bindings
-               :body (s/* any?))
+          :body (s/* any?))
   :ret any?)
 
 (defmacro print-to-file!
@@ -125,8 +123,8 @@
 
 (defn single-rule-config [rule-name]
   (-> @dev/dev-config
-      (update-vals #(assoc % :enabled false))
-      (update rule-name assoc :enabled true)))
+    (update-vals #(assoc % :enabled false))
+    (update rule-name assoc :enabled true)))
 
 (defn file-match [^File this actual]
   (cond

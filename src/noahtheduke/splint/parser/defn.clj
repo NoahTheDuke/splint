@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.parser.defn
   (:require
-    [noahtheduke.splint.utils :refer [drop-quote]]))
+   [noahtheduke.splint.utils :refer [drop-quote]]))
 
 (set! *warn-on-reflection* true)
 
@@ -87,12 +87,12 @@
                                :end-row (:end-row (meta form))
                                :end-col (dec (:end-col (meta form)))}]
                       (-> (apply list fdecl)
-                          (vary-meta (fnil conj {}) loc)
-                          (list)))
+                        (vary-meta (fnil conj {}) loc)
+                        (list)))
                     ;; Otherwise, just use the existing list (which will have
                     ;; location data already).
                     (and (list? (first fdecl))
-                         (every? #(vector? (first %)) fdecl)) fdecl
+                      (every? #(vector? (first %)) fdecl)) fdecl
                     ;; Explicitly, if given a faulty defn form, kick out
                     :else nil)]
         (when fdecl

@@ -4,11 +4,11 @@
 
 (ns noahtheduke.splint.default-config-test
   (:require
-    [clojure.edn :as edn]
-    [clojure.java.io :as io]
-    [clojure.spec.alpha :as s]
-    [clojure.string :as str]
-    [expectations.clojure.test :refer [defexpect expect]]))
+   [clojure.edn :as edn]
+   [clojure.java.io :as io]
+   [clojure.spec.alpha :as s]
+   [clojure.string :as str]
+   [expectations.clojure.test :refer [defexpect expect]]))
 
 (set! *warn-on-reflection* true)
 
@@ -24,15 +24,15 @@
 (s/def ::style-pair
   #(if (contains? % :supported-styles)
      (contains? (set (:supported-styles %))
-                (:chosen-style %))
+       (:chosen-style %))
      true))
 
 (s/def ::config-key (s/and qualified-symbol? #(#{"lint" "metrics" "naming" "performance" "style"}
-                                                (namespace %))))
+                                               (namespace %))))
 (s/def ::config-opts
   (s/and (s/keys :req-un [::description ::enabled ::added ::updated]
-                 :opt-un [::guide-ref ::link ::supported-styles ::chosen-style])
-         ::style-pair))
+           :opt-un [::guide-ref ::link ::supported-styles ::chosen-style])
+    ::style-pair))
 
 (s/def ::default-config
   (s/map-of ::config-key ::config-opts))

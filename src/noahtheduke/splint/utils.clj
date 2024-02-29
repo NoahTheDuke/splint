@@ -10,7 +10,7 @@
   "Convert (quote (a b c)) to (a b c)."
   [sexp]
   (if (and (seq? sexp)
-           (= 'quote (first sexp)))
+        (= 'quote (first sexp)))
     (fnext sexp)
     sexp))
 

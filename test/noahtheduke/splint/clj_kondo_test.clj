@@ -4,12 +4,12 @@
 
 (ns noahtheduke.splint.clj-kondo-test
   (:require
-    [clojure.tools.gitlibs :as gl]
-    [expectations.clojure.test :refer [defexpect expect]]
-    [matcher-combinators.matchers :as m]
-    [matcher-combinators.test :refer [match?]]
-    [noahtheduke.splint.config :refer [default-config]]
-    [noahtheduke.splint.runner :refer [run-impl]]))
+   [clojure.tools.gitlibs :as gl]
+   [expectations.clojure.test :refer [defexpect expect]]
+   [matcher-combinators.matchers :as m]
+   [matcher-combinators.test :refer [match?]]
+   [noahtheduke.splint.config :refer [default-config]]
+   [noahtheduke.splint.runner :refer [run-impl]]))
 
 (set! *warn-on-reflection* true)
 
@@ -79,13 +79,13 @@
 (defexpect ^:integration clj-kondo-test
   (let [clj-kondo (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2023.05.26")
         results (run-impl [{:path clj-kondo}]
-                          (-> all-enabled-config
-                              (assoc :silent true)
-                              (assoc :parallel false)
-                              (assoc :clojure-version *clojure-version*)))
+                  (-> all-enabled-config
+                    (assoc :silent true)
+                    (assoc :parallel false)
+                    (assoc :clojure-version *clojure-version*)))
         diagnostics (->> results
-                         :diagnostics
-                         (group-by :rule-name))]
+                      :diagnostics
+                      (group-by :rule-name))]
     (expect
       (match?
         (m/equals clj-kondo-diagnostics)

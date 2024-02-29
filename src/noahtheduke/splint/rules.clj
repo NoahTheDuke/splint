@@ -10,11 +10,11 @@
   (defrecord Rule
     [name genre full-name docstring init-type pattern-raw replace-raw message min-clojure-version ext pattern patterns on-match])"
   (:require
-    [clojure.spec.alpha :as s]
-    [noahtheduke.splint.pattern :as p]
-    [noahtheduke.splint.utils :refer [simple-type]]
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.replace :refer [postwalk-splicing-replace]]))
+   [clojure.spec.alpha :as s]
+   [noahtheduke.splint.pattern :as p]
+   [noahtheduke.splint.utils :refer [simple-type]]
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.replace :refer [postwalk-splicing-replace]]))
 
 (set! *warn-on-reflection* true)
 
@@ -37,24 +37,24 @@
   (let [{:keys [pattern patterns replace on-match message init-type
                 min-clojure-version ext]} opts]
     (assert (not (and pattern patterns))
-            "defrule cannot define both :pattern and :patterns")
+      "defrule cannot define both :pattern and :patterns")
     (when patterns
       (assert (apply = (map simple-type patterns))
-              "All :patterns should have the same `simple-type`"))
+        "All :patterns should have the same `simple-type`"))
     (assert (not (and replace on-match))
-            "defrule cannot define both :replace and :on-match")
+      "defrule cannot define both :replace and :on-match")
     (when ext
       (assert (or (and (set? ext)
-                       (every? keyword? ext))
-                  (keyword? ext))
-              ":ext must be a keyword or set of keywords"))
+                    (every? keyword? ext))
+                (keyword? ext))
+        ":ext must be a keyword or set of keywords"))
     (let [full-name rule-name
           rule-name (name full-name)
           genre (namespace full-name)
           init-type (or init-type
-                        (if pattern
-                          (simple-type pattern)
-                          (simple-type (first patterns))))]
+                      (if pattern
+                        (simple-type pattern)
+                        (simple-type (first patterns))))]
       `(let [rule# {:name ~rule-name
                     :genre ~genre
                     :full-name '~full-name
@@ -72,8 +72,8 @@
                                 ~(mapv #(list `p/pattern %) patterns))
                     :on-match (or ~on-match (replace->diagnostic ~replace))}]
          (swap! global-rules #(-> %
-                                  (assoc-in [:rules '~full-name] rule#)
-                                  (update :genres conj ~genre)))
+                                (assoc-in [:rules '~full-name] rule#)
+                                (update :genres conj ~genre)))
          (def ~(symbol rule-name) ~docs rule#)))))
 
 (s/def ::rule-name qualified-symbol?)
@@ -90,10 +90,10 @@
 (s/def ::min-clojure-version (s/keys :opt-un [::major ::minor ::incremental]))
 (s/def ::opts (s/keys :req-un [(or ::pattern ::patterns)
                                (or ::replace ::on-match)]
-                      :opt-un [::message ::init-type ::min-clojure-version]))
+                :opt-un [::message ::init-type ::min-clojure-version]))
 
 (s/fdef defrule
   :args (s/cat :rule-name ::rule-name
-               :docs ::docs
-               :opts ::opts)
+          :docs ::docs
+          :opts ::opts)
   :ret any?)

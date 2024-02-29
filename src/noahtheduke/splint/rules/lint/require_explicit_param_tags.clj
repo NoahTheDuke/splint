@@ -4,14 +4,14 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.require-explicit-param-tags
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
 (defn interop? [sym]
   (and (qualified-symbol? sym)
-       (:splint/import-ns (meta sym))))
+    (:splint/import-ns (meta sym))))
 
 (defrule lint/require-explicit-param-tags
   "Uniform qualified method values are a new syntax for calling into java code.
@@ -59,10 +59,10 @@
                      style (:chosen-style (:config rule))
                      msg (cond
                            (and (not (:param-tags m))
-                                (#{:both :missing} style))
+                             (#{:both :missing} style))
                            "Set explicit :param-tags on method values"
                            (and (some #{'_} (:param-tags m))
-                                (#{:both :wildcard} style))
+                             (#{:both :wildcard} style))
                            "Prefer explicit :param-tags on method values")]
                  (when msg
                    (->diagnostic ctx rule form {:message msg}))))})

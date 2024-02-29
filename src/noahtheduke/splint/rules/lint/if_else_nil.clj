@@ -4,15 +4,15 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.if-else-nil
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]
-    [noahtheduke.splint.rules.helpers :refer [rest-arg?]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]
+   [noahtheduke.splint.rules.helpers :refer [rest-arg?]]))
 
 (set! *warn-on-reflection* true)
 
 (defn not-do [form]
   (not (and (list? form)
-            (= 'do (first form)))))
+         (= 'do (first form)))))
 
 (defrule lint/if-else-nil
   "Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.

@@ -4,28 +4,28 @@
 
 (ns noahtheduke.splint.printer-test
   (:require
-    [clojure.java.io :as io]
-    [clojure.string :as str]
-    [expectations.clojure.test :refer [defexpect expect]]
-    [matcher-combinators.test :refer [match?]]
-    [noahtheduke.splint.printer :as sut]
-    [noahtheduke.splint.test-helpers :refer [check-all]]
-    [noahtheduke.splint.parser :as parser]
-    [clojure.pprint :as pp]))
+   [clojure.java.io :as io]
+   [clojure.string :as str]
+   [expectations.clojure.test :refer [defexpect expect]]
+   [matcher-combinators.test :refer [match?]]
+   [noahtheduke.splint.printer :as sut]
+   [noahtheduke.splint.test-helpers :refer [check-all]]
+   [noahtheduke.splint.parser :as parser]
+   [clojure.pprint :as pp]))
 
 (set! *warn-on-reflection* true)
 
 (def diagnostics
   (check-all (io/file "corpus" "printer_test.clj")
-             '{naming/single-segment-namespace {:enabled false}}))
+    '{naming/single-segment-namespace {:enabled false}}))
 
 (defn print-result-lines [output]
   (-> (sut/print-results {:config {:output output}
                           :diagnostics diagnostics
                           :total-time 0
                           :checked-files (mapv (comp str :filename) diagnostics)})
-      (with-out-str)
-      (str/split-lines)))
+    (with-out-str)
+    (str/split-lines)))
 
 (defexpect printer-output-simple-test
   (expect
@@ -204,21 +204,21 @@
   (let [f (slurp (io/file "corpus" "special_characters.clj"))
         parsed (parser/parse-file {:contents f :ext :clj})]
     (expect (= (format "[%s]"
-                       (->> ["@a"
-                             "@(a)"
-                             "#(+ 1 %1)"
-                             "#=(+ 1 2)"
-                             "#\"a\""
-                             "#'a"
-                             "#'(a b)"
-                             "`a"
-                             "`(a b)"
-                             "~a"
-                             "~(a b)"
-                             "~@a"
-                             "~@(a b)"]
-                           (str/join "\n ")))
-     (->> (sut/revert-splint-reader-macros parsed)
-          (pp/pprint)
-          (with-out-str)
-          (str/trim))))))
+                 (->> ["@a"
+                       "@(a)"
+                       "#(+ 1 %1)"
+                       "#=(+ 1 2)"
+                       "#\"a\""
+                       "#'a"
+                       "#'(a b)"
+                       "`a"
+                       "`(a b)"
+                       "~a"
+                       "~(a b)"
+                       "~@a"
+                       "~@(a b)"]
+                   (str/join "\n ")))
+              (->> (sut/revert-splint-reader-macros parsed)
+                (pp/pprint)
+                (with-out-str)
+                (str/trim))))))

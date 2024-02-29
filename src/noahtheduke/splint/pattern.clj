@@ -4,8 +4,8 @@
 
 (ns noahtheduke.splint.pattern
   (:require
-    [noahtheduke.splint.clojure-ext.core :refer [postwalk* vary-meta*]]
-    [noahtheduke.splint.utils :refer [drop-quote simple-type]]))
+   [noahtheduke.splint.clojure-ext.core :refer [postwalk* vary-meta*]]
+   [noahtheduke.splint.utils :refer [drop-quote simple-type]]))
 
 (set! *warn-on-reflection* true)
 
@@ -106,9 +106,9 @@
         interior-pattern (vary-meta* interior-pattern assoc :splint/lit true)]
     `(let [~children-form ~form]
        (and (list? ~children-form)
-            (= 'quote (first ~children-form))
-            (let [~children-form (second ~children-form)]
-              ~(read-form ctx interior-pattern children-form))))))
+         (= 'quote (first ~children-form))
+         (let [~children-form (second ~children-form)]
+           ~(read-form ctx interior-pattern children-form))))))
 
 (defn match-binding
   "Pattern must be a symbol in ?x style already."
@@ -126,8 +126,8 @@
   [ctx bind form pred]
   (let [pred-name (name pred)
         pred (or (requiring-resolve (symbol (or (namespace pred) (str *ns*)) pred-name))
-                 (resolve (symbol "clojure.core" pred-name))
-                 (requiring-resolve (symbol "noahtheduke.splint.rules.helpers" pred-name)))
+               (resolve (symbol "clojure.core" pred-name))
+               (requiring-resolve (symbol "noahtheduke.splint.rules.helpers" pred-name)))
         children-form (gensym "pred-form-")]
     `(let [~children-form ~form]
        (when (~pred ~children-form)
@@ -167,12 +167,12 @@
                  ~body-form (vary-meta (vec (take i# form#)) assoc ::rest true)]
             (when (<= i# max-len#)
               (or (and ~pred-check
-                       (let [~ctx ~(match-binding ctx (symbol (str "?" bind)) body-form)]
-                         (cont# ~ctx (drop i# form#))))
-                  (recur (inc i#)
-                         (if (< (count ~body-form) max-len#)
-                           (conj ~body-form (nth form# (count ~body-form)))
-                           ~body-form)))))))]))
+                    (let [~ctx ~(match-binding ctx (symbol (str "?" bind)) body-form)]
+                      (cont# ~ctx (drop i# form#))))
+                (recur (inc i#)
+                  (if (< (count ~body-form) max-len#)
+                    (conj ~body-form (nth form# (count ~body-form)))
+                    ~body-form)))))))]))
 
 (defn match-plus-rest
   [ctx pattern]
@@ -199,12 +199,12 @@
                  ~body-form (vary-meta (vec (take i# form#)) assoc ::rest true)]
             (when (<= i# max-len#)
               (or (and ~pred-check
-                       (let [~ctx ~(match-binding ctx (symbol (str "?" bind)) body-form)]
-                         (cont# ~ctx (drop i# form#))))
-                  (recur (inc i#)
-                         (if (< (count ~body-form) max-len#)
-                           (conj ~body-form (nth form# (count ~body-form)))
-                           ~body-form)))))))]))
+                    (let [~ctx ~(match-binding ctx (symbol (str "?" bind)) body-form)]
+                      (cont# ~ctx (drop i# form#))))
+                (recur (inc i#)
+                  (if (< (count ~body-form) max-len#)
+                    (conj ~body-form (nth form# (count ~body-form)))
+                    ~body-form)))))))]))
 
 (defn match-optional
   [ctx pattern]
@@ -215,19 +215,19 @@
      `(fn [~ctx form# cont#]
         (let [~body-form (vary-meta () assoc ::rest true)]
           (or (and ~pred-check
-                   (let [ctx# ~(match-binding ctx (symbol (str "?" bind)) body-form)]
-                     (cont# ctx# form#)))
-              (when (seq form#)
-                (let [~body-form (vary-meta (vec (take 1 form#)) assoc ::rest true)]
-                  (when ~pred-check
-                    (let [ctx# ~(match-binding ctx (symbol (str "?" bind)) body-form)]
-                      (cont# ctx# (drop 1 form#)))))))))]))
+                (let [ctx# ~(match-binding ctx (symbol (str "?" bind)) body-form)]
+                  (cont# ctx# form#)))
+            (when (seq form#)
+              (let [~body-form (vary-meta (vec (take 1 form#)) assoc ::rest true)]
+                (when ~pred-check
+                  (let [ctx# ~(match-binding ctx (symbol (str "?" bind)) body-form)]
+                    (cont# ctx# (drop 1 form#)))))))))]))
 
 (defn match-alt
   [ctx pattern]
   (let [[_?sym bind alts] pattern]
     (when-not (and (vector? alts)
-                   (every? #(literal? (read-dispatch %)) alts))
+                (every? #(literal? (read-dispatch %)) alts))
       (throw (IllegalArgumentException. "?| alts must be a vector of literals")))
     (let [temp-ctx (gensym "temp-ctx-")
           body-form (gensym "alt-body-form-")
@@ -289,43 +289,43 @@
 (defn variable-seq-match [ctx pattern form]
   (let [pattern-pairs (mapv (juxt read-dispatch identity) pattern)
         pattern-pairs (update pattern-pairs
-                              (dec (count pattern-pairs))
-                              vary-meta* assoc ::last true)
+                        (dec (count pattern-pairs))
+                        vary-meta* assoc ::last true)
         min-length (->> pattern-pairs
-                        (remove #(special? (first %)))
-                        count)
+                     (remove #(special? (first %)))
+                     count)
         children-form (gensym "variable-seq-form-")
         fns (->> pattern-pairs
-                 (partition-by #(special? (first %)))
-                 (mapv
-                   (fn [pattern-pairs]
-                     (let [t (ffirst pattern-pairs)
-                           patterns (mapv second pattern-pairs)]
-                       (case t
-                         :?+
-                         (mapcat #(if (::last (meta %))
-                                    (match-plus-rest ctx %)
-                                    (match-plus ctx %))
-                                 patterns)
-                         :?*
-                         (mapcat #(if (::last (meta %))
-                                    (match-star-rest ctx %)
-                                    (match-star ctx %))
-                                 patterns)
-                         :??
-                         (mapcat #(match-optional ctx %) patterns)
-                         :?|
-                         (mapcat #(match-alt ctx %) patterns)
+              (partition-by #(special? (first %)))
+              (mapv
+                (fn [pattern-pairs]
+                  (let [t (ffirst pattern-pairs)
+                        patterns (mapv second pattern-pairs)]
+                    (case t
+                      :?+
+                      (mapcat #(if (::last (meta %))
+                                 (match-plus-rest ctx %)
+                                 (match-plus ctx %))
+                        patterns)
+                      :?*
+                      (mapcat #(if (::last (meta %))
+                                 (match-star-rest ctx %)
+                                 (match-star ctx %))
+                        patterns)
+                      :??
+                      (mapcat #(match-optional ctx %) patterns)
+                      :?|
+                      (mapcat #(match-alt ctx %) patterns)
                          ; else
-                         (match-single ctx patterns)))))
-                 (mapcat identity))
+                      (match-single ctx patterns)))))
+              (mapcat identity))
         fn-names (take-nth 2 fns)
         type? (if (list? pattern) `list? `vector?)]
     `(let [~children-form ~form]
        (and (~type? ~children-form)
-            (<= ~min-length (count ~children-form))
-            (let [~@fns]
-              (seq-match-step ~ctx ~children-form ~(vec fn-names)))))))
+         (<= ~min-length (count ~children-form))
+         (let [~@fns]
+           (seq-match-step ~ctx ~children-form ~(vec fn-names)))))))
 
 (defn simple-seq-match [ctx pattern form]
   (let [children-form (gensym "simple-seq-form-")
@@ -333,9 +333,9 @@
         type? (if (list? pattern) `list? `vector?)]
     `(let [~children-form ~form]
        (and (~type? ~children-form)
-            (= ~(count pattern) (count ~children-form))
-            (let [~@binds]
-              ~ctx)))))
+         (= ~(count pattern) (count ~children-form))
+         (let [~@binds]
+           ~ctx)))))
 
 (defmacro seq-match [ctx pattern form]
   `(if (some #(special? (read-dispatch %)) ~pattern)
@@ -366,9 +366,9 @@
                 pattern)]
     `(let [~new-form ~form]
        (and (map? ~new-form)
-            (<= ~(count (keys pattern)) (count ~new-form))
-            (let [~@binds]
-              ~ctx)))))
+         (<= ~(count (keys pattern)) (count ~new-form))
+         (let [~@binds]
+           ~ctx)))))
 
 (defmethod read-form :set [ctx _pattern _form]
   `(when (set? ~ctx)
@@ -382,46 +382,45 @@
 
 ;; TODO: implement this with ctx-passing style
 #_(defmethod read-form :set [sexp form retval]
-  (let [new-form (gensym "set-new-form-")
-        [simple-vals complex-vals] (reduce (fn [acc cur]
-                                             (if (non-coll? (simple-type cur))
-                                               (update acc 0 conj cur)
-                                               (update acc 1 conj cur)))
-                                           [[] []]
-                                           sexp)
-        simple-keys-preds (map (fn [k] `(contains? ~new-form ~k)) simple-vals)
-        current-child (gensym "set-current-child-")
-        complex-keys-preds (mapv (fn [k]
-                                   `(fn [~current-child]
-                                      ~(read-form k current-child retval)))
-                                 complex-vals)
-        ]
-    `(when-let [~new-form ~form]
-       (and (set? ~new-form)
-            (<= ~(count sexp) (count ~new-form))
-            (or ~(empty? simple-keys-preds)
-                (and ~@simple-keys-preds))
-            (or ~(empty? complex-keys-preds)
+    (let [new-form (gensym "set-new-form-")
+          [simple-vals complex-vals] (reduce (fn [acc cur]
+                                               (if (non-coll? (simple-type cur))
+                                                 (update acc 0 conj cur)
+                                                 (update acc 1 conj cur)))
+                                       [[] []]
+                                       sexp)
+          simple-keys-preds (map (fn [k] `(contains? ~new-form ~k)) simple-vals)
+          current-child (gensym "set-current-child-")
+          complex-keys-preds (mapv (fn [k]
+                                     `(fn [~current-child]
+                                        ~(read-form k current-child retval)))
+                               complex-vals)]
+      `(when-let [~new-form ~form]
+         (and (set? ~new-form)
+           (<= ~(count sexp) (count ~new-form))
+           (or ~(empty? simple-keys-preds)
+             (and ~@simple-keys-preds))
+           (or ~(empty? complex-keys-preds)
                 ;; loop over both the predicates and the children.
                 ;; for each predicate, compare it against each child
                 ;; until it finds a match, and then remove the child
                 ;; from the list of children and recur.
-                (loop [complex-keys-preds# (seq ~complex-keys-preds)
-                       complex-children#
-                       (vec (for [child# ~new-form
-                                  :when (not (contains? ~(set simple-vals) child#))]
-                              child#))]
-                  (or (empty? complex-keys-preds#)
-                      (when-let [cur-pred# (first complex-keys-preds#)]
-                        (when-let [idx#
-                                   (loop [idx# 0]
-                                     (when-let [cur-child# (nth complex-children# idx# nil)]
-                                       (if (cur-pred# cur-child#)
-                                         idx#
-                                         (recur (inc idx#)))))]
+             (loop [complex-keys-preds# (seq ~complex-keys-preds)
+                    complex-children#
+                    (vec (for [child# ~new-form
+                               :when (not (contains? ~(set simple-vals) child#))]
+                           child#))]
+               (or (empty? complex-keys-preds#)
+                 (when-let [cur-pred# (first complex-keys-preds#)]
+                   (when-let [idx#
+                              (loop [idx# 0]
+                                (when-let [cur-child# (nth complex-children# idx# nil)]
+                                  (if (cur-pred# cur-child#)
+                                    idx#
+                                    (recur (inc idx#)))))]
 
-                          (recur (next complex-keys-preds#)
-                                 (vec-remove idx# complex-children#)))))))))))
+                     (recur (next complex-keys-preds#)
+                       (vec-remove idx# complex-children#)))))))))))
 
 (defn expand-specials [pattern]
   (postwalk*
@@ -471,8 +470,8 @@
   (let [form (gensym "form-")
         ctx (gensym "ctx-")
         pattern' (-> pattern
-                     (drop-quote)
-                     (expand-specials))]
+                   (drop-quote)
+                   (expand-specials))]
     `(fn [~form]
        (let [~ctx {}]
          (or ~(read-form ctx pattern' form) nil)))))

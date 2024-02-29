@@ -4,9 +4,9 @@
 
 (ns noahtheduke.splint.rules.lint.warn-on-reflection-test
   (:require
-    [clojure.java.io :as io]
-    [clojure.test :refer [deftest]]
-    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
+   [clojure.java.io :as io]
+   [clojure.test :refer [deftest]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 

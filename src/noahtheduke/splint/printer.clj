@@ -4,9 +4,9 @@
 
 (ns noahtheduke.splint.printer
   (:require
-    [clojure.data.json :as json]
-    [clojure.pprint :as pp]
-    [noahtheduke.splint.clojure-ext.core :refer [->list postwalk*]]))
+   [clojure.data.json :as json]
+   [clojure.pprint :as pp]
+   [noahtheduke.splint.clojure-ext.core :refer [->list postwalk*]]))
 
 (set! *warn-on-reflection* true)
 
@@ -43,7 +43,7 @@
                (conj acc cur)))
            []
            sexp)
-         (->list))
+      (->list))
     sexp))
 
 (defn revert-splint-reader-macros [replace-form]
@@ -114,27 +114,27 @@
 
 (defmethod print-find "json" [_ diagnostic]
   (let [diagnostic (-> diagnostic
-                       (update :rule-name pr-str)
-                       (update :form pr-str)
-                       (update :alt pr-str)
-                       (update :filename str)
-                       (->> (into (sorted-map))))]
+                     (update :rule-name pr-str)
+                     (update :form pr-str)
+                     (update :alt pr-str)
+                     (update :filename str)
+                     (->> (into (sorted-map))))]
     (json/write diagnostic *out* {:escape-slash false})
     (newline)))
 
 (defmethod print-find "json-pretty" [_ diagnostic]
   (let [diagnostic (-> diagnostic
-                       (update :rule-name pr-str)
-                       (update :form pr-str)
-                       (update :alt pr-str)
-                       (update :filename str)
-                       (->> (into (sorted-map))))]
+                     (update :rule-name pr-str)
+                     (update :form pr-str)
+                     (update :alt pr-str)
+                     (update :filename str)
+                     (->> (into (sorted-map))))]
     (json/pprint diagnostic {:escape-slash false})
     (newline)))
 
 (defmethod print-find "edn" [_ diagnostic]
   (let [diagnostic (update diagnostic :filename str)]
-   (prn (into (sorted-map) diagnostic))))
+    (prn (into (sorted-map) diagnostic))))
 
 (defmethod print-find "edn-pretty" [_ diagnostic]
   (let [diagnostic (update diagnostic :filename str)]
@@ -156,14 +156,14 @@
         (printer nil diagnostic))
       (flush)))
   (when-not (or (:silent config)
-                (false? (:summary config))
-                (#{"markdown" "json" "json-pretty"
-                   "edn" "edn-pretty"} (:output config)))
+              (false? (:summary config))
+              (#{"markdown" "json" "json-pretty"
+                 "edn" "edn-pretty"} (:output config)))
     (printf "Linting took %sms, checked %s files, %s style warnings%s\n"
-            total-time
-            (count checked-files)
-            (count (remove error-diagnostic diagnostics))
-            (if-let [errors (seq (filter error-diagnostic diagnostics))]
-              (format ", %s errors" (count errors))
-              ""))
+      total-time
+      (count checked-files)
+      (count (remove error-diagnostic diagnostics))
+      (if-let [errors (seq (filter error-diagnostic diagnostics))]
+        (format ", %s errors" (count errors))
+        ""))
     (flush)))

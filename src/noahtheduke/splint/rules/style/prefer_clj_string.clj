@@ -4,22 +4,22 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.prefer-clj-string
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
 (defn upper-case?? [sexp]
   (and (symbol? sexp)
-       (#{".toUpperCase" "upper-case"} (name sexp))))
+    (#{".toUpperCase" "upper-case"} (name sexp))))
 
 (defn lower-case?? [sexp]
   (and (symbol? sexp)
-       (#{".toLowerCase" "lower-case"} (name sexp))))
+    (#{".toLowerCase" "lower-case"} (name sexp))))
 
 (defn to-str?? [sexp]
   (and (symbol? sexp)
-       (#{".toString" "str"} (name sexp))))
+    (#{".toString" "str"} (name sexp))))
 
 (def interop->clj-string
   '{.contains clojure.string/includes?
@@ -33,7 +33,7 @@
 
 (defn interop-symbol? [sym]
   (and (symbol? sym)
-       (interop->clj-string sym)))
+    (interop->clj-string sym)))
 
 (defrule style/prefer-clj-string
   "Prefer clojure.string to interop.

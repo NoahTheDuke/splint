@@ -4,15 +4,15 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.prefer-method-values
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]
-    [clojure.string :as str]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]
+   [clojure.string :as str]))
 
 (set! *warn-on-reflection* true)
 
 (defn interop? [sym]
   (and (simple-symbol? sym)
-       (str/starts-with? (name sym) ".")))
+    (str/starts-with? (name sym) ".")))
 
 (defrule lint/prefer-method-values
   "Uniform qualified method values are a new syntax for calling into java code. They must resolve to a single static or instance method and to help with that, a new metadata syntax can be used: `^[]` aka `^{:param-tags []}`. Types are specified with classes, each corrosponding to an argument in the target method: `(^[long String] SomeClass/someMethod 1 \"Hello world!\")`. It compiles to a direct call without any reflection, guaranteeing optimal performance.

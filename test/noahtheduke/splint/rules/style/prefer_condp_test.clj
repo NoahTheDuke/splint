@@ -4,8 +4,8 @@
 
 (ns noahtheduke.splint.rules.style.prefer-condp-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
+   [expectations.clojure.test :refer [defexpect]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 

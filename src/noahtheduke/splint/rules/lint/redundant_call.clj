@@ -4,8 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.redundant-call
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
@@ -15,14 +15,14 @@
      'some-> 'some->>
      'comp 'partial 'merge
      'min 'max 'distinct?}
-    sexp))
+   sexp))
 
 (defn check-parent [ctx]
   (when-let [parent-form (:parent-form ctx)]
     (and (seq? parent-form)
-         (case (first parent-form)
-           (case -> ->>) true
-           false))))
+      (case (first parent-form)
+        (case -> ->>) true
+        false))))
 
 (defrule lint/redundant-call
   "A number of core functions take any number of arguments and return the arg

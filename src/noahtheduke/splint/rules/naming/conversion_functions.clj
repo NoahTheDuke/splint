@@ -4,15 +4,15 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.naming.conversion-functions
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]
-    [clojure.string :as str]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]
+   [clojure.string :as str]))
 
 (set! *warn-on-reflection* true)
 
 (defn to?? [sym]
   (and (symbol? sym)
-       (str/includes? (name sym) "-to-")))
+    (str/includes? (name sym) "-to-")))
 
 (defrule naming/conversion-functions
   "Use `->` instead of `to` in the names of conversion functions.

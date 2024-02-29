@@ -63,14 +63,14 @@
          (:use [clojure.set :as-alias set])
          (:use [clojure.edn :as edn])
          (:require
-           [clojure.string :refer [join] :as-alias str]
-           ["react-dom" :refer [cool-stuff] :as react-dom]
-           :reload-all)
+          [clojure.string :refer [join] :as-alias str]
+          ["react-dom" :refer [cool-stuff] :as react-dom]
+          :reload-all)
          (:require
-           [clojure.zip :reload :all :as z])
+          [clojure.zip :reload :all :as z])
          (:import
-           java.lang.Byte
-           (java.lang Character ArrayList))))))
+          java.lang.Byte
+          (java.lang Character ArrayList))))))
 
 (defexpect parse-ns-in-ns-test
   (expect

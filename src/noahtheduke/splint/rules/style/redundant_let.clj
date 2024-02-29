@@ -4,8 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.redundant-let
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
@@ -28,6 +28,6 @@
    :message "Redundant let expressions can be merged."
    :on-match (fn [ctx rule form {:syms [?outer-bindings ?inner-bindings ?body]}]
                (let [new-form (list* 'let
-                                     (vec (concat ?outer-bindings ?inner-bindings))
-                                     ?body)]
+                                (vec (concat ?outer-bindings ?inner-bindings))
+                                ?body)]
                  (->diagnostic ctx rule form {:replace-form new-form})))})

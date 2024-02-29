@@ -4,13 +4,13 @@
 
 (ns noahtheduke.splint.clojure-ext.core
   (:require
-    [noahtheduke.splint.utils :refer [simple-type]])
+   [noahtheduke.splint.utils :refer [simple-type]])
   (:import
-    (java.util.concurrent Executors Future)
-    #?@(:bb []
-        :clj ([clojure.lang LazilyPersistentVector]))
-    (java.io File)
-    (java.nio.file PathMatcher)))
+   (java.util.concurrent Executors Future)
+   #?@(:bb []
+       :clj ([clojure.lang LazilyPersistentVector]))
+   (java.io File)
+   (java.nio.file PathMatcher)))
 
 (set! *warn-on-reflection* true)
 
@@ -45,8 +45,7 @@
     (user/quick-bench (->list (vec (range 1000))))
     (user/quick-bench
       (do (->list coll)
-          (->list voll)))
-    ))
+          (->list voll)))))
 
 (defn mapv*
   "Efficient version of mapv which operates directly on the sequence
@@ -72,13 +71,13 @@
   #?(:bb (mapv f coll)
      :clj (let [cnt (count coll)]
             (if (zero? cnt) []
-              (let [new-coll (object-array cnt)
-                    iter (.iterator ^Iterable coll)]
-                (loop [n 0]
-                  (when (.hasNext iter)
-                    (aset new-coll n (f (.next iter)))
-                    (recur (unchecked-inc n))))
-                (LazilyPersistentVector/createOwning new-coll))))))
+                (let [new-coll (object-array cnt)
+                      iter (.iterator ^Iterable coll)]
+                  (loop [n 0]
+                    (when (.hasNext iter)
+                      (aset new-coll n (f (.next iter)))
+                      (recur (unchecked-inc n))))
+                  (LazilyPersistentVector/createOwning new-coll))))))
 
 (comment
   (let [coll (range 1000)
@@ -98,14 +97,13 @@
     (println "mapv*")
     (user/quick-bench (mapv* inc nil))
     (user/quick-bench (mapv* inc coll))
-    (user/quick-bench (mapv* inc voll))
-    ))
+    (user/quick-bench (mapv* inc voll))))
 
 (defn keepv
   "Wrapper around `(into [] (keep f) coll) cuz that's annoying to write. Short-circuits on nil and empty Counted collections."
   [f coll]
   (if (or (nil? coll)
-          (and (instance? clojure.lang.Counted coll) (zero? (count coll))))
+        (and (instance? clojure.lang.Counted coll) (zero? (count coll))))
     []
     (into [] (keep f) coll)))
 
@@ -119,10 +117,10 @@
   #?(:bb (run! f coll)
      :clj (let [cnt (count coll)]
             (if (zero? cnt) []
-              (let [iter (.iterator ^Iterable coll)]
-                (while (.hasNext iter)
-                  (f (.next iter)))
-                nil)))))
+                (let [iter (.iterator ^Iterable coll)]
+                  (while (.hasNext iter)
+                    (f (.next iter)))
+                  nil)))))
 
 #_{:clj-kondo/ignore [:unused-value]}
 (comment
@@ -184,11 +182,11 @@
     (with-meta*
       (outer
         (->> form
-             (reduce-kv
-               (fn [m k v]
-                 (assoc! m (inner k) (inner v)))
-               (transient {}))
-             (persistent!)))
+          (reduce-kv
+            (fn [m k v]
+              (assoc! m (inner k) (inner v)))
+            (transient {}))
+          (persistent!)))
       (meta form)))
   clojure.lang.IPersistentSet
   (walk* [form inner outer]

@@ -4,9 +4,9 @@
 
 (ns noahtheduke.splint.rules.performance.into-transducer-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]
-    [noahtheduke.splint.rules.performance.into-transducer :refer [transducers]]))
+   [expectations.clojure.test :refer [defexpect]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]
+   [noahtheduke.splint.rules.performance.into-transducer :refer [transducers]]))
 
 (set! *warn-on-reflection* true)
 

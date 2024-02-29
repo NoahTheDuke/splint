@@ -5,21 +5,21 @@
 (ns noahtheduke.splint.runner
   "Handles parsing and linting all of given files."
   (:require
-    [clojure.java.io :as io]
-    [clojure.string :as str]
-    [noahtheduke.splint.cli :refer [validate-opts]]
-    [noahtheduke.splint.clojure-ext.core :refer [mapv* pmap* run!*]]
-    [noahtheduke.splint.config :as conf]
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.parser :refer [parse-file]]
-    [noahtheduke.splint.path-matcher :refer [matches]]
-    [noahtheduke.splint.printer :refer [print-results]]
-    [noahtheduke.splint.rules :refer [global-rules]]
-    [noahtheduke.splint.utils :refer [simple-type]])
+   [clojure.java.io :as io]
+   [clojure.string :as str]
+   [noahtheduke.splint.cli :refer [validate-opts]]
+   [noahtheduke.splint.clojure-ext.core :refer [mapv* pmap* run!*]]
+   [noahtheduke.splint.config :as conf]
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.parser :refer [parse-file]]
+   [noahtheduke.splint.path-matcher :refer [matches]]
+   [noahtheduke.splint.printer :refer [print-results]]
+   [noahtheduke.splint.rules :refer [global-rules]]
+   [noahtheduke.splint.utils :refer [simple-type]])
   (:import
-    (clojure.lang ExceptionInfo)
-    (java.io File)
-    (noahtheduke.splint.diagnostic Diagnostic)))
+   (clojure.lang ExceptionInfo)
+   (java.io File)
+   (noahtheduke.splint.diagnostic Diagnostic)))
 
 (set! *warn-on-reflection* true)
 
@@ -31,13 +31,13 @@
 (defn runner-error->diagnostic [^Exception ex]
   (let [data (ex-data ex)
         message (str/trim (or (:message data)
-                              (ex-message ex)
-                              ""))
+                            (ex-message ex)
+                            ""))
         error-msg (format "Splint encountered an error%s: %s"
-                          (if-let [rule-name (:rule-name data)]
-                            (str " during '" rule-name)
-                            "")
-                          message)]
+                    (if-let [rule-name (:rule-name data)]
+                      (str " during '" rule-name)
+                      "")
+                    message)]
     (->diagnostic
       nil
       {:full-name (or (:error-name data) 'splint/error)}
@@ -121,7 +121,7 @@
         (fn [rules]
           (mapv* (fn [rule]
                    (assoc-in rule [:config :enabled] false))
-                 rules)))
+            rules)))
       ;; parse list of disabled genres and specific rules
       (let [{genres true specific-rules false} (group-by simple-symbol? disabled-rules)
             genres (into #{} (map str) genres)
@@ -134,7 +134,7 @@
                 (let [genre (:genre rule)
                       rule-name (:full-name rule)]
                   (if (or (contains? genres genre)
-                          (contains? specific-rules rule-name))
+                        (contains? specific-rules rule-name))
                     (assoc-in rule [:config :enabled] false)
                     rule)))
               rules)))))
@@ -186,11 +186,11 @@
       rules-by-type
       (fn [rules]
         (into []
-              (keep (fn [rule]
-                      (some->> rule
-                               (right-ext? ext)
-                               (right-path? ctx))))
-              rules)))))
+          (keep (fn [rule]
+                  (some->> rule
+                    (right-ext? ext)
+                    (right-path? ctx))))
+          rules)))))
 
 (defn parse-and-check-file
   "Parse the given file and then check each form."
@@ -198,10 +198,10 @@
   (try
     (when-let [parsed-file (parse-file file-obj)]
       (let [ctx (-> ctx
-                    (update :checked-files swap! conj file)
-                    (assoc :ext ext)
-                    (assoc :filename file)
-                    (assoc :file-str contents))
+                  (update :checked-files swap! conj file)
+                  (assoc :ext ext)
+                  (assoc :filename file)
+                  (assoc :file-str contents))
             rules-by-type (pre-filter-rules ctx rules-by-type)]
         ;; Check any full-file rules
         (when-let [file-rules (:file rules-by-type)]
@@ -213,13 +213,13 @@
       (let [data (ex-data ex)]
         (if (= :edamame/error (:type data))
           (let [data (-> data
-                         (assoc :error-name 'splint/parsing-error)
-                         (assoc :filename file)
-                         (assoc :form (with-meta [] {:line (:line data)
-                                                     :column (:column data)})))
+                       (assoc :error-name 'splint/parsing-error)
+                       (assoc :filename file)
+                       (assoc :form (with-meta [] {:line (:line data)
+                                                   :column (:column data)})))
                 ex (exception->ex-info ex data)
                 diagnostic (-> (runner-error->diagnostic ex)
-                               (assoc :form nil))]
+                             (assoc :form nil))]
             (update ctx :diagnostics swap! conj diagnostic))
           (let [ex (exception->ex-info ex {:error-name 'splint/unknown-error
                                            :filename file})
@@ -228,8 +228,8 @@
 
 (defn slurp-file [file-obj]
   (if (:contents file-obj)
-   file-obj
-   (assoc file-obj :contents (slurp (:file file-obj)))))
+    file-obj
+    (assoc file-obj :contents (slurp (:file file-obj)))))
 
 (defn check-files-parallel [ctx rules-by-type files]
   (pmap* #(parse-and-check-file ctx rules-by-type (slurp-file %)) files))
@@ -253,42 +253,42 @@
       (and (if major
              (<= major (:major current-version))
              true)
-           (if minor
-             (<= minor (:minor current-version))
-             true)
-           (if incremental
-             (<= incremental (:incremental current-version))
-             true)))
+        (if minor
+          (<= minor (:minor current-version))
+          true)
+        (if incremental
+          (<= incremental (:incremental current-version))
+          true)))
     true))
 
 (defn prepare-rules [config rules]
   (let [conjv (fnil conj [])]
     (->> config
-         (reduce-kv
-           (fn [rules rule-name rule-config]
-             (if (and (map? rule-config)
-                      (contains? rule-config :enabled))
-               (if-let [rule (rules rule-name)]
-                 (let [rule-config (assoc rule-config :rule-name rule-name)
-                       rule-config (if (support-clojure-version? config rule)
-                                     rule-config
-                                     (assoc rule-config :enabled false))]
-                   (assoc-in rules [rule-name :config] rule-config))
-                 rules)
-               rules))
-           rules)
-         (vals)
-         (sort-by :full-name)
-         (reduce
-           (fn [rules rule]
-             (update rules (:init-type rule) conjv rule))
-           {}))))
+      (reduce-kv
+        (fn [rules rule-name rule-config]
+          (if (and (map? rule-config)
+                (contains? rule-config :enabled))
+            (if-let [rule (rules rule-name)]
+              (let [rule-config (assoc rule-config :rule-name rule-name)
+                    rule-config (if (support-clojure-version? config rule)
+                                  rule-config
+                                  (assoc rule-config :enabled false))]
+                (assoc-in rules [rule-name :config] rule-config))
+              rules)
+            rules))
+        rules)
+      (vals)
+      (sort-by :full-name)
+      (reduce
+        (fn [rules rule]
+          (update rules (:init-type rule) conjv rule))
+        {}))))
 
 (defn prepare-context [rules config]
   (-> rules
-      (assoc :diagnostics (atom []))
-      (assoc :checked-files (atom []))
-      (assoc :config config)))
+    (assoc :diagnostics (atom []))
+    (assoc :checked-files (atom []))
+    (assoc :config config)))
 
 (defn get-extension [^File file]
   (let [filename (.getName file)
@@ -311,7 +311,7 @@
                   [{:features #{:cljs} :ext :cljs :file file}]
                   ; else
                   nil)))
-          (file-seq (io/file (:path path))))
+      (file-seq (io/file (:path path))))
     (string? path)
     [{:file (io/file "example.clj")
       :contents path
@@ -326,11 +326,11 @@
 (defn resolve-files-from-paths [ctx paths]
   (let [excludes (-> ctx :config :global :excludes)
         xf (comp (mapcat make-path-obj)
-                 (distinct)
-                 (filter (fn [file-obj]
-                           (if excludes
-                             (not-any? #(matches % (:file file-obj)) excludes)
-                             true))))]
+             (distinct)
+             (filter (fn [file-obj]
+                       (if excludes
+                         (not-any? #(matches % (:file file-obj)) excludes)
+                         true))))]
     (into [] xf paths)))
 
 (defn build-result-map
@@ -365,10 +365,10 @@
           project-file (conf/read-project-file
                          (io/file "deps.edn") (io/file "project.clj"))
           paths (mapv* #(hash-map :path %)
-                       (or (not-empty paths) (:paths project-file)))
+                  (or (not-empty paths) (:paths project-file)))
           config (assoc (conf/load-config options)
-                        :clojure-version (or (:clojure-version project-file)
-                                             *clojure-version*))]
+                   :clojure-version (or (:clojure-version project-file)
+                                      *clojure-version*))]
       (cond
         exit-message
         (do (when-not (:quiet options) (println exit-message))
@@ -403,5 +403,4 @@
   (do (require '[clj-async-profiler.core :as prof])
       (prof/profile
         (run ["--silent" "--no-parallel"]))
-      nil)
-  )
+      nil))

@@ -4,25 +4,25 @@
 
 (ns noahtheduke.splint.parser
   (:require
-    [clojure.string :as str]
-    [edamame.core :as e]
-    [edamame.impl.read-fn :as read-fn]
-    [noahtheduke.splint.parser.defn :refer [parse-defn]]
-    [noahtheduke.splint.parser.ns :refer [parse-ns]]
-    [noahtheduke.splint.vendor :refer [default-imports]]))
+   [clojure.string :as str]
+   [edamame.core :as e]
+   [edamame.impl.read-fn :as read-fn]
+   [noahtheduke.splint.parser.defn :refer [parse-defn]]
+   [noahtheduke.splint.parser.ns :refer [parse-ns]]
+   [noahtheduke.splint.vendor :refer [default-imports]]))
 
 (set! *warn-on-reflection* true)
 
 (defn get-fqns [ns-state ns_]
   (or (get-in @ns-state [:imports ns_])
-      (get default-imports ns_)))
+    (get default-imports ns_)))
 
 (defn attach-import-meta [obj ns-state]
   (if-let [ns_ (and (symbol? obj)
-                    (some-> (or (namespace obj) (name obj))
-                            (str/split #"\.")
-                            last
-                            symbol))]
+                 (some-> (or (namespace obj) (name obj))
+                   (str/split #"\.")
+                   last
+                   symbol))]
     (if-let [fqns (get-fqns ns-state ns_)]
       (vary-meta obj assoc :splint/import-ns fqns)
       obj)
@@ -65,11 +65,11 @@
                   (cond-> obj
                     (instance? clojure.lang.IObj obj)
                     (-> (vary-meta merge loc)
-                        (attach-import-meta ns-state))
+                      (attach-import-meta ns-state))
                     (and (list? obj)
-                         (symbol? (first obj))
-                         (symbol? (second obj))
-                         (#{"defn" "defn-"} (name (first obj))))
+                      (symbol? (first obj))
+                      (symbol? (second obj))
+                      (#{"defn" "defn-"} (name (first obj))))
                     (attach-defn-meta)))
    ; Each of dispatch literals should either be processed (uneval), or wrap the
    ; expression in a splint-specific "function call".
@@ -91,7 +91,7 @@
                (identical? uneval :splint/disable)
                (vary-meta next assoc :splint/disable true)
                (and (seqable? (:splint/disable uneval))
-                    (seq (:splint/disable uneval)))
+                 (seq (:splint/disable uneval)))
                (vary-meta next assoc :splint/disable (seq (:splint/disable uneval)))
                :else
                next))

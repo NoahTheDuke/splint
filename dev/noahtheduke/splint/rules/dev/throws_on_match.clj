@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.rules.dev.throws-on-match
   (:require
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 

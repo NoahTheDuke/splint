@@ -4,8 +4,8 @@
 
 (ns noahtheduke.splint.rules.naming.conventional-aliases-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [expectations.clojure.test :refer [defexpect]]
+   [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (set! *warn-on-reflection* true)
 
@@ -15,11 +15,11 @@
     "(ns foo.bar (:require [clojure.string :as string]))")
   (expect-match
     '[{:alt (:require
-              [clojure.string :as str]
-              clojure.set
-              [clojure.edn]
-              [clojure pprint [zip :refer [1 2 3] :as zip]
-               [edn :as edn]])}]
+             [clojure.string :as str]
+             clojure.set
+             [clojure.edn]
+             [clojure pprint [zip :refer [1 2 3] :as zip]
+              [edn :as edn]])}]
     "(ns foo.bar
        (:require [clojure.string :as string]
                  clojure.set

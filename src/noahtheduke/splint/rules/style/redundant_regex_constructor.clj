@@ -4,9 +4,9 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.redundant-regex-constructor
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]
-    [noahtheduke.splint.pattern :refer [pattern]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]
+   [noahtheduke.splint.pattern :refer [pattern]]))
 
 (set! *warn-on-reflection* true)
 

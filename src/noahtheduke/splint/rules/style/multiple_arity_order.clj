@@ -4,9 +4,9 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.multiple-arity-order
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]
-    [noahtheduke.splint.utils :refer [drop-quote]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]
+   [noahtheduke.splint.utils :refer [drop-quote]]))
 
 (set! *warn-on-reflection* true)
 

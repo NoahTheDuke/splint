@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.lint.require-explicit-param-tags-test
   (:require
-    [clojure.test :refer [deftest]]
-    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
+   [clojure.test :refer [deftest]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config
   ([] (assoc (single-rule-config 'lint/require-explicit-param-tags)
-             :clojure-version {:major 1 :minor 12}))
+        :clojure-version {:major 1 :minor 12}))
   ([style]
    (assoc-in (config) '[lint/require-explicit-param-tags :chosen-style] style)))
 
@@ -48,7 +48,7 @@
     nil
     "(^[_ _] File/createTempFile \"abc\" \"b\")"
     (assoc (config :both)
-           :clojure-version {:major 1 :minor 11})))
+      :clojure-version {:major 1 :minor 11})))
 
 (deftest passing-test
   (doseq [style [:missing :wildcard :both]]

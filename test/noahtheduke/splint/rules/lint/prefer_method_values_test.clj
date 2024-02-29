@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.lint.prefer-method-values-test
   (:require
-    [clojure.test :refer [deftest]]
-    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
+   [clojure.test :refer [deftest]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config []
   (assoc (single-rule-config 'lint/prefer-method-values)
-         :clojure-version {:major 1 :minor 12}))
+    :clojure-version {:major 1 :minor 12}))
 
 (deftest prefer-method-values-test
   (expect-match

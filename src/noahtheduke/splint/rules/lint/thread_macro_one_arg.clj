@@ -4,18 +4,18 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.thread-macro-one-arg
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.pattern :refer [non-coll?]]
-    [noahtheduke.splint.rules :refer [defrule]]
-    [noahtheduke.splint.utils :refer [simple-type]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.pattern :refer [non-coll?]]
+   [noahtheduke.splint.rules :refer [defrule]]
+   [noahtheduke.splint.utils :refer [simple-type]]))
 
 (set! *warn-on-reflection* true)
 
 (defn symbol-or-keyword-or-list? [sexp]
   (or (symbol? sexp)
-      (keyword? sexp)
-      (list? sexp)
-      (and (sequential? sexp) (not (vector? sexp)))))
+    (keyword? sexp)
+    (list? sexp)
+    (and (sequential? sexp) (not (vector? sexp)))))
 
 (defn thread-macro? [form]
   (#{'-> '->>} form))
@@ -33,8 +33,8 @@
   (let [replace-form (make-form ?f ?arg ?form)
         message (format "Intention of `%s` is clearer with inlined form." ?f)]
     (->diagnostic ctx rule form
-                  {:replace-form replace-form
-                   :message message})))
+      {:replace-form replace-form
+       :message message})))
 
 (defrule lint/thread-macro-one-arg
   "Threading macros require more effort to understand so only use them with multiple

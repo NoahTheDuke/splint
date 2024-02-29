@@ -4,8 +4,8 @@
 
 (ns noahtheduke.splint.rules.performance.single-literal-merge-test
   (:require
-    [expectations.clojure.test :refer [defexpect]]
-    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
+   [expectations.clojure.test :refer [defexpect]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
@@ -35,8 +35,8 @@
       :form '(merge m {:a 1 :b 2})
       :message "Prefer assoc for merging literal maps"
       :alt '(-> m
-                (assoc :a 1)
-                (assoc :b 2))}]
+              (assoc :a 1)
+              (assoc :b 2))}]
     "(merge m {:a 1 :b 2})"
     (update (config) 'performance/single-literal-merge assoc :chosen-style :multiple)))
 
@@ -46,8 +46,8 @@
       :form '(merge m {:a 1 :b 2})
       :message "Prefer assoc for merging literal maps"
       :alt '(-> m
-                (assoc :a 1)
-                (assoc :b 2))}]
+              (assoc :a 1)
+              (assoc :b 2))}]
     "(merge m {:a 1 :b 2})"
     (update (config) 'performance/assoc-many assoc :enabled true)))
 

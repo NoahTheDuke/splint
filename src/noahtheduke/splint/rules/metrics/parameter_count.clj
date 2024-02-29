@@ -4,8 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.metrics.parameter-count
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
@@ -25,8 +25,8 @@
                        " (including & rest parameters)"
                        "")
             message (format "Avoid parameter lists with more than %s parameters%s."
-                            config-count
-                            rest-msg)]
+                      config-count
+                      rest-msg)]
         (->diagnostic ctx rule arglist {:message message})))))
 
 (defrule metrics/parameter-count
@@ -64,5 +64,5 @@
                        config-count (:count config)
                        chosen-style (:chosen-style config)]
                    (->> (:arglists defn-form)
-                        (keep #(build-diagnostic ctx rule config-count chosen-style %))
-                        (into [])))))})
+                     (keep #(build-diagnostic ctx rule config-count chosen-style %))
+                     (into [])))))})

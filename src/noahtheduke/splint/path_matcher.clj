@@ -4,10 +4,10 @@
 
 (ns noahtheduke.splint.path-matcher
   (:require
-    [clojure.string :as str])
+   [clojure.string :as str])
   (:import
-    (java.io File)
-    (java.nio.file FileSystem FileSystems PathMatcher)))
+   (java.io File)
+   (java.nio.file FileSystem FileSystems PathMatcher)))
 
 (set! *warn-on-reflection* true)
 
@@ -39,7 +39,7 @@
 (defn ->matcher [input]
   (cond
     (or (str/starts-with? input "glob:")
-        (str/starts-with? input "regex:"))
+      (str/starts-with? input "regex:"))
     (->MatchHolder (.getPathMatcher fs input) input)
     (str/starts-with? input "re-find:")
     (->MatchHolder (re-find-matcher input) input)

@@ -4,66 +4,66 @@
 
 (ns noahtheduke.splint.config-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect from-each in expecting]]
-    [matcher-combinators.test :refer [match?]]
-    [noahtheduke.splint.config :as sut]
-    [noahtheduke.splint.test-helpers :refer [with-temp-files print-to-file! check-all]]
-    [noahtheduke.splint.path-matcher :refer [->matcher]]
-    [clojure.java.io :as io]
-    [clojure.string :as str]))
+   [expectations.clojure.test :refer [defexpect expect from-each in expecting]]
+   [matcher-combinators.test :refer [match?]]
+   [noahtheduke.splint.config :as sut]
+   [noahtheduke.splint.test-helpers :refer [with-temp-files print-to-file! check-all]]
+   [noahtheduke.splint.path-matcher :refer [->matcher]]
+   [clojure.java.io :as io]
+   [clojure.string :as str]))
 
 (set! *warn-on-reflection* true)
 
 (defexpect load-config-test
   (expect (match? {:parallel true :output "full"}
-                  (sut/load-config nil)))
+            (sut/load-config nil)))
   (expect (match? {:output "simple"}
-                  (sut/load-config {'output "clj-kondo"}
-                                   {:output "simple"})))
+            (sut/load-config {'output "clj-kondo"}
+              {:output "simple"})))
   (expect (match? {:parallel false}
-                  (sut/load-config {'parallel false} nil)))
+            (sut/load-config {'parallel false} nil)))
   (expect (match? {:output "simple"}
-                  (sut/load-config {'output "simple"} nil))))
+            (sut/load-config {'output "simple"} nil))))
 
 (defexpect disable-single-rule-test
   (expect (match? {'style/plus-one {:enabled false}}
-                  (sut/load-config {'style/plus-one {:enabled false}}
-                                   nil))))
+            (sut/load-config {'style/plus-one {:enabled false}}
+              nil))))
 
 (defexpect disable-genre-test
   (let [config (update-vals @sut/default-config #(assoc % :enabled true))]
     (expect
       {:enabled false}
       (from-each [c (->> (sut/merge-config config {'style {:enabled false}})
-                         (vals)
-                         (filter #(.equals "style" (namespace (:rule-name % :a)))))]
+                      (vals)
+                      (filter #(.equals "style" (namespace (:rule-name % :a)))))]
         (in c)))
     (expect
       (match? {'style/plus-one {:enabled true}}
-              (sut/merge-config config {'style {:enabled false}
-                                        'style/plus-one {:enabled true}})))))
+        (sut/merge-config config {'style {:enabled false}
+                                  'style/plus-one {:enabled true}})))))
 
 (defn get-global [a]
   (select-keys a [:global]))
 
 (defexpect global-config-test
   (expect (match? {:global {:excludes [(->matcher "foo")]}}
-                  (get-global (sut/load-config {'global {:excludes ["foo"]}} nil))))
+            (get-global (sut/load-config {'global {:excludes ["foo"]}} nil))))
   (expect (match? {:global {:excludes [(->matcher "glob:foo")]}}
-                  (get-global (sut/load-config {'global {:excludes ["glob:foo"]}} nil))))
+            (get-global (sut/load-config {'global {:excludes ["glob:foo"]}} nil))))
   (expect (match? {:global {:excludes [(->matcher "regex:foo")]}}
-                  (get-global (sut/load-config {'global {:excludes ["regex:foo"]}} nil))))
+            (get-global (sut/load-config {'global {:excludes ["regex:foo"]}} nil))))
   (expect (match? {:global {:excludes [(->matcher "re-find:foo")]}}
-                  (get-global (sut/load-config {'global {:excludes ["re-find:foo"]}} nil))))
+            (get-global (sut/load-config {'global {:excludes ["re-find:foo"]}} nil))))
   (expect (match? {:global {:excludes [(->matcher "string:foo")]}}
-                  (get-global (sut/load-config {'global {:excludes ["string:foo"]}} nil))))
+            (get-global (sut/load-config {'global {:excludes ["string:foo"]}} nil))))
   (expecting "default is re-find"
     (expect (match? {:global {:excludes [(->matcher "re-find:foo")]}}
-                    (get-global (sut/load-config {'global {:excludes ["foo"]}} nil)))))
+              (get-global (sut/load-config {'global {:excludes ["foo"]}} nil)))))
   (expecting "can handle multiple"
     (expect (match? {:global {:excludes [(->matcher "foo")
                                          (->matcher "regex:foo")]}}
-                    (get-global (sut/load-config {'global {:excludes ["foo" "regex:foo"]}} nil))))))
+              (get-global (sut/load-config {'global {:excludes ["foo" "regex:foo"]}} nil))))))
 
 (defexpect read-project-file-edn-test
   (with-temp-files [deps-edn "deps.edn"]
@@ -74,7 +74,7 @@
       (match? {:clojure-version {:major 1 :minor 8 :incremental 0
                                  :qualifier nil :snapshot nil}
                :paths []}
-              (sut/read-project-file deps-edn nil))))
+        (sut/read-project-file deps-edn nil))))
   (expecting "with multiple dependencies"
     (with-temp-files [deps-edn "deps.edn"]
       (print-to-file!
@@ -85,7 +85,7 @@
         (match? {:clojure-version {:major 1 :minor 8 :incremental 0
                                    :qualifier nil :snapshot nil}
                  :paths []}
-                (sut/read-project-file deps-edn nil)))))
+          (sut/read-project-file deps-edn nil)))))
   (expecting "with paths"
     (with-temp-files [deps-edn "deps.edn"]
       (print-to-file!
@@ -95,7 +95,7 @@
       (expect
         (match? {:clojure-version {:major 1 :minor 8 :incremental 0}
                  :paths ["src" "test"]}
-                (sut/read-project-file deps-edn nil)))))
+          (sut/read-project-file deps-edn nil)))))
   (expecting "with paths in aliases"
     (with-temp-files [deps-edn "deps.edn"]
       (print-to-file!
@@ -107,7 +107,7 @@
       (expect
         (match? {:clojure-version {:major 1 :minor 8 :incremental 0}
                  :paths ["src" "dev" "test"]}
-                (sut/read-project-file deps-edn nil))))))
+          (sut/read-project-file deps-edn nil))))))
 
 (defexpect read-project-file-project-clj-test
   (with-temp-files [project-clj "project.clj"]
@@ -119,7 +119,7 @@
       (match? {:clojure-version {:major 1 :minor 8 :incremental 0
                                  :qualifier nil :snapshot nil}
                :paths ["src" "test"]}
-              (sut/read-project-file nil project-clj))))
+        (sut/read-project-file nil project-clj))))
   (expecting "dependencies with exclusions"
     (with-temp-files [project-clj "project.clj"]
       (print-to-file!
@@ -128,7 +128,7 @@
            :dependencies [[org.clojure/clojure \"1.8.0\" :exclusions []]])")
       (expect
         (match? {:clojure-version {:major 1 :minor 8 :incremental 0}}
-                (sut/read-project-file nil project-clj)))))
+          (sut/read-project-file nil project-clj)))))
   (expecting "multiple dependencies"
     (with-temp-files [project-clj "project.clj"]
       (print-to-file!
@@ -138,7 +138,7 @@
                           [org.clojure/clojure \"1.8.0\"]])")
       (expect
         (match? {:clojure-version {:major 1 :minor 8 :incremental 0}}
-                (sut/read-project-file nil project-clj)))))
+          (sut/read-project-file nil project-clj)))))
   (expecting "paths"
     (with-temp-files [project-clj "project.clj"]
       (print-to-file!
@@ -151,7 +151,7 @@
         (match? {:clojure-version {:major 1 :minor 8 :incremental 0
                                    :qualifier nil :snapshot nil}
                  :paths ["source" "testing"]}
-                (sut/read-project-file nil project-clj)))))
+          (sut/read-project-file nil project-clj)))))
   (expecting "paths with alises"
     (with-temp-files [project-clj "project.clj"]
       (print-to-file!
@@ -167,7 +167,7 @@
                                    :qualifier nil :snapshot nil}
                  :paths ["source" "testing"
                          "dev-source" "test-source"]}
-                (sut/read-project-file nil project-clj))))))
+          (sut/read-project-file nil project-clj))))))
 
 (defexpect read-project-file-both-test
   (with-temp-files [deps-edn "deps.edn"
@@ -184,7 +184,7 @@
                                  :qualifier nil
                                  :snapshot nil}
                :paths []}
-              (sut/read-project-file deps-edn project-clj)))))
+        (sut/read-project-file deps-edn project-clj)))))
 
 (defexpect parse-project-file-features-test
   (with-temp-files [project-clj "project.clj"]
@@ -204,7 +204,7 @@
 (def diagnostics
   {:diagnostics
    (check-all (io/file "corpus" "printer_test.clj")
-              '{naming/single-segment-namespace {:enabled false}})})
+     '{naming/single-segment-namespace {:enabled false}})})
 
 (defexpect spit-config-test
   (with-redefs [spit (fn [file content]
@@ -217,8 +217,8 @@
          (str/join
            "\n"
            [(format ";; Splint configuration auto-generated on %s."
-                    (.format (java.text.SimpleDateFormat. "yyyy-MM-dd")
-                             (java.util.Date.)))
+              (.format (java.text.SimpleDateFormat. "yyyy-MM-dd")
+                (java.util.Date.)))
             ";; All failing rules have been disabled and can be enabled as time allows."
             ""
             "{"

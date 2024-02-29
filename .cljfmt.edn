@@ -1,0 +1,1 @@
+{:indents ^:replace {#re ".*" [[:inner 0]]}}

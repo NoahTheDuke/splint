@@ -2,10 +2,10 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.splint.utils-test 
+(ns noahtheduke.splint.utils-test
   (:require
-    [expectations.clojure.test :refer [defexpect expect]]
-    [noahtheduke.splint.utils :as sut]))
+   [expectations.clojure.test :refer [defexpect expect]]
+   [noahtheduke.splint.utils :as sut]))
 
 (set! *warn-on-reflection* true)
 

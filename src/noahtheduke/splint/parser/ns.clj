@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.parser.ns
   (:require
-    [noahtheduke.splint.utils :refer [drop-quote]]))
+   [noahtheduke.splint.utils :refer [drop-quote]]))
 
 (set! *warn-on-reflection* true)
 
@@ -12,7 +12,7 @@
 
 (defn quoted? [form]
   (and (seq? form)
-       (= 'quote (first form))))
+    (= 'quote (first form))))
 
 (defn parse-imports [args]
   (persistent!
@@ -28,8 +28,8 @@
               (fn [acc alias_]
                 (let [full-name (symbol (str prefix "." alias_))]
                   (-> acc
-                      (assoc! alias_ full-name)
-                      (assoc! full-name full-name))))
+                    (assoc! alias_ full-name)
+                    (assoc! full-name full-name))))
               acc aliases))
           :else acc))
       (transient {})
@@ -44,9 +44,9 @@
   (prefix name1 name1) or [com.example.prefix [name1 :as name1]]"
   [form]
   (and (sequential? form)  ; should be a list, but often is not
-       (symbol? (first form))
-       (not-any? keyword? form)
-       (< 1 (count form))))  ; not a bare vector like [foo]
+    (symbol? (first form))
+    (not-any? keyword? form)
+    (< 1 (count form))))  ; not a bare vector like [foo]
 
 (defn- option-spec?
   "Returns true if form represents a libspec vector containing optional
@@ -54,18 +54,18 @@
   [namespace :refer (x y)] or just [namespace]"
   [form]
   (and (sequential? form)  ; should be a vector, but often is not
-       (symbol? (first form))
-       (or (keyword? (second form))  ; vector like [foo :as f]
-           (= 1 (count form)))))  ; bare vector like [foo]
+    (symbol? (first form))
+    (or (keyword? (second form))  ; vector like [foo :as f]
+      (= 1 (count form)))))  ; bare vector like [foo]
 
 (defn- js-dep-spec?
   "A version of `option-spec?` for native JS dependencies, i.e. vectors
    like [\"react-dom\" :as react-dom] or just [\"some-polyfill\"]"
   [form]
   (and (sequential? form)  ; should be a vector, but often is not
-       (string? (first form))
-       (or (keyword? (second form))  ; vector like ["foo" :as f]
-           (= 1 (count form)))))
+    (string? (first form))
+    (or (keyword? (second form))  ; vector like ["foo" :as f]
+      (= 1 (count form)))))
 
 (defn deps-from-libspec
   "A modification from clojure.tools.namespace.parse/deps-from-libspec."
@@ -73,9 +73,9 @@
   (cond (prefix-spec? form)
         (mapcat (fn [f] (deps-from-libspec
                           (symbol (str (when prefix (str prefix "."))
-                                       (first form)))
+                                    (first form)))
                           f))
-                (next form))
+          (next form))
 
         (option-spec? form)
         (let [opts (apply hash-map (next form))]
@@ -94,9 +94,9 @@
   is the clojure.lang.Symbol that represents the namespace that the alias refers to."
   [deps]
   (->> deps
-       (mapcat #(deps-from-libspec nil (drop-quote %)))
-       (filter :alias)
-       (into {} (map (fn [dep] [(:alias dep) (:ns dep)])))))
+    (mapcat #(deps-from-libspec nil (drop-quote %)))
+    (filter :alias)
+    (into {} (map (fn [dep] [(:alias dep) (:ns dep)])))))
 
 (defmethod derive-aliases 'require
   [deps]
@@ -109,17 +109,17 @@
 (defmethod derive-aliases 'ns
   [[_ ns_ & references]]
   (let [libspecs (->> references
-                      (filter sequential?)
-                      (group-by #(-> % first name keyword)))]
-   {:current (drop-quote ns_)
-    :aliases (->> libspecs
-                  ((juxt :require :require-macros :use))
-                  (apply concat)
-                  (keep #(-> % next derive-aliases-from-deps))
-                  (apply merge))
-    :imports (->> (:import libspecs)
-                  (map parse-imports)
-                  (apply merge-with into))}))
+                   (filter sequential?)
+                   (group-by #(-> % first name keyword)))]
+    {:current (drop-quote ns_)
+     :aliases (->> libspecs
+                ((juxt :require :require-macros :use))
+                (apply concat)
+                (keep #(-> % next derive-aliases-from-deps))
+                (apply merge))
+     :imports (->> (:import libspecs)
+                (map parse-imports)
+                (apply merge-with into))}))
 
 (defmethod derive-aliases 'in-ns
   [[_ ns_]]

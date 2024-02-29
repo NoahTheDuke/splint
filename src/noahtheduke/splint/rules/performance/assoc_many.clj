@@ -4,9 +4,9 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.performance.assoc-many
   (:require
-    [noahtheduke.splint.clojure-ext.core :refer [mapv* ->list]]
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.clojure-ext.core :refer [mapv* ->list]]
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
@@ -16,8 +16,8 @@
   (when-let [parent-form (:parent-form ctx)]
     (when (= '-> (first parent-form))
       (let [new-pairs (->> ?pairs
-                           (partition 2)
-                           (mapv* #(list 'assoc (first %) (second %))))
+                        (partition 2)
+                        (mapv* #(list 'assoc (first %) (second %))))
             new-form (reduce
                        (fn [acc cur]
                          (if (= form cur)
@@ -26,7 +26,7 @@
                        []
                        parent-form)]
         (->diagnostic ctx rule parent-form
-                      {:replace-form (->list new-form)})))))
+          {:replace-form (->list new-form)})))))
 
 (defn odd-pairs
   "Used in a thread-first macro."
@@ -34,8 +34,8 @@
   (let [new-form (apply
                    list '-> (nth ?pairs 0)
                    (->> (subvec ?pairs 1)
-                        (partition 2)
-                        (mapv* #(list 'assoc (first %) (second %)))))]
+                     (partition 2)
+                     (mapv* #(list 'assoc (first %) (second %)))))]
     (->diagnostic ctx rule form {:replace-form new-form})))
 
 (defrule performance/assoc-many

@@ -4,10 +4,10 @@
 
 (ns noahtheduke.splint.pattern-test
   (:require
-    [clojure.test :refer [deftest]] 
-    [expectations.clojure.test :refer [expect from-each expecting]]
-    [noahtheduke.splint.pattern :as sut]
-    [noahtheduke.splint.test-helpers :refer [parse-string]]))
+   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [expect from-each expecting]]
+   [noahtheduke.splint.pattern :as sut]
+   [noahtheduke.splint.test-helpers :refer [parse-string]]))
 
 (set! *warn-on-reflection* true)
 
@@ -202,16 +202,16 @@
     (expect not (pat (parse-string "(:a 1 :b [2] :c {:d 3} :e 4)")))))
 
 #_(deftest map-test
-  (let [pat (sut/pattern '{:a 1 :b [2] :c {:d 3}})]
-    (expect not (pat (parse-string "{:a 1 :b [2] :c {:e 4}}")))
-    (expect (pat (parse-string "{:a 1 :b [2] :c {:d 3}}")))
-    (expect (pat (parse-string "{:a 1 :b [2] :c {:d 3} :e 4}")))))
+    (let [pat (sut/pattern '{:a 1 :b [2] :c {:d 3}})]
+      (expect not (pat (parse-string "{:a 1 :b [2] :c {:e 4}}")))
+      (expect (pat (parse-string "{:a 1 :b [2] :c {:d 3}}")))
+      (expect (pat (parse-string "{:a 1 :b [2] :c {:d 3} :e 4}")))))
 
 #_(deftest set-test
-  (let [pat (sut/pattern '#{:a 1 :b [2] :c {:d 3}})]
-    (expect not (pat (parse-string "#{:a 1 :b [2] :c}")))
-    (expect (pat (parse-string "#{:a 1 :b [2] :c {:d 3}}")))
-    (expect (pat (parse-string "#{:a 1 :b [2] :c {:d 3} :e [4]}")))))
+    (let [pat (sut/pattern '#{:a 1 :b [2] :c {:d 3}})]
+      (expect not (pat (parse-string "#{:a 1 :b [2] :c}")))
+      (expect (pat (parse-string "#{:a 1 :b [2] :c {:d 3}}")))
+      (expect (pat (parse-string "#{:a 1 :b [2] :c {:d 3} :e [4]}")))))
 
 (deftest vector-test
   (let [pat (sut/pattern '[:a 1 :b [2] :c {:d 3}])]

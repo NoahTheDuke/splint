@@ -4,9 +4,9 @@
 
 (ns build
   (:require
-    [clojure.string :as str]
-    [clojure.tools.build.api :as b]
-    [deps-deploy.deps-deploy :as dd]))
+   [clojure.string :as str]
+   [clojure.tools.build.api :as b]
+   [deps-deploy.deps-deploy :as dd]))
 
 (def lib 'io.github.noahtheduke/splint)
 (def version (str/trim (slurp "./resources/SPLINT_VERSION")))
@@ -14,16 +14,16 @@
 
 (defn make-opts [opts]
   (assoc opts
-         :lib lib
-         :version version
-         :basis (b/create-basis {})
-         :scm {:tag (str "v" version)}
-         :jar-file (format "target/%s-%s.jar" (name lib) version)
-         :class-dir class-dir
-         :src-dirs ["src"]
-         :resource-dirs ["resources"]
-         :uber-file (format "target/%s-%s-standalone.jar" (name lib) version)
-         :main 'noahtheduke.splint))
+    :lib lib
+    :version version
+    :basis (b/create-basis {})
+    :scm {:tag (str "v" version)}
+    :jar-file (format "target/%s-%s.jar" (name lib) version)
+    :class-dir class-dir
+    :src-dirs ["src"]
+    :resource-dirs ["resources"]
+    :uber-file (format "target/%s-%s-standalone.jar" (name lib) version)
+    :main 'noahtheduke.splint))
 
 (defn jar [opts]
   (let [opts (make-opts opts)]

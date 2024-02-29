@@ -4,8 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.metrics.fn-length
   (:require
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
@@ -16,8 +16,8 @@
           config-length (or (:length config) 10)]
       (when (< config-length len)
         (let [message (format "%s shouldn't be longer than %s lines."
-                              form-str
-                              config-length)]
+                        form-str
+                        config-length)]
           (->diagnostic ctx rule form {:message message}))))))
 
 (defn defn-size

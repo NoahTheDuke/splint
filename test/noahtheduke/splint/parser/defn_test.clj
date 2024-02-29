@@ -4,11 +4,11 @@
 
 (ns noahtheduke.splint.parser.defn-test
   (:require
-    [clojure.java.io :as io]
-    [expectations.clojure.test :refer [defexpect expect]]
-    [matcher-combinators.test :refer [match?]]
-    [noahtheduke.splint.test-helpers :refer [parse-string-all]]
-    [noahtheduke.splint.parser.defn :as sut]))
+   [clojure.java.io :as io]
+   [expectations.clojure.test :refer [defexpect expect]]
+   [matcher-combinators.test :refer [match?]]
+   [noahtheduke.splint.test-helpers :refer [parse-string-all]]
+   [noahtheduke.splint.parser.defn :as sut]))
 
 (set! *warn-on-reflection* true)
 
@@ -56,6 +56,6 @@
          :arities (([a] "asdf" a))
          :arglists ([a])}]
       (->> (io/file "corpus" "arglists.clj")
-           (slurp)
-           (parse-string-all)
-           (keep sut/parse-defn)))))
+        (slurp)
+        (parse-string-all)
+        (keep sut/parse-defn)))))

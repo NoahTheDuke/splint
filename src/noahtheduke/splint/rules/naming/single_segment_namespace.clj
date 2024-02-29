@@ -4,16 +4,16 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.naming.single-segment-namespace
   (:require
-    [clojure.string :as str]
-    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-    [noahtheduke.splint.rules :refer [defrule]]))
+   [clojure.string :as str]
+   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
 (defn single-segment-ns? [sexp]
   (let [ns-str (str sexp)]
     (not (or (str/includes? ns-str ".")
-             (#{"build" "user"} (str sexp))))))
+           (#{"build" "user"} (str sexp))))))
 
 (defrule naming/single-segment-namespace
   "Namespaces exist to disambiguate names. Using a single segment namespace puts you in direct conflict with everyone else using single segment namespaces, thus making it more likely you will conflict with another code base.

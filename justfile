@@ -20,18 +20,21 @@ dev-run *args:
 run *args:
     clojure -M:run {{args}}
 
+format *args="check":
+    clojure -M:cljfmt {{args}}
+
 [no-exit-message]
 test *args:
     clj-kondo --parallel --lint dev src test
     bb run
-    clojure-lsp format --dry
+    just format
     clojure -M:dev:test:runner -e :integration {{args}}
 
 [no-exit-message]
 test-all *args:
     clj-kondo --parallel --lint dev src test
     bb run
-    clojure-lsp format --dry
+    just format
     clojure -M:dev:test:runner {{args}}
 
 @new-rule arg:

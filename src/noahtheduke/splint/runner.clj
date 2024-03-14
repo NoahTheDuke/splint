@@ -8,13 +8,15 @@
    [clojure.java.io :as io]
    [clojure.string :as str]
    [noahtheduke.splint.cli :refer [validate-opts]]
-   [noahtheduke.splint.clojure-ext.core :refer [mapv* pmap* run!*]]
+   [noahtheduke.splint.clojure-ext.core :refer [mapv* run!*]]
    [noahtheduke.splint.config :as conf]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.parser :refer [parse-file]]
    [noahtheduke.splint.path-matcher :refer [matches]]
+   [noahtheduke.splint.pipeline :refer [make-pipeline queue]]
    [noahtheduke.splint.printer :refer [print-results]]
    [noahtheduke.splint.rules :refer [global-rules]]
+   [noahtheduke.splint.runner.impl :refer [enqueue-loads]]
    [noahtheduke.splint.utils :refer [simple-type]])
   (:import
    (clojure.lang ExceptionInfo)
@@ -22,6 +24,8 @@
    (noahtheduke.splint.diagnostic Diagnostic)))
 
 (set! *warn-on-reflection* true)
+
+(declare parse-and-check-file)
 
 (defn exception->ex-info
   ^ExceptionInfo [^Exception ex data]
@@ -107,10 +111,11 @@
   "Checks a given form against the appropriate rules then calls `on-match` to build the
   diagnostic and store it in `ctx`."
   [ctx rules form]
-  ;; `rules` is a vector and therefore it's faster to check
+  ;; `rules` is a vector and therefore it's faster to check length
   (when (pos? (count rules))
     (when-let [diagnostics (check-all-rules-of-type ctx rules form)]
-      (update ctx :diagnostics swap! into diagnostics))))
+      (swap! (:diagnostics ctx) into diagnostics)
+      nil)))
 
 (defn update-rules [rules-by-type form]
   (if-let [disabled-rules (some-> form meta :splint/disable)]
@@ -144,26 +149,38 @@
   "Check a given form and then map recur over each of the form's children."
   [ctx rules-by-type filename parent-form form]
   (let [ctx (assoc ctx :parent-form parent-form)
+        [ctx load?] (enqueue-loads ctx form)
+        ctx (if load?
+              (parse-and-check-file ctx (:rules ctx))
+              ctx)
         rules-by-type (update-rules rules-by-type form)
         form-type (simple-type form)]
     (when-let [rules-for-type (rules-by-type form-type)]
       (check-form ctx rules-for-type form))
     ;; Can't recur in non-seqable forms
     (case form-type
-      :list (when-not (= 'quote (first form))
-              (run!* #(check-and-recur ctx rules-by-type filename form %) form))
+      :list (if (= 'quote (first form))
+              ctx
+              (reduce
+                (fn [ctx f] (check-and-recur ctx rules-by-type filename form f))
+                ctx
+                form))
       ;; There is currently no need for checking MapEntry,
       ;; so check each individually.
-      :map (run!*
-             (fn [kv]
-               (check-and-recur ctx rules-by-type filename form (key kv))
-               (check-and-recur ctx rules-by-type filename form (val kv)))
+      :map (reduce
+             (fn [ctx kv]
+               (-> ctx
+                 (check-and-recur rules-by-type filename form (key kv))
+                 (check-and-recur rules-by-type filename form (val kv))))
+             ctx
              form)
       (:set :vector)
-      (run!* #(check-and-recur ctx rules-by-type filename form %) form)
-      ; else
-      nil)
-    nil))
+      (reduce
+        (fn [ctx f] (check-and-recur ctx rules-by-type filename form f))
+        ctx
+        form)
+      ;else
+      ctx)))
 
 (defn right-ext? [ext rule]
   (if (:ext rule)
@@ -192,59 +209,99 @@
                     (right-path? ctx))))
           rules)))))
 
-(defn parse-and-check-file
-  "Parse the given file and then check each form."
-  [ctx rules-by-type {:keys [ext ^File file contents] :as file-obj}]
-  (try
-    (when-let [parsed-file (parse-file file-obj)]
-      (let [ctx (-> ctx
-                  (update :checked-files swap! conj file)
-                  (assoc :ext ext)
-                  (assoc :filename file)
-                  (assoc :file-str contents))
-            rules-by-type (pre-filter-rules ctx rules-by-type)]
-        ;; Check any full-file rules
-        (when-let [file-rules (:file rules-by-type)]
-          (check-form ctx file-rules parsed-file))
-        ;; Step over each top-level form (parent-form is nil)
-        (run!* #(check-and-recur ctx rules-by-type file nil %) parsed-file)
-        nil))
-    (catch Exception ex
-      (let [data (ex-data ex)]
-        (if (= :edamame/error (:type data))
-          (let [data (-> data
-                       (assoc :error-name 'splint/parsing-error)
-                       (assoc :filename file)
-                       (assoc :form (with-meta [] {:line (:line data)
-                                                   :column (:column data)})))
-                ex (exception->ex-info ex data)
-                diagnostic (-> (runner-error->diagnostic ex)
-                             (assoc :form nil))]
-            (update ctx :diagnostics swap! conj diagnostic))
-          (let [ex (exception->ex-info ex {:error-name 'splint/unknown-error
-                                           :filename file})
-                diagnostic (runner-error->diagnostic ex)]
-            (update ctx :diagnostics swap! conj diagnostic)))))))
-
 (defn slurp-file [file-obj]
   (if (:contents file-obj)
     file-obj
     (assoc file-obj :contents (slurp (:file file-obj)))))
 
-(defn check-files-parallel [ctx rules-by-type files]
-  (pmap* #(parse-and-check-file ctx rules-by-type (slurp-file %)) files))
+(defn parse-and-check-file-impl
+  "Parse the given file and then check each form."
+  [ctx rules-by-type file-obj]
+  (let [{:keys [ext ^File file contents] :as file-obj} (slurp-file file-obj)]
+    (try
+      (when-let [parsed-file (parse-file file-obj)]
+        (swap! (:checked-files ctx) conj file)
+        (let [ctx (-> ctx
+                    (assoc :ext ext)
+                    (assoc :filename file)
+                    (assoc :file-str contents))
+              rules-by-type (pre-filter-rules ctx rules-by-type)]
+          ;; Check any full-file rules
+          (when-let [file-rules (:file rules-by-type)]
+            (check-form ctx file-rules parsed-file))
+          ;; Step over each top-level form (parent-form is nil)
+          (parse-and-check-file
+            (reduce
+              (fn [ctx form]
+                (check-and-recur ctx rules-by-type file nil form))
+              ctx
+              parsed-file)
+            rules-by-type)))
+      (catch Exception ex
+        (prn ex)
+        (let [data (ex-data ex)]
+          (if (= :edamame/error (:type data))
+            (let [data (-> data
+                         (assoc :error-name 'splint/parsing-error)
+                         (assoc :filename file)
+                         (assoc :form (with-meta [] {:line (:line data)
+                                                     :column (:column data)})))
+                  ex (exception->ex-info ex data)
+                  diagnostic (-> (runner-error->diagnostic ex)
+                               (assoc :form nil))]
+              (swap! (:diagnostics ctx) conj diagnostic))
+            (let [ex (exception->ex-info ex {:error-name 'splint/unknown-error
+                                             :filename file})
+                  diagnostic (runner-error->diagnostic ex)]
+              (swap! (:diagnostics ctx) conj diagnostic))))))))
 
-(defn check-files-serial [ctx rules-by-type files]
-  (mapv* #(parse-and-check-file ctx rules-by-type (slurp-file %)) files))
+(defn parse-and-check-file
+  [ctx rules-by-type]
+  (let [file-obj (peek (:pipeline ctx))
+        ctx (update ctx :pipeline pop)]
+    (cond
+      ; If the next file is nil but there are pending files, queue the first and recur
+      (and (nil? file-obj) (seq (:pending-files ctx)))
+      (let [[name next-pending] (first (:pending-files ctx))
+            next-pending (assoc next-pending :from-pending true)
+            ctx (if next-pending
+                  (-> ctx
+                    (update :pending-files dissoc name)
+                    (update :pipeline queue next-pending))
+                  ctx)]
+        (if next-pending
+          (parse-and-check-file ctx rules-by-type)
+          ctx))
+      ; If the given file has been seen, recur
+      (and file-obj (contains? @(:checked-files ctx) (:file file-obj)))
+      (parse-and-check-file ctx rules-by-type)
+      ; If the next file exists, dive in
+      file-obj
+      (parse-and-check-file-impl ctx rules-by-type file-obj)
+      ; file-obj is nil and no pending files
+      :else
+      ctx)))
+
+(defn check-files-parallel [ctx rules-by-type files]
+  #_(pmap* #(parse-and-check-file ctx rules-by-type (slurp-file %)) (vals files)))
+
+(defn check-files-serial [ctx rules-by-type]
+  (let [pending-files (:pending-files ctx)
+        shortest (->> (keys pending-files)
+                   (remove #(str/includes? % "user.clj"))
+                   (sort-by count)
+                   first)
+        ctx (update ctx :pipeline queue (pending-files shortest))]
+    (parse-and-check-file ctx rules-by-type)))
 
 (defn check-files!
   "Call into the relevant `check-path-X` function, depending on the given config."
-  [ctx rules-by-type files]
+  [ctx rules-by-type]
   (cond
     (-> ctx :config :parallel)
-    (check-files-parallel ctx rules-by-type files)
+    (check-files-parallel ctx rules-by-type (:pending-files ctx))
     :else
-    (check-files-serial ctx rules-by-type files)))
+    (check-files-serial ctx rules-by-type)))
 
 (defn support-clojure-version?
   [config rule]
@@ -261,34 +318,39 @@
           true)))
     true))
 
-(defn prepare-rules [config rules]
-  (let [conjv (fnil conj [])]
-    (->> config
-      (reduce-kv
-        (fn [rules rule-name rule-config]
-          (if (and (map? rule-config)
-                (contains? rule-config :enabled))
-            (if-let [rule (rules rule-name)]
-              (let [rule-config (assoc rule-config :rule-name rule-name)
-                    rule-config (if (support-clojure-version? config rule)
-                                  rule-config
-                                  (assoc rule-config :enabled false))]
-                (assoc-in rules [rule-name :config] rule-config))
-              rules)
-            rules))
-        rules)
-      (vals)
-      (sort-by :full-name)
-      (reduce
-        (fn [rules rule]
-          (update rules (:init-type rule) conjv rule))
-        {}))))
+(def conjv
+  (fnil conj []))
+
+(defn prepare-rules
+  "Enable or disable all rules as specified in configuration."
+  [config rules]
+  (->> config
+    (reduce-kv
+      (fn [rules rule-name rule-config]
+        (if (and (map? rule-config)
+              (contains? rule-config :enabled))
+          (if-let [rule (rules rule-name)]
+            (let [rule-config (assoc rule-config :rule-name rule-name)
+                  rule-config (if (support-clojure-version? config rule)
+                                rule-config
+                                (assoc rule-config :enabled false))]
+              (assoc-in rules [rule-name :config] rule-config))
+            rules)
+          rules))
+      rules)
+    (vals)
+    (sort-by :full-name)
+    (reduce
+      (fn [rules rule]
+        (update rules (:init-type rule) conjv rule))
+      {})))
 
 (defn prepare-context [rules config]
-  (-> rules
-    (assoc :diagnostics (atom []))
-    (assoc :checked-files (atom []))
-    (assoc :config config)))
+  {:rules rules
+   :diagnostics (atom [])
+   :checked-files (atom #{})
+   :pipeline (make-pipeline)
+   :config config})
 
 (defn get-extension [^File file]
   (let [filename (.getName file)
@@ -330,8 +392,10 @@
              (filter (fn [file-obj]
                        (if excludes
                          (not-any? #(matches % (:file file-obj)) excludes)
-                         true))))]
-    (into [] xf paths)))
+                         true)))
+             (map (fn [file-obj]
+                    (clojure.lang.MapEntry. (str (:file file-obj)) file-obj))))]
+    (into {} xf paths)))
 
 (defn build-result-map
   [ctx files]
@@ -339,7 +403,7 @@
         grouped-diagnostics (group-by (juxt :filename :line :column :rule-name) all-diagnostics)
         filtered-diagnostics (mapv* (comp first val) grouped-diagnostics)
         checked-files (into [] (distinct) @(:checked-files ctx))
-        file-strs (mapv* str files)]
+        file-strs (keys files)]
     {:diagnostics filtered-diagnostics
      :files file-strs
      :checked-files checked-files
@@ -352,8 +416,9 @@
   ([paths config rules]
    (let [rules-by-type (prepare-rules config (or rules {}))
          ctx (prepare-context rules-by-type config)
-         files (resolve-files-from-paths ctx paths)]
-     (check-files! ctx rules-by-type files)
+         files (resolve-files-from-paths ctx paths)
+         ctx (assoc ctx :pending-files files)]
+     (check-files! ctx rules-by-type)
      (build-result-map ctx files))))
 
 (defn run
@@ -372,12 +437,12 @@
       (cond
         exit-message
         (do (when-not (:quiet options) (println exit-message))
-          {:exit (if ok 0 1)})
+            {:exit (if ok 0 1)})
         (empty? paths)
         (do (when-not (:quiet options)
               (println "splint errors:")
               (println "Paths must be provided in a project file (project.clj or deps.edn) or as the final arguments when calling. See --help for details."))
-          {:exit 1})
+            {:exit 1})
         (:auto-gen-config options)
         (let [all-enabled (update-vals @conf/default-config #(assoc % :enabled true))]
           (conf/spit-config (run-impl paths config all-enabled)))
@@ -391,8 +456,8 @@
       (let [data (ex-data ex)]
         (case (:type data)
           :config (do (println "Error reading" (str (:file data)))
-                    (println (ex-message ex))
-                    {:exit 1})
+                      (println (ex-message ex))
+                      {:exit 1})
           ; else
           (throw ex))))))
 
@@ -401,6 +466,6 @@
     (run ["--silent" "--no-parallel"]))
   (prn :heck)
   (do (require '[clj-async-profiler.core :as prof])
-    (prof/profile
-      (run ["--silent" "--no-parallel"]))
-    nil))
+      (prof/profile
+        (run ["--silent" "--no-parallel"]))
+      nil))

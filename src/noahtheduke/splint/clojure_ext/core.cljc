@@ -221,3 +221,6 @@
     (apply vary-meta obj f args)
     obj))
 
+(def conjv
+  "Conj but defaults to vector"
+  (fnil conj []))

@@ -464,8 +464,8 @@
   multiple times, adding type hints to rely on interop, and handles the
   complexities of the pattern DLS.
 
-  Returns a map or `nil`. If the provided pattern uses bindings, the map will
-  have the bindings as keys."
+  The generated function returns a map or `nil`. If the provided pattern uses
+  bindings, the map will have the bindings as keys."
   [pattern]
   (let [form (gensym "form-")
         ctx (gensym "ctx-")

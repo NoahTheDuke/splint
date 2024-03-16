@@ -8,12 +8,12 @@
    [clojure.java.io :as io]
    [clojure.string :as str]
    [noahtheduke.splint.cli :refer [validate-opts]]
-   [noahtheduke.splint.clojure-ext.core :refer [mapv* run!*]]
+   [noahtheduke.splint.clojure-ext.core :refer [mapv*]]
    [noahtheduke.splint.config :as conf]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.parser :refer [parse-file]]
    [noahtheduke.splint.path-matcher :refer [matches]]
-   [noahtheduke.splint.pipeline :refer [make-pipeline queue]]
+   [noahtheduke.splint.pipeline :as p :refer [make-pipeline queue]]
    [noahtheduke.splint.printer :refer [print-results]]
    [noahtheduke.splint.rules :refer [global-rules]]
    [noahtheduke.splint.runner.impl :refer [enqueue-loads]]
@@ -91,12 +91,11 @@
     (fn [acc rule]
       (try
         (if (-> rule :config :enabled)
-          (let [result (check-rule ctx rule form)]
-            (if (nil? result)
-              acc
-              (if (sequential? result)
-                (into acc result)
-                (conj acc result))))
+          (if-let [result (check-rule ctx rule form)]
+            (if (sequential? result)
+              (into acc result)
+              (conj acc result))
+            acc)
           acc)
         (catch Exception ex
           (conj acc (runner-error->diagnostic
@@ -151,7 +150,11 @@
   (let [ctx (assoc ctx :parent-form parent-form)
         [ctx load?] (enqueue-loads ctx form)
         ctx (if load?
-              (parse-and-check-file ctx (:rules ctx))
+              (let [{:keys [ext filename file-str]} ctx]
+                (-> (parse-and-check-file ctx (:rules ctx))
+                  (assoc :ext ext)
+                  (assoc :filename filename)
+                  (assoc :file-str file-str)))
               ctx)
         rules-by-type (update-rules rules-by-type form)
         form-type (simple-type form)]
@@ -179,7 +182,7 @@
         (fn [ctx f] (check-and-recur ctx rules-by-type filename form f))
         ctx
         form)
-      ;else
+      ;; else
       ctx)))
 
 (defn right-ext? [ext rule]
@@ -191,7 +194,7 @@
 (defn right-path? [ctx rule]
   (when rule
     (if-let [excludes (some-> rule :config :excludes)]
-      (when (not-any? #(matches % (:filename ctx)) excludes)
+      (when-not (some #(matches % (:filename ctx)) excludes)
         rule)
       rule)))
 
@@ -238,7 +241,6 @@
               parsed-file)
             rules-by-type)))
       (catch Exception ex
-        (prn ex)
         (let [data (ex-data ex)]
           (if (= :edamame/error (:type data))
             (let [data (-> data
@@ -257,24 +259,19 @@
 
 (defn parse-and-check-file
   [ctx rules-by-type]
-  (let [file-obj (peek (:pipeline ctx))
-        ctx (update ctx :pipeline pop)]
+  (let [file-obj (p/peek (:pipeline ctx))
+        ctx (update ctx :pipeline p/pop)]
     (cond
       ; If the next file is nil but there are pending files, queue the first and recur
       (and (nil? file-obj) (seq (:pending-files ctx)))
       (let [[name next-pending] (first (:pending-files ctx))
-            next-pending (assoc next-pending :from-pending true)
-            ctx (if next-pending
-                  (-> ctx
+            ctx (-> ctx
                     (update :pending-files dissoc name)
-                    (update :pipeline queue next-pending))
-                  ctx)]
-        (if next-pending
-          (parse-and-check-file ctx rules-by-type)
-          ctx))
+                    (update :pipeline queue next-pending))]
+        (recur ctx rules-by-type))
       ; If the given file has been seen, recur
       (and file-obj (contains? @(:checked-files ctx) (:file file-obj)))
-      (parse-and-check-file ctx rules-by-type)
+      (recur ctx rules-by-type)
       ; If the next file exists, dive in
       file-obj
       (parse-and-check-file-impl ctx rules-by-type file-obj)
@@ -282,8 +279,8 @@
       :else
       ctx)))
 
-(defn check-files-parallel [ctx rules-by-type files]
-  #_(pmap* #(parse-and-check-file ctx rules-by-type (slurp-file %)) (vals files)))
+#_(defn check-files-parallel [ctx rules-by-type files]
+    (pmap* #(parse-and-check-file ctx rules-by-type (slurp-file %)) (vals files)))
 
 (defn check-files-serial [ctx rules-by-type]
   (let [pending-files (:pending-files ctx)
@@ -297,11 +294,12 @@
 (defn check-files!
   "Call into the relevant `check-path-X` function, depending on the given config."
   [ctx rules-by-type]
-  (cond
-    (-> ctx :config :parallel)
-    (check-files-parallel ctx rules-by-type (:pending-files ctx))
-    :else
-    (check-files-serial ctx rules-by-type)))
+  (check-files-serial ctx rules-by-type)
+  #_(cond
+      (-> ctx :config :parallel)
+      (check-files-serial ctx rules-by-type)
+      :else
+      (check-files-serial ctx rules-by-type)))
 
 (defn support-clojure-version?
   [config rule]

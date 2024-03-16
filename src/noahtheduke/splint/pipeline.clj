@@ -14,15 +14,26 @@
   (def p (make-pipeline))
   (-> (queue! p 1 2 3)
       (queue! p 4 5 6))
-  ; => 
+  ; =>
   "
+  (:refer-clojure :exclude [peek pop]) 
+  (:require
+   [clojure.core :as cc])
   (:import
-   [clojure.lang IPersistentStack PersistentQueue]))
+   [clojure.lang PersistentQueue]))
 
-(defrecord Pipeline [steps queue]
-  IPersistentStack
-  (peek [_] (or (peek queue) (peek steps)))
-  (pop [_] (->Pipeline (pop (into queue steps)) PersistentQueue/EMPTY)))
+(set! *warn-on-reflection* true)
+
+;; Ideally, this would be an implementation of IPersistentStack.
+;; Regretfully, that doesn't work with babashka, so for now I'm re-implementing them.
+;; At some point, I'll break from babashka, but not right now.
+(defrecord Pipeline [steps queue])
+
+(defn peek [p]
+  (or (cc/peek (:queue p)) (cc/peek (:steps p))))
+
+(defn pop [p]
+  (->Pipeline (cc/pop (into (:queue p) (:steps p))) PersistentQueue/EMPTY))
 
 (defn make-pipeline []
   (->Pipeline PersistentQueue/EMPTY PersistentQueue/EMPTY))

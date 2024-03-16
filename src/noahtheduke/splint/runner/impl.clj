@@ -26,14 +26,16 @@
 
 (defmethod load-impl 'require
   [ctx _ ?args]
-  (let [file-stems (->> ?args
-                     (mapcat #(deps-from-libspec nil (drop-quote %)))
-                     (keep :ns)
-                     (distinct)
-                     (map #(-> (name %)
-                             (str/replace \- \.)
-                             (str ".clj.?$")
-                             (re-pattern))))
+  (let [file-stems (into []
+                     (comp
+                       (mapcat #(deps-from-libspec nil (drop-quote %)))
+                       (keep :ns)
+                       (distinct)
+                       (map #(-> (name %)
+                               (str/replace \- \.)
+                               (str ".clj.?$")
+                               (re-pattern))))
+                     ?args)
         {:keys [pending-files pipeline]} ctx
         filenames (keys pending-files)
         matched-files (into []
@@ -43,20 +45,23 @@
                         file-stems)
         pipeline (apply queue pipeline matched-files)
         pending-files (apply dissoc pending-files matched-files)]
-    (assoc ctx
-      :pending-files pending-files
-      :pipeline pipeline)))
+    (-> ctx
+      (assoc :pending-files pending-files)
+      (assoc :pipeline pipeline))))
 
 (defmethod load-impl 'use
   [ctx _ ?args]
+  (prn :use ?args)
   ctx)
 
 (defmethod load-impl 'in-ns
   [ctx _ ?args]
+  (prn :in-ns ?args)
   ctx)
 
 (defmethod load-impl 'refer
   [ctx _ ?args]
+  (prn :refer ?args)
   ctx)
 
 (defmethod load-impl 'ns
@@ -71,7 +76,7 @@
       ctx)))
 
 (defn loader-macro? [form]
-  ('#{import in-ns ns require use} form))
+  ('#{import in-ns ns refer require use} form))
 
 (def load-pattern
   (pattern '((? ns loader-macro?) ?*args)))

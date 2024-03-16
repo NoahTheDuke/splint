@@ -8,5 +8,13 @@
   "test/noahtheduke/*_test.clj": {
       "type": "test",
       "alternate": "src/noahtheduke/{}.clj"
+  },
+  "src/noahtheduke/*.cljc": {
+      "type": "source",
+      "alternate": "test/noahtheduke/{}_test.cljc"
+  },
+  "test/noahtheduke/*_test.cljc": {
+      "type": "test",
+      "alternate": "src/noahtheduke/{}.cljc"
   }
 }

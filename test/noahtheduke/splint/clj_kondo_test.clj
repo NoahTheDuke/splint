@@ -33,7 +33,7 @@
     lint/thread-macro-one-arg 85
     lint/try-splicing 2
     lint/underscore-in-namespace 1
-    lint/warn-on-reflection 246
+    lint/warn-on-reflection 229
     metrics/fn-length 314
     metrics/parameter-count 48
     naming/conventional-aliases 14
@@ -91,4 +91,4 @@
       (match?
         (m/equals clj-kondo-diagnostics)
         (update-vals diagnostics count)))
-    (expect 1256 (count (:diagnostics results)))))
+    (expect 1239 (count (:diagnostics results)))))

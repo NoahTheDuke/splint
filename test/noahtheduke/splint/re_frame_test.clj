@@ -20,7 +20,7 @@
   '{lint/if-else-nil 2
     lint/thread-macro-one-arg 15
     lint/try-splicing 1
-    lint/warn-on-reflection 6
+    lint/warn-on-reflection 4
     metrics/fn-length 20
     naming/conventional-aliases 2
     naming/predicate 1
@@ -52,4 +52,4 @@
           :diagnostics
           (group-by :rule-name)
           (#(update-vals % count)))))
-    (expect 73 (count (:diagnostics results)))))
+    (expect 71 (count (:diagnostics results)))))

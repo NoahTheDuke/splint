@@ -24,4 +24,10 @@
       :end-col 20
       :filename (io/file "corpus" "arglists.clj")}]
     (io/file "corpus" "arglists.clj")
-    (config)))
+    (config))
+  (expect-match
+    [{:rule-name 'lint/warn-on-reflection}]
+    "(ns example) (+ 1 1)"
+    (config))
+  (expect-match nil "(+ 1 1)" (config))
+  (expect-match nil "(ns) (+ 1 1)" (config)))

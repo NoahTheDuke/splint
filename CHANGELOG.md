@@ -16,6 +16,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Slight change to the patterns, now a final-position `?*` or `?+` will immediately return the rest of the current input instead of accumulating it one-by-one.
 - Reformatted every file to use [Tonsky's Better Clojure formatting](https://tonsky.me/blog/clojurefmt/).
+- `lint/warn-on-reflection` now checks that the file contains a proper `ns` form before issuing a diagnostic.
 
 ## v1.14.0 - 2024-02-19
 

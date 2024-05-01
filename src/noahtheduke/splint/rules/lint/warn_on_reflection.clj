@@ -24,7 +24,7 @@
   (set! *warn-on-reflection* true)
   (defn baz [a b] (+ a b))
   "
-  {:pattern '[(ns (?* ns-args)) ?warn (?* lines)]
+  {:pattern '[(ns (?+ _)) ?warn (?* _)]
    :init-type :file
    :message "*warn-on-reflection* should be immediately after ns declaration."
    :ext :clj

@@ -78,10 +78,11 @@
 (defexpect ^:integration netrunner-test
   (let [netrunner (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "114")
         results (run-impl [{:path netrunner}]
-                  (-> all-enabled-config
-                    (assoc :silent true)
-                    (assoc :parallel false)
-                    (assoc :clojure-version *clojure-version*)))]
+                  {:test-config
+                   (-> all-enabled-config
+                     (assoc :silent true)
+                     (assoc :parallel false)
+                     (assoc :clojure-version *clojure-version*))})]
     (expect
       (match?
         (m/equals netrunner-diagnostics)

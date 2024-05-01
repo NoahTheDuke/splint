@@ -8,6 +8,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - `style/is-eq-order`: Prefer `(is (= 200 status))` over `(is (= status 200))` when writing assertions.
 
+### Added
+
+- `-r`/`--require` cli flag that can be used multiple times and `require` top-level config option that takes a vector of strings. These are loaded with `load-file` at run-time to allow for custom rules to be written and used. (See [#8](https://github.com/NoahTheDuke/splint/issues/8).) This is inherently unsafe, so don't run code you don't know.
+
 ### Changed
 
 - Slight change to the patterns, now a final-position `?*` or `?+` will immediately return the rest of the current input instead of accumulating it one-by-one.

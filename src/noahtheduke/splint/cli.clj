@@ -17,6 +17,10 @@
   [["-o" "--output FMT" "Output format: simple, full, clj-kondo, markdown, json, json-pretty, edn."
     :validate [#{"simple" "full" "clj-kondo" "markdown" "json" "json-pretty" "edn"}
                "Not a valid output format (simple, full, clj-kondo, markdown, json, json-pretty, edn)"]]
+   ["-r" "--require FILE" "Require additional custom rules."
+    :id :required-files
+    :multi true
+    :update-fn (fnil conj [])]
    [nil "--[no-]parallel" "Run splint in parallel. Defaults to true."]
    ["-q" "--quiet" "Print no diagnostics, only summary."]
    ["-s" "--silent" "Don't print suggestions or summary."]

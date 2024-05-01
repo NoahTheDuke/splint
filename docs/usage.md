@@ -2,7 +2,7 @@
 
 ```text
 $ clojure -M:splint --help
-splint v1.10.1
+splint v1.15
 
 Usage:
   splint [options]
@@ -26,7 +26,7 @@ Linting took 485ms, checked 229 files, 10 style warnings
 Pass in any number of files or directories to lint them instead, ignoring the available project files.
 
 ```text
-$ clojure -M:run src/noahtheduke/splint.clj  test/
+$ clojure -M:splint src/noahtheduke/splint.clj test/
 ...
 Linting took 241ms, checked 115 files, 5 style warnings
 ```
@@ -34,6 +34,7 @@ Linting took 241ms, checked 115 files, 5 style warnings
 ## Command-line options
 
 * `-o`, `--output FMT`: Output format: `simple`, `full`, `clj-kondo`, `markdown`, `json`, `json-pretty`. Defaults to `full`.
+* `-r`, `--require FILE`: Require additional custom rules by loading specified files. Can be provided multiple times. (See [Writing a new rule](rules.md#writing-a-new-rule) for further details.)
 * `--[no-]parallel`: Run Splint in parallel. Defaults to `true`.
 * `-q`, `--quiet`: Print no diagnostics, only summary.
 * `-s`, `--silent`: Print no diagnostics or summary.

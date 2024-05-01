@@ -89,3 +89,14 @@
   (expect
     (match? {:paths ["files"]}
       (sut/validate-opts ["--" "files"]))))
+
+(defexpect require-test
+  (expect
+    (match? {:options {:required-files ["a"]}}
+      (sut/validate-opts ["-r" "a"])))
+  (expect
+    (match? {:options {:required-files ["a"]}}
+      (sut/validate-opts ["--require" "a"])))
+  (expect
+    (match? {:options {:required-files ["a" "b"]}}
+      (sut/validate-opts ["--require" "a" "--require" "b"]))))

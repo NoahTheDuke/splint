@@ -246,6 +246,12 @@
     :else
     (check-files-serial ctx rules-by-type files)))
 
+(defn require-files! [config]
+  (doseq [f (:required-files config)]
+    (try (load-file f)
+      (catch java.io.FileNotFoundException _
+        (println "Can't load" f "as it doesn't exist.")))))
+
 (defn support-clojure-version?
   [config rule]
   (if-let [{:keys [major minor incremental]} (:min-clojure-version rule)]
@@ -348,9 +354,11 @@
 
 (defn run-impl
   "Actually perform check."
-  ([paths config] (run-impl paths config (:rules @global-rules)))
-  ([paths config rules]
-   (let [rules-by-type (prepare-rules config (or rules {}))
+  ([paths options] (run-impl paths options nil))
+  ([paths options rules]
+   (require-files! options)
+   (let [config (or (:test-config options) (conf/load-config options))
+         rules-by-type (prepare-rules config (or rules (:rules @global-rules)))
          ctx (prepare-context rules-by-type config)
          files (resolve-files-from-paths ctx paths)]
      (check-files! ctx rules-by-type files)
@@ -366,9 +374,8 @@
                          (io/file "deps.edn") (io/file "project.clj"))
           paths (mapv* #(hash-map :path %)
                   (or (not-empty paths) (:paths project-file)))
-          config (assoc (conf/load-config options)
-                   :clojure-version (or (:clojure-version project-file)
-                                      *clojure-version*))]
+          options (assoc options :clojure-version (or (:clojure-version project-file)
+                                                    *clojure-version*))]
       (cond
         exit-message
         (do (when-not (:quiet options) (println exit-message))
@@ -380,9 +387,9 @@
           {:exit 1})
         (:auto-gen-config options)
         (let [all-enabled (update-vals @conf/default-config #(assoc % :enabled true))]
-          (conf/spit-config (run-impl paths config all-enabled)))
+          (conf/spit-config (run-impl paths options all-enabled)))
         :else
-        (let [results (run-impl paths config)
+        (let [results (run-impl paths options)
               total-time (int (- (System/currentTimeMillis) start-time))
               results (assoc results :total-time total-time)]
           (print-results results)

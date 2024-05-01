@@ -14,6 +14,12 @@ Rules are fairly simple. The call to `defrule` takes a fully qualified name (nam
 
 [`global-rules`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.splint.rules#global-rules
 
+To load them, use the `-r`/`--require` command line arg with `-r path/to/file.clj` or in the config file with `{require ["path/to/file.clj"]}`. The specified files are loaded with `clojure.core/load-file` at run-time. (There is currently no support for loading rules from jars or dependencies.) The rule must be enabled in `.splint.edn` for it to be used, either by rule name (`example/new-rule {:enabled true}`) or by genre (`example {:enabled true}`).
+
+**WARNING**: Unlike other tools, this doesn't use [SCI][SCI]. Loading arbitrary code is inherently unsafe, so don't load code you don't know!!!!!!
+
+[SCI]: https://github.com/babashka/sci
+
 ### Rule name and genre
 
 Rule names should be short descriptions of the problem domain or the preferred solution. Genres are meant to loosely group rules according to their focus.

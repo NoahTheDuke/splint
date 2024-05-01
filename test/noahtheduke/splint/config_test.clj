@@ -18,17 +18,23 @@
   (expect (match? {:parallel true :output "full"}
             (sut/load-config nil)))
   (expect (match? {:output "simple"}
-            (sut/load-config {'output "clj-kondo"}
-              {:output "simple"})))
+            (sut/load-config {'output "clj-kondo"} {:output "simple"})))
   (expect (match? {:parallel false}
             (sut/load-config {'parallel false} nil)))
   (expect (match? {:output "simple"}
             (sut/load-config {'output "simple"} nil))))
 
+(defexpect load-config-required-files-test
+  (expect (match? {:required-files nil}
+            (sut/load-config {} nil)))
+  (expect (match? {:required-files ["a" "b"]}
+            (sut/load-config {:require ["a" "b"]} nil)))
+  (expect (match? {:required-files ["c" "d"]}
+            (sut/load-config {:require ["a" "b"]} {:required-files ["c" "d"]}))))
+
 (defexpect disable-single-rule-test
   (expect (match? {'style/plus-one {:enabled false}}
-            (sut/load-config {'style/plus-one {:enabled false}}
-              nil))))
+            (sut/load-config {'style/plus-one {:enabled false}} nil))))
 
 (defexpect disable-genre-test
   (let [config (update-vals @sut/default-config #(assoc % :enabled true))]

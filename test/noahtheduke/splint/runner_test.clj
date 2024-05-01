@@ -10,7 +10,8 @@
    [noahtheduke.splint.dev :as dev]
    [noahtheduke.splint.rules :refer [global-rules]]
    [noahtheduke.splint.runner :as sut]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [noahtheduke.splint.test-helpers :refer [expect-match print-to-file!
+                                            with-temp-files]]))
 
 (set! *warn-on-reflection* true)
 
@@ -170,3 +171,34 @@
          :file [{:full-name 'lint/warn-on-reflection
                  :config {:enabled true}}]}
         (sut/update-rules rules ^{:splint/disable ['asdf]} [])))))
+
+(defexpect require-files-test
+  (with-temp-files [test-rule "test_rule.clj"
+                    test-file "test_file.clj"]
+    (print-to-file!
+      test-rule
+      "(ns test-rule
+         (:require
+           [noahtheduke.splint.rules :refer [defrule]]))
+
+      (defrule dev/eq-1-1
+        \"docstring\"
+        {:pattern '(= 1 1)
+         :message \"matched\"
+         :replace '(= 2 2)})")
+    (print-to-file! test-file "(= 1 1)")
+    (let [existing-rules @global-rules
+          options {:required-files [(str test-rule)]
+                   :clojure-version *clojure-version*}
+          results (sut/run-impl [test-file] options)]
+      (expect (match? [{:rule-name 'dev/eq-1-1
+                        :form '(= 1 1)
+                        :message "matched"
+                        :alt '(= 2 2)
+                        :filename test-file}]
+                (seq (:diagnostics results))))
+      (expect
+        (match? {:rules {'dev/eq-1-1 {:genre "dev"
+                                      :name "eq-1-1"}}}
+          @global-rules))
+      (reset! global-rules existing-rules))))

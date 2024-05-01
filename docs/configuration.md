@@ -13,7 +13,7 @@ The format of the file is an `edn` map. Keys must be symbols and any rules confi
 
 Some rules have specific options or styles that can be set. These are detailed in the full rule pages.
 
-The following command-line options can be set: `output`, `parallel`, `quiet`, `silent`, and `summary`. `output` requires a string and the rest booleans (as seen above).
+The following command-line options can be set: `output`, `parallel`, `quiet`, `require`, `silent`, and `summary`. `output` requires a string, `require` requires a vector of strings, and the rest booleans (as seen above).
 
 ## Excluding files
 

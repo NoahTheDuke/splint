@@ -60,12 +60,14 @@
         parallel (config 'parallel (config :parallel true))
         summary (config 'summary (config :summary true))
         quiet (config 'quiet (config :quiet false))
-        silent (config 'silent (config :silent false))]
+        silent (config 'silent (config :silent false))
+        required-files (config 'require (config :require))]
     {:output output
      :parallel parallel
      :summary summary
      :quiet quiet
-     :silent silent}))
+     :silent silent
+     :required-files required-files}))
 
 (defn make-rule-config [rule genre-config local-config]
   (let [combined-rule
@@ -88,27 +90,29 @@
 
   If .splint.edn has both `'output` and `:output`, it will use `'output`."
   [default local]
-  (let [;; Select all settings that apply globally
+  (let [default (or default {})
+        ;; Select all settings that apply globally
         global (make-rule-config ('global local {}) nil nil)
         ;; Select whole genres from local config
         whole-genres (select-keys local (map symbol (:genres @global-rules)))
         ;; Select non-opts, non-genres
         local-rules (into {} (filter (comp qualified-symbol? key)) local)
-        ;; For each rule in the defaults:
+        ;; For each loaded rule:
         ;; * Merge (left to right) the default config,
         ;;   the whole genre config, and the local config for that rule.
         ;; * Add the merged rule config into the new config.
-        new-config (->> default
-                     (reduce-kv
-                       (fn [m k v]
-                         (let [genre (symbol (namespace k))
+        new-config (->> (:rules @global-rules)
+                     (keys)
+                     (reduce
+                       (fn [m rule-name]
+                         (let [genre (symbol (namespace rule-name))
                                genre-config (whole-genres genre)
-                               local-config (local-rules k)
+                               local-config (local-rules rule-name)
                                rule-config (make-rule-config
-                                             (assoc v :rule-name k)
+                                             (assoc (default rule-name) :rule-name rule-name)
                                              genre-config
                                              local-config)]
-                           (assoc! m k rule-config)))
+                           (assoc! m rule-name rule-config)))
                        (transient {}))
                      (persistent!))
         new-config (-> {:global global}

@@ -9,7 +9,36 @@
 
 [style guide]: https://guide.clojure.style
 
-## Why?
+## Installation and Usage
+
+More explicit instructions can be found in the [installation][installation] and [usage][usage] pages, but here's a quick rundown:
+
+[installation]: docs/installation.md
+[usage]: docs/usage.md
+
+### Clojure CLI
+
+```clojure
+:aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.15.0"}
+                                org.clojure/clojure {:mvn/version "1.11.1"}}
+                   :main-opts ["-m" "noahtheduke.splint"]}}
+```
+
+Run with `clojure -M:splint [args...]`.
+
+## Leiningen
+
+Add this to `project.clj`:
+
+```clojure
+:profiles {:dev {:dependencies [[io.github.noahtheduke/splint "1.15.0"]
+                                [org.clojure/clojure "1.11.1"]]}}
+:aliases {"splint" ["run" "-m" "noahtheduke.splint"]})
+```
+
+Run with `lein splint [args...]`.
+
+## Rationale
 
 Why another Clojure linter? We have [clj-kondo][clj-kondo], [eastwood][eastwood], and [kibit][kibit], in addition to [clojure-lsp][clojure-lsp]'s capabilities built on top of clj-kondo. I have contributed to most of these, and recently took over maintenance of kibit. However, most of them aren't built to be easily modifiable, and while kibit's rules are simple, the underlying engine (built on [core.logic][core.logic]) is quite slow. This means that adding or updating the various linting rules can be quite frustrating and taxing.
 
@@ -18,9 +47,9 @@ Inspired by [RuboCop][rubocop], I decided to try something new: A "fast enough" 
 [clj-kondo]: https://github.com/clj-kondo/clj-kondo
 [eastwood]: https://github.com/jonase/eastwood
 [kibit]: https://github.com/clj-commons/kibit
-[clojure-lsp]: https://clojure-lsp.io/
+[clojure-lsp]: https://clojure-lsp.io
 [core.logic]: https://github.com/clojure/core.logic
-[rubocop]: https://rubocop.org/
+[rubocop]: https://rubocop.org
 
 ## Non-goals
 

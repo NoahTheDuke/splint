@@ -423,8 +423,8 @@
  style/is-eq-order
  {:description "With `clojure.test/is`, expected value should be first."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.15.0"
+  :updated "1.15.0"}
 
  style/let-do
  {:description "`let` has an implicit `do`."
@@ -579,8 +579,8 @@
  style/prefer-for-with-literals
  {:description "Prefer `(for [item coll] {:a item})` over `(map #(hash-map :a %) coll)`."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.15.0"
+  :updated "1.15.0"}
 
  style/prefer-vary-meta
  {:description "Prefer `vary-meta` to `(with-meta x (assoc (meta x) ...))`."

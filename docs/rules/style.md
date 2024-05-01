@@ -330,6 +330,36 @@ ffirst is succinct and meaningful.
 
 ---
 
+## style/is-eq-order
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 1.15.0        | 1.15.0          |
+
+`clojure.test/is` expects `=`-based assertions to put the expected value first.
+
+This rule uses two checks on the `=` call to determine if it should issue a diagnostic:
+* Is the first argument a symbol or a list with a symbol at the head? (A variable/local or a call.)
+* Is the second argument a nil, boolean, char, number, keyword, or string?
+
+### Examples
+
+```clojure
+; bad
+(is (= status 200))
+(is (= (my-plus 1 2) 3))
+
+; good
+(is (= 200 status))
+(is (= 3 (my-plus 1 2)))
+
+; non-issues
+(is (= (hash-map :a 1) {:a 1}))
+(is (= (hash-set :a 1) #{:a 1}))
+```
+
+---
+
 ## style/let-do
 
 | Enabled by default | Version Added | Version Updated |
@@ -903,6 +933,26 @@ gathered and rendered into a `condp`.
 ### Reference
 
 * https://guide.clojure.style/#condp
+
+---
+
+## style/prefer-for-with-literals
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | 1.15.0        | 1.15.0          |
+
+The core builder functions are helpful when creating an object from an opaque sequence, but are much less readable when used in maps to get around issues with anonymous function syntax peculiarities.
+
+### Examples
+
+```clojure
+; bad
+(map #(hash-map :a 1 :b %) (range 10))
+
+; good
+(for [item (range 10)] {:a 1 :b item})
+```
 
 ---
 

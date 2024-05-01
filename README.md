@@ -37,9 +37,9 @@ $ tokei
 ===============================================================================
  Language            Files        Lines         Code     Comments       Blanks
 ===============================================================================
- Clojure               169       113620       102756         4266         6598
- ClojureC                4         1012          850           36          126
- ClojureScript          48        12666        11649          142          875
+ Clojure               172       122744       111266         4421         7057
+ ClojureC                4         1013          851           36          126
+ ClojureScript          48        14220        13184          142          894
 
 $ time lein kibit
 ...
@@ -49,11 +49,11 @@ sys     0m2.995s
 
 $ time splint .
 ...
-Linting took 4606ms, 749 style warnings
+Linting took 5622ms, checked 223 files, 804 style warnings
 
-real    0m6.891s
-user    0m37.746s
-sys     0m0.419s
+real    0m5.969s
+user    0m47.830s
+sys     0m0.379s
 ```
 
 ## License

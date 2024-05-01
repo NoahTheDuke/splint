@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## 1.15.0 - 2024-05-01
+
 ### New Rules
 
 - `style/is-eq-order`: Prefer `(is (= 200 status))` over `(is (= status 200))` when writing assertions.
@@ -18,6 +20,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Slight change to the patterns, now a final-position `?*` or `?+` will immediately return the rest of the current input instead of accumulating it one-by-one.
 - Reformatted every file to use [Tonsky's Better Clojure formatting](https://tonsky.me/blog/clojurefmt/).
 - `lint/warn-on-reflection` now checks that the file contains a proper `ns` form before issuing a diagnostic.
+- Updated README speed comparison chart.
 
 ## v1.14.0 - 2024-02-19
 

@@ -65,6 +65,7 @@
     style/prefer-clj-math 16
     style/prefer-clj-string 5
     style/prefer-condp 2
+    style/prefer-for-with-literals 1
     style/redundant-let 4
     style/redundant-regex-constructor 9
     style/set-literal-as-fn 24
@@ -90,5 +91,5 @@
           :diagnostics
           (group-by :rule-name)
           (#(update-vals % count)))))
-    (expect 2940 (count (:diagnostics results)))
+    (expect 2941 (count (:diagnostics results)))
     (expect 222 (count (:checked-files results)))))

@@ -40,8 +40,9 @@
 (defmacro expect-match
   ([expected s] `(expect-match ~expected ~s nil))
   ([expected s config]
-   `(let [diagnostics# (check-all ~s ~config)]
-      (expect (~'match? ~expected diagnostics#)))))
+   `(let [diagnostics# (check-all ~s ~config)
+          expected# ~expected]
+      (expect (~'match? expected# diagnostics#)))))
 
 (s/fdef expect-match
   :args (s/cat :expected (s/or :nil nil? :vector #(vector? (drop-quote %)))

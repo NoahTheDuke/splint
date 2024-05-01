@@ -576,6 +576,12 @@
   :updated "1.0"
   :guide-ref "#condp"}
 
+ style/prefer-for-with-literals
+ {:description "Prefer `(for [item coll] {:a item})` over `(map #(hash-map :a %) coll)`."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  style/prefer-vary-meta
  {:description "Prefer `vary-meta` to `(with-meta x (assoc (meta x) ...))`."
   :enabled true

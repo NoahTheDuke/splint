@@ -7,6 +7,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### New Rules
 
 - `style/is-eq-order`: Prefer `(is (= 200 status))` over `(is (= status 200))` when writing assertions.
+- `style/prefer-for-with-literals`: Prefer `(for [item coll] {:a 1 :b item})` over `(map #(hash-map :a 1 :b %) coll)`. (See [#10](https://github.com/NoahTheDuke/splint/issues/10).)
 
 ### Added
 

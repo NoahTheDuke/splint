@@ -8,8 +8,14 @@
 
 (set! *warn-on-reflection* true)
 
+(defn assoc? [sym]
+  (and (symbol? sym)
+    (.equals "assoc" (name sym))))
+
 (defn not-assoc? [sym]
-  (not= 'assoc sym))
+  (if (symbol? sym)
+    (not (#{"assoc" "or"} (name sym)))
+    true))
 
 (defrule lint/assoc-fn
   "`assoc`-ing an update with the same key is hard to read. `update` is known and
@@ -25,8 +31,8 @@
   ; good
   (update coll :a + 5)
   "
-  {:patterns ['(assoc ?coll ?key ((? fn not-assoc?) (?key ?coll) ?*args))
-              '(assoc ?coll ?key ((? fn not-assoc?) (?coll ?key) ?*args))
-              '(assoc ?coll ?key ((? fn not-assoc?) (get ?coll ?key) ?*args))]
+  {:patterns ['((? _ assoc?) ?coll ?key ((? fn not-assoc?) (?key ?coll) ?*args))
+              '((? _ assoc?) ?coll ?key ((? fn not-assoc?) (?coll ?key) ?*args))
+              '((? _ assoc?) ?coll ?key ((? fn not-assoc?) (get ?coll ?key) ?*args))]
    :message "Use `update` instead of recreating it."
    :replace '(update ?coll ?key ?fn ?args)})

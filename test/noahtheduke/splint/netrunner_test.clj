@@ -17,7 +17,7 @@
   (update-vals @default-config #(assoc % :enabled true)))
 
 (def netrunner-diagnostics
-  '{lint/assoc-fn 4
+  '{lint/assoc-fn 3
     lint/fn-wrapper 37
     lint/if-else-nil 14
     lint/if-let-else-nil 1
@@ -91,5 +91,5 @@
           :diagnostics
           (group-by :rule-name)
           (#(update-vals % count)))))
-    (expect 2941 (count (:diagnostics results)))
+    (expect 2940 (count (:diagnostics results)))
     (expect 222 (count (:checked-files results)))))

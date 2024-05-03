@@ -15,6 +15,10 @@
   (expect-match
     '[{:alt (update coll :k f arg)}]
     "(assoc coll :k (f (:k coll) arg))"
+    (config))
+  (expect-match
+    '[{:alt (update coll :k f arg)}]
+    "(clojure.core/assoc coll :k (f (:k coll) arg))"
     (config)))
 
 (deftest assoc-fn-coll-key-test
@@ -29,4 +33,15 @@
       :message "Use `update` instead of recreating it."
       :alt '(update coll :k f arg1 arg2 arg3)}]
     "(assoc coll :k (f (get coll :k) arg1 arg2 arg3))"
+    (config)))
+
+(deftest assoc-fn-bad-match-test
+  (expect-match
+    nil
+    "(assoc coll :k (assoc (:k coll) arg))"
+    (config))
+  ;; https://github.com/NoahTheDuke/splint/issues/15
+  (expect-match
+    nil
+    "(assoc x :a (or (:a x) y))"
     (config)))

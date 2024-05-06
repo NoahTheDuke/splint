@@ -7,10 +7,12 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Changed
 
 - Updated all rules examples to use "avoid" and "prefer" instead of "bad" and "good". This aligns closer with Splint's perspective on the issues found.
+- Updated configuration docs to be more explicit about enabling and disabling rules and the use of `global`. (See [#11](https://github.com/NoahTheDuke/splint/issues/11) and [#12](https://github.com/NoahTheDuke/splint/issues/12))
 
 ### Fixed
 
 - False positive in `lint/assoc-fn` when `f` is a macro. Covered `or` explicitly, no good generalized solution at the moment. (See [#15](https://github.com/NoahTheDuke/splint/issues/15).)
+- `--print-config` properly includes the genre of printed rules.
 
 ## 1.15.0 - 2024-05-01
 

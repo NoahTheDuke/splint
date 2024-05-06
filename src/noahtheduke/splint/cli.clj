@@ -67,7 +67,7 @@
                  ; else
                  "Something has gone wrong")
         result (into (sorted-map)
-                 (update-keys (pick-visible result) (comp symbol name)))]
+                 (update-keys (pick-visible result) symbol))]
     {:exit-message
      (format "%s%s%s:\n%s"
        (if (:config options)

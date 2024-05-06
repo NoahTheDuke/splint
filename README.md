@@ -11,10 +11,11 @@
 
 ## Installation and Usage
 
-More explicit instructions can be found in the [installation][installation] and [usage][usage] pages, but here's a quick rundown:
+More explicit instructions can be found in the [installation][installation], [usage][usage], and [configuration][configuration] pages, but here's a quick rundown:
 
 [installation]: docs/installation.md
 [usage]: docs/usage.md
+[configuration]: docs/configuration.md
 
 ### Clojure CLI
 

@@ -44,18 +44,21 @@ test-all *args:
     clojure -M:gen-docs
 
 today := `date +%F`
+current_version := `cat resources/SPLINT_VERSION | xargs`
 
 # Set version, change all instances of <<next>> to version
 set-version version:
     echo '{{version}}' > resources/SPLINT_VERSION
     fd '.(clj|edn|md)' . -x sd '<<next>>' '{{version}}' {}
+    sd '{{current_version}}' '{{version}}' README.md
+    sd '{{current_version}}' '{{version}}' docs/installation.md
     sd '## Unreleased' '## Unreleased\n\n## {{version}} - {{today}}' CHANGELOG.md
 
 @clojars:
     env CLOJARS_USERNAME='noahtheduke' CLOJARS_PASSWORD=`cat ../clojars.txt` clojure -T:build deploy
 
 # Builds the uberjar, builds the jar, sends the jar to clojars
-@deploy version:
+@release version:
     echo 'Running tests'
     just test-all
     echo 'Setting new version {{version}}'

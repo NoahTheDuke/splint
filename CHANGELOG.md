@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## 1.15.1 - 2024-05-06
+
 ### Changed
 
 - Updated all rules examples to use "avoid" and "prefer" instead of "bad" and "good". This aligns closer with Splint's perspective on the issues found.

@@ -22,16 +22,16 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (fn [num] (even? num))
 
-  ; good
+  ; prefer
   even?
 
-  ; bad
+  ; avoid
   (let [f (fn [num] (even? num))] ...)
 
-  ; good
+  ; prefer
   (let [f even?] ...)
   "
   {:patterns ['((? _ fn??) [?arg] (?fun ?arg))

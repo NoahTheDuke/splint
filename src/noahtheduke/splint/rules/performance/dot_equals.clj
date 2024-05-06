@@ -18,10 +18,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (= \"foo\" s)
 
-  ; good
+  ; prefer
   (.equals \"foo\" s)
   (String/equals \"foo\" s)
   "

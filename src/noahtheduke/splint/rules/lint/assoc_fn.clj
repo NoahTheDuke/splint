@@ -23,12 +23,12 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (assoc coll :a (+ (:a coll) 5))
   (assoc coll :a (+ (coll :a) 5))
   (assoc coll :a (+ (get coll :a) 5))
 
-  ; good
+  ; prefer
   (update coll :a + 5)
   "
   {:patterns ['((? _ assoc?) ?coll ?key ((? fn not-assoc?) (?key ?coll) ?*args))

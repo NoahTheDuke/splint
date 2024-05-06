@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (apply concat (apply map x y))
 
-  ; good
+  ; prefer
   (mapcat x y)
   "
   {:pattern '(apply concat (apply map ?x ?y))

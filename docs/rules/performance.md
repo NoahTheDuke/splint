@@ -12,10 +12,10 @@ relying on multiple `assoc` invocations.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (assoc m :k1 1 :k2 2 :k3 3)
 
-; good
+; prefer
 (-> m
     (assoc :k1 1)
     (assoc :k2 2)
@@ -35,7 +35,7 @@ Avoid use of `satisfies?` as it is extremely slow. Restructure your code to rely
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (satisfies? Foo :bar)
 ```
 
@@ -60,10 +60,10 @@ If `lint/prefer-method-values` is enabled, then the suggestion will use that syn
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (= "foo" s)
 
-; good
+; prefer
 (.equals "foo" s)
 (String/equals "foo" s)
 ```
@@ -81,10 +81,10 @@ If `lint/prefer-method-values` is enabled, then the suggestion will use that syn
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (get-in m [:some-key1 :some-key2 :some-key3])
 
-; good
+; prefer
 (-> m :some-key1 :some-key2 :some-key3)
 ```
 
@@ -101,10 +101,10 @@ If `lint/prefer-method-values` is enabled, then the suggestion will use that syn
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (get m :some-key)
 
-; good
+; prefer
 (:some-key m)
 ```
 
@@ -123,10 +123,10 @@ efficiently applied in between.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (into [] (map inc (range 100)))
 
-; good
+; prefer
 (into [] (map inc) (range 100))
 ```
 
@@ -153,10 +153,10 @@ consistent.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (merge m {:a 1 :b 2 :c 3})
 
-; good
+; prefer
 (assoc m :a 1 :b 2 :c 3)
 ```
 

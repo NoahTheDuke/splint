@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (apply str (reverse x))
 
-  ; good
+  ; prefer
   (clojure.string/reverse x)
   "
   {:pattern '(apply str (reverse ?x))

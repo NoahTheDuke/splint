@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (take 5 (repeatedly (range 10))
 
-  ; good
+  ; prefer
   (repeatedly 5 (range 10))
   "
   {:pattern '(take ?n (repeatedly ?coll))

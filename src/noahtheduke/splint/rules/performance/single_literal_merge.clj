@@ -37,10 +37,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (merge m {:a 1 :b 2 :c 3})
 
-  ; good
+  ; prefer
   (assoc m :a 1 :b 2 :c 3)
   "
   {:pattern '(merge ?given (? literal map?))

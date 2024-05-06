@@ -15,10 +15,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (dorun (map println (range 10)))
 
-  ; good
+  ; prefer
   (run! println (range 10))
   "
   {:pattern '(dorun (map ?fn ?coll))

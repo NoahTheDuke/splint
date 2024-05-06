@@ -18,10 +18,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (do coll)
 
-  ; good
+  ; prefer
   coll
 
   ; skipped

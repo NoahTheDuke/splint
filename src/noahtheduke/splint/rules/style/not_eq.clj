@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (not (= num1 num2))
 
-  ; good
+  ; prefer
   (not= num1 num2)
   "
   {:pattern '(not (= ?+args))

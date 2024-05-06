@@ -20,10 +20,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (defrecord foo [a b c])
 
-  ; good
+  ; prefer
   (defrecord Foo [a b c])
   "
   {:pattern '(defrecord (? record-name lower-case-name?) ?*args)

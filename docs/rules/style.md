@@ -11,10 +11,10 @@ Check for round-about `clojure.string/join`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (apply str x)
 
-; good
+; prefer
 (clojure.string/join x)
 ```
 
@@ -31,10 +31,10 @@ Check for round-about `clojure.string/join`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (apply str (interpose "," x))
 
-; good
+; prefer
 (clojure.string/join "," x)
 ```
 
@@ -51,10 +51,10 @@ Check for round-about `clojure.string/reverse`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (apply str (reverse x))
 
-; good
+; prefer
 (clojure.string/reverse x)
 ```
 
@@ -71,12 +71,12 @@ Layering `assoc` calls are hard to read. `assoc-in` is known and idiomatic.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (assoc coll :key1 (assoc (:key2 coll) :key2 new-val))
 (assoc coll :key1 (assoc (coll :key2) :key2 new-val))
 (assoc coll :key1 (assoc (get coll :key2) :key2 new-val))
 
-; good
+; prefer
 (assoc-in coll [:key1 :key2] new-val)
 ```
 
@@ -93,13 +93,13 @@ It's nice when the default branch is consistent.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (cond
   (< 10 num) (println 10)
   (< 5 num) (println 5)
   true (println 0))
 
-; good
+; prefer
 (cond
   (< 10 num) (println 10)
   (< 5 num) (println 5)
@@ -123,10 +123,10 @@ It's nice when the default branch is consistent.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (conj [] :a b {:c 1})
 
-; good
+; prefer
 (vector :a b {:c 1})
 ```
 
@@ -143,21 +143,21 @@ It's nice when the default branch is consistent.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (def check-inclusion
   (let [allowed #{:a :b :c}]
     (fn [i] (contains? allowed i))))
 
-; good
+; prefer
 (let [allowed #{:a :b :c}]
   (defn check-inclusion [i]
     (contains? allowed i)))
 
-; bad
+; avoid
 (def some-func
   (fn [i] (+ i 100)))
 
-; good
+; prefer
 (defn some-func [i]
   (+ i 100))
 ```
@@ -175,11 +175,11 @@ It's nice when the default branch is consistent.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (= false x)
 (= x false)
 
-; good
+; prefer
 (false? x)
 ```
 
@@ -196,11 +196,11 @@ It's nice when the default branch is consistent.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (= nil x)
 (= x nil)
 
-; good
+; prefer
 (nil? x)
 ```
 
@@ -217,11 +217,11 @@ It's nice when the default branch is consistent.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (= true x)
 (= x true)
 
-; good
+; prefer
 (true? x)
 ```
 
@@ -238,13 +238,13 @@ It's nice when the default branch is consistent.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (= 0 num)
 (= num 0)
 (== 0 num)
 (== num 0)
 
-; good
+; prefer
 (zero? num)
 ```
 
@@ -261,10 +261,10 @@ Check for `(filter (complement pred) coll)`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (filter (complement even?) coll)
 
-; good
+; prefer
 (remove even? coll)
 ```
 
@@ -281,10 +281,10 @@ filterv is preferable for using transients.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (vec (filter pred coll))
 
-; good
+; prefer
 (filterv pred coll)
 ```
 
@@ -301,10 +301,10 @@ ffirst is succinct and meaningful.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (first (first coll))
 
-; good
+; prefer
 (ffirst coll)
 ```
 
@@ -321,10 +321,10 @@ ffirst is succinct and meaningful.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (first (next coll))
 
-; good
+; prefer
 (fnext coll)
 ```
 
@@ -345,11 +345,11 @@ This rule uses two checks on the `=` call to determine if it should issue a diag
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (is (= status 200))
 (is (= (my-plus 1 2) 3))
 
-; good
+; prefer
 (is (= 200 status))
 (is (= 3 (my-plus 1 2)))
 
@@ -371,10 +371,10 @@ This rule uses two checks on the `=` call to determine if it should issue a diag
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (let [a 1 b 2] (do (println a) (println b)))
 
-; good
+; prefer
 (let [a 1 b 2] (println a) (println b))
 ```
 
@@ -391,10 +391,10 @@ Check for `(apply concat (apply map x y))`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (apply concat (apply map x y))
 
-; good
+; prefer
 (mapcat x y)
 ```
 
@@ -411,11 +411,11 @@ Check for `(apply concat (map x y z))`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (apply concat (map x y))
 (apply concat (map x y z))
 
-; good
+; prefer
 (mapcat x y)
 (mapcat x y z)
 ```
@@ -433,10 +433,10 @@ Checks for simple -1 that should use `clojure.core/dec`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (- x 1)
 
-; good
+; prefer
 (dec x)
 ```
 
@@ -453,10 +453,10 @@ Checks for x - 0.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (- x 0)
 
-; good
+; prefer
 x
 ```
 
@@ -473,13 +473,13 @@ Sort the arities of a function from fewest to most arguments.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (defn foo
   ([x] (foo x 1))
   ([x y & more] (reduce foo (+ x y) more))
   ([x y] (+ x y)))
 
-; good
+; prefer
 (defn foo
   ([x] (foo x 1))
   ([x y] (+ x y))
@@ -503,11 +503,11 @@ Checks for (* x 1).
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (* x 1)
 (* 1 x)
 
-; good
+; prefer
 x
 ```
 
@@ -524,11 +524,11 @@ Checks for (* x 0).
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (* x 0)
 (* 0 x)
 
-; good
+; prefer
 0
 ```
 
@@ -545,11 +545,11 @@ Checks for (* x 0).
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (< num 0)
 (> 0 num)
 
-; good
+; prefer
 (neg? num)
 ```
 
@@ -566,11 +566,11 @@ Checks for simple nested additions.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (+ x (+ y z))
 (+ x (+ y z a))
 
-; good
+; prefer
 (+ x y z)
 (+ x y z a)
 ```
@@ -588,11 +588,11 @@ Checks for simple nested multiply.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (* x (* y z))
 (* x (* y z a))
 
-; good
+; prefer
 (* x y z)
 (* x y z a)
 ```
@@ -610,10 +610,10 @@ Checks for simple nested multiply.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (new java.util.ArrayList 100)
 
-; good
+; prefer
 (java.util.ArrayList. 100)
 ```
 
@@ -630,10 +630,10 @@ nfirst is succinct and meaningful.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (next (first coll))
 
-; good
+; prefer
 (nfirst coll)
 ```
 
@@ -650,10 +650,10 @@ nnext is succinct and meaningful.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (next (next coll))
 
-; good
+; prefer
 (nnext coll)
 ```
 
@@ -670,10 +670,10 @@ nnext is succinct and meaningful.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (not (= num1 num2))
 
-; good
+; prefer
 (not= num1 num2)
 ```
 
@@ -694,10 +694,10 @@ nnext is succinct and meaningful.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (not (nil? x))
 
-; good
+; prefer
 (some? x)
 ```
 
@@ -714,10 +714,10 @@ not-any? is succinct and meaningful.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (not (some even? coll))
 
-; good
+; prefer
 (not-any? even? coll)
 ```
 
@@ -734,11 +734,11 @@ Checks for simple +1 that should use `clojure.core/inc`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (+ x 1)
 (+ 1 x)
 
-; good
+; prefer
 (inc x)
 ```
 
@@ -755,11 +755,11 @@ Checks for x + 0.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (+ x 0)
 (+ 0 x)
 
-; good
+; prefer
 x
 ```
 
@@ -776,11 +776,11 @@ x
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (< 0 num)
 (> num 0)
 
-; good
+; prefer
 (pos? num)
 ```
 
@@ -797,11 +797,11 @@ Use `boolean` if you must return `true` or `false` from an expression.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (if some-val true false)
 (if (some-func) true false)
 
-; good
+; prefer
 (boolean some-val)
 (boolean (some-func))
 ```
@@ -825,11 +825,11 @@ Prefer clojure.math to interop.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 Math/PI
 (Math/atan 45)
 
-; good
+; prefer
 clojure.math/PI
 (clojure.math/atan 45)
 ```
@@ -862,10 +862,10 @@ Prefer clojure.string to interop.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (.toUpperCase "hello world")
 
-; good
+; prefer
 (clojure.string/upper-case "hello world")
 ```
 
@@ -901,28 +901,28 @@ gathered and rendered into a `condp`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (cond
   (= 1 x) :one
   (= 2 x) :two
   (= 3 x) :three
   (= 4 x) :four)
 
-; good
+; prefer
 (condp = x
   1 :one
   2 :two
   3 :three
   4 :four)
 
-; bad
+; avoid
 (cond
   (= 1 x) :one
   (= 2 x) :two
   (= 3 x) :three
   :else :big)
 
-; good
+; prefer
 (condp = x
   1 :one
   2 :two
@@ -947,10 +947,10 @@ The core builder functions are helpful when creating an object from an opaque se
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (map #(hash-map :a 1 :b %) (range 10))
 
-; good
+; prefer
 (for [item (range 10)] {:a 1 :b item})
 ```
 
@@ -967,10 +967,10 @@ The core builder functions are helpful when creating an object from an opaque se
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (with-meta x (assoc (meta x) :filename filename))
 
-; good
+; prefer
 (vary-meta x assoc :filename filename)
 ```
 
@@ -994,11 +994,11 @@ generally not what is expected when calling `str` on something.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (reduce str x)
 (reduce str "" x)
 
-; good
+; prefer
 (clojure.string/join x)
 ```
 
@@ -1015,7 +1015,7 @@ Directly nested lets can be merged into a single let block.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (let [a 1]
   (let [b 2]
     (println a b)))
@@ -1038,10 +1038,10 @@ Clojure regex literals (#"") are passed to `java.util.regex.Pattern/compile` at 
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (re-pattern #".*")
 
-; good
+; prefer
 #".*"
 ```
 
@@ -1060,10 +1060,10 @@ as [[case]] and their meaning is less clear at first glance.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (#{'a 'b 'c} elem)
 
-; good
+; prefer
 (case elem (a b c) elem nil)
 ```
 
@@ -1081,10 +1081,10 @@ just call `assoc` directly instead for performance and readability improvements.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (assoc-in coll [:k] 10)
 
-; good
+; prefer
 (assoc coll :k 10)
 ```
 
@@ -1101,10 +1101,10 @@ Convert `(.toString)` to `(str)`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (.toString x)
 
-; good
+; prefer
 (str x)
 ```
 
@@ -1121,11 +1121,11 @@ Convert `(.toString)` to `(str)`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (for [item items]
   (f item))
 
-; good
+; prefer
 (map f items)
 ```
 
@@ -1147,10 +1147,10 @@ and idiomatic.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (update-in coll [:a :b] assoc 5)
 
-; good
+; prefer
 (assoc-in coll [:a :b] 5)
 ```
 
@@ -1167,10 +1167,10 @@ A single item in a `do` is a no-op. However, it is sometimes necessary to wrap e
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (do coll)
 
-; good
+; prefer
 coll
 
 ; skipped
@@ -1191,10 +1191,10 @@ coll
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (when x (do (println :a) (println :b) :c))
 
-; good
+; prefer
 (when x (println :a) (println :b) :c)
 ```
 
@@ -1211,10 +1211,10 @@ coll
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (when (not x) :a :b :c)
 
-; good
+; prefer
 (when-not x :a :b :c)
 ```
 
@@ -1231,10 +1231,10 @@ coll
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (when-not x (do (println :a) (println :b) :c))
 
-; good
+; prefer
 (when-not x (println :a) (println :b) :c)
 ```
 
@@ -1252,10 +1252,10 @@ coll
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (when-not (empty? ?x) &&. ?y)
 
-; good
+; prefer
 (when (seq ?x) &&. ?y)
 ```
 
@@ -1272,9 +1272,9 @@ Two `not`s cancel each other out.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (when-not (not x) y z)
 
-; good
+; prefer
 (when x y z)
 ```

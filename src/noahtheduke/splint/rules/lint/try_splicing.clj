@@ -15,10 +15,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   `(try ~@body (finally :true))
 
-  ; good
+  ; prefer
   `(try (do ~@body) (finally :true))
   "
   {:pattern '(try (splint/unquote-splicing ?body) ?*args)

@@ -14,10 +14,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (when-not (empty? ?x) &&. ?y)
 
-  ; good
+  ; prefer
   (when (seq ?x) &&. ?y)
   "
   {:pattern '(when-not (empty? ?x) ?*y)

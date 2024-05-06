@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (loop [] (when (some-func) (println 1) (println 2) (recur)))
 
-  ; good
+  ; prefer
   (while (some-func) (println 1) (println 2) (recur))
   "
   {:pattern '(loop [] (when ?test ?*exprs (recur)))

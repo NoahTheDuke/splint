@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (- x 0)
 
-  ; good
+  ; prefer
   x
   "
   {:pattern '(- ?x 0)

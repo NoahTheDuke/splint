@@ -31,10 +31,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (map #(hash-map :a 1 :b %) (range 10))
 
-  ; good
+  ; prefer
   (for [item (range 10)] {:a 1 :b item})
   "
   {:pattern '(map ((? _ fn??) (?? _ symbol?) [?arg]

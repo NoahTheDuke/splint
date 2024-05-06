@@ -14,10 +14,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (let [result (some-func)] (if result (do-stuff result) (other-stuff)))
 
-  ; good
+  ; prefer
   (if-let [result (some-func)] (do-stuff result) (other-stuff))
   "
   {:pattern '(let [?result ?given] (if ?result ?truthy ?falsy))

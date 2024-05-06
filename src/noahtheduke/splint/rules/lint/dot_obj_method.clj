@@ -22,10 +22,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (. obj method args)
 
-  ; good
+  ; prefer
   (.method obj args)
   "
   {:pattern '(. ?obj (? method symbol-not-class?) ?*args)

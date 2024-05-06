@@ -14,7 +14,7 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (satisfies? Foo :bar)
   "
   {:pattern '(satisfies? ?protocol ?obj)

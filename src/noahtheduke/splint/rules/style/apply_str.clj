@@ -18,10 +18,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (apply str x)
 
-  ; good
+  ; prefer
   (clojure.string/join x)
   "
   {:pattern '(apply str (? coll not-special?))

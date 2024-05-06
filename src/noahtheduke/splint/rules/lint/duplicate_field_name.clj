@@ -15,10 +15,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (defrecord Foo [a b a])
 
-  ; good
+  ; prefer
   (defrecord Foo [a b c])
   "
   {:pattern '(defrecord ?name (? fields vector?) ?*body)

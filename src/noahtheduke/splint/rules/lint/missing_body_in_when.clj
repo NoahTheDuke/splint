@@ -14,11 +14,11 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (when true)
   (when (some-func))
 
-  ; good
+  ; prefer
   (when true (do-stuff))
   (when (some-func) (do-stuff))
   "

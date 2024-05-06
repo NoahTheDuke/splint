@@ -20,10 +20,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (assoc-in coll [:k] 10)
 
-  ; good
+  ; prefer
   (assoc coll :k 10)
   "
   {:pattern '((? f multi->single) ?coll [?key] ?*vals)

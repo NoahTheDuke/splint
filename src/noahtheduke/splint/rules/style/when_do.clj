@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (when x (do (println :a) (println :b) :c))
 
-  ; good
+  ; prefer
   (when x (println :a) (println :b) :c)
   "
   {:pattern '(when ?x (do ?*y))

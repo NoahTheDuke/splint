@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (when-not (not x) y z)
 
-  ; good
+  ; prefer
   (when x y z)
   "
   {:pattern '(when-not (not ?x) ?*y)

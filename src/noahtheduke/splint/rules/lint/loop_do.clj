@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (loop [] (do (println 1) (println 2)))
 
-  ; good
+  ; prefer
   (loop [] (println 1) (println 2))
   "
   {:pattern '(loop ?binding (do ?*exprs))

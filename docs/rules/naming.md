@@ -11,10 +11,10 @@ Through community and core practices over the years, various core libraries have
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (:require [clojure.string :as string])
 
-; good
+; prefer
 (:require [clojure.string :as str])
 ```
 
@@ -37,10 +37,10 @@ Will only warn when there is no `-` before the `-to-`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (defn f-to-c ...)
 
-; good
+; prefer
 (defn f->c ...)
 (defn expect-f-to-c ...)
 ```
@@ -62,11 +62,11 @@ Use lisp-case for function and variable names. (Replacement is generated with `c
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (def someVar ...)
 (def some_fun ...)
 
-; good
+; prefer
 (def some-var ...)
 (defn some-fun ...)
 ```
@@ -93,11 +93,11 @@ a 'p' (such as `map`).
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (defn palindrome-p ...)
 (defn is-palindrome ...)
 
-; good
+; prefer
 (defn palindrome? ...)
 ```
 
@@ -118,10 +118,10 @@ Records should use PascalCase.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (defrecord foo [a b c])
 
-; good
+; prefer
 (defrecord Foo [a b c])
 ```
 
@@ -142,10 +142,10 @@ Namespaces exist to disambiguate names. Using a single segment namespace puts yo
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (ns simple)
 
-; good
+; prefer
 (ns noahtheduke.simple)
 ```
 

@@ -39,16 +39,16 @@
 
   Examples:
 
-  ; bad (chosen style :both or :missing)
+  ; avoid (chosen style :both or :missing)
   (java.io.File/mkdir (clojure.java.io/file \"a\"))
 
-  ; bad (chosen style :both or :wildcard)
+  ; avoid (chosen style :both or :wildcard)
   (^[_ _] java.io.File/createTempFile \"abc\" \"b\")
 
-  ; good (chosen style :both or :missing)
+  ; prefer (chosen style :both or :missing)
   (^[] java.io.File/mkdir (clojure.java.io/file \"a\"))
 
-  ; good (chosen style :both or :wildcard (default))
+  ; prefer (chosen style :both or :wildcard (default))
   (^[String String] java.io.File/createTempFile \"abc\" \"b\")
   "
   {:pattern '(? ?sym interop?)

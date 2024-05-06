@@ -21,10 +21,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (defn f-to-c ...)
 
-  ; good
+  ; prefer
   (defn f->c ...)
   (defn expect-f-to-c ...)
   "

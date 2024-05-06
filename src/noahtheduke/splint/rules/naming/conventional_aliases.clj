@@ -133,10 +133,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (:require [clojure.string :as string])
 
-  ; good
+  ; prefer
   (:require [clojure.string :as str])
   "
   {:pattern '(:require ?*args)

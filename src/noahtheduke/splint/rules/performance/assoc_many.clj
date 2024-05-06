@@ -44,10 +44,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (assoc m :k1 1 :k2 2 :k3 3)
 
-  ; good
+  ; prefer
   (-> m
       (assoc :k1 1)
       (assoc :k2 2)

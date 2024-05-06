@@ -80,21 +80,21 @@ Functions with multiple arities will have each arity checked.
 
 ```clojure
 ;; :positional style (default)
-; bad
+; avoid
 (defn example [a b c d e] ...)
 (defn example ([a b c d e] ...) ([a b c d e f g] ...))
 (defn example [a b c d e & args] ...)
 
-; good
+; prefer
 (defn example [a b c d] ...)
 (defn example ([a b c] ...) ([a b c e] ...))
 (defn example [a b c d & args] ...)
 
 ;; :include-rest style
-; bad
+; avoid
 (defn example [a b c d & args] ...)
 
-; good
+; prefer
 (defn example [a b c & args] ...)
 ```
 

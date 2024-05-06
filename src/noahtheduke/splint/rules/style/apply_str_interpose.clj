@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (apply str (interpose \",\" x))
 
-  ; good
+  ; prefer
   (clojure.string/join \",\" x)
   "
   {:pattern '(apply str (interpose ?x ?y))

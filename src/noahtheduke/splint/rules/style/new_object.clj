@@ -14,10 +14,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (new java.util.ArrayList 100)
 
-  ; good
+  ; prefer
   (java.util.ArrayList. 100)
   "
   {:pattern '(new ?class ?*args)

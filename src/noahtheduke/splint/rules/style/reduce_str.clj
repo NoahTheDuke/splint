@@ -23,11 +23,11 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (reduce str x)
   (reduce str \"\" x)
 
-  ; good
+  ; prefer
   (clojure.string/join x)
   "
   {:pattern '(reduce str (?? _ str-empty?) ?coll)

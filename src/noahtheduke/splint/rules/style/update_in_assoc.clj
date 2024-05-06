@@ -14,10 +14,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (update-in coll [:a :b] assoc 5)
 
-  ; good
+  ; prefer
   (assoc-in coll [:a :b] 5)
   "
   {:pattern '(update-in ?coll ?keys assoc ?val)

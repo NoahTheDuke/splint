@@ -16,13 +16,13 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (= 0 num)
   (= num 0)
   (== 0 num)
   (== num 0)
 
-  ; good
+  ; prefer
   (zero? num)
   "
   {:patterns ['((? _ eq?) 0 ?x)

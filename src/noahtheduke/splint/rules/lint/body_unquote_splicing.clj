@@ -30,10 +30,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   `(binding [max mymax] ~@body)
 
-  ; good
+  ; prefer
   `(binding [max mymax] (let [res# (do ~@body)] res#))
   "
   {:patterns ['((? f only-body) (splint/unquote-splicing (? body symbol?)))

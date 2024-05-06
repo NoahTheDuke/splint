@@ -20,10 +20,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (ns simple)
 
-  ; good
+  ; prefer
   (ns noahtheduke.simple)
   "
   {:pattern '(ns (? ns single-segment-ns?) ?*args)

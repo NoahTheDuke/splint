@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (.toString x)
 
-  ; good
+  ; prefer
   (str x)
   "
   {:pattern '((?| _ [.toString String/toString]) ?x)

@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (not (some even? coll))
 
-  ; good
+  ; prefer
   (not-any? even? coll)
   "
   {:pattern '(not (some ?pred ?coll))

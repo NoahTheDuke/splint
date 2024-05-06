@@ -13,11 +13,11 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (if some-val true false)
   (if (some-func) true false)
 
-  ; good
+  ; prefer
   (boolean some-val)
   (boolean (some-func))"
   {:pattern '(if ?test-expr true false)

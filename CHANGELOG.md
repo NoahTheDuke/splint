@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Changed
+
+- Updated all rules examples to use "avoid" and "prefer" instead of "bad" and "good". This aligns closer with Splint's perspective on the issues found.
+
 ### Fixed
 
 - False positive in `lint/assoc-fn` when `f` is a macro. Covered `or` explicitly, no good generalized solution at the moment. (See [#15](https://github.com/NoahTheDuke/splint/issues/15).)

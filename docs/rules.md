@@ -35,22 +35,42 @@ For example, "[How to ns]" is a popular article about how to structure `ns` form
 [How to ns]: https://stuartsierra.com/2016/clojure-how-to-ns.html
 [Alessandra Sierra]: https://www.lambdasierra.com/2022/hello
 
-Examples have a specific format they must follow. `Examples:` must be surrounded by blank lines, and then alternating `# bad` and `# good` lines, with clojure code directly underneath each.
+When contributing new rules to Splint, the examples must follow a specific format: They start with `Examples:` surrounded by blank lines, and then alternating `; avoid` and `; prefer` lines. All of the lines after `Examples:` will be wrapped in code fences marked as `clojure`
 
-For example, `style/style/set-literal-as-fn`:
+For example, `lint/assoc-fn`:
 
 ```clojure
   "...
 
   Examples:
 
-  ; bad
-  (#{'a 'b 'c} elem)
+  ; avoid
+  (assoc coll :a (+ (:a coll) 5))
+  (assoc coll :a (+ (coll :a) 5))
+  (assoc coll :a (+ (get coll :a) 5))
 
-  ; good
-  (case elem (a b c) elem nil)
+  ; prefer
+  (update coll :a + 5)
   "
 ```
+
+will be rendered as:
+
+---
+
+### Examples
+
+```clojure
+; avoid
+(assoc coll :a (+ (:a coll) 5))
+(assoc coll :a (+ (coll :a) 5))
+(assoc coll :a (+ (get coll :a) 5))
+
+; prefer
+(update coll :a + 5)
+```
+
+---
 
 ### Rule map
 

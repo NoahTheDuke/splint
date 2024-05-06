@@ -21,11 +21,11 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (.toUpperCase \"noah\")
   (. \"noah\" toUpperCase)
 
-  ; good
+  ; prefer
   (^[] String/toUpperCase \"noah\")
   "
   {:pattern '((? _ interop?) (?* _))

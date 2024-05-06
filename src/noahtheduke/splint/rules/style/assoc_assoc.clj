@@ -13,12 +13,12 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (assoc coll :key1 (assoc (:key2 coll) :key2 new-val))
   (assoc coll :key1 (assoc (coll :key2) :key2 new-val))
   (assoc coll :key1 (assoc (get coll :key2) :key2 new-val))
 
-  ; good
+  ; prefer
   (assoc-in coll [:key1 :key2] new-val)
   "
   {:patterns ['(assoc ?coll ?key1 (assoc (?coll ?key1) ?key2 ?val))

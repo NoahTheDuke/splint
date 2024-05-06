@@ -42,23 +42,23 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (-> x y)
   (->> x y)
 
-  ; good
+  ; prefer
   (y x)
 
-  ; bad
+  ; avoid
   (-> x (y z))
 
-  ; good
+  ; prefer
   (y x z)
 
-  ; bad
+  ; avoid
   (->> x (y z))
 
-  ; good
+  ; prefer
   (y z x)
   "
   {:pattern '((? f thread-macro?) ?arg ?form)

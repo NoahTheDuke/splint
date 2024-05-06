@@ -15,11 +15,11 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (ns foo.bar)
   (defn baz [a b] (+ a b))
 
-  ; good
+  ; prefer
   (ns foo.bar)
   (set! *warn-on-reflection* true)
   (defn baz [a b] (+ a b))

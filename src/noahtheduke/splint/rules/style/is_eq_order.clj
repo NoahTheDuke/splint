@@ -26,11 +26,11 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (is (= status 200))
   (is (= (my-plus 1 2) 3))
 
-  ; good
+  ; prefer
   (is (= 200 status))
   (is (= 3 (my-plus 1 2)))
 

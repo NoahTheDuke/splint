@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (not (nil? x))
 
-  ; good
+  ; prefer
   (some? x)
   "
   {:pattern '(not (nil? ?x))

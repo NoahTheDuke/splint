@@ -25,13 +25,13 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (not (empty? coll))
 
-  ; good (chosen style :seq (default))
+  ; prefer (chosen style :seq (default))
   (seq coll)
 
-  ; good (chosen style :not-empty)
+  ; prefer (chosen style :not-empty)
   (not-empty coll)
   "
   {:pattern '(not (empty? ?x))

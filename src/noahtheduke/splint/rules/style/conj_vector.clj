@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (conj [] :a b {:c 1})
 
-  ; good
+  ; prefer
   (vector :a b {:c 1})
   "
   {:pattern '(conj [] ?+x)

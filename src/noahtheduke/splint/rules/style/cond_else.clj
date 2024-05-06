@@ -21,13 +21,13 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (cond
     (< 10 num) (println 10)
     (< 5 num) (println 5)
     true (println 0))
 
-  ; good
+  ; prefer
   (cond
     (< 10 num) (println 10)
     (< 5 num) (println 5)

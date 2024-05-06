@@ -24,11 +24,11 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (def someVar ...)
   (def some_fun ...)
 
-  ; good
+  ; prefer
   (def some-var ...)
   (defn some-fun ...)
   "

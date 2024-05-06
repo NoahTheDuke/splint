@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (first (next coll))
 
-  ; good
+  ; prefer
   (fnext coll)
   "
   {:pattern '(first (next ?coll))

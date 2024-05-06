@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (vec (filter pred coll))
 
-  ; good
+  ; prefer
   (filterv pred coll)
   "
   {:pattern '(vec (filter ?pred ?coll))

@@ -31,11 +31,11 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (defn palindrome-p ...)
   (defn is-palindrome ...)
 
-  ; good
+  ; prefer
   (defn palindrome? ...)
   "
   {:pattern '((? defn defn??) (? name bad-name?) ?*args)

@@ -13,11 +13,11 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (= true x)
   (= x true)
 
-  ; good
+  ; prefer
   (true? x)
   "
   {:patterns ['(= true ?x)

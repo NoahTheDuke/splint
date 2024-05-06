@@ -18,11 +18,11 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (* x (* y z))
   (* x (* y z a))
 
-  ; good
+  ; prefer
   (* x y z)
   (* x y z a)
   "

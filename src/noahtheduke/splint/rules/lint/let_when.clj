@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (let [result (some-func)] (when result (do-stuff result)))
 
-  ; good
+  ; prefer
   (when-let [result (some-func)] (do-stuff result))
   "
   {:pattern '(let [?result ?given] (when ?result ?*args))

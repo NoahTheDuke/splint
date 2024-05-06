@@ -17,10 +17,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (re-pattern #\".*\")
 
-  ; good
+  ; prefer
   #\".*\"
   "
   {:pattern '(re-pattern ?pat)

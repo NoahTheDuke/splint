@@ -13,11 +13,11 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (apply concat (map x y))
   (apply concat (map x y z))
 
-  ; good
+  ; prefer
   (mapcat x y)
   (mapcat x y z)
   "

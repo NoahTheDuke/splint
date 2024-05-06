@@ -32,10 +32,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (#{'a 'b 'c} elem)
 
-  ; good
+  ; prefer
   (case elem (a b c) elem nil)
   "
   {:pattern '((? sfn set?) ?elem)

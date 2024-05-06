@@ -19,10 +19,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (if (some-func) :a nil)
 
-  ; good
+  ; prefer
   (when (some-func) :a)
   "
   {:patterns ['(if ?x (? y not-do) (?? _ nil?))

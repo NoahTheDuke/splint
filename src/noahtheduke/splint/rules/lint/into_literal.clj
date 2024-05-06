@@ -19,16 +19,16 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (into [] coll)
 
-  ; good
+  ; prefer
   (vec coll)
 
-  ; bad
+  ; avoid
   (into #{} coll)
 
-  ; good
+  ; prefer
   (set coll)
   "
   {:pattern '(into (? literal set-or-vec?) ?coll)

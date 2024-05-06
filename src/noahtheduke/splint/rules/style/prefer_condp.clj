@@ -63,28 +63,28 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (cond
     (= 1 x) :one
     (= 2 x) :two
     (= 3 x) :three
     (= 4 x) :four)
 
-  ; good
+  ; prefer
   (condp = x
     1 :one
     2 :two
     3 :three
     4 :four)
 
-  ; bad
+  ; avoid
   (cond
     (= 1 x) :one
     (= 2 x) :two
     (= 3 x) :three
     :else :big)
 
-  ; good
+  ; prefer
   (condp = x
     1 :one
     2 :two

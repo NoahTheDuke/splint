@@ -24,11 +24,11 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (. Obj staticMethod args)
   (. Obj (staticMethod) args)
 
-  ; good
+  ; prefer
   (Obj/staticMethod args)
   "
   {:pattern '(. (? class symbol-class?) (? method method??) ?*args)

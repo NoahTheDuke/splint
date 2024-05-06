@@ -26,11 +26,11 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (ns examples.ns
     (:use clojure.zip))
 
-  ; good
+  ; prefer
   (ns examples.ns
     (:require [clojure.zip :as zip]))
   (ns examples.ns

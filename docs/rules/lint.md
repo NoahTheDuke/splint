@@ -12,12 +12,12 @@ idiomatic.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (assoc coll :a (+ (:a coll) 5))
 (assoc coll :a (+ (coll :a) 5))
 (assoc coll :a (+ (get coll :a) 5))
 
-; good
+; prefer
 (update coll :a + 5)
 ```
 
@@ -36,10 +36,10 @@ a `do` to force it into 'expression position'.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 `(binding [max mymax] ~@body)
 
-; good
+; prefer
 `(binding [max mymax] (let [res# (do ~@body)] res#))
 ```
 
@@ -60,10 +60,10 @@ Checks for `(/ x 1)`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (/ x 1)
 
-; good
+; prefer
 x
 ```
 
@@ -82,10 +82,10 @@ x
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (dorun (map println (range 10)))
 
-; good
+; prefer
 (run! println (range 10))
 ```
 
@@ -103,11 +103,11 @@ position.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (. Obj staticMethod args)
 (. Obj (staticMethod) args)
 
-; good
+; prefer
 (Obj/staticMethod args)
 ```
 
@@ -124,10 +124,10 @@ Using the `.method` form maps the method call to Clojure's natural function posi
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (. obj method args)
 
-; good
+; prefer
 (.method obj args)
 ```
 
@@ -145,10 +145,10 @@ with the same name, but it's good to catch these things early too.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (defrecord Foo [a b a])
 
-; good
+; prefer
 (defrecord Foo [a b c])
 ```
 
@@ -169,16 +169,16 @@ Avoid wrapping functions in pass-through anonymous function defitions.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (fn [num] (even? num))
 
-; good
+; prefer
 even?
 
-; bad
+; avoid
 (let [f (fn [num] (even? num))] ...)
 
-; good
+; prefer
 (let [f even?] ...)
 ```
 
@@ -199,10 +199,10 @@ Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (if (some-func) :a nil)
 
-; good
+; prefer
 (when (some-func) :a)
 ```
 
@@ -223,10 +223,10 @@ Idiomatic `if-let` defines both branches. `when-let` returns `nil` in the else b
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (if-let [a 1] a nil)
 
-; good
+; prefer
 (when-let [a 1] a)
 ```
 
@@ -243,10 +243,10 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (if (some-func) nil :a)
 
-; good
+; prefer
 (when-not (some-func) :a)
 ```
 
@@ -263,10 +263,10 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (if (not x) y z)
 
-; good
+; prefer
 (if-not x y z)
 ```
 
@@ -287,10 +287,10 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (if-not x (do (println :a) (println :b) :c))
 
-; good
+; prefer
 (when-not x (println :a) (println :b) :c)
 ```
 
@@ -307,10 +307,10 @@ Two `not`s cancel each other out.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (if-not (not x) y z)
 
-; good
+; prefer
 (if x y z)
 ```
 
@@ -327,10 +327,10 @@ Two `not`s cancel each other out.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (if x x y)
 
-; good
+; prefer
 (or x y)
 ```
 
@@ -347,16 +347,16 @@ Two `not`s cancel each other out.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (into [] coll)
 
-; good
+; prefer
 (vec coll)
 
-; bad
+; avoid
 (into #{} coll)
 
-; good
+; prefer
 (set coll)
 ```
 
@@ -374,10 +374,10 @@ determine if `result` binding is used in falsy branch.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (let [result (some-func)] (if result (do-stuff result) (other-stuff)))
 
-; good
+; prefer
 (if-let [result (some-func)] (do-stuff result) (other-stuff))
 ```
 
@@ -398,10 +398,10 @@ determine if `result` binding is used in falsy branch.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (let [result (some-func)] (when result (do-stuff result)))
 
-; good
+; prefer
 (when-let [result (some-func)] (do-stuff result))
 ```
 
@@ -422,10 +422,10 @@ determine if `result` binding is used in falsy branch.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (loop [] (do (println 1) (println 2)))
 
-; good
+; prefer
 (loop [] (println 1) (println 2))
 ```
 
@@ -442,10 +442,10 @@ Empty loops with nested when can be `while`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (loop [] (when (some-func) (println 1) (println 2) (recur)))
 
-; good
+; prefer
 (while (some-func) (println 1) (println 2) (recur))
 ```
 
@@ -462,11 +462,11 @@ Empty loops with nested when can be `while`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (when true)
 (when (some-func))
 
-; good
+; prefer
 (when true (do-stuff))
 (when (some-func) (do-stuff))
 ```
@@ -485,13 +485,13 @@ Empty loops with nested when can be `while`.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (not (empty? coll))
 
-; good (chosen style :seq (default))
+; prefer (chosen style :seq (default))
 (seq coll)
 
-; good (chosen style :not-empty)
+; prefer (chosen style :not-empty)
 (not-empty coll)
 ```
 
@@ -522,11 +522,11 @@ If it doesn't resolve to a single method, then the Clojure compiler throws a syn
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (.toUpperCase "noah")
 (. "noah" toUpperCase)
 
-; good
+; prefer
 (^[] String/toUpperCase "noah")
 ```
 
@@ -547,11 +547,11 @@ In the `ns` form prefer `:require :as` over `:require :refer` over `:require :re
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (ns examples.ns
   (:use clojure.zip))
 
-; good
+; prefer
 (ns examples.ns
   (:require [clojure.zip :as zip]))
 (ns examples.ns
@@ -593,7 +593,7 @@ Current list of clojure.core functions this linter checks:
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (-> x)
 (->> x)
 (cond-> x)
@@ -607,7 +607,7 @@ Current list of clojure.core functions this linter checks:
 (max x)
 (distinct? x)
 
-; good
+; prefer
 x
 ```
 
@@ -647,16 +647,16 @@ The styles are named after what they're looking for:
 ### Examples
 
 ```clojure
-; bad (chosen style :both or :missing)
+; avoid (chosen style :both or :missing)
 (java.io.File/mkdir (clojure.java.io/file "a"))
 
-; bad (chosen style :both or :wildcard)
+; avoid (chosen style :both or :wildcard)
 (^[_ _] java.io.File/createTempFile "abc" "b")
 
-; good (chosen style :both or :missing)
+; prefer (chosen style :both or :missing)
 (^[] java.io.File/mkdir (clojure.java.io/file "a"))
 
-; good (chosen style :both or :wildcard (default))
+; prefer (chosen style :both or :wildcard (default))
 (^[String String] java.io.File/createTempFile "abc" "b")
 ```
 
@@ -683,10 +683,10 @@ The styles are named after what they're looking for:
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (take 5 (repeatedly (range 10))
 
-; good
+; prefer
 (repeatedly 5 (range 10))
 ```
 
@@ -704,23 +704,23 @@ args to help with readability.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (-> x y)
 (->> x y)
 
-; good
+; prefer
 (y x)
 
-; bad
+; avoid
 (-> x (y z))
 
-; good
+; prefer
 (y x z)
 
-; bad
+; avoid
 (->> x (y z))
 
-; good
+; prefer
 (y z x)
 ```
 
@@ -745,10 +745,10 @@ to force it into 'expression position'.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 `(try ~@body (finally :true))
 
-; good
+; prefer
 `(try (do ~@body) (finally :true))
 ```
 
@@ -771,10 +771,10 @@ Clojure.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (ns foo_bar.baz_qux)
 
-; good
+; prefer
 (ns foo-bar.baz-qux)
 ```
 
@@ -792,11 +792,11 @@ be at the top of every file out of caution.
 ### Examples
 
 ```clojure
-; bad
+; avoid
 (ns foo.bar)
 (defn baz [a b] (+ a b))
 
-; good
+; prefer
 (ns foo.bar)
 (set! *warn-on-reflection* true)
 (defn baz [a b] (+ a b))

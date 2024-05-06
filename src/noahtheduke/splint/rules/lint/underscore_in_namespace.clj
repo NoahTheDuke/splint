@@ -20,10 +20,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (ns foo_bar.baz_qux)
 
-  ; good
+  ; prefer
   (ns foo-bar.baz-qux)"
   {:pattern '(ns (? ns-sym includes-underscore?) ?*_)
    :message "Avoid underscores in namespaces."

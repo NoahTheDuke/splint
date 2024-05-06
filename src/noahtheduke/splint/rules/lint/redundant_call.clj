@@ -39,7 +39,7 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (-> x)
   (->> x)
   (cond-> x)
@@ -53,7 +53,7 @@
   (max x)
   (distinct? x)
 
-  ; good
+  ; prefer
   x
   "
   {:pattern '((? the-fn right-fn?) ?x)

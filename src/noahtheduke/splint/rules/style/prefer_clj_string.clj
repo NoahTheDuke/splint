@@ -51,10 +51,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (.toUpperCase \"hello world\")
 
-  ; good
+  ; prefer
   (clojure.string/upper-case \"hello world\")
   "
   {:patterns ['((? _ to-str??)

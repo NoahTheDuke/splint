@@ -13,10 +13,10 @@
 
   Examples:
 
-  ; bad
+  ; avoid
   (if (some-func) nil :a)
 
-  ; good
+  ; prefer
   (when-not (some-func) :a)
   "
   {:pattern '(if ?x nil ?y)

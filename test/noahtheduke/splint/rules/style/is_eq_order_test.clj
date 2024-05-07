@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.style.is-eq-order-test
   (:require
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'style/is-eq-order))
 
-(deftest is-eq-order-test
+(defexpect is-eq-order-test
   (expect-match
     [{:rule-name 'style/is-eq-order
       :form '(is (= status 200))

@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.rules.lint.require-explicit-param-tags-test
   (:require
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
@@ -15,7 +15,7 @@
   ([style]
    (assoc-in (config) '[lint/require-explicit-param-tags :chosen-style] style)))
 
-(deftest missing-test
+(defexpect missing-test
   (doseq [style [:missing :both]]
     (expect-match
       [{:rule-name 'lint/require-explicit-param-tags
@@ -29,7 +29,7 @@
     "(ns foo (:import (java.io File))) (File/mkdir (clojure.java.io/file \"a\"))"
     (config :wildcard)))
 
-(deftest wildcard-test
+(defexpect wildcard-test
   (doseq [style [:wildcard :both]]
     (expect-match
       [{:rule-name 'lint/require-explicit-param-tags
@@ -43,14 +43,14 @@
     "(ns foo (:import (java.io File))) (^[_ _] File/createTempFile \"abc\" \"b\")"
     (config :missing)))
 
-(deftest under-version-test
+(defexpect under-version-test
   (expect-match
     nil
     "(^[_ _] File/createTempFile \"abc\" \"b\")"
     (assoc (config :both)
       :clojure-version {:major 1 :minor 11})))
 
-(deftest passing-test
+(defexpect passing-test
   (doseq [style [:missing :wildcard :both]]
     (expect-match
       nil

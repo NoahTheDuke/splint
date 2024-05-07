@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.style.tostring-test
   (:require
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'style/tostring))
 
-(deftest str-to-string-test
+(defexpect str-to-string-test
   (expect-match
     [{:form '(.toString x)
       :message "Use `str` instead of interop."

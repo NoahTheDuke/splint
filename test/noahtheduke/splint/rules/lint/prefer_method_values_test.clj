@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.rules.lint.prefer-method-values-test
   (:require
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
@@ -13,7 +13,7 @@
   (assoc (single-rule-config 'lint/prefer-method-values)
     :clojure-version {:major 1 :minor 12}))
 
-(deftest prefer-method-values-test
+(defexpect prefer-method-values-test
   (expect-match
     [{:rule-name 'lint/prefer-method-values
       :form '(.toUpperCase "noah")
@@ -29,7 +29,7 @@
     "(. \"noah\" toUpperCase)"
     (config)))
 
-(deftest under-version-test
+(defexpect under-version-test
   (expect-match
     nil
     "(. \"noah\" toUpperCase)"

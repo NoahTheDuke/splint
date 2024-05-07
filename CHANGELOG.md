@@ -7,6 +7,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Changed
 
 - Expanded documentation, added CONTRIBUTING.md.
+- Switch all existing uses of `deftest` (including in `new_rule.tmpl`) back to using `defexpect`. Sean fixed the 3-arg issue when I raised it in <https://github.com/clojure-expectations/clojure-test/issues/35>, and it's nice to only import a single namespace instead of multiple.
 
 ## 1.15.1 - 2024-05-06
 

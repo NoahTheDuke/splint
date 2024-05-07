@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.lint.body-unquote-splicing-test
   (:require
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'lint/body-unquote-splicing))
 
-(deftest only-body-test
+(defexpect only-body-test
   (doseq [input '[delay dosync future lazy-cat lazy-seq pvalues
                   with-loading-context]]
     (expect-match
@@ -21,7 +21,7 @@
       (format "(%s ~@body)" input)
       (config))))
 
-(deftest init-arg-test
+(defexpect init-arg-test
   (doseq [input '[binding locking sync with-bindings with-in-str
                   with-local-vars with-precision with-redefs]]
     (expect-match
@@ -31,7 +31,7 @@
       (format "(%s arg ~@body)" input)
       (config))))
 
-(deftest only-symbol-test
+(defexpect only-symbol-test
   (expect-match
     nil
     "(future ~@(map inc body))"

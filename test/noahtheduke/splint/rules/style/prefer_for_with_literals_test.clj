@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.style.prefer-for-with-literals-test
   (:require
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'style/prefer-for-with-literals))
 
-(deftest prefer-for-with-literals-test
+(defexpect prefer-for-with-literals-test
   (expect-match
     [{:rule-name 'style/prefer-for-with-literals
       :form '(map (splint/fn [%1] (hash-map :a 1 :b %1)) (range 10))

@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.style.useless-do-test
   (:require
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'style/useless-do))
 
-(deftest useless-do-x-test
+(defexpect useless-do-x-test
   (expect-match
     [{:form '(do x)
       :message "Unnecessary `do`."

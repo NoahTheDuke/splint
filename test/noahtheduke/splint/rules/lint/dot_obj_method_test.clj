@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.lint.dot-obj-method-test
   (:require
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'lint/dot-obj-method))
 
-(deftest dot-obj-usage-test
+(defexpect dot-obj-usage-test
   (expect-match
     [{:form '(. obj method 1 2 3)
       :message "Intention is clearer with `.method` form."

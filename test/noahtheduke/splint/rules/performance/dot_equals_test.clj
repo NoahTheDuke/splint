@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.performance.dot-equals-test
   (:require
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'performance/dot-equals))
 
-(deftest dot-equals-test
+(defexpect dot-equals-test
   (expect-match
     [{:rule-name 'performance/dot-equals
       :form '(= "foo" bar)
@@ -35,7 +35,7 @@
     "(= foo bar)"
     (config)))
 
-(deftest prefer-method-values-interaction-test
+(defexpect prefer-method-values-interaction-test
   (expect-match
     [{:rule-name 'performance/dot-equals
       :form '(= "foo" bar)

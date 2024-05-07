@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.naming.conversion-functions-test
   (:require
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'naming/conversion-functions))
 
-(deftest conversion-functions-test
+(defexpect conversion-functions-test
   (expect-match
     [{:form '(defn f-to-c ...)
       :message "Use `->` instead of `to` in the names of conversion functions."

@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.style.multiple-arity-order-test
   (:require
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'style/multiple-arity-order))
 
-(deftest multiple-arity-order-test
+(defexpect multiple-arity-order-test
   (expect-match
     [{:form '(defn foo
                ([x] (foo x 1))

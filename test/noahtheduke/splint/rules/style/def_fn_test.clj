@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.style.def-fn-test
   (:require
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'style/def-fn))
 
-(deftest def-let-fn-test
+(defexpect def-let-fn-test
   (expect-match
     [{:form '(def check-inclusion
                (let [allowed #{:a :b :c}]
@@ -23,7 +23,7 @@
     "(def check-inclusion (let [allowed #{:a :b :c}] (fn [i] (contains? allowed i))))"
     (config)))
 
-(deftest def-fn-test
+(defexpect def-fn-test
   (expect-match
     [{:form '(def some-func (fn [i] (+ i 100)))
       :message "Prefer `defn` instead of `def` wrapping `fn`."

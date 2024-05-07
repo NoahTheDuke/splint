@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.rules.lint.thread-macro-one-arg-test
   (:require
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
@@ -13,7 +13,7 @@
   (cond-> (single-rule-config 'lint/thread-macro-one-arg)
     style (assoc-in ['lint/thread-macro-one-arg :chosen-style] style)))
 
-(deftest thread-first-1-arg-test
+(defexpect thread-first-1-arg-test
   (expect-match
     '[{:alt (form arg)}]
     "(-> arg form)"
@@ -27,7 +27,7 @@
     "(-> arg (form 10))"
     (config)))
 
-(deftest thread-last-1-arg-test
+(defexpect thread-last-1-arg-test
   (expect-match
     '[{:alt (form arg)}]
     "(->> arg form)"
@@ -41,7 +41,7 @@
     "(->> arg (form 10))"
     (config)))
 
-(deftest thread-style-inline-test
+(defexpect thread-style-inline-test
   (expect-match
     '[{:alt (form arg)}]
     "(-> arg form)"
@@ -75,7 +75,7 @@
     "(->> #{arg} form)"
     (config :inline)))
 
-(deftest thread-style-avoid-collections-test
+(defexpect thread-style-avoid-collections-test
   (expect-match
     '[{:alt (form arg)}]
     "(-> arg form)"

@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.lint.dot-class-method-test
   (:require
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'lint/dot-class-method))
 
-(deftest dot-class-usage-test
+(defexpect dot-class-usage-test
   (expect-match
     [{:form '(. Object method 1 2 3)
       :message "Intention is clearer with `Obj/staticMethod` form."

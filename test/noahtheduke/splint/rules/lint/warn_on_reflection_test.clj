@@ -5,14 +5,14 @@
 (ns noahtheduke.splint.rules.lint.warn-on-reflection-test
   (:require
    [clojure.java.io :as io]
-   [clojure.test :refer [deftest]]
+   [expectations.clojure.test :refer [defexpect]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'lint/warn-on-reflection))
 
-(deftest warn-on-reflection-test
+(defexpect warn-on-reflection-test
   (expect-match
     [{:rule-name 'lint/warn-on-reflection
       :form nil

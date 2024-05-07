@@ -30,7 +30,7 @@
                       "--middleware" "[cider.nrepl/cider-middleware]"
                       "-f" "rebel-readline.main/-main"]}
   :test {:extra-paths ["test"]
-         :extra-deps {com.github.seancorfield/expectations {:mvn/version "2.0.165"}
+         :extra-deps {com.github.seancorfield/expectations {:git/sha "e819aebdac1844f8bdfa66a1cd6c18d3ea224b8d"}
                       nubank/matcher-combinators {:mvn/version "3.8.5"}
                       io.github.cognitect-labs/test-runner {:git/tag "v0.5.1"
                                                             :git/sha "dfb30dd"}}}

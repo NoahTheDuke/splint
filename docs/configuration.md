@@ -52,7 +52,7 @@ If the prefix is not provided, the string is treated as the `re-find` syntax.
 * `re-find:foo.clj` matches `foo.clj` and `aa/foo.clj` and `aa/foo-clj`.
 * `string:foo.clj` matches `foo.clj` and `aa/foo.clj` but does not match `foo-clj` or `aa/foo-clj`.
 
-## Inline
+## Disabling Rules Inline
 
 A single rule can be disabled in the following form with `#_:splint/disable`:
 

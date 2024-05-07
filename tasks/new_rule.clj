@@ -12,6 +12,7 @@
 (defn make-new-rule [{n :name}]
   (let [rule-template (slurp (io/file "tasks" "new_rule.tmpl"))
         test-template (slurp (io/file "tasks" "new_rule_test.tmpl"))
+        config-template (slurp (io/file "tasks" "new_rule_config.tmpl"))
         n (symbol n)
         genre (namespace n)
         rule-name (name n)]
@@ -20,11 +21,15 @@
     (let [rule-filename (io/file "src" "noahtheduke" "splint" "rules"
                           genre (namespace-munge (str rule-name ".clj")))
           test-filename (io/file "test" "noahtheduke" "splint" "rules"
-                          genre (namespace-munge (str rule-name "_test.clj")))]
+                          genre (namespace-munge (str rule-name "_test.clj")))
+          config-file (io/file "resources" "config" "default.edn")]
       (io/make-parents rule-filename)
       (io/make-parents test-filename)
       (spit rule-filename (render rule-template {:genre genre :rule-name rule-name}))
-      (spit test-filename (render test-template {:genre genre :rule-name rule-name})))))
+      (spit test-filename (render test-template {:genre genre :rule-name rule-name}))
+      (-> (slurp config-file)
+          (str/replace #"\{;;.*" (str/trim-newline (render config-template {:genre genre :rule-name rule-name})))
+          (#(spit config-file %))))))
 
 (def cli-options
   [["-h" "--help" "Choose a genre and name to make a new rule"]

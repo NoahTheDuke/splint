@@ -33,18 +33,21 @@ Linting took 241ms, checked 115 files, 5 style warnings
 
 ## Command-line options
 
-* `-o`, `--output FMT`: Output format: `simple`, `full`, `clj-kondo`, `markdown`, `json`, `json-pretty`. Defaults to `full`.
-* `-r`, `--require FILE`: Require additional custom rules by loading specified files. Can be provided multiple times. (See [Writing a new rule](rules.md#writing-a-new-rule) for further details.)
+* `-o`, `--output FMT`: Output format: `simple`, `full`, `clj-kondo`, `markdown`, `json`, `json-pretty`. Defaults to `full`. (See below for description of each.)
+* `-r`, `--require FILE`: Require additional custom rules by loading specified files. Can be provided multiple times. (See [Writing a new rule][new rule] for further details.)
 * `--[no-]parallel`: Run Splint in parallel. Defaults to `true`.
 * `-q`, `--quiet`: Print no diagnostics, only summary.
-* `-s`, `--silent`: Print no diagnostics or summary.
-* `--[no-]summary`: Don't print summary. Defaults to `true`.
+* `-s`, `--silent`: Print no diagnostics or summary. Overrides `--summary`.
+* `--[no-]summary`: Print summary. Defaults to `true`.
 * `--errors`: Limits printed diagnostics to parsing or internal Splint errors.
 * `--print-config TYPE`: Print the absolute path of the loaded config, and prints the contents of the loaded config according to the chosen type: `diff` for the difference between default and loaded config file, `local` for the contents of the loaded config file, and `full` for the merged default and loaded config file.
 * `-h`, `--help`: Print the command line options.
 * `-v`, `--version`: Print the current version.
 
-Some of the above options can be set in the [configuration file](configuration.md). See that page for further details.
+Some of the above options can be set in the [configuration file][configuration]. See that page for further details.
+
+[configuration]: configuration.md
+[new rule]: docs/develop-new-rule.md#writing-a-new-rule
 
 ### Output styles
 

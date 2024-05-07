@@ -10,8 +10,6 @@ The macro [`noahtheduke.splint.pattern/pattern`] builds the matching function. I
 
 [`noahtheduke.splint.pattern/pattern`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.splint.pattern#pattern
 
-
-
 ```clojure
 (def matcher (pat/pattern '(a b ?+c (?| d [1 2 3]))))
 

@@ -8,12 +8,14 @@
   ["Installation" {:file "docs/installation.md"}]
   ["Usage" {:file "docs/usage.md"}]
   ["Configuration" {:file "docs/configuration.md"}]
-  ["Rules" {:file "docs/rules.md"}
-   ["Patterns" {:file "docs/patterns.md"}]]
-  ["Rule Documentation" {:file "docs/genre-overview.md"}
+  ["Rules Overview" {:file "docs/genre-overview.md"}
    ["Lint" {:file "docs/rules/lint.md"}]
    ["Metrics" {:file "docs/rules/metrics.md"}]
    ["Naming" {:file "docs/rules/naming.md"}]
    ["Performance" {:file "docs/rules/performance.md"}]
    ["Style" {:file "docs/rules/style.md"}]]
+  ["Custom Rules"
+   ["Developing a new rule" {:file "docs/develop-new-rule.md"}]
+   ["Patterns" {:file "docs/patterns.md"}]]
+  ["Contributing" {:file "docs/contributing.md"}]
   ["Changelog" {:file "CHANGELOG.md"}]]}

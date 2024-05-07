@@ -27,7 +27,7 @@ More explicit instructions can be found in the [installation][installation], [us
 
 Run with `clojure -M:splint [args...]`.
 
-## Leiningen
+### Leiningen
 
 Add this to `project.clj`:
 

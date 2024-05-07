@@ -1,4 +1,4 @@
-# Rules
+# Developing a new rule
 
 The various checks that Splint performs are called "rules". Each rule looks for a single suspicious form or multiple variations of one, called a `:pattern` or `:patterns` for multiple. Splint checks the pattern against every appropriate form in every file it checks, and if there's a match, it calls the function `:on-match` to potentially create and store a [Diagnostic].
 
@@ -14,7 +14,9 @@ Rules are fairly simple. The call to `defrule` takes a fully qualified name (nam
 
 [`global-rules`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.splint.rules#global-rules
 
-To load them, use the `-r`/`--require` command line arg with `-r path/to/file.clj` or in the config file with `{require ["path/to/file.clj"]}`. The specified files are loaded with `clojure.core/load-file` at run-time. (There is currently no support for loading rules from jars or dependencies.) The rule must be enabled in `.splint.edn` for it to be used, either by rule name (`example/new-rule {:enabled true}`) or by genre (`example {:enabled true}`).
+To load them, use the `-r`/`--require` command line arg with `-r path/to/file.clj` or in the config file with `{require ["path/to/file.clj"]}`. The specified files are loaded with `clojure.core/load-file` at run-time. (There is currently no support for loading rules from jars or dependencies.) The rule must be enabled in `.splint.edn` for it to be used, either by rule name (`example/new-rule {:enabled true}`) or by genre (`example {:enabled true}`). (See [configuration][configuration] for more details.)
+
+[configuration]: docs/configuration.md
 
 **WARNING**: Unlike other tools, this doesn't use [SCI][SCI]. Loading arbitrary code is inherently unsafe, so don't load code you don't know!!!!!!
 
@@ -35,7 +37,7 @@ For example, "[How to ns]" is a popular article about how to structure `ns` form
 [How to ns]: https://stuartsierra.com/2016/clojure-how-to-ns.html
 [Alessandra Sierra]: https://www.lambdasierra.com/2022/hello
 
-When contributing new rules to Splint, the examples must follow a specific format: They start with `Examples:` surrounded by blank lines, and then alternating `; avoid` and `; prefer` lines. All of the lines after `Examples:` will be wrapped in code fences marked as `clojure`
+When contributing new rules to Splint, the examples must follow a specific format: They start with `Examples:` surrounded by blank lines, and then alternating `; avoid` and `; prefer` lines. All of the lines after `Examples:` will be wrapped in code fences marked as `clojure`.
 
 For example, `lint/assoc-fn`:
 

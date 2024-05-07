@@ -17,5 +17,8 @@
     '[{:alt (defrecord FooBar [a b c])}]
     "(defrecord fooBar [a b c])")
   (expect-match
-    '[{:alt (defrecord Foo-bar [a b c])}]
-    "(defrecord foo-bar [a b c])"))
+    '[{:alt (defrecord FooBar [a b c])}]
+    "(defrecord foo-bar [a b c])")
+  (expect-match
+    '[{:alt (defrecord FooBar [a b c])}]
+    "(defrecord Foo-bar [a b c])"))

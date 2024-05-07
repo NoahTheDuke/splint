@@ -8,6 +8,9 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Expanded documentation, added CONTRIBUTING.md.
 - Switch all existing uses of `deftest` (including in `new_rule.tmpl`) back to using `defexpect`. Sean fixed the 3-arg issue when I raised it in <https://github.com/clojure-expectations/clojure-test/issues/35>, and it's nice to only import a single namespace instead of multiple.
+- Remove incorrect guide-ref in lint/duplicate-field-name
+- Add table of namespaces to aliases in `naming/conventional-aliases` docs.
+- `naming/record-name` now uses `camel-snake-kebab` to check and convert the given record name to PascalCase.
 
 ## 1.15.1 - 2024-05-06
 

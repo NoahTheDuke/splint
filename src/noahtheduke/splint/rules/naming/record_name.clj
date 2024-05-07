@@ -4,33 +4,33 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.naming.record-name
   (:require
-   [clojure.string :as str]
+   [camel-snake-kebab.core :as csk]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
-(defn lower-case-name? [sexp]
+(defn bad-name? [sexp]
   (let [record-name (str sexp)]
-    (= (subs record-name 0 1)
-      (str/lower-case (subs record-name 0 1)))))
+    (not= record-name (csk/->PascalCase record-name))))
 
 (defrule naming/record-name
-  "Records should use PascalCase.
+  "Records should use PascalCase. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)
 
   Examples:
 
   ; avoid
   (defrecord foo [a b c])
+  (defrecord foo-bar [a b c])
+  (defrecord Foo-bar [a b c])
 
   ; prefer
   (defrecord Foo [a b c])
+  (defrecord FooBar [a b c])
   "
-  {:pattern '(defrecord (? record-name lower-case-name?) ?*args)
-   :message "Records should start with an uppercase letter."
+  {:pattern '(defrecord (? record-name bad-name?) ?*args)
+   :message "Records should use PascalCase."
    :on-match (fn [ctx rule form {:syms [?record-name ?args]}]
-               (let [new-record-name (symbol
-                                       (str (subs (str/upper-case (str ?record-name)) 0 1)
-                                         (subs (str ?record-name) 1)))
+               (let [new-record-name (symbol (csk/->PascalCase ?record-name))
                      new-form (list* 'defrecord new-record-name ?args)]
                  (->diagnostic ctx rule form {:replace-form new-form})))})

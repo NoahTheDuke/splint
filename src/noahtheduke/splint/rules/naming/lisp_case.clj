@@ -20,7 +20,7 @@
       (some? (re-find #"[a-z][A-Z]" def*-name)))))
 
 (defrule naming/lisp-case
-  "Use lisp-case for function and variable names. (Replacement is generated with `camel-snake-kebab`.)
+  "Use lisp-case for function and variable names. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)
 
   Examples:
 

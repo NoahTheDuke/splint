@@ -33,27 +33,6 @@
     clojure.walk walk
     clojure.zip zip})
 
-(def alias->library
-  '{async clojure.core.async
-    cli clojure.tools.cli
-    csv clojure.data.csv
-    datafy clojure.datafy
-    edn clojure.edn
-    io clojure.java.io
-    log clojure.tools.logging
-    mat clojure.core.matrix
-    math clojure.math
-    p clojure.core.protocols
-    pp clojure.pprint
-    r clojure.core.reducers
-    s clojure.spec.alpha
-    set clojure.set
-    sh clojure.java.shell
-    str clojure.string
-    walk clojure.walk
-    xml clojure.data.xml
-    zip clojure.zip})
-
 (defn parse-require [libspecs]
   (into {}
     (comp (mapcat #(deps-from-libspec nil (drop-quote %)))

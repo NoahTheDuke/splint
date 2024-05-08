@@ -15,7 +15,7 @@
    [noahtheduke.splint.path-matcher :refer [matches]]
    [noahtheduke.splint.printer :refer [print-results]]
    [noahtheduke.splint.rules :refer [global-rules]]
-   [noahtheduke.splint.utils :refer [simple-type]])
+   [noahtheduke.splint.utils :refer [simple-type support-clojure-version?]])
   (:import
    (clojure.lang ExceptionInfo)
    (java.io File)
@@ -252,21 +252,6 @@
       (catch java.io.FileNotFoundException _
         (println "Can't load" f "as it doesn't exist.")))))
 
-(defn support-clojure-version?
-  [config rule]
-  (if-let [{:keys [major minor incremental]} (:min-clojure-version rule)]
-    (let [current-version (:clojure-version config)]
-      (and (if major
-             (<= major (:major current-version))
-             true)
-        (if minor
-          (<= minor (:minor current-version))
-          true)
-        (if incremental
-          (<= incremental (:incremental current-version))
-          true)))
-    true))
-
 (defn prepare-rules [config rules]
   (let [conjv (fnil conj [])]
     (->> config
@@ -276,7 +261,9 @@
                 (contains? rule-config :enabled))
             (if-let [rule (rules rule-name)]
               (let [rule-config (assoc rule-config :rule-name rule-name)
-                    rule-config (if (support-clojure-version? config rule)
+                    rule-config (if (support-clojure-version?
+                                      (:min-clojure-version rule)
+                                      (:clojure-version config))
                                   rule-config
                                   (assoc rule-config :enabled false))]
                 (assoc-in rules [rule-name :config] rule-config))

@@ -11,6 +11,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Remove incorrect guide-ref in lint/duplicate-field-name
 - Add table of namespaces to aliases in `naming/conventional-aliases` docs.
 - `naming/record-name` now uses `camel-snake-kebab` to check and convert the given record name to PascalCase.
+- Add `:method-value` style to `style/new-object` to suggest `Foo/new` instead of `Foo.`.
 
 ## 1.15.1 - 2024-05-06
 

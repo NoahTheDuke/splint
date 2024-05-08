@@ -56,3 +56,18 @@
   (simple-type {:a 1})
   (simple-type (Object.))
   (simple-type `(1 2 3)))
+
+(defn support-clojure-version?
+  [{:keys [major minor incremental] :as min-clojure-version} current-version]
+  (if min-clojure-version
+    (and
+      (if major
+        (<= major (:major current-version))
+        true)
+      (if minor
+        (<= minor (:minor current-version))
+        true)
+      (if incremental
+        (<= incremental (:incremental current-version))
+        true))
+    true))

@@ -75,3 +75,19 @@ set-version version:
     clojure -T:build uber
     echo 'Deploying to clojars'
     just clojars
+
+install:
+    clojure -T:build jar
+    clojure -T:build install
+
+cljdoc:
+    docker run --rm \
+      --volume $(pwd):{{invocation_directory_native()}} \
+      --volume "$HOME/.m2:/root/.m2" \
+      --volume /tmp/cljdoc:/app/data \
+      --entrypoint clojure \
+      cljdoc/cljdoc -Sforce -M:cli ingest \
+        --project io.github.noahtheduke/splint \
+        --version {{current_version}} \
+        --git {{invocation_directory_native()}} \
+        --rev $(git rev-parse HEAD)

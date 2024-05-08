@@ -14,7 +14,7 @@ I am not a good writer but I have done my best to be thorough and helpful in the
 
 ## Code
 
-Bug fixes, especially those with existing issues, are free game. Comment that you're attemping the fix so no one doubles up on the effort, and then go off. PRs are welcome and I am generally a quick reviewer.
+Bug fixes, especially those with existing issues, are free game. Comment that you're attemping the fix so no one doubles up on the effort, and then go off. Small PRs are great and I am generally a quick reviewer.
 
 If you have an idea for a new rule, please start with an issue so we can discuss it before you put in the effort. That way we can hash out names and options, and gutcheck obvious edge cases before diving into the work. Additionally, linking to existing blog posts, Stack Overflow answers, Clojureverse posts, or other places where a given rule has been discussed in public will help guide us to finding a community-based solution.
 
@@ -22,6 +22,6 @@ Once we've decided it's worth persuing, you'll need to follow these steps:
 
 1) Use `clojure -M:new-rule -n GENRE/RULE-NAME` to create a stub rule file and test file and insert stub into default config file.
 2) Fill out both appropriately, including doc strings.
-3) Add the rule's fully-qualified name to `src/noahtheduke/splint.clj` in the second `:require` block in the right place.
-4) Open `resources/config/default.edn` and move the new rule config to the right location in the file. Add a short description of the rule to `:description` to help users when they auto-generate a `.splint.edn` file.
-5) Run the full test suite with `clojure -M:dev:test:runner`, update the integration tests as necessary. Inspect their output if you wish to verify that the new rule works correctly.
+3) Open `resources/config/default.edn` and move the new rule config to the right location in the file. Add a short description of the rule to `:description` to help users when they auto-generate a `.splint.edn` file.
+4) Add the rule's fully-qualified name to `src/noahtheduke/splint.clj` in the second `:require` block in the right place.
+5) Run the full test suite with `clojure -M:dev:test:runner`, updating the integration tests as necessary. Inspect their output if you wish to verify that the new rule works correctly.

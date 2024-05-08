@@ -46,3 +46,9 @@
     (dd/deploy {:installer :remote
                 :artifact (b/resolve-path (:jar-file opts))
                 :pom-file (b/pom-path opts)})))
+
+(defn install
+  "Install built jar to local maven repo"
+  [opts]
+  (b/install (make-opts opts))
+  (println "Installed version" lib version))

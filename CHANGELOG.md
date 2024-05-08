@@ -12,6 +12,9 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Add table of namespaces to aliases in `naming/conventional-aliases` docs.
 - `naming/record-name` now uses `camel-snake-kebab` to check and convert the given record name to PascalCase.
 - Add `:method-value` style to `style/new-object` to suggest `Foo/new` instead of `Foo.`.
+- Disable `lint/dot-class-method` and `lint/dot-obj-method` if `lint/prefer-method-values` is enabled.
+- Track rules on ctx instead of passing as a separate argument in `runner` functions.
+- Remove rules from `(:config ctx)`, add to `(:rules ctx)` as map of rule-name to rule map. Add `(:rules-by-type ctx)`, a map of simple-type to vector of rule names. Change `check-all-rules-of-type` to reduce over rule names and pull the rule map from `ctx`.
 
 ## 1.15.1 - 2024-05-06
 

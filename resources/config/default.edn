@@ -32,16 +32,18 @@
   :updated "1.2.1"}
 
  lint/dot-class-method
- {:description "Prefer `(.method obj)` to `(. obj method)`."
+ {:description "Prefer `(Obj/method)` to `(. Obj method)`."
   :enabled true
   :added "0.1"
   :updated "0.1"}
 
  lint/dot-obj-method
- {:description "Prefer `(Obj/method)` to `(. Obj method)`."
+ {:description "Prefer `(.method obj)` to `(. obj method)`."
   :enabled true
   :added "0.1"
-  :updated "0.1"}
+  :updated "<<next>>"
+  :supported-styles [:dot :method-value]
+  :chosen-style :dot}
 
  lint/duplicate-field-name
  {:description "`defrecord` and `deftype` don't allow duplicate field names."

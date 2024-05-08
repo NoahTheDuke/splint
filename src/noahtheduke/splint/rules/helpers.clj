@@ -255,3 +255,24 @@
 
 (defn default-import? [sexp]
   (built-in-classes sexp))
+
+(def interop->clj-string
+  '{.contains clojure.string/includes?
+    .endsWith clojure.string/ends-with?
+    .replace clojure.string/replace
+    .split clojure.string/split
+    .startsWith clojure.string/starts-with?
+    .toLowerCase clojure.string/lower-case
+    .toUpperCase clojure.string/upper-case
+    .trim clojure.string/trim})
+
+(defn string-interop-method? [sym]
+  (and (symbol? sym)
+    (interop->clj-string sym)))
+
+(defn symbol-class?
+  "Is the provided object a simple symbol that matches an imported class?"
+  [sym]
+  (and (simple-symbol? sym)
+    (or (default-import? sym)
+      (:splint/import-ns (meta sym)))))

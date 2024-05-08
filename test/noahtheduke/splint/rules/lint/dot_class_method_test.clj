@@ -23,4 +23,11 @@
       :message "Intention is clearer with `Obj/staticMethod` form."
       :alt '(Object/method 1 2 3)}]
     "(ns foo (:import (java.lang Object))) (. Object (method) 1 2 3)"
-    (config)))
+    (config))
+  (expect-match
+    [{:rule-name 'lint/prefer-method-values
+      :alt '(Object/method 1 2 3)}]
+    "(ns foo (:import (java.lang Object))) (. Object (method) 1 2 3)"
+    (-> (config)
+      (assoc :clojure-version {:major 1 :minor 12})
+      (assoc-in ['lint/prefer-method-values :enabled] true))))

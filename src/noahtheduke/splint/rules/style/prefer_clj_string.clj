@@ -5,7 +5,8 @@
 (ns ^:no-doc noahtheduke.splint.rules.style.prefer-clj-string
   (:require
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-   [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.rules :refer [defrule]]
+   [noahtheduke.splint.rules.helpers :refer [interop->clj-string]]))
 
 (set! *warn-on-reflection* true)
 
@@ -20,20 +21,6 @@
 (defn to-str?? [sexp]
   (and (symbol? sexp)
     (#{".toString" "str"} (name sexp))))
-
-(def interop->clj-string
-  '{.contains clojure.string/includes?
-    .endsWith clojure.string/ends-with?
-    .replace clojure.string/replace
-    .split clojure.string/split
-    .startsWith clojure.string/starts-with?
-    .toLowerCase clojure.string/lower-case
-    .toUpperCase clojure.string/upper-case
-    .trim clojure.string/trim})
-
-(defn interop-symbol? [sym]
-  (and (symbol? sym)
-    (interop->clj-string sym)))
 
 (defrule style/prefer-clj-string
   "Prefer clojure.string to interop.
@@ -61,7 +48,7 @@
                 ((? _ upper-case??) (subs ?cap 0 1))
                 ((? _ lower-case??) (subs ?cap 1)))
               '((? _ to-str??) (.reverse (StringBuilder. ?rev)))
-              '((? plain interop-symbol?) ?*args)]
+              '((? plain string-interop-method?) ?*args)]
    :message "Use the `clojure.string` function instead of interop."
    :on-match (fn [ctx rule form {:syms [?cap ?rev ?plain ?args]}]
                (cond

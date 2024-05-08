@@ -17,7 +17,7 @@
 
 (def diagnostics
   (check-all (io/file "corpus" "printer_test.clj")
-    '{naming/single-segment-namespace {:enabled false}}))
+    {'naming/single-segment-namespace {:enabled false}}))
 
 (defn print-result-lines [output]
   (-> (sut/print-results {:config {:output output}

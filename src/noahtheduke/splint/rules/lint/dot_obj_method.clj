@@ -4,6 +4,7 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.dot-obj-method
   (:require
+   [noahtheduke.splint.config :refer [get-config]]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]))
 
@@ -18,7 +19,9 @@
              (Character/isUpperCase ^char (nth sym (inc idx))))))))
 
 (defrule lint/dot-obj-method
-  "Using the `.method` form maps the method call to Clojure's natural function position.
+  "Using the `.method` form maps the method symbol to Clojure's natural function position.
+
+  NOTE: This rule is disabled if `lint/prefer-method-values` is enabled to prevent conflicting disagnostics.
 
   Examples:
 
@@ -31,5 +34,6 @@
   {:pattern '(. ?obj (? method symbol-not-class?) ?*args)
    :message "Intention is clearer with `.method` form."
    :on-match (fn [ctx rule form {:syms [?obj ?method ?args]}]
-               (let [replace-form `(~(symbol (str "." ?method)) ~?obj ~@?args)]
-                 (->diagnostic ctx rule form {:replace-form replace-form})))})
+               (when-not (:enabled (get-config ctx 'lint/prefer-method-values))
+                 (let [replace-form `(~(symbol (str "." ?method)) ~?obj ~@?args)]
+                   (->diagnostic ctx rule form {:replace-form replace-form}))))})

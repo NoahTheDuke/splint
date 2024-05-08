@@ -13,8 +13,16 @@
 
 (defexpect dot-obj-usage-test
   (expect-match
-    [{:form '(. obj method 1 2 3)
+    [{:rule-name 'lint/dot-obj-method
+      :form '(. obj method 1 2 3)
       :message "Intention is clearer with `.method` form."
       :alt '(.method obj 1 2 3)}]
     "(. obj method 1 2 3)"
-    (config)))
+    (config))
+  (expect-match
+    [{:rule-name 'lint/prefer-method-values
+      :alt '(CLASS/.method obj 1 2 3)}]
+    "(. obj method 1 2 3)"
+    (-> (config)
+      (assoc :clojure-version {:major 1 :minor 12})
+      (assoc-in ['lint/prefer-method-values :enabled] true))))

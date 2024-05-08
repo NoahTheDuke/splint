@@ -12,7 +12,7 @@
    [noahtheduke.splint.rules :refer [global-rules]]
    [noahtheduke.splint.utils :refer [simple-type]]))
 
-(defn get-config [rule]
+(defn rule-config [rule]
   (@default-config (:full-name rule)))
 
 (defn print-table
@@ -32,7 +32,7 @@
   (let [headers [{:name :enabled :title "Enabled by default" :align :left}
                  {:name :added :title "Version Added" :align :left}
                  {:name :updated :title "Version Updated" :align :left}]]
-    (print-table headers [(get-config rule)])))
+    (print-table headers [(rule-config rule)])))
 
 (defn render-version-note [rule]
   (when-let [min-clojure-version (:min-clojure-version rule)]
@@ -65,7 +65,7 @@
             "```"))))))
 
 (defn build-styles [rule]
-  (let [config (get-config rule)
+  (let [config (rule-config rule)
         chosen-style (:chosen-style config)
         supported-style (:supported-styles config)]
     (when (and (or chosen-style supported-style)
@@ -79,7 +79,7 @@
                    (str/join ", "))}])))
 
 (defn build-other-configs [rule]
-  (let [config (get-config rule)
+  (let [config (rule-config rule)
         opts (-> config
                (dissoc :description :enabled
                  :added :updated
@@ -106,7 +106,7 @@
           config)))))
 
 (defn render-reference [rule]
-  (let [config (get-config rule)
+  (let [config (rule-config rule)
         guide-ref (:guide-ref config)
         outside-link (:link config)]
     (when (or guide-ref outside-link)

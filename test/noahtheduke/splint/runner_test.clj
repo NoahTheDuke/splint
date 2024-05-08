@@ -89,9 +89,13 @@
                           'lint/warn-on-reflection]))]
     (expect
       (match?
-        {:list [{:full-name 'lint/if-else-nil}
-                {:full-name 'naming/lisp-case}]
-         :file [{:full-name 'lint/warn-on-reflection}]}
+        {:rules {'lint/if-else-nil {:full-name 'lint/if-else-nil}
+                 'naming/lisp-case {:full-name 'naming/lisp-case}
+                 'lint/warn-on-reflection {:full-name 'lint/warn-on-reflection}}
+         :rules-by-type
+         {:list ['lint/if-else-nil
+                 'naming/lisp-case]
+          :file ['lint/warn-on-reflection]}}
         (sut/prepare-rules config rules)))))
 
 (defexpect update-rules-test
@@ -104,72 +108,72 @@
                          ['lint/if-else-nil
                           'naming/lisp-case
                           'lint/warn-on-reflection]))
-        rules (sut/prepare-rules config rules)]
+        rules (:rules (sut/prepare-rules config rules))]
     (expect rules (sut/update-rules rules nil))
     (expect
       (match?
-        {:list [{:full-name 'lint/if-else-nil
-                 :config {:enabled false}}
-                {:full-name 'naming/lisp-case
-                 :config {:enabled false}}]
-         :file [{:full-name 'lint/warn-on-reflection
-                 :config {:enabled false}}]}
+        {'lint/if-else-nil {:full-name 'lint/if-else-nil
+                            :config {:enabled false}}
+         'naming/lisp-case {:full-name 'naming/lisp-case
+                            :config {:enabled false}}
+         'lint/warn-on-reflection {:full-name 'lint/warn-on-reflection
+                                   :config {:enabled false}}}
         (sut/update-rules rules ^:splint/disable [])))
     (expect
       (match?
-        {:list [{:full-name 'lint/if-else-nil
-                 :config {:enabled false}}
-                {:full-name 'naming/lisp-case
-                 :config {:enabled true}}]
-         :file [{:full-name 'lint/warn-on-reflection
-                 :config {:enabled false}}]}
+        {'lint/if-else-nil {:full-name 'lint/if-else-nil
+                            :config {:enabled false}}
+         'naming/lisp-case {:full-name 'naming/lisp-case
+                            :config {:enabled true}}
+         'lint/warn-on-reflection {:full-name 'lint/warn-on-reflection
+                                   :config {:enabled false}}}
         (sut/update-rules rules ^{:splint/disable ['lint]} [])))
     (expect
       (match?
-        {:list [{:full-name 'lint/if-else-nil
-                 :config {:enabled false}}
-                {:full-name 'naming/lisp-case
-                 :config {:enabled false}}]
-         :file [{:full-name 'lint/warn-on-reflection
-                 :config {:enabled false}}]}
+        {'lint/if-else-nil {:full-name 'lint/if-else-nil
+                            :config {:enabled false}}
+         'naming/lisp-case {:full-name 'naming/lisp-case
+                            :config {:enabled false}}
+         'lint/warn-on-reflection {:full-name 'lint/warn-on-reflection
+                                   :config {:enabled false}}}
         (sut/update-rules rules ^{:splint/disable ['lint 'naming]} [])))
     (expect
       (match?
-        {:list [{:full-name 'lint/if-else-nil
-                 :config {:enabled true}}
-                {:full-name 'naming/lisp-case
-                 :config {:enabled true}}]
-         :file [{:full-name 'lint/warn-on-reflection
-                 :config {:enabled false}}]}
+        {'lint/if-else-nil {:full-name 'lint/if-else-nil
+                            :config {:enabled true}}
+         'naming/lisp-case {:full-name 'naming/lisp-case
+                            :config {:enabled true}}
+         'lint/warn-on-reflection {:full-name 'lint/warn-on-reflection
+                                   :config {:enabled false}}}
         (sut/update-rules rules ^{:splint/disable ['lint/warn-on-reflection]} [])))
     (expect
       (match?
-        {:list [{:full-name 'lint/if-else-nil
-                 :config {:enabled true}}
-                {:full-name 'naming/lisp-case
-                 :config {:enabled false}}]
-         :file [{:full-name 'lint/warn-on-reflection
-                 :config {:enabled false}}]}
+        {'lint/if-else-nil {:full-name 'lint/if-else-nil
+                            :config {:enabled true}}
+         'naming/lisp-case {:full-name 'naming/lisp-case
+                            :config {:enabled false}}
+         'lint/warn-on-reflection {:full-name 'lint/warn-on-reflection
+                                   :config {:enabled false}}}
         (sut/update-rules rules ^{:splint/disable ['naming/lisp-case
                                                    'lint/warn-on-reflection]} [])))
     (expect
       (match?
-        {:list [{:full-name 'lint/if-else-nil
-                 :config {:enabled true}}
-                {:full-name 'naming/lisp-case
-                 :config {:enabled false}}]
-         :file [{:full-name 'lint/warn-on-reflection
-                 :config {:enabled false}}]}
+        {'lint/if-else-nil {:full-name 'lint/if-else-nil
+                            :config {:enabled true}}
+         'naming/lisp-case {:full-name 'naming/lisp-case
+                            :config {:enabled false}}
+         'lint/warn-on-reflection {:full-name 'lint/warn-on-reflection
+                                   :config {:enabled false}}}
         (sut/update-rules rules ^{:splint/disable ['naming
                                                    'lint/warn-on-reflection]} [])))
     (expect
       (match?
-        {:list [{:full-name 'lint/if-else-nil
-                 :config {:enabled true}}
-                {:full-name 'naming/lisp-case
-                 :config {:enabled true}}]
-         :file [{:full-name 'lint/warn-on-reflection
-                 :config {:enabled true}}]}
+        {'lint/if-else-nil {:full-name 'lint/if-else-nil
+                            :config {:enabled true}}
+         'naming/lisp-case {:full-name 'naming/lisp-case
+                            :config {:enabled true}}
+         'lint/warn-on-reflection {:full-name 'lint/warn-on-reflection
+                                   :config {:enabled true}}}
         (sut/update-rules rules ^{:splint/disable ['asdf]} [])))))
 
 (defexpect require-files-test

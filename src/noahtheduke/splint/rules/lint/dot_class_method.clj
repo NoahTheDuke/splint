@@ -4,23 +4,21 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.dot-class-method
   (:require
+   [noahtheduke.splint.config :refer [get-config]]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
-(defn symbol-class? [sym]
-  (and (symbol? sym)
-    (:splint/import-ns (meta sym))))
-
 (defn method?? [sexp]
-  (or (symbol? sexp)
+  (or (simple-symbol? sexp)
     (and (list? sexp)
       (= 1 (count sexp)))))
 
 (defrule lint/dot-class-method
-  "Using the `Obj/staticMethod` form maps the method call to Clojure's natural function
-  position.
+  "Using the `Obj/staticMethod` form maps the method call to Clojure's natural function position.
+
+  NOTE: This rule is disabled if `lint/prefer-method-values` is enabled to prevent conflicting disagnostics.
 
   Examples:
 
@@ -34,6 +32,7 @@
   {:pattern '(. (? class symbol-class?) (? method method??) ?*args)
    :message "Intention is clearer with `Obj/staticMethod` form."
    :on-match (fn [ctx rule form {:syms [?class ?method ?args] :as binds}]
-               (let [?method (if (list? ?method) (first ?method) ?method)
-                     replace-form `(~(symbol (str ?class "/" ?method)) ~@?args)]
-                 (->diagnostic ctx rule form {:replace-form replace-form})))})
+               (when-not (:enabled (get-config ctx 'lint/prefer-method-values))
+                 (let [?method (if (list? ?method) (first ?method) ?method)
+                       replace-form `(~(symbol (str ?class "/" ?method)) ~@?args)]
+                   (->diagnostic ctx rule form {:replace-form replace-form}))))})

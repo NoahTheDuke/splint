@@ -10,27 +10,28 @@
 (set! *warn-on-reflection* true)
 
 (defn config []
-  (assoc (single-rule-config 'lint/prefer-method-values)
-    :clojure-version {:major 1 :minor 12}))
+  (-> (single-rule-config 'lint/prefer-method-values)
+    (assoc-in ['style/prefer-clj-string :enabled] true)
+    (assoc :clojure-version {:major 1 :minor 12})))
 
 (defexpect prefer-method-values-test
   (expect-match
     [{:rule-name 'lint/prefer-method-values
-      :form '(.toUpperCase "noah")
+      :form '(.bar foo baz)
       :message "Prefer uniform Class/member syntax instead of traditional interop."
-      :alt nil}]
-    "(.toUpperCase \"noah\")"
+      :alt '(CLASS/.bar foo baz)}]
+    "(.bar foo baz)"
     (config))
   (expect-match
     [{:rule-name 'lint/prefer-method-values
-      :form '(. "noah" toUpperCase)
+      :form '(. Object (method) 1 2 3)
       :message "Prefer uniform Class/member syntax instead of traditional interop."
-      :alt nil}]
-    "(. \"noah\" toUpperCase)"
+      :alt '(Object/method 1 2 3)}]
+    "(ns foo (:import (java.lang Object))) (. Object (method) 1 2 3)"
     (config)))
 
 (defexpect under-version-test
   (expect-match
     nil
-    "(. \"noah\" toUpperCase)"
+    "(.bar foo baz)"
     (assoc (config) :clojure-version {:major 1 :minor 11})))

@@ -129,10 +129,9 @@
      options)))
 
 (defn get-config
-  {:doc "Return merged config for a specific rule."
-   :deprecated "1.11"}
-  [_ctx rule]
-  (:config rule))
+  "Return merged config for a specific rule."
+  [ctx rule-name]
+  (-> ctx :rules rule-name :config))
 
 (defn spit-config [{:keys [diagnostics]}]
   (let [rule-strs (->> (group-by :rule-name diagnostics)

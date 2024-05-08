@@ -5,7 +5,8 @@
 (ns ^:no-doc noahtheduke.splint.rules.performance.dot-equals
   (:require
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-   [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.rules :refer [defrule]]
+   [noahtheduke.splint.config :refer [get-config]]))
 
 (set! *warn-on-reflection* true)
 
@@ -29,12 +30,12 @@
               '(= ?any (? string string?))]
    :ext :clj
    :on-match (fn [ctx rule form {:syms [?string ?any]}]
-               (let [method-values (:enabled ('lint/prefer-method-values (:config ctx)))
+               (let [method-values (:enabled (get-config ctx 'lint/prefer-method-values))
                      replace-form (if method-values
-                                    (list 'String/equals ?string ?any)
+                                    (list 'String/.equals ?string ?any)
                                     (list '.equals ?string ?any))
                      msg (if method-values
-                           "Rely on `String/equals` when comparing against string literals."
+                           "Rely on `String/.equals` when comparing against string literals."
                            "Rely on `.equals` when comparing against string literals.")]
                  (->diagnostic ctx rule form {:replace-form replace-form
                                               :message msg})))})

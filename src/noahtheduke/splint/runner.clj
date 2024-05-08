@@ -82,85 +82,82 @@
   "For each rule: if the rule is enabled, call `check-rule`.
   If `check-rule` returns a non-nil result, add or append it to the accumulator.
   Otherwise, return the accumulator."
-  [ctx rules form]
+  [ctx rule-names form]
   (reduce
-    (fn [acc rule]
-      (try
+    (fn [acc rule-name]
+      (let [rule (-> ctx :rules rule-name)]
         (if (-> rule :config :enabled)
-          (let [result (check-rule ctx rule form)]
-            (if (nil? result)
-              acc
-              (if (sequential? result)
-                (into acc result)
-                (conj acc result))))
-          acc)
-        (catch Exception ex
-          (conj acc (runner-error->diagnostic
-                      (exception->ex-info ex {:form form
-                                              :rule-name (:full-name rule)
-                                              :message (ex-message ex)
-                                              :filename (:filename ctx)}))))))
+          (try
+            (let [result (check-rule ctx rule form)]
+              (if (nil? result)
+                acc
+                (if (sequential? result)
+                  (into acc result)
+                  (conj acc result))))
+            (catch Exception ex
+              (conj acc (runner-error->diagnostic
+                          (exception->ex-info ex {:form form
+                                                  :rule-name (:full-name rule)
+                                                  :message (ex-message ex)
+                                                  :filename (:filename ctx)})))))
+          acc)))
     nil
-    rules))
+    rule-names))
 
 (defn check-form
   "Checks a given form against the appropriate rules then calls `on-match` to build the
   diagnostic and store it in `ctx`."
-  [ctx rules form]
+  [ctx rule-names form]
   ;; `rules` is a vector and therefore it's faster to check
-  (when (pos? (count rules))
-    (when-let [diagnostics (check-all-rules-of-type ctx rules form)]
+  (when (pos? (count rule-names))
+    (when-let [diagnostics (check-all-rules-of-type ctx rule-names form)]
       (update ctx :diagnostics swap! into diagnostics))))
 
-(defn update-rules [rules-by-type form]
+(defn update-rules [rules-map form]
   (if-let [disabled-rules (some-> form meta :splint/disable)]
     (if (true? disabled-rules)
       ;; disable everything
       (update-vals
-        rules-by-type
-        (fn [rules]
-          (mapv* (fn [rule]
-                   (assoc-in rule [:config :enabled] false))
-            rules)))
+        rules-map
+        (fn [rule]
+          (assoc-in rule [:config :enabled] false)))
       ;; parse list of disabled genres and specific rules
       (let [{genres true specific-rules false} (group-by simple-symbol? disabled-rules)
             genres (into #{} (map str) genres)
             specific-rules (set specific-rules)]
         (update-vals
-          rules-by-type
-          (fn [rules]
-            (mapv*
-              (fn [rule]
-                (let [genre (:genre rule)
-                      rule-name (:full-name rule)]
-                  (if (or (contains? genres genre)
-                        (contains? specific-rules rule-name))
-                    (assoc-in rule [:config :enabled] false)
-                    rule)))
-              rules)))))
-    rules-by-type))
+          rules-map
+          (fn [rule]
+            (let [genre (:genre rule)
+                  rule-name (:full-name rule)]
+              (if (or (contains? genres genre)
+                    (contains? specific-rules rule-name))
+                (assoc-in rule [:config :enabled] false)
+                rule))))))
+    rules-map))
 
 (defn check-and-recur
   "Check a given form and then map recur over each of the form's children."
-  [ctx rules-by-type filename parent-form form]
-  (let [ctx (assoc ctx :parent-form parent-form)
-        rules-by-type (update-rules rules-by-type form)
+  [ctx filename parent-form form]
+  (let [ctx (-> ctx
+              (assoc :parent-form parent-form)
+              (update :rules update-rules form))
         form-type (simple-type form)]
-    (when-let [rules-for-type (rules-by-type form-type)]
+    (when-let [rules-for-type (-> ctx :rules-by-type form-type)]
       (check-form ctx rules-for-type form))
     ;; Can't recur in non-seqable forms
     (case form-type
       :list (when-not (= 'quote (first form))
-              (run!* #(check-and-recur ctx rules-by-type filename form %) form))
+              (run!* #(check-and-recur ctx filename form %) form))
       ;; There is currently no need for checking MapEntry,
       ;; so check each individually.
       :map (run!*
              (fn [kv]
-               (check-and-recur ctx rules-by-type filename form (key kv))
-               (check-and-recur ctx rules-by-type filename form (val kv)))
+               (check-and-recur ctx filename form (key kv))
+               (check-and-recur ctx filename form (val kv)))
              form)
       (:set :vector)
-      (run!* #(check-and-recur ctx rules-by-type filename form %) form)
+      (run!* #(check-and-recur ctx filename form %) form)
       ; else
       nil)
     nil))
@@ -180,34 +177,35 @@
 
 (defn pre-filter-rules
   "Fully remove disabled rules or rules that don't apply to the current filetype."
-  [ctx rules-by-type]
+  [ctx]
   (let [ext (:ext ctx)]
-    (update-vals
-      rules-by-type
-      (fn [rules]
-        (into []
-          (keep (fn [rule]
-                  (some->> rule
-                    (right-ext? ext)
-                    (right-path? ctx))))
-          rules)))))
+    (update
+      ctx
+      :rules
+      update-vals
+      (fn [rule]
+        (if (map? rule)
+          (some->> rule
+            (right-ext? ext)
+            (right-path? ctx))
+          rule)))))
 
 (defn parse-and-check-file
   "Parse the given file and then check each form."
-  [ctx rules-by-type {:keys [ext ^File file contents] :as file-obj}]
+  [ctx {:keys [ext ^File file contents] :as file-obj}]
   (try
     (when-let [parsed-file (parse-file file-obj)]
       (let [ctx (-> ctx
                   (update :checked-files swap! conj file)
                   (assoc :ext ext)
                   (assoc :filename file)
-                  (assoc :file-str contents))
-            rules-by-type (pre-filter-rules ctx rules-by-type)]
+                  (assoc :file-str contents)
+                  (pre-filter-rules))]
         ;; Check any full-file rules
-        (when-let [file-rules (:file rules-by-type)]
+        (when-let [file-rules (-> ctx :rules-by-type :file)]
           (check-form ctx file-rules parsed-file))
         ;; Step over each top-level form (parent-form is nil)
-        (run!* #(check-and-recur ctx rules-by-type file nil %) parsed-file)
+        (run!* #(check-and-recur ctx file nil %) parsed-file)
         nil))
     (catch Exception ex
       (let [data (ex-data ex)]
@@ -231,20 +229,20 @@
     file-obj
     (assoc file-obj :contents (slurp (:file file-obj)))))
 
-(defn check-files-parallel [ctx rules-by-type files]
-  (pmap* #(parse-and-check-file ctx rules-by-type (slurp-file %)) files))
+(defn check-files-parallel [ctx files]
+  (pmap* #(parse-and-check-file ctx (slurp-file %)) files))
 
-(defn check-files-serial [ctx rules-by-type files]
-  (mapv* #(parse-and-check-file ctx rules-by-type (slurp-file %)) files))
+(defn check-files-serial [ctx files]
+  (mapv* #(parse-and-check-file ctx (slurp-file %)) files))
 
 (defn check-files!
   "Call into the relevant `check-path-X` function, depending on the given config."
-  [ctx rules-by-type files]
+  [ctx files]
   (cond
     (-> ctx :config :parallel)
-    (check-files-parallel ctx rules-by-type files)
+    (check-files-parallel ctx files)
     :else
-    (check-files-serial ctx rules-by-type files)))
+    (check-files-serial ctx files)))
 
 (defn require-files! [config]
   (doseq [f (:required-files config)]
@@ -253,29 +251,30 @@
         (println "Can't load" f "as it doesn't exist.")))))
 
 (defn prepare-rules [config rules]
-  (let [conjv (fnil conj [])]
-    (->> config
-      (reduce-kv
-        (fn [rules rule-name rule-config]
-          (if (and (map? rule-config)
-                (contains? rule-config :enabled))
-            (if-let [rule (rules rule-name)]
-              (let [rule-config (assoc rule-config :rule-name rule-name)
-                    rule-config (if (support-clojure-version?
-                                      (:min-clojure-version rule)
-                                      (:clojure-version config))
-                                  rule-config
-                                  (assoc rule-config :enabled false))]
-                (assoc-in rules [rule-name :config] rule-config))
-              rules)
-            rules))
-        rules)
-      (vals)
-      (sort-by :full-name)
-      (reduce
-        (fn [rules rule]
-          (update rules (:init-type rule) conjv rule))
-        {}))))
+  (let [rule-names (set (concat (keys config) (keys rules)))]
+    (-> (reduce
+          (fn [acc rule-name]
+            (if (symbol? rule-name)
+              (let [rule (rules rule-name)
+                    rule-config (config rule-name)
+                    rule (if (and (map? rule-config)
+                               (contains? rule-config :enabled))
+                           (let [rule-config (assoc rule-config :rule-name rule-name)
+                                 rule-config (if (support-clojure-version?
+                                                   (:min-clojure-version rule)
+                                                   (:clojure-version config))
+                                               rule-config
+                                               (assoc rule-config :enabled false))]
+                             (assoc rule :config rule-config))
+                           rule)]
+                (-> acc
+                  (assoc-in [:rules rule-name] rule)
+                  (update-in [:rules-by-type (:init-type rule)] conj rule-name)))
+              acc))
+          {:rules {}
+           :rules-by-type {}}
+          rule-names)
+      (update :rules-by-type update-vals sort))))
 
 (defn prepare-context [rules config]
   (-> rules
@@ -346,9 +345,10 @@
    (require-files! options)
    (let [config (or (:test-config options) (conf/load-config options))
          rules-by-type (prepare-rules config (or rules (:rules @global-rules)))
+         config (apply dissoc config (keys (:rules rules-by-type)))
          ctx (prepare-context rules-by-type config)
          files (resolve-files-from-paths ctx paths)]
-     (check-files! ctx rules-by-type files)
+     (check-files! ctx files)
      (build-result-map ctx files))))
 
 (defn run
@@ -393,7 +393,6 @@
 (comment
   (dotimes [_ 100]
     (run ["--silent" "--no-parallel"]))
-  (prn :heck)
   (do (require '[clj-async-profiler.core :as prof])
     (prof/profile
       (run ["--silent" "--no-parallel"]))

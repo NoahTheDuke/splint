@@ -39,14 +39,18 @@
   (expect-match
     [{:rule-name 'performance/dot-equals
       :form '(= "foo" bar)
-      :message "Rely on `String/equals` when comparing against string literals."
-      :alt '(String/equals "foo" bar)}]
+      :message "Rely on `String/.equals` when comparing against string literals."
+      :alt '(String/.equals "foo" bar)}]
     "(= \"foo\" bar)"
-    (update (config) 'lint/prefer-method-values assoc :enabled true))
+    (-> (config)
+      (assoc :clojure-version {:major 1 :minor 12})
+      (update 'lint/prefer-method-values assoc :enabled true)))
   (expect-match
     [{:rule-name 'performance/dot-equals
       :form '(= bar "foo")
-      :message "Rely on `String/equals` when comparing against string literals."
-      :alt '(String/equals "foo" bar)}]
+      :message "Rely on `String/.equals` when comparing against string literals."
+      :alt '(String/.equals "foo" bar)}]
     "(= bar \"foo\")"
-    (update (config) 'lint/prefer-method-values assoc :enabled true)))
+    (-> (config)
+      (assoc :clojure-version {:major 1 :minor 12})
+      (update 'lint/prefer-method-values assoc :enabled true))))

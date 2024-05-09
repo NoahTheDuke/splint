@@ -79,7 +79,7 @@
 (defexpect ^:integration netrunner-test
   (let [netrunner (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "114")
         results (run-impl [{:path netrunner}]
-                  {:test-config
+                  {:config-override
                    (-> all-enabled-config
                      (assoc :silent true)
                      (assoc :parallel false)

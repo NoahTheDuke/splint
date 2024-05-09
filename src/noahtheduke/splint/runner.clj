@@ -340,16 +340,19 @@
 
 (defn run-impl
   "Actually perform check."
-  ([paths options] (run-impl paths options nil))
-  ([paths options rules]
-   (require-files! options)
-   (let [config (or (:test-config options) (conf/load-config options))
-         rules-by-type (prepare-rules config (or rules (:rules @global-rules)))
-         config (apply dissoc config (keys (:rules rules-by-type)))
-         ctx (prepare-context rules-by-type config)
-         files (resolve-files-from-paths ctx paths)]
-     (check-files! ctx files)
-     (build-result-map ctx files))))
+  [paths options]
+  (require-files! options)
+  (let [config (or (:config-override options) (conf/load-config options))
+        rules-by-type (prepare-rules config (:rules @global-rules))
+        config (apply dissoc config (keys (:rules rules-by-type)))
+        ctx (prepare-context rules-by-type config)
+        files (resolve-files-from-paths ctx paths)]
+    (check-files! ctx files)
+    (build-result-map ctx files)))
+
+(defn auto-gen-config [paths options]
+  (let [all-enabled (update-vals @conf/default-config #(assoc % :enabled true))]
+    (conf/spit-config (run-impl paths {:config-override (merge options all-enabled)}))))
 
 (defn run
   "Convert command line args to usable options, pass to runner, print output."
@@ -373,8 +376,7 @@
               (println "Paths must be provided in a project file (project.clj or deps.edn) or as the final arguments when calling. See --help for details."))
           {:exit 1})
         (:auto-gen-config options)
-        (let [all-enabled (update-vals @conf/default-config #(assoc % :enabled true))]
-          (conf/spit-config (run-impl paths options all-enabled)))
+        (auto-gen-config paths options)
         :else
         (let [results (run-impl paths options)
               total-time (int (- (System/currentTimeMillis) start-time))

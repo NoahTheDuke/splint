@@ -5,6 +5,7 @@
 (ns noahtheduke.splint.runner-test
   (:require
    [clojure.java.io :as io]
+   [clojure.string :as str]
    [expectations.clojure.test :refer [defexpect expect]]
    [matcher-combinators.test :refer [match?]]
    [noahtheduke.splint.dev :as dev]
@@ -206,3 +207,41 @@
                                       :name "eq-1-1"}}}
           @global-rules))
       (reset! global-rules existing-rules))))
+
+(defexpect auto-gen-config-test
+  (with-redefs [spit (fn [file content]
+                       {:file file
+                        :content content})]
+    (expect
+      (match?
+        {:file ".splint.edn"
+         :content
+         (str/join
+           "\n"
+           [(format ";; Splint configuration auto-generated on %s."
+              (.format (java.text.SimpleDateFormat. "yyyy-MM-dd")
+                (java.util.Date.)))
+            ";; All failing rules have been disabled and can be enabled as time allows."
+            ""
+            "{"
+            " ;; Diagnostics count: 1"
+            " ;; Always set *warn-on-reflection* to avoid reflection in interop."
+            " lint/warn-on-reflection {:enabled false}"
+            ""
+            " ;; Diagnostics count: 1"
+            " ;; Avoid single-segment namespaces."
+            " naming/single-segment-namespace {:enabled false}"
+            ""
+            " ;; Diagnostics count: 1"
+            " ;; Prefer `not=` to `(not (= x y))`."
+            " style/not-eq {:enabled false}"
+            ""
+            " ;; Diagnostics count: 1"
+            " ;; `when` has an implicit `do`."
+            " style/when-do {:enabled false}"
+            ""
+            " ;; Diagnostics count: 1"
+            " ;; Prefer `when-not` to `(when (not x) ...)`."
+            " style/when-not-call {:enabled false}"
+            "}"])}
+        (sut/auto-gen-config [(io/file "corpus" "printer_test.clj")] {:clojure-version {:major 1 :minor 11}})))))

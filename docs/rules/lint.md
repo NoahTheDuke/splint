@@ -97,8 +97,9 @@ x
 | ------------------ | ------------- | --------------- |
 | true               | 0.1           | 0.1             |
 
-Using the `Obj/staticMethod` form maps the method call to Clojure's natural function
-position.
+Using the `Obj/staticMethod` form maps the method call to Clojure's natural function position.
+
+NOTE: This rule is disabled if `lint/prefer-method-values` is enabled to prevent conflicting disagnostics.
 
 ### Examples
 
@@ -117,9 +118,11 @@ position.
 
 | Enabled by default | Version Added | Version Updated |
 | ------------------ | ------------- | --------------- |
-| true               | 0.1           | 0.1             |
+| true               | 0.1           | 1.15.2          |
 
-Using the `.method` form maps the method call to Clojure's natural function position.
+Using the `.method` form maps the method symbol to Clojure's natural function position.
+
+NOTE: This rule is disabled if `lint/prefer-method-values` is enabled to prevent conflicting disagnostics.
 
 ### Examples
 
@@ -130,6 +133,12 @@ Using the `.method` form maps the method call to Clojure's natural function posi
 ; prefer
 (.method obj args)
 ```
+
+### Configurable Attributes
+
+| Name            | Default | Options                 |
+| --------------- | ------- | ----------------------- |
+| `:chosen-style` | `:dot`  | `:dot`, `:method-value` |
 
 ---
 
@@ -151,10 +160,6 @@ with the same name, but it's good to catch these things early too.
 ; prefer
 (defrecord Foo [a b c])
 ```
-
-### Reference
-
-* https://guide.clojure.style/#naming-conversion-functions
 
 ---
 
@@ -515,7 +520,7 @@ Empty loops with nested when can be `while`.
 
 **NOTE**: Requires Clojure version 1.12.0.
 
-Uniform qualified method values are a new syntax for calling into java code. They must resolve to a single static or instance method and to help with that, a new metadata syntax can be used: `^[]` aka `^{:param-tags []}`. Types are specified with classes, each corrosponding to an argument in the target method: `(^[long String] SomeClass/someMethod 1 "Hello world!")`. It compiles to a direct call without any reflection, guaranteeing optimal performance.
+Uniform qualified method values are a new syntax for calling into java code. They must resolve to a single static or instance method and to help with that, a new metadata syntax can be used: `^[]` aka `^{:param-tags []}`. Types are specified with classes, each corrosponding to an argument in the target method: `(^[long String] SomeClass/.someMethod 1 "Hello world!")`. It compiles to a direct call without any reflection, guaranteeing optimal performance.
 
 If it doesn't resolve to a single method, then the Clojure compiler throws a syntax error (IllegalArgumentException). Such ahead-of-time compilation checking is a powerful and helpful tool in writing correct and performant code. Given that, it is preferable to exclusively use method values.
 
@@ -532,7 +537,7 @@ If it doesn't resolve to a single method, then the Clojure compiler throws a syn
 
 ### Reference
 
-* <https://insideclojure.org/2024/02/12/method-values>
+* <https://clojure.org/news/2024/04/28/clojure-1-12-alpha10#method_values>
 
 ---
 

@@ -603,9 +603,9 @@ Checks for simple nested multiply.
 
 | Enabled by default | Version Added | Version Updated |
 | ------------------ | ------------- | --------------- |
-| true               | 0.1.69        | 0.1.69          |
+| true               | 0.1.69        | 1.15.2          |
 
-`new` is discouraged for dot usage.
+`new` special form is discouraged for dot usage.
 
 ### Examples
 
@@ -613,9 +613,18 @@ Checks for simple nested multiply.
 ; avoid
 (new java.util.ArrayList 100)
 
-; prefer
+; prefer (chosen style :dot (default))
 (java.util.ArrayList. 100)
+
+; prefer (chosen style :method-value, requires clojure version 1.12+)
+(java.util.ArrayList/new 100)
 ```
+
+### Configurable Attributes
+
+| Name            | Default | Options                 |
+| --------------- | ------- | ----------------------- |
+| `:chosen-style` | `:dot`  | `:dot`, `:method-value` |
 
 ---
 

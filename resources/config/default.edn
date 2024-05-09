@@ -41,7 +41,7 @@
  {:description "Prefer `(.method obj)` to `(. obj method)`."
   :enabled true
   :added "0.1"
-  :updated "<<next>>"
+  :updated "1.15.2"
   :supported-styles [:dot :method-value]
   :chosen-style :dot}
 
@@ -270,7 +270,7 @@
  {:description "Records should use PascalCase."
   :enabled true
   :added "0.1.69"
-  :updated "<<next>>"
+  :updated "1.15.2"
   :guide-ref "#naming-protocols-records-structs-and-types"}
 
  naming/single-segment-namespace
@@ -498,7 +498,7 @@
  {:description "Prefer `(X.)` or `(X/new)` to `(new X)`."
   :enabled true
   :added "0.1.69"
-  :updated "<<next>>"
+  :updated "1.15.2"
   :chosen-style :dot
   :supported-styles [:dot :method-value]}
 

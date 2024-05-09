@@ -8,6 +8,30 @@
 
 Through community and core practices over the years, various core libraries have gained standard or expected aliases. To better align with the community, it's best to use those aliases in favor of alternatives.
 
+Current namespaces and aliases:
+
+| namespace | alias |
+| --- | --- |
+| clojure.core.async | async |
+| clojure.core.matrix | mat |
+| clojure.core.protocols | p |
+| clojure.core.reducers | r |
+| clojure.data.csv | csv |
+| clojure.data.xml | xml |
+| clojure.datafy | datafy |
+| clojure.edn | edn |
+| clojure.java.io | io |
+| clojure.java.shell | sh |
+| clojure.math | math |
+| clojure.pprint | pp |
+| clojure.set | set |
+| clojure.spec.alpha | s |
+| clojure.string | str |
+| clojure.tools.cli | cli |
+| clojure.tools.logging | log |
+| clojure.walk | walk |
+| clojure.zip | zip |
+
 ### Examples
 
 ```clojure
@@ -57,7 +81,7 @@ Will only warn when there is no `-` before the `-to-`.
 | ------------------ | ------------- | --------------- |
 | true               | 1.3.0         | 1.3.0           |
 
-Use lisp-case for function and variable names. (Replacement is generated with `camel-snake-kebab`.)
+Use lisp-case for function and variable names. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)
 
 ### Examples
 
@@ -111,18 +135,21 @@ a 'p' (such as `map`).
 
 | Enabled by default | Version Added | Version Updated |
 | ------------------ | ------------- | --------------- |
-| true               | 0.1.69        | 1.0             |
+| true               | 0.1.69        | 1.15.2          |
 
-Records should use PascalCase.
+Records should use PascalCase. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)
 
 ### Examples
 
 ```clojure
 ; avoid
 (defrecord foo [a b c])
+(defrecord foo-bar [a b c])
+(defrecord Foo-bar [a b c])
 
 ; prefer
 (defrecord Foo [a b c])
+(defrecord FooBar [a b c])
 ```
 
 ### Reference

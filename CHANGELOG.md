@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## 1.15.2 - 2024-05-09
+
 ### Changed
 
 - Expanded documentation, added CONTRIBUTING.md.

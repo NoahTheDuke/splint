@@ -1,1 +1,3 @@
-{:cljfmt-config-path ".cljfmt.edn"}
+{:cljfmt-config-path ".cljfmt.edn"
+ :project-specs [{:project-path "deps.edn"
+                  :classpath-cmd ["clojure" "-A:dev:test" "-Spath"]}]}

@@ -8,13 +8,17 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Expanded documentation, added CONTRIBUTING.md.
 - Switch all existing uses of `deftest` (including in `new_rule.tmpl`) back to using `defexpect`. Sean fixed the 3-arg issue when I raised it in <https://github.com/clojure-expectations/clojure-test/issues/35>, and it's nice to only import a single namespace instead of multiple.
-- Remove incorrect guide-ref in lint/duplicate-field-name
 - Add table of namespaces to aliases in `naming/conventional-aliases` docs.
 - `naming/record-name` now uses `camel-snake-kebab` to check and convert the given record name to PascalCase.
 - Add `:method-value` style to `style/new-object` to suggest `Foo/new` instead of `Foo.`.
-- Disable `lint/dot-class-method` and `lint/dot-obj-method` if `lint/prefer-method-values` is enabled.
+- Disable `lint/dot-class-method` and `lint/dot-obj-method` when `lint/prefer-method-values` is enabled.
 - Track rules on ctx instead of passing as a separate argument in `runner` functions.
-- Remove rules from `(:config ctx)`, add to `(:rules ctx)` as map of rule-name to rule map. Add `(:rules-by-type ctx)`, a map of simple-type to vector of rule names. Change `check-all-rules-of-type` to reduce over rule names and pull the rule map from `ctx`.
+- Move rules from `(:config ctx)` to `(:rules ctx)` as map of rule-name to rule map. Add `(:rules-by-type ctx)`, a map of simple-type to vector of rule names. Change `check-all-rules-of-type` to reduce over rule names and pull the rule map from `ctx`.
+
+### Fixed
+
+- Remove incorrect guide-ref in `lint/duplicate-field-name`.
+- Get auto-gen-config working again. (See [#16](https://github.com/NoahTheDuke/splint/issues/16))
 
 ## 1.15.1 - 2024-05-06
 

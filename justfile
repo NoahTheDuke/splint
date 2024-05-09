@@ -23,16 +23,19 @@ run *args:
 format *args="check":
     clojure -M:cljfmt {{args}}
 
+clj-kondo:
+    clj-kondo --parallel --lint dev src test
+
 [no-exit-message]
 test *args:
-    clj-kondo --parallel --lint dev src test
+    just clj-kondo
     bb run
     just format
     clojure -M:dev:test:runner -e :integration {{args}}
 
 [no-exit-message]
 test-all *args:
-    clj-kondo --parallel --lint dev src test
+    just clj-kondo
     bb run
     just format
     clojure -M:dev:test:runner {{args}}

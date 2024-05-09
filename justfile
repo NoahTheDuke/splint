@@ -55,6 +55,7 @@ set-version version:
     fd '.(clj|edn|md)' . -x sd '<<next>>' '{{version}}' {}
     sd '{{current_version}}' '{{version}}' README.md
     sd '{{current_version}}' '{{version}}' docs/installation.md
+    sd '{{current_version}}' '{{version}}' docs/usage.md
     sd '## Unreleased' '## Unreleased\n\n## {{version}} - {{today}}' CHANGELOG.md
 
 @clojars:

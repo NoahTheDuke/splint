@@ -51,6 +51,24 @@
     "(merge m {:a 1 :b 2})"
     (update (config) 'performance/assoc-many assoc :enabled true)))
 
+(defexpect single-literal-merge-sort-test
+  (expect-match
+    [{:rule-name 'performance/single-literal-merge
+      :form '(merge a {{:x :y} :a {:foo :bar} :b})
+      :message "Prefer assoc for merging literal maps"
+      :alt '(assoc a {:x :y} :a {:foo :bar} :b)}]
+    "(merge a {{:x :y} :a {:foo :bar} :b})"
+    (config))
+  (expect-match
+    [{:rule-name 'performance/single-literal-merge
+      :form '(merge a {:a :b :c :d :e :f :g :h :i :j :k :l :m
+                       :n :o :p :q :r :s :t :u :v :w :x :y :z})
+      :message "Prefer assoc for merging literal maps"
+      :alt '(assoc a :a :b :c :d :e :f :g :h :i :j :k :l :m :n :o :p :q :r :s :t :u :v :w :x :y :z)}]
+    "(merge a {:a :b :c :d :e :f :g :h :i :j :k :l :m :n :o :p :q :r :s :t :u :v :w :x :y :z})"
+    (config))
+  )
+
 (defexpect single-literal-merge-multiples-test
   (expect-match
     nil

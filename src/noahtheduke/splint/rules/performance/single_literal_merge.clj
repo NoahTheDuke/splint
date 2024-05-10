@@ -17,15 +17,11 @@
 
 (defn single-assoc [?given ?literal]
   (list* 'assoc ?given
-    (->> ?literal
-      (sort-by key)
-      (mapcat identity))))
+    (mapcat identity ?literal)))
 
 (defn multi-assoc [?given ?literal]
   (list* '-> ?given
-    (->> ?literal
-      (sort-by key)
-      (mapv (fn [[k v]] (list 'assoc k v))))))
+    (mapv (fn [[k v]] (list 'assoc k v)) ?literal)))
 
 (defrule performance/single-literal-merge
   "`clojure.core/merge` is inherently slow. Its major benefit is handling nil

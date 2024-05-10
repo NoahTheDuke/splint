@@ -108,10 +108,8 @@
   "Checks a given form against the appropriate rules then calls `on-match` to build the
   diagnostic and store it in `ctx`."
   [ctx rule-names form]
-  ;; `rules` is a vector and therefore it's faster to check
-  (when (pos? (count rule-names))
-    (when-let [diagnostics (check-all-rules-of-type ctx rule-names form)]
-      (update ctx :diagnostics swap! into diagnostics))))
+  (when-let [diagnostics (check-all-rules-of-type ctx rule-names form)]
+    (update ctx :diagnostics swap! into diagnostics)))
 
 (defn update-rules [rules-map form]
   (if-let [disabled-rules (some-> form meta :splint/disable)]
@@ -143,7 +141,7 @@
               (assoc :parent-form parent-form)
               (update :rules update-rules form))
         form-type (simple-type form)]
-    (when-let [rules-for-type (-> ctx :rules-by-type form-type)]
+    (when-let [rules-for-type (-> ctx :rules-by-type form-type not-empty)]
       (check-form ctx rules-for-type form))
     ;; Can't recur in non-seqable forms
     (case form-type
@@ -202,7 +200,7 @@
                   (assoc :file-str contents)
                   (pre-filter-rules))]
         ;; Check any full-file rules
-        (when-let [file-rules (-> ctx :rules-by-type :file)]
+        (when-let [file-rules (-> ctx :rules-by-type :file not-empty)]
           (check-form ctx file-rules parsed-file))
         ;; Step over each top-level form (parent-form is nil)
         (run!* #(check-and-recur ctx file nil %) parsed-file)

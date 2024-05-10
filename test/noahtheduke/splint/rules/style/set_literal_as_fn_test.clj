@@ -13,11 +13,17 @@
 
 (defexpect set-literal-as-fn-test
   (expect-match
-    '[{:alt (case elem (a b c) elem nil)}]
+    [{:rule-name 'style/set-literal-as-fn
+      :form '(#{'a 'b 'c} elem)
+      :message "Prefer `case` to set literal with constant members."
+      :alt '(case elem (a b c) elem nil)}]
     "(#{'a 'b 'c} elem)"
     (config))
   (expect-match
-    '[{:alt (case elem (nil 1 :b c) elem nil)}]
+    [{:rule-name 'style/set-literal-as-fn
+      :form '(#{nil 1 :b 'c} elem)
+      :message "Prefer `case` to set literal with constant members."
+      :alt '(case elem (nil 1 :b c) elem nil)}]
     "(#{nil 1 :b 'c} elem)"
     (config))
   (expect-match nil "(#{'a 'b c} elem)" (config))

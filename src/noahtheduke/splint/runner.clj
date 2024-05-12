@@ -6,7 +6,6 @@
   "Handles parsing and linting all of given files."
   (:require
    [clojure.java.io :as io]
-   [clojure.string :as str]
    [noahtheduke.splint.cli :refer [validate-opts]]
    [noahtheduke.splint.clojure-ext.core :refer [mapv* pmap* run!*]]
    [noahtheduke.splint.config :as conf]
@@ -17,33 +16,26 @@
    [noahtheduke.splint.rules :refer [global-rules]]
    [noahtheduke.splint.utils :refer [simple-type support-clojure-version?]])
   (:import
-   (clojure.lang ExceptionInfo)
    (java.io File)
    (noahtheduke.splint.diagnostic Diagnostic)))
 
 (set! *warn-on-reflection* true)
 
-(defn exception->ex-info
-  ^ExceptionInfo [^Exception ex data]
-  (doto (ExceptionInfo. (or (ex-message ex) "") data ex)
-    (.setStackTrace (.getStackTrace ex))))
-
-(defn runner-error->diagnostic [^Exception ex]
-  (let [data (ex-data ex)
-        message (str/trim (or (:message data)
-                            (ex-message ex)
-                            ""))
+(defn runner-error->diagnostic [ex data]
+  (let [rule-name (cond-> ""
+                    (:rule-name data) (str " during '" (:rule-name data))
+                    true (format " (%s)" (.getName (class ex))))
+        message (or (ex-message ex) "")
         error-msg (format "Splint encountered an error%s: %s"
-                    (if-let [rule-name (:rule-name data)]
-                      (str " during '" rule-name)
-                      "")
-                    message)]
+                          rule-name
+                          message)]
     (->diagnostic
       nil
-      {:full-name (or (:error-name data) 'splint/error)}
+      {:full-name (:error-name data)}
       (:form data)
-      {:message error-msg
-       :filename (:filename data)})))
+      (-> data
+          (assoc :message error-msg)
+          (assoc :exception (Throwable->map ex))))))
 
 (defn check-pattern
   "Call `:pattern` on the form and if it hits, call `:on-match` on it.
@@ -96,10 +88,10 @@
                   (conj acc result))))
             (catch Exception ex
               (conj acc (runner-error->diagnostic
-                          (exception->ex-info ex {:form form
-                                                  :rule-name (:full-name rule)
-                                                  :message (ex-message ex)
-                                                  :filename (:filename ctx)})))))
+                          ex {:error-name 'splint/error
+                              :form form
+                              :rule-name (:full-name rule)
+                              :filename (:filename ctx)}))))
           acc)))
     nil
     rule-names))
@@ -211,15 +203,13 @@
           (let [data (-> data
                        (assoc :error-name 'splint/parsing-error)
                        (assoc :filename file)
-                       (assoc :form (with-meta [] {:line (:line data)
-                                                   :column (:column data)})))
-                ex (exception->ex-info ex data)
-                diagnostic (-> (runner-error->diagnostic ex)
-                             (assoc :form nil))]
+                       (assoc :form-meta {:line (:line data)
+                                          :column (:column data)}))
+                diagnostic (runner-error->diagnostic ex data)]
             (update ctx :diagnostics swap! conj diagnostic))
-          (let [ex (exception->ex-info ex {:error-name 'splint/unknown-error
-                                           :filename file})
-                diagnostic (runner-error->diagnostic ex)]
+          (let [diagnostic (runner-error->diagnostic
+                             ex {:error-name 'splint/unknown-error
+                                 :filename file})]
             (update ctx :diagnostics swap! conj diagnostic)))))))
 
 (defn slurp-file [file-obj]

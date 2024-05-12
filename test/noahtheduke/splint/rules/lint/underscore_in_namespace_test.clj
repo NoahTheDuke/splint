@@ -30,8 +30,8 @@
   (expect-match
     [{:line 3
       :column 3
-      :end-row 3
-      :end-col 18}]
+      :end-line 3
+      :end-column 18}]
     "\n(ns\n  foo_bar.baz_qux)"
     (config))
   (expect-match

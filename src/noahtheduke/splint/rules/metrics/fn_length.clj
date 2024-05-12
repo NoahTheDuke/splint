@@ -12,7 +12,7 @@
 (defn check-size
   [ctx config rule form form-str]
   (when-let [m (meta form)]
-    (let [len (- (:end-row m 0) (:line m 0))
+    (let [len (- (:end-line m 0) (:line m 0))
           config-length (or (:length config) 10)]
       (when (< config-length len)
         (let [message (format "%s shouldn't be longer than %s lines."

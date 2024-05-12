@@ -20,8 +20,8 @@
       :alt nil
       :line 7
       :column 1
-      :end-row 7
-      :end-col 20
+      :end-line 7
+      :end-column 20
       :filename (io/file "corpus" "arglists.clj")}]
     (io/file "corpus" "arglists.clj")
     (config))

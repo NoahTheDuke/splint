@@ -84,8 +84,8 @@
                     (let [vm (meta (first fdecl))
                           loc {:line (:line vm)
                                :column (:column vm)
-                               :end-row (:end-row (meta form))
-                               :end-col (dec (:end-col (meta form)))}]
+                               :end-line (:end-line (meta form))
+                               :end-column (dec (:end-column (meta form)))}]
                       (-> (apply list fdecl)
                         (vary-meta (fnil conj {}) loc)
                         (list)))

@@ -10,6 +10,7 @@
    [criterium.core :as criterium]
    [noahtheduke.splint.dev]
    [potemkin :refer [import-vars]]
+   clojure.repl
    [taoensso.tufte :as tufte]))
 
 (set! *warn-on-reflection* true)

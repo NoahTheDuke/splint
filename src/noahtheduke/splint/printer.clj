@@ -5,7 +5,9 @@
 (ns noahtheduke.splint.printer
   (:require
    [clojure.data.json :as json]
+   [clojure.main :refer [demunge]]
    [clojure.pprint :as pp]
+   [clojure.string :as str]
    [noahtheduke.splint.clojure-ext.core :refer [->list postwalk*]]))
 
 (set! *warn-on-reflection* true)
@@ -69,6 +71,27 @@
 (defmacro print-form [form]
   `(pp/pprint (revert-splint-reader-macros ~form)))
 
+(defn st-element->str
+  [[class-name method-name file-name line-number]]
+  (let [clojure-fn? (and file-name
+                      (or (str/ends-with? file-name ".clj")
+                        (str/ends-with? file-name ".cljc")
+                        (= file-name "NO_SOURCE_FILE")))]
+    (str (if clojure-fn?
+           (demunge (str class-name))
+           (str class-name "." method-name))
+      " (" file-name ":" line-number ")")))
+
+(defn st->str
+  [st]
+  (into []
+    (comp
+      (remove #(#{'clojure.lang.AFn 'clojure.lang.RestFn} (first %)))
+      (dedupe)
+      (take 12)
+      (map st-element->str))
+    st))
+
 (defn print-find-dispatch [output _diagnostic] output)
 
 (defmulti print-find #'print-find-dispatch)
@@ -112,12 +135,17 @@
     (println "```")
     (newline)))
 
+(defn update-trace [ex]
+  (when (:trace ex)
+    (update ex :trace st->str)))
+
 (defmethod print-find "json" [_ diagnostic]
   (let [diagnostic (-> diagnostic
                      (update :rule-name pr-str)
                      (update :form pr-str)
                      (update :alt pr-str)
                      (update :filename str)
+                     (update :exception update-trace)
                      (->> (into (sorted-map))))]
     (json/write diagnostic *out* {:escape-slash false})
     (newline)))
@@ -128,22 +156,29 @@
                      (update :form pr-str)
                      (update :alt pr-str)
                      (update :filename str)
+                     (update :exception update-trace)
                      (->> (into (sorted-map))))]
     (json/pprint diagnostic {:escape-slash false})
     (newline)))
 
 (defmethod print-find "edn" [_ diagnostic]
-  (let [diagnostic (update diagnostic :filename str)]
+  (let [diagnostic (-> diagnostic
+                     (update :filename str)
+                     (update :exception update-trace))]
     (prn (into (sorted-map) diagnostic))))
 
 (defmethod print-find "edn-pretty" [_ diagnostic]
-  (let [diagnostic (update diagnostic :filename str)]
+  (let [diagnostic (-> diagnostic
+                     (update :filename str)
+                     (update :exception update-trace))]
     (pp/pprint (into (sorted-map) diagnostic))))
 
 (defn error-diagnostic [diagnostic]
   (#{'splint/error
      'splint/parsing-error
      'splint/unknown-error} (:rule-name diagnostic)))
+
+(def sort-fn (juxt :filename :line :column))
 
 (defn print-results
   [{:keys [config diagnostics checked-files total-time]}]
@@ -152,7 +187,7 @@
           diagnostics (if (:errors config)
                         (filter error-diagnostic diagnostics)
                         diagnostics)]
-      (doseq [diagnostic (sort-by :filename diagnostics)]
+      (doseq [diagnostic (sort-by sort-fn diagnostics)]
         (printer nil diagnostic))
       (flush)))
   (when-not (or (:silent config)

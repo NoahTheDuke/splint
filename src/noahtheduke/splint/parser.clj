@@ -86,6 +86,8 @@
   {:all true
    :row-key :line
    :col-key :column
+   :end-row-key :end-line
+   :end-col-key :end-column
    :end-location true
    :features features
    :read-cond :allow

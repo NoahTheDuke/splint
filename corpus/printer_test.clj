@@ -10,3 +10,5 @@
   (do
     (prn 2)
     (prn 3)))
+
+(very-special-symbol :do-not-match)

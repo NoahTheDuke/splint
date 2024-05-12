@@ -34,7 +34,17 @@
   (expect-match
     [{:rule-name 'splint/error
       :form '(very-special-symbol :do-not-match)
-      :message "Splint encountered an error during 'dev/throws-on-match: matched"}]
+      :message "Splint encountered an error during 'dev/throws-on-match: matched"
+      :line 1
+      :column 1
+      :end-line 1
+      :end-column 36
+      :filename (io/file "example.clj")
+      :exception {:cause "matched"
+                  :data {:extra :data}
+                  :via [{:type 'clojure.lang.ExceptionInfo
+                         :message "matched"
+                         :data {:extra :data}}]}}]
     "(very-special-symbol :do-not-match)")
   (expect-match
     [{:rule-name 'naming/single-segment-namespace
@@ -43,27 +53,34 @@
       :alt nil
       :line 5
       :column 1
-      :end-row 5
-      :end-col 21
-      :filename (io/file "corpus/throw_in_middle.clj")}
+      :end-line 5
+      :end-column 21
+      :filename (io/file "corpus/throw_in_middle.clj")
+      :exception nil}
      {:rule-name 'splint/error
       :form '(very-special-symbol :do-not-match)
       :message "Splint encountered an error during 'dev/throws-on-match: matched"
       :alt nil
       :line 7
       :column 1
-      :end-row 7
-      :end-col 36
-      :filename (io/file "corpus" "throw_in_middle.clj")}
+      :end-line 7
+      :end-column 36
+      :filename (io/file "corpus" "throw_in_middle.clj")
+      :exception {:cause "matched"
+                  :data {:extra :data}
+                  :via [{:type 'clojure.lang.ExceptionInfo
+                         :message "matched"
+                         :data {:extra :data}}]}}
      {:rule-name 'lint/let-if
       :form '(let [a 1] (if a (+ a a) 2))
       :message "Use `if-let` instead of recreating it."
       :alt '(if-let [a 1] (+ a a) 2)
       :line 9
       :column 1
-      :end-col 29
-      :end-row 9
-      :filename (io/file "corpus/throw_in_middle.clj")}]
+      :end-column 29
+      :end-line 9
+      :filename (io/file "corpus/throw_in_middle.clj")
+      :exception nil}]
     (io/file "corpus" "throw_in_middle.clj")))
 
 (defexpect parse-error-test
@@ -74,9 +91,18 @@
       :alt nil
       :line 5
       :column 1
-      :end-row nil
-      :end-col nil
-      :filename (io/file "corpus/parse_error.clj")}]
+      :end-line nil
+      :end-column nil
+      :filename (io/file "corpus/parse_error.clj")
+      :exception {:cause "Map literal contains duplicate key: :a"
+                  :data {:type :edamame/error
+                          :line 5
+                          :column 1}
+                  :via [{:type 'clojure.lang.ExceptionInfo
+                         :message "Map literal contains duplicate key: :a"
+                         :data {:type :edamame/error
+                                :line 5
+                                :column 1}}]}}]
     (io/file "corpus" "parse_error.clj")))
 
 (defexpect prepare-rules-test

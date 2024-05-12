@@ -8,17 +8,19 @@
   A Diagnostic is an instance of a match of a rule's pattern in a given
   analyzed code. It has the following definition:
 
+  ```clojure
   (defrecord Diagnostic
-    [rule-name form message alt line column end-row end-col filename])")
+    [rule-name form message alt line column end-line end-column filename exception])
+  ```")
 
 (set! *warn-on-reflection* true)
 
-(defrecord Diagnostic [rule-name form message alt line column end-row end-col filename])
+(defrecord Diagnostic [rule-name form message alt line column end-line end-column filename exception])
 
 (defn ->diagnostic
   "Create and return a new diagnostic."
   ([ctx rule form] (->diagnostic ctx rule form nil))
-  ([ctx rule form {:keys [replace-form message filename form-meta]}]
+  ([ctx rule form {:keys [replace-form message filename form-meta exception]}]
    (let [form-meta (or form-meta (meta form))]
      (->Diagnostic
        (:full-name rule)
@@ -27,15 +29,16 @@
        replace-form
        (:line form-meta)
        (:column form-meta)
-       (:end-row form-meta)
-       (:end-col form-meta)
-       (or filename (:filename ctx))))))
+       (:end-line form-meta)
+       (:end-column form-meta)
+       (or filename (:filename ctx))
+       exception))))
 
 (comment
   (let [ctx {:filename "adsf"}
         rule {:full-name 'style/defn-fn
               :message "message"}
-        form ^{:line 1 :column 2 :end-row 3 :end-col 4} '(1 2 3)
+        form ^{:line 1 :column 2 :end-line 3 :end-column 4} '(1 2 3)
         opts {:message "other"}]
     (user/quick-bench
       (->diagnostic ctx rule form opts))))

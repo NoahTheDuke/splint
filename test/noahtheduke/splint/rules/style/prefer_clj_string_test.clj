@@ -24,16 +24,16 @@
        :alt (clojure.string/upper-case (subs s 0 1))
        :line 1
        :column 6
-       :end-row 1
-       :end-col 33}
+       :end-line 1
+       :end-column 33}
       {:rule-name style/prefer-clj-string
        :form (.toLowerCase (subs s 1))
        :message "Use the `clojure.string` function instead of interop."
        :alt (clojure.string/lower-case (subs s 1))
        :line 1
        :column 34
-       :end-row 1
-       :end-col 59}]
+       :end-line 1
+       :end-column 59}]
     "(str (.toUpperCase (subs s 0 1)) (.toLowerCase (subs s 1)))"
     (config))
   (expect-match

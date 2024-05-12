@@ -23,22 +23,22 @@
       '[{:alt nil
          :line 1
          :column 1
-         :end-row 13
-         :end-col 4}]
+         :end-line 13
+         :end-column 4}]
       "(defn n\n[arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11)" config)
     (expect-match
       '[{:alt nil
          :line 1
          :column 1
-         :end-row 13
-         :end-col 5}]
+         :end-line 13
+         :end-column 5}]
       "(defn n\n([arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11))" config)
     (expect-match
       '[{:alt nil
          :line 1
          :column 1
-         :end-row 14
-         :end-col 5}]
+         :end-line 14
+         :end-column 5}]
       "(defn n\n([] 1 2 3)\n([arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11))"
       config)))
 
@@ -52,22 +52,22 @@
       '[{:alt nil
          :line 2
          :column 1
-         :end-row 13
-         :end-col 3}]
+         :end-line 13
+         :end-column 3}]
       "(defn n\n[arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11)" config)
     (expect-match
       '[{:alt nil
          :line 2
          :column 1
-         :end-row 13
-         :end-col 4}]
+         :end-line 13
+         :end-column 4}]
       "(defn n\n([arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11))" config)
     (expect-match
       '[{:alt nil
          :line 3
          :column 1
-         :end-row 14
-         :end-col 4}]
+         :end-line 14
+         :end-column 4}]
       "(defn n\n([] 1 2 3)\n([arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11))"
       config)))
 
@@ -79,6 +79,6 @@
          :message "Function bodies shouldn't be longer than 5 lines."
          :line 2
          :column 1
-         :end-row 8
-         :end-col 2}]
+         :end-line 8
+         :end-column 2}]
       "(defn n\n[]\n0\n1\n2\n3\n4\n5)" config)))

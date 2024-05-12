@@ -25,15 +25,15 @@
       :message "Avoid parameter lists with more than 4 parameters."
       :line 1
       :column 30
-      :end-row 1
-      :end-col 43}
+      :end-line 1
+      :end-column 43}
      {:rule-name 'metrics/parameter-count
       :form '[a b c d e]
       :message "Avoid parameter lists with more than 4 parameters."
       :line 1
       :column 16
-      :end-row 1
-      :end-col 27}]
+      :end-line 1
+      :end-column 27}]
     "(defn example ([a b c d e]) ([a b c d e f]))"
     '{metrics/parameter-count {:enabled true}}))
 
@@ -44,8 +44,8 @@
       :message "Avoid parameter lists with more than 5 parameters."
       :line 1
       :column 30
-      :end-row 1
-      :end-col 43}]
+      :end-line 1
+      :end-column 43}]
     "(defn example ([a b c d e]) ([a b c d e f]))"
     '{metrics/parameter-count {:enabled true
                                :count 5}}))

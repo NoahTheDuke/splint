@@ -6,77 +6,52 @@
   (:require
    [clojure.data.json :as json]
    [clojure.main :refer [demunge]]
-   [clojure.pprint :as pp]
    [clojure.string :as str]
-   [noahtheduke.splint.clojure-ext.core :refer [->list postwalk*]]))
+   [fipp.clojure :as fipp.clj]
+   [fipp.visit :as fipp.v]))
 
 (set! *warn-on-reflection* true)
 
-(defn- render-deref [[_ sexp]]
-  (symbol (str "@" (print-str sexp))))
+(defn pretty-quote [p [macro arg]]
+  [:span (case macro
+           splint/deref "@"
+           splint/fn "#"
+           splint/quote "'"
+           splint/re-pattern "#"
+           splint/read-eval "#="
+           splint/syntax-quote "`"
+           splint/unquote "~"
+           splint/unquote-splicing "~@"
+           splint/var "#'")
+   (fipp.v/visit p arg)])
 
-(defn- render-fn [[_fn _args sexp]]
-  (symbol (str "#" (print-str sexp))))
-
-(defn- render-read-eval [[_ sexp]]
-  (symbol (str "#=" (print-str sexp))))
-
-(defn- render-re-pattern [[_ sexp]]
-  (symbol (str "#" (pr-str sexp))))
-
-(defn- render-var [[_ sexp]]
-  (symbol (str "#'" (print-str sexp))))
-
-(defn- render-syntax-quote [[_ sexp]]
-  (symbol (str "`" (print-str sexp))))
-
-(defn- render-unquote [[_ sexp]]
-  (symbol (str "~" (print-str sexp))))
-
-(defn- render-unquote-splicing [[_ sexp]]
-  (symbol (str "~@" (print-str sexp))))
-
-(defn- uplift [sexp]
-  (if (seq? sexp)
-    (->> (reduce
-           (fn [acc cur]
-             (if (::uplift (meta cur))
-               (apply conj acc cur)
-               (conj acc cur)))
-           []
-           sexp)
-      (->list))
-    sexp))
-
-(defn revert-splint-reader-macros [replace-form]
-  (postwalk*
-    (fn [sexp]
-      (if (seq? sexp)
-        (if-let [f (case (first sexp)
-                     splint/deref #'render-deref
-                     splint/fn #'render-fn
-                     splint/read-eval #'render-read-eval
-                     splint/re-pattern #'render-re-pattern
-                     splint/var #'render-var
-                     splint/syntax-quote #'render-syntax-quote
-                     splint/unquote #'render-unquote
-                     splint/unquote-splicing #'render-unquote-splicing
-                     ; else
-                     nil)]
-          (uplift (f sexp))
-          sexp)
-        sexp))
-    replace-form))
+(def specials
+  (reduce-kv
+    (fn [m k v]
+      (if (#{"deref" "fn" "quote" "re-pattern" "read-eval" "syntax-quote"
+             "unquote" "unquote-splicing" "var"} (name k))
+        m
+        (assoc m k v)))
+    {'splint/deref pretty-quote
+     'splint/fn fipp.clj/pretty-fn*
+     'splint/quote pretty-quote
+     'splint/re-pattern pretty-quote
+     'splint/read-eval pretty-quote
+     'splint/syntax-quote pretty-quote
+     'splint/unquote pretty-quote
+     'splint/unquote-splicing pretty-quote
+     'splint/var pretty-quote}
+    fipp.clj/default-symbols))
 
 (defmacro print-form [form]
-  `(pp/pprint (revert-splint-reader-macros ~form)))
+  `(fipp.clj/pprint ~form {:symbols specials}))
 
 (defn st-element->str
   [[class-name method-name file-name line-number]]
   (let [clojure-fn? (and file-name
                       (or (str/ends-with? file-name ".clj")
                         (str/ends-with? file-name ".cljc")
-                        (= file-name "NO_SOURCE_FILE")))]
+                        (.equals "NO_SOURCE_FILE" file-name)))]
     (str (if clojure-fn?
            (demunge (str class-name))
            (str class-name "." method-name))
@@ -171,7 +146,7 @@
   (let [diagnostic (-> diagnostic
                      (update :filename str)
                      (update :exception update-trace))]
-    (pp/pprint (into (sorted-map) diagnostic))))
+    (print-form (into (sorted-map) diagnostic))))
 
 (defn error-diagnostic [diagnostic]
   (#{'splint/error

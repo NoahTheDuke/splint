@@ -10,8 +10,7 @@
    [matcher-combinators.test :refer [match?]]
    [noahtheduke.splint.printer :as sut]
    [noahtheduke.splint.test-helpers :refer [check-all]]
-   [noahtheduke.splint.parser :as parser]
-   [clojure.pprint :as pp]))
+   [noahtheduke.splint.parser :as parser]))
 
 (set! *warn-on-reflection* true)
 
@@ -253,27 +252,22 @@
        " :column 1,"
        " :end-column 36,"
        " :end-line 14,"
-       " :exception"
-       " {:via"
-       "  [{:type clojure.lang.ExceptionInfo,"
-       "    :message \"matched\","
-       "    :data {:extra :data},"
-       "    :at"
-       "    [noahtheduke.splint.rules.dev.throws_on_match$eval$or__auto__"
-       "     invoke"
-       "     \"throws_on_match.clj\""
-       "     16]}],"
-       "  :trace"
-       "  [\"noahtheduke.splint.class1.method1 (file1:1)\""
-       "   \"noahtheduke.splint.class2.method2 (file2:2)\""
-       "   \"noahtheduke.splint.class3.method3 (file3:3)\"],"
-       "  :cause \"matched\","
-       "  :data {:extra :data}},"
+       " :exception {:via [{:type clojure.lang.ExceptionInfo,"
+       "                    :message \"matched\","
+       "                    :data {:extra :data},"
+       "                    :at [noahtheduke.splint.rules.dev.throws_on_match$eval$or__auto__"
+       "                         invoke"
+       "                         \"throws_on_match.clj\""
+       "                         16]}],"
+       "             :trace [\"noahtheduke.splint.class1.method1 (file1:1)\""
+       "                     \"noahtheduke.splint.class2.method2 (file2:2)\""
+       "                     \"noahtheduke.splint.class3.method3 (file3:3)\"],"
+       "             :cause \"matched\","
+       "             :data {:extra :data}},"
        " :filename \"corpus/printer_test.clj\","
        " :form (very-special-symbol :do-not-match),"
        " :line 14,"
-       " :message"
-       " \"Splint encountered an error during 'dev/throws-on-match: matched\","
+       " :message \"Splint encountered an error during 'dev/throws-on-match: matched\","
        " :rule-name splint/error}"]
       (print-result-lines "edn-pretty"))))
 
@@ -283,7 +277,7 @@
     (expect (= (format "[%s]"
                  (->> ["@a"
                        "@(a)"
-                       "#(+ 1 %1)"
+                       "#(+ 1 %)"
                        "#=(+ 1 2)"
                        "#\"a\""
                        "#'a"
@@ -296,6 +290,6 @@
                        "~@(a b)"]
                    (str/join "\n ")))
               (->> parsed
-                (pp/write-out)
+                (sut/print-form)
                 (with-out-str)
                 (str/trim))))))

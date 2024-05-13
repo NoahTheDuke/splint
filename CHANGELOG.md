@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Changed
+
+- Switched from `clojure.pprint` to [fipp](https://github.com/brandonbloom/fipp) for pretty-printing code. Fast and easy to extend.
+
 ## 1.15.2 - 2024-05-09
 
 ### Changed

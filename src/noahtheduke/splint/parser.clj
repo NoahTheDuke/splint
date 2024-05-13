@@ -7,11 +7,11 @@
    [clojure.string :as str]
    [edamame.core :as e]
    [edamame.impl.read-fn :as read-fn]
+   [flatland.ordered.map :as om]
+   [flatland.ordered.set :as os]
    [noahtheduke.splint.parser.defn :refer [parse-defn]]
    [noahtheduke.splint.parser.ns :refer [parse-ns]]
-   [noahtheduke.splint.vendor :refer [default-imports]]
-   [flatland.ordered.map :as om]
-   [flatland.ordered.set :as os]))
+   [noahtheduke.splint.vendor :refer [default-imports]]))
 
 (set! *warn-on-reflection* true)
 
@@ -67,7 +67,8 @@
       (let [ks (take-nth 2 elements)]
         (when-not (apply distinct? ks)
           (throw (ex-info (throw-dup-keys :map ks)
-                          {:line (:line loc)
+                          {:type :edamame/error
+                           :line (:line loc)
                            :column (:column loc)})))))
     (apply om/ordered-map elements)))
 
@@ -77,7 +78,8 @@
         the-set (apply os/ordered-set elements)]
     (when-not (= (count elements) (count the-set))
       (throw (ex-info (throw-dup-keys :set elements)
-                      {:line (:line loc)
+                      {:type :edamame/error
+                       :line (:line loc)
                        :column (:column loc)})))
     the-set))
 
@@ -126,21 +128,27 @@
    ; Each of dispatch literals should either be processed (uneval), or wrap the
    ; expression in a splint-specific "function call".
    ; @x
-   :deref (fn [expr] (list 'splint/deref expr))
+   :deref (fn [expr] (with-meta (list 'splint/deref expr)
+                                {:type :splint/deref}))
    ; #()
    :fn (fn [expr]
          (let [sexp (read-fn/read-fn expr)]
-           (apply list (cons 'splint/fn (next sexp)))))
+           (with-meta
+             (apply list (cons 'splint/fn (next sexp)))
+             {:type :splint/fn})))
    ; {}
    :map (fn [& elements] (ParseMap. elements))
    ; #=(+ 1 2)
-   :read-eval (fn [expr] (list 'splint/read-eval expr))
+   :read-eval (fn [expr] (with-meta (list 'splint/read-eval expr)
+                           {:type :splint/read-eval}))
    ; #".*"
-   :regex (fn [expr] (list 'splint/re-pattern expr))
+   :regex (fn [expr] (with-meta (list 'splint/re-pattern expr)
+                       {:type :splint/re-pattern}))
    ; #{}
    :set (fn [& elements] (ParseSet. elements))
    ; #'x
-   :var (fn [expr] (list 'splint/var expr))
+   :var (fn [expr] (with-meta (list 'splint/var expr)
+                     {:type :splint/var}))
    ; #_
    :uneval (fn [{:keys [uneval next]}]
              (cond
@@ -152,11 +160,14 @@
                :else
                next))
    ; `(+ 1 2)
-   :syntax-quote (fn [expr] (list 'splint/syntax-quote expr))
+   :syntax-quote (fn [expr] (with-meta (list 'splint/syntax-quote expr)
+                              {:type :splint/syntax-quote}))
    ; ~x unquote
-   :unquote (fn [expr] (list 'splint/unquote expr))
+   :unquote (fn [expr] (with-meta (list 'splint/unquote expr)
+                         {:type :splint/unquote}))
    ; ~@(map inc [1 2 3])
-   :unquote-splicing (fn [expr] (list 'splint/unquote-splicing expr))})
+   :unquote-splicing (fn [expr] (with-meta (list 'splint/unquote-splicing expr)
+                                  {:type :splint/unquote-splicing}))})
 
 (defn parse-file
   [file-obj]

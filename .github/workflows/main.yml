@@ -41,7 +41,7 @@ jobs:
         run: clj-kondo --parallel --lint dev/ src/ test/
 
       - name: splint self
-        run: bb -m noahtheduke.splint dev/ src/ test/
+        run: bb run splint
 
       - name: tests
         run: clojure -M:dev:test:runner

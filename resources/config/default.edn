@@ -171,6 +171,12 @@
   :added "0.1"
   :updated "0.1"}
 
+ lint/redundant-str-call
+ {:description "Avoid calls to `str` on string literals or calls to `str` or `format`."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  lint/require-explicit-param-tags
  {:description "Require explicit :param-tags on method values."
   :enabled false

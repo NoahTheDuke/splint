@@ -30,6 +30,7 @@
     lint/let-when 2
     lint/missing-body-in-when 2
     lint/prefer-require-over-use 4
+    lint/redundant-str-call 18
     lint/thread-macro-one-arg 85
     lint/try-splicing 2
     lint/underscore-in-namespace 1
@@ -91,4 +92,4 @@
       (match?
         (m/equals clj-kondo-diagnostics)
         (update-vals diagnostics count)))
-    (expect 1239 (count (:diagnostics results)))))
+    (expect 1257 (count (:diagnostics results)))))

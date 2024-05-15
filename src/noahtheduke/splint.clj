@@ -41,6 +41,7 @@
    noahtheduke.splint.rules.lint.prefer-method-values
    noahtheduke.splint.rules.lint.prefer-require-over-use
    noahtheduke.splint.rules.lint.redundant-call
+   noahtheduke.splint.rules.lint.redundant-str-call
    noahtheduke.splint.rules.lint.require-explicit-param-tags
    noahtheduke.splint.rules.lint.take-repeatedly
    noahtheduke.splint.rules.lint.thread-macro-one-arg

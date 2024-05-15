@@ -66,8 +66,7 @@
       :message "Prefer assoc for merging literal maps"
       :alt '(assoc a :a :b :c :d :e :f :g :h :i :j :k :l :m :n :o :p :q :r :s :t :u :v :w :x :y :z)}]
     "(merge a {:a :b :c :d :e :f :g :h :i :j :k :l :m :n :o :p :q :r :s :t :u :v :w :x :y :z})"
-    (config))
-  )
+    (config)))
 
 (defexpect single-literal-merge-multiples-test
   (expect-match

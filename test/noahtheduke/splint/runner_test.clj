@@ -96,8 +96,8 @@
       :filename (io/file "corpus/parse_error.clj")
       :exception {:cause "Map literal contains duplicate key: :a"
                   :data {:type :edamame/error
-                          :line 5
-                          :column 1}
+                         :line 5
+                         :column 1}
                   :via [{:type 'clojure.lang.ExceptionInfo
                          :message "Map literal contains duplicate key: :a"
                          :data {:type :edamame/error

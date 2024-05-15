@@ -48,8 +48,8 @@
               id))]
     (let [dups (duplicates ks)]
       (apply str (str/capitalize (name kind)) " literal contains duplicate key"
-             (when (> (count dups) 1) "s")
-             ": " (interpose ", " dups)))))
+        (when (> (count dups) 1) "s")
+        ": " (interpose ", " dups)))))
 
 (defn parse-map
   [^ParseMap obj loc]
@@ -69,9 +69,9 @@
       (let [ks (take-nth 2 elements)]
         (when-not (apply distinct? ks)
           (throw (ex-info (throw-dup-keys :map ks)
-                          {:type :edamame/error
-                           :line (:line loc)
-                           :column (:column loc)})))))
+                   {:type :edamame/error
+                    :line (:line loc)
+                    :column (:column loc)})))))
     (apply #?(:bb hash-map :clj om/ordered-map) elements)))
 
 (defn parse-set
@@ -80,9 +80,9 @@
         the-set (apply #?(:bb hash-set :clj os/ordered-set) elements)]
     (when-not (= (count elements) (count the-set))
       (throw (ex-info (throw-dup-keys :set elements)
-                      {:type :edamame/error
-                       :line (:line loc)
-                       :column (:column loc)})))
+               {:type :edamame/error
+                :line (:line loc)
+                :column (:column loc)})))
     the-set))
 
 (defn- make-edamame-opts [{:keys [features ext ns-state]
@@ -131,7 +131,7 @@
    ; expression in a splint-specific "function call".
    ; @x
    :deref (fn [expr] (with-meta (list 'splint/deref expr)
-                                {:type :splint/deref}))
+                       {:type :splint/deref}))
    ; #()
    :fn (fn [expr]
          (let [sexp (read-fn/read-fn expr)]

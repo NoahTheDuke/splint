@@ -27,15 +27,15 @@
                     true (format " (%s)" (.getName (class ex))))
         message (or (ex-message ex) "")
         error-msg (format "Splint encountered an error%s: %s"
-                          rule-name
-                          message)]
+                    rule-name
+                    message)]
     (->diagnostic
       nil
       {:full-name (:error-name data)}
       (:form data)
       (-> data
-          (assoc :message error-msg)
-          (assoc :exception (Throwable->map ex))))))
+        (assoc :message error-msg)
+        (assoc :exception (Throwable->map ex))))))
 
 (defn check-pattern
   "Call `:pattern` on the form and if it hits, call `:on-match` on it.

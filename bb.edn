@@ -3,5 +3,5 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 {:deps {noahtheduke/splint {:local/root "."}}
- :tasks {run noahtheduke.splint/-main}
+ :tasks {splint noahtheduke.splint/-main}
  :bbin/bin {splint {:main-opts ["-m" "noahtheduke.splint"]}}}

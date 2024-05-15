@@ -7,8 +7,10 @@
    [clojure.string :as str]
    [edamame.core :as e]
    [edamame.impl.read-fn :as read-fn]
-   [flatland.ordered.map :as om]
-   [flatland.ordered.set :as os]
+   #?@(:bb []
+       :clj [[flatland.ordered.map :as om]])
+   #?@(:bb []
+       :clj [[flatland.ordered.set :as os]])
    [noahtheduke.splint.parser.defn :refer [parse-defn]]
    [noahtheduke.splint.parser.ns :refer [parse-ns]]
    [noahtheduke.splint.vendor :refer [default-imports]]))
@@ -70,12 +72,12 @@
                           {:type :edamame/error
                            :line (:line loc)
                            :column (:column loc)})))))
-    (apply om/ordered-map elements)))
+    (apply #?(:bb hash-map :clj om/ordered-map) elements)))
 
 (defn parse-set
   [^ParseSet obj loc]
   (let [elements (.elements obj)
-        the-set (apply os/ordered-set elements)]
+        the-set (apply #?(:bb hash-set :clj os/ordered-set) elements)]
     (when-not (= (count elements) (count the-set))
       (throw (ex-info (throw-dup-keys :set elements)
                       {:type :edamame/error

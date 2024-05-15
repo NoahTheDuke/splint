@@ -17,7 +17,7 @@
   :enabled true
   :added "1.0"
   :updated "1.0"
-  :link "https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"}
+  :links ["https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"]}
 
  lint/divide-by-one
  {:description "Dividing by 1 is a no-op."
@@ -154,7 +154,7 @@
   :enabled true
   :added "1.13"
   :updated "1.13"
-  :link "https://clojure.org/news/2024/04/28/clojure-1-12-alpha10#method_values"}
+  :links ["https://clojure.org/news/2024/04/28/clojure-1-12-alpha10#method_values"]}
 
  lint/prefer-require-over-use
  {:description "`use` is conventionally deprecated."
@@ -184,7 +184,7 @@
   :updated "1.13"
   :chosen-style :wildcard
   :supported-styles [:both :missing :wildcard]
-  :link "https://insideclojure.org/2024/02/12/method-values"}
+  :links ["https://insideclojure.org/2024/02/12/method-values"]}
 
  lint/take-repeatedly
  {:description "`repeatedly` has an arity for limiting the number of repeats with `take`."
@@ -205,7 +205,7 @@
   :enabled true
   :added "1.0"
   :updated "1.0"
-  :link "https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"}
+  :links ["https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"]}
 
  lint/underscore-in-namespace
  {:description "Underscores in namespaces can lead to problems so should be avoided."
@@ -218,7 +218,7 @@
   :enabled false
   :added "1.8.0"
   :updated "1.8.0"
-  :link "http://clojure-goes-fast.com/blog/performance-nemesis-reflection"}
+  :links ["http://clojure-goes-fast.com/blog/performance-nemesis-reflection"]}
 
  ;; Metrics Rules
 
@@ -299,7 +299,7 @@
   :enabled false
   :added "1.10.0"
   :updated "1.10.0"
-  :link "https://bsless.github.io/datahike-datalog-parser"}
+  :links ["https://bsless.github.io/datahike-datalog-parser"]}
 
  performance/dot-equals
  {:description "Rely on `.equals` when comparing against string literals."
@@ -324,7 +324,7 @@
   :enabled false
   :added "1.11"
   :updated "1.11"
-  :link "https://bsless.github.io/code-smells"}
+  :links ["https://bsless.github.io/code-smells"]}
 
  performance/single-literal-merge
  {:description "Prefer assoc over merge when merging a literal."
@@ -638,7 +638,7 @@
   :enabled true
   :added "1.11"
   :updated "1.11"
-  :link "https://bsless.github.io/code-smells"}
+  :links ["https://bsless.github.io/code-smells"]}
 
  style/update-in-assoc
  {:description "Prefer `assoc-in` to using `assoc` as the `f` in an `update-in`."

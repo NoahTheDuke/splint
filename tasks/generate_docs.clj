@@ -83,7 +83,7 @@
         opts (-> config
                (dissoc :description :enabled
                  :added :updated
-                 :guide-ref :link
+                 :guide-ref :links
                  :chosen-style :supported-styles)
                (not-empty))]
     (when opts
@@ -108,16 +108,18 @@
 (defn render-reference [rule]
   (let [config (rule-config rule)
         guide-ref (:guide-ref config)
-        outside-link (:link config)]
-    (when (or guide-ref outside-link)
+        outside-links (seq (:links config))]
+    (when (or guide-ref outside-links)
       (str "### Reference"
         \newline \newline
         (when guide-ref
           (format "* https://guide.clojure.style/%s" guide-ref))
-        (when (and guide-ref outside-link)
+        (when (and guide-ref outside-links)
           \newline)
-        (when outside-link
-          (format "* <%s>" outside-link))))))
+        (when outside-links
+          (->> (for [link outside-links]
+                 (format "* <%s>" link))
+               (str/join \newline)))))))
 
 (defn build-rule [rule]
   (->> [(str "## " (:full-name rule))

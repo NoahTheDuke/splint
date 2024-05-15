@@ -618,6 +618,28 @@ x
 
 ---
 
+## lint/redundant-str-call
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | <<next>>      | <<next>>        |
+
+`clojure.core/str` calls `.toString()` on non-nil input. However, `.toString()` on a string literal returns itself, making it a no-op. Likewise, `clojure.core/format` unconditionally returns a string, making any calls to `str` on the results a no-op.
+
+### Examples
+
+```clojure
+; avoid
+(str "foo")
+(str (format "foo-%s" some-var))
+
+; prefer
+"foo"
+(format "foo-%s" some-var)
+```
+
+---
+
 ## lint/require-explicit-param-tags
 
 | Enabled by default | Version Added | Version Updated |

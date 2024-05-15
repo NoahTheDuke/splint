@@ -1,12 +1,20 @@
 {
-  "doc/*.md": {"type": "doc"},
-  "README.md": {"type": "doc"},
+  "doc/*.md": { "type": "doc" },
+  "README.md": { "type": "doc" },
   "src/noahtheduke/*.clj": {
-      "type": "source",
-      "alternate": "test/noahtheduke/{}_test.clj"
+    "type": "source",
+    "alternate": "test/noahtheduke/{}_test.clj"
+  },
+  "src/noahtheduke/*.cljc": {
+    "type": "source",
+    "alternate": "test/noahtheduke/{}_test.cljc"
   },
   "test/noahtheduke/*_test.clj": {
-      "type": "test",
-      "alternate": "src/noahtheduke/{}.clj"
+    "type": "test",
+    "alternate": "src/noahtheduke/{}.clj"
+  },
+  "test/noahtheduke/*_test.cljc": {
+    "type": "test",
+    "alternate": "src/noahtheduke/{}.cljc"
   }
 }

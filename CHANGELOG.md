@@ -7,8 +7,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Changed
 
 - Switched from `clojure.pprint` to [fipp](https://github.com/brandonbloom/fipp) for pretty-printing code. Fast and easy to extend.
-- Use [org.flatland/ordered](https://github.com/clj-commons/ordered) to keep parsed maps and sets in their read order.
-  - This necessitated bumping the dependency on Babashka to the preview version which supports ITransientSet. My apologies to those who this inconveniences, just live on the bleeding edge like me.
+- Use [org.flatland/ordered](https://github.com/clj-commons/ordered) (when run in Clojure) to keep parsed maps and sets in their read order.
 - Add exceptions to diagnostics and print stack traces in all errors. Should fix bugs where all that's printed is `Splint encountered an error: ""` which is unhelpful and shameful.
 
 ## 1.15.2 - 2024-05-09

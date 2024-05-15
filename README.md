@@ -1,3 +1,4 @@
+<!-- markdownlint-disable-next-line -->
 <img src="images/snake_parens.svg" alt="splint icon" width="200" align="right">
 
 # Splint

@@ -2,7 +2,7 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns ^:no-doc noahtheduke.splint.rules.lint.case-duplicate-test
+(ns ^:no-doc noahtheduke.splint.rules.lint.duplicate-case-test
   (:require
    [clojure.string :as str]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
@@ -29,14 +29,14 @@
                 {:acc #{}
                  :doubles []}
                 (take-nth 2 ?clauses))]
-    (for [double (:doubles tests)
+    (for [dbl (:doubles tests)
           :let [msg (str "Duplicate case test constant: "
-                      (-> (pprint-str double)
+                      (-> (pprint-str dbl)
                         (str/replace "splint/" "")))]]
-      (->diagnostic ctx rule form {:form-meta (meta double)
+      (->diagnostic ctx rule form {:form-meta (meta dbl)
                                    :message msg}))))
 
-(defrule lint/case-duplicate-test
+(defrule lint/duplicate-case-test
   "It's an error to have duplicate `case` test constants.
 
   Examples:
@@ -44,6 +44,6 @@
   ; avoid
   (case x :foo :bar :foo :baz)
   "
-  {:pattern '(case ?expr ?*clauses)
-   :on-match (fn [ctx rule form {:syms [?expr ?clauses]}]
+  {:pattern '(case _ ?*clauses)
+   :on-match (fn [ctx rule form {:syms [?clauses]}]
                (build-diagnostics ctx rule form ?clauses))})

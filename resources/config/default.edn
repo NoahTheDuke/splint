@@ -19,14 +19,6 @@
   :updated "1.0"
   :links ["https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"]}
 
- lint/case-duplicate-test
- {:description "Warn if there are duplicate test constants in a `case` call."
-  :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"
-  :links ["https://clojuredocs.org/clojure.core/case"
-          "https://github.com/clj-kondo/clj-kondo/blob/18448daa0ca2b53b2dddce5773f641bed3b5fc85/doc/linters.md#case-duplicate-test"]}
-
  lint/divide-by-one
  {:description "Dividing by 1 is a no-op."
   :enabled true
@@ -52,6 +44,14 @@
   :updated "1.15.2"
   :supported-styles [:dot :method-value]
   :chosen-style :dot}
+
+ lint/duplicate-case-test
+ {:description "Warn if there are duplicate test constants in a `case` call."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"
+  :links ["https://clojuredocs.org/clojure.core/case"
+          "https://github.com/clj-kondo/clj-kondo/blob/18448daa0ca2b53b2dddce5773f641bed3b5fc85/doc/linters.md#duplicate-case-test"]}
 
  lint/duplicate-field-name
  {:description "`defrecord` and `deftype` don't allow duplicate field names."

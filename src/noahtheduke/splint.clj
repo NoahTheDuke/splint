@@ -18,11 +18,11 @@
 
    noahtheduke.splint.rules.lint.assoc-fn
    noahtheduke.splint.rules.lint.body-unquote-splicing
-   noahtheduke.splint.rules.lint.case-duplicate-test
    noahtheduke.splint.rules.lint.divide-by-one
    noahtheduke.splint.rules.lint.dorun-map
    noahtheduke.splint.rules.lint.dot-class-method
    noahtheduke.splint.rules.lint.dot-obj-method
+   noahtheduke.splint.rules.lint.duplicate-case-test
    noahtheduke.splint.rules.lint.duplicate-field-name
    noahtheduke.splint.rules.lint.fn-wrapper
    noahtheduke.splint.rules.lint.if-else-nil

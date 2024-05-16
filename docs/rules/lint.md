@@ -142,6 +142,28 @@ NOTE: This rule is disabled if `lint/prefer-method-values` is enabled to prevent
 
 ---
 
+## lint/duplicate-case-test
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | <<next>>      | <<next>>        |
+
+It's an error to have duplicate `case` test constants.
+
+### Examples
+
+```clojure
+; avoid
+(case x :foo :bar :foo :baz)
+```
+
+### Reference
+
+* <https://clojuredocs.org/clojure.core/case>
+* <https://github.com/clj-kondo/clj-kondo/blob/18448daa0ca2b53b2dddce5773f641bed3b5fc85/doc/linters.md#duplicate-case-test>
+
+---
+
 ## lint/duplicate-field-name
 
 | Enabled by default | Version Added | Version Updated |

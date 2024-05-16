@@ -24,7 +24,8 @@ format *args="check":
     clojure -M:cljfmt {{args}}
 
 clj-kondo:
-    clj-kondo --parallel --lint dev src test
+    clojure -M:clj-kondo --parallel --lint dev src test
+    # clj-kondo --parallel --lint dev src test
 
 [no-exit-message]
 test *args:

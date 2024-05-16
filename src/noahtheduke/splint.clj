@@ -18,6 +18,7 @@
 
    noahtheduke.splint.rules.lint.assoc-fn
    noahtheduke.splint.rules.lint.body-unquote-splicing
+   noahtheduke.splint.rules.lint.case-duplicate-test
    noahtheduke.splint.rules.lint.divide-by-one
    noahtheduke.splint.rules.lint.dorun-map
    noahtheduke.splint.rules.lint.dot-class-method

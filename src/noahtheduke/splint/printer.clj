@@ -8,7 +8,9 @@
    [clojure.main :refer [demunge]]
    [clojure.string :as str]
    [fipp.clojure :as fipp.clj]
-   [fipp.visit :as fipp.v]))
+   [fipp.visit :as fipp.v])
+  (:import
+   [java.io StringWriter]))
 
 (set! *warn-on-reflection* true)
 
@@ -16,7 +18,6 @@
   [:span (case macro
            splint/deref "@"
            splint/fn "#"
-           splint/quote "'"
            splint/re-pattern "#"
            splint/read-eval "#="
            splint/syntax-quote "`"
@@ -28,13 +29,12 @@
 (def specials
   (reduce-kv
     (fn [m k v]
-      (if (#{"deref" "fn" "quote" "re-pattern" "read-eval" "syntax-quote"
+      (if (#{"deref" "fn" "re-pattern" "read-eval" "syntax-quote"
              "unquote" "unquote-splicing" "var"} (name k))
         m
         (assoc m k v)))
     {'splint/deref pretty-quote
      'splint/fn fipp.clj/pretty-fn*
-     'splint/quote pretty-quote
      'splint/re-pattern pretty-quote
      'splint/read-eval pretty-quote
      'splint/syntax-quote pretty-quote
@@ -42,6 +42,12 @@
      'splint/unquote-splicing pretty-quote
      'splint/var pretty-quote}
     fipp.clj/default-symbols))
+
+(defn pprint-str [form]
+  (let [s (StringWriter.)]
+    (fipp.clj/pprint form {:symbols specials
+                           :writer s})
+    (str/trim (str s))))
 
 (defmacro print-form [form]
   `(fipp.clj/pprint ~form {:symbols specials}))

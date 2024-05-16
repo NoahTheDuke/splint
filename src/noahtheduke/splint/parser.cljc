@@ -130,27 +130,21 @@
    ; Each of dispatch literals should either be processed (uneval), or wrap the
    ; expression in a splint-specific "function call".
    ; @x
-   :deref (fn [expr] (with-meta (list 'splint/deref expr)
-                       {:type :splint/deref}))
+   :deref (fn [expr] (list 'splint/deref expr))
    ; #()
    :fn (fn [expr]
          (let [sexp (read-fn/read-fn expr)]
-           (with-meta
-             (apply list (cons 'splint/fn (next sexp)))
-             {:type :splint/fn})))
+           (apply list (cons 'splint/fn (next sexp)))))
    ; {}
    :map (fn [& elements] (ParseMap. elements))
    ; #=(+ 1 2)
-   :read-eval (fn [expr] (with-meta (list 'splint/read-eval expr)
-                           {:type :splint/read-eval}))
+   :read-eval (fn [expr] (list 'splint/read-eval expr))
    ; #".*"
-   :regex (fn [expr] (with-meta (list 'splint/re-pattern expr)
-                       {:type :splint/re-pattern}))
+   :regex (fn [expr] (list 'splint/re-pattern expr))
    ; #{}
    :set (fn [& elements] (ParseSet. elements))
    ; #'x
-   :var (fn [expr] (with-meta (list 'splint/var expr)
-                     {:type :splint/var}))
+   :var (fn [expr] (list 'splint/var expr))
    ; #_
    :uneval (fn [{:keys [uneval next]}]
              (cond
@@ -162,14 +156,11 @@
                :else
                next))
    ; `(+ 1 2)
-   :syntax-quote (fn [expr] (with-meta (list 'splint/syntax-quote expr)
-                              {:type :splint/syntax-quote}))
+   :syntax-quote (fn [expr] (list 'splint/syntax-quote expr))
    ; ~x unquote
-   :unquote (fn [expr] (with-meta (list 'splint/unquote expr)
-                         {:type :splint/unquote}))
+   :unquote (fn [expr] (list 'splint/unquote expr))
    ; ~@(map inc [1 2 3])
-   :unquote-splicing (fn [expr] (with-meta (list 'splint/unquote-splicing expr)
-                                  {:type :splint/unquote-splicing}))})
+   :unquote-splicing (fn [expr] (list 'splint/unquote-splicing expr))})
 
 (defn parse-file
   [file-obj]

@@ -7,6 +7,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### New rules
 
 - `lint/redundant-call-str`: Don't call `str` on input that's guaranteed to be a string: Prefer `"foo"` to `(str "foo")`, `(str "foo" bar)` to `(str (str "foo" bar))`, and `(format "foo%s" bar)` to `(str (format "foo%s" bar))`. (See [clj-kondo#2323](https://github.com/clj-kondo/clj-kondo/issues/2323) for inspiration.)
+- `lint/case-duplicate-test`: Don't use the same case test constant more than once.
 
 ### Changed
 

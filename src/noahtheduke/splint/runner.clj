@@ -137,7 +137,7 @@
       (check-form ctx rules-for-type form))
     ;; Can't recur in non-seqable forms
     (case form-type
-      :list (when-not (= 'quote (first form))
+      :list (when-not (#{'quote 'splint/quote} (first form))
               (run!* #(check-and-recur ctx filename form %) form))
       ;; There is currently no need for checking MapEntry,
       ;; so check each individually.

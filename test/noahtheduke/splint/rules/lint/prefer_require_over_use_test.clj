@@ -5,14 +5,18 @@
 (ns noahtheduke.splint.rules.lint.prefer-require-over-use-test
   (:require
    [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
+
+(defn config [] (single-rule-config 'lint/prefer-require-over-use))
 
 (defexpect prefer-require-over-use-test
   (let [config '{lint/prefer-require-over-use {:chosen-style :as}}]
     (expect-match
-      [{:alt nil
+      [{:rule-name 'lint/prefer-require-over-use
+        :form '(ns examples.ns (:use clojure.zip))
+        :alt nil
         :message "Use (:require [some.lib :as l]) over (:use some.lib)"}]
       "(ns examples.ns (:use clojure.zip))"
       config))

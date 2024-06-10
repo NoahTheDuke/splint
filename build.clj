@@ -50,5 +50,6 @@
 (defn install
   "Install built jar to local maven repo"
   [opts]
+  (jar opts)
   (b/install (make-opts opts))
   (println "Installed version" lib version))

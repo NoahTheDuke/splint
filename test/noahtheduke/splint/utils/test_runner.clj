@@ -8,6 +8,7 @@
    [clojure.test :as t]
    [clojure.tools.cli :as cli]
    [cognitect.test-runner :as ctr]
+   [lazytest.main :as lazy]
    [noahtheduke.splint.dev]))
 
 (set! *warn-on-reflection* true)
@@ -56,18 +57,24 @@
       (-> args :options :test-help)
       (do (#'ctr/help args) nil)
       :else
-      (time-data-map (:result (with-out-str-data-map (ctr/test (:options args))))))))
+      (-> (let [ctr-ret (ctr/test (:options args))
+                lazy-ret (lazy/run {:dir (:dir args)
+                                    :output 'lazytest.reporters/results})]
+            (merge-with (fnil + 0 0) ctr-ret lazy-ret))
+        (with-out-str-data-map)
+        (:result)
+        (time-data-map)))))
 
 (defn- print-summary
   "Adapted from clojure.test/report :summary"
   [{:keys [result elapsed]}]
   (printf
     "Ran %s tests containing %s assertions in %s msecs.\n%s failures, %s errors.\n"
-    (:test result)
-    (+ (:pass result) (:fail result) (:error result))
+    (+ (:test result 0) (:total result 0))
+    (+ (:pass result 0) (:fail result 0) (:error result 0))
     elapsed
-    (:fail result)
-    (:error result))
+    (:fail result 0)
+    (:error result 0))
   (flush))
 
 (defn -main [& args]

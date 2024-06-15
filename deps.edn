@@ -34,11 +34,10 @@
          :extra-deps {com.github.seancorfield/expectations {:mvn/version "2.1.201"}
                       nubank/matcher-combinators {:mvn/version "3.8.5"}
                       io.github.cognitect-labs/test-runner {:git/tag "v0.5.1"
-                                                            :git/sha "dfb30dd"}}}
+                                                            :git/sha "dfb30dd"}
+                      io.github.noahtheduke/lazytest {:mvn/version "0.2.0-SNAPSHOT"}}}
   :runner {:main-opts ["-m" "noahtheduke.splint.utils.test-runner"]}
-  :lazytest {:extra-paths ["test"]
-             :extra-deps {io.github.noahtheduke/lazytest {:mvn/version "0.1.1"}}
-             :main-opts ["-m" "lazytest.main"]}
+  :lazytest {:main-opts ["-m" "lazytest.main"]}
   :profile {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.0.3"}
                          com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.3.0"}}
             :jvm-opts ["-Djdk.attach.allowAttachSelf"

@@ -5,9 +5,9 @@
 (ns noahtheduke.splint.re-frame-test
   (:require
    [clojure.tools.gitlibs :as gl]
-   [expectations.clojure.test :refer [defexpect expect]]
+   [lazytest.core :refer [defdescribe it expect given]]
+   [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.matchers :as m]
-   [matcher-combinators.test :refer [match?]]
    [noahtheduke.splint.config :refer [default-config]]
    [noahtheduke.splint.runner :refer [run-impl]]))
 
@@ -37,19 +37,21 @@
     style/set-literal-as-fn 1
     style/when-not-call 1})
 
-(defexpect ^:integration re-frame-test
-  (let [re-frame (gl/procure "https://github.com/day8/re-frame.git" 'day8/re-frame "v1.3.0")
-        results (run-impl [{:path re-frame}]
-                  {:config-override
-                   (-> all-enabled-config
-                     (assoc :silent true)
-                     (assoc :parallel false)
-                     (assoc :clojure-version *clojure-version*))})]
-    (expect
-      (match?
-        (m/equals re-frame-diagnostics)
-        (->> results
-          :diagnostics
-          (group-by :rule-name)
-          (#(update-vals % count)))))
-    (expect 71 (count (:diagnostics results)))))
+(defdescribe re-frame-test
+  {:integration true}
+  (given [re-frame (gl/procure "https://github.com/day8/re-frame.git" 'day8/re-frame "v1.3.0")
+          results (run-impl [{:path re-frame}]
+                            {:config-override
+                             (-> all-enabled-config
+                                 (assoc :silent true)
+                                 (assoc :parallel false)
+                                 (assoc :clojure-version *clojure-version*))})]
+    (it "hasn't changed"
+      (expect
+        (match?
+          (m/equals re-frame-diagnostics)
+          (->> results
+               :diagnostics
+               (group-by :rule-name)
+               (#(update-vals % count)))))
+      (expect 71 (count (:diagnostics results))))))

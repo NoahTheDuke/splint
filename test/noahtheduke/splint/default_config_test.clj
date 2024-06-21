@@ -8,7 +8,7 @@
    [clojure.java.io :as io]
    [clojure.spec.alpha :as s]
    [clojure.string :as str]
-   [expectations.clojure.test :refer [defexpect expect]]))
+   [lazytest.core :refer [defdescribe it given expect]]))
 
 (set! *warn-on-reflection* true)
 
@@ -37,6 +37,7 @@
 (s/def ::default-config
   (s/map-of ::config-key ::config-opts))
 
-(defexpect default-config-spec-test
-  (let [default-config (edn/read-string (slurp (io/resource "config/default.edn")))]
-    (expect ::default-config default-config)))
+(defdescribe default-config-spec-test
+  (given [default-config (edn/read-string (slurp (io/resource "config/default.edn")))]
+    (it "conforms to spec"
+      (expect ::default-config default-config))))

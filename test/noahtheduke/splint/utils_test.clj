@@ -4,21 +4,23 @@
 
 (ns noahtheduke.splint.utils-test
   (:require
-   [expectations.clojure.test :refer [defexpect expect]]
+   [lazytest.core :refer [defdescribe expect it]]
    [noahtheduke.splint.utils :as sut]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect simple-type-test
-  (doseq [[input t] '[[nil :nil]
-                      [true :boolean]
-                      [1 :number]
-                      ["a" :string]
-                      [:a :keyword]
-                      [a :symbol]
-                      [(1 2 3) :list]
-                      [[1 2 3] :vector]
-                      [{1 2} :map]
-                      [#{1 2 3} :set]
-                      [#"asdf" java.util.regex.Pattern]]]
-    (expect (sut/simple-type input) t)))
+(defdescribe simple-type-test
+  (map (fn [[input t]]
+         (it (str t)
+           (expect (sut/simple-type input) t)))
+       '[[nil :nil]
+         [true :boolean]
+         [1 :number]
+         ["a" :string]
+         [:a :keyword]
+         [a :symbol]
+         [(1 2 3) :list]
+         [[1 2 3] :vector]
+         [{1 2} :map]
+         [#{1 2 3} :set]
+         [#"asdf" java.util.regex.Pattern]]))

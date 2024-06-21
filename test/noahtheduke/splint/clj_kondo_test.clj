@@ -5,9 +5,9 @@
 (ns noahtheduke.splint.clj-kondo-test
   (:require
    [clojure.tools.gitlibs :as gl]
-   [expectations.clojure.test :refer [defexpect expect]]
+   [lazytest.core :refer [defdescribe it expect given]]
+   [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.matchers :as m]
-   [matcher-combinators.test :refer [match?]]
    [noahtheduke.splint.config :refer [default-config]]
    [noahtheduke.splint.runner :refer [run-impl]]))
 
@@ -77,19 +77,20 @@
     style/when-not-call 15
     style/when-not-do 1})
 
-(defexpect ^:integration clj-kondo-test
-  (let [clj-kondo (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2023.05.26")
-        results (run-impl [{:path clj-kondo}]
-                  {:config-override
-                   (-> all-enabled-config
-                     (assoc :silent true)
-                     (assoc :parallel false)
-                     (assoc :clojure-version *clojure-version*))})
-        diagnostics (->> results
-                      :diagnostics
-                      (group-by :rule-name))]
-    (expect
-      (match?
-        (m/equals clj-kondo-diagnostics)
-        (update-vals diagnostics count)))
-    (expect 1257 (count (:diagnostics results)))))
+(defdescribe ^:integration clj-kondo-test
+  (given [clj-kondo (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2023.05.26")
+          results (run-impl [{:path clj-kondo}]
+                            {:config-override
+                             (-> all-enabled-config
+                                 (assoc :silent true)
+                                 (assoc :parallel false)
+                                 (assoc :clojure-version *clojure-version*))})
+          diagnostics (->> results
+                           :diagnostics
+                           (group-by :rule-name))]
+    (it "matches expectations"
+      (expect
+        (match?
+          (m/equals clj-kondo-diagnostics)
+          (update-vals diagnostics count)))
+      (expect 1257 (count (:diagnostics results))))))

@@ -4,14 +4,14 @@
 
 (ns noahtheduke.splint.rules.{{genre}}.{{rule-name}}-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config '{{genre}}/{{rule-name}}))
 
-(defexpect {{rule-name}}-test
+(defdescribe {{rule-name}}-test
   (expect-match
     [{:rule-name '{{genre}}/{{rule-name}}
       :form nil

@@ -4,12 +4,23 @@
 
 (ns noahtheduke.splint.rules.lint.loop-empty-when-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect loop-empty-when-test
-  (expect-match
-    '[{:alt (while (= 1 1) (prn 1) (prn 2))}]
-    "(loop [] (when (= 1 1) (prn 1) (prn 2) (recur)))"))
+(defn config [] (single-rule-config 'lint/loop-empty-when))
+
+(defdescribe loop-empty-when-test
+  (it "handles top-level recur"
+    (expect-match
+      [{:rule-name 'lint/loop-empty-when
+        :form '(loop [] (when (= 1 1) (prn 1) (prn 2) (recur)))
+        :alt '(while (= 1 1) (prn 1) (prn 2))}]
+      "(loop [] (when (= 1 1) (prn 1) (prn 2) (recur)))"
+      (config)))
+  (it "ignores nested recurs"
+    (expect-match
+      nil
+      "(loop [] (when (= 1 1) (prn 1) (prn 2) (do (recur))))"
+      (config))))

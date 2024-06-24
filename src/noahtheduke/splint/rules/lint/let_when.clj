@@ -19,6 +19,7 @@
   ; prefer
   (when-let [result (some-func)] (do-stuff result))
   "
-  {:pattern '(let [?result ?given] (when ?result ?*args))
+  {:patterns ['(let [?result ?given] (when ?result ?*args))
+              '(let [?result ?given] (if ?result ?args))]
    :message "Use `when-let` instead of recreating it."
    :replace '(when-let [?result ?given] ?args)})

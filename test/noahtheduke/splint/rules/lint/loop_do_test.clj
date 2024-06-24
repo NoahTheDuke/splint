@@ -4,12 +4,18 @@
 
 (ns noahtheduke.splint.rules.lint.loop-do-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect loop-do-test
-  (expect-match
-    '[{:alt (loop [] a b)}]
-    "(loop [] (do a b))"))
+(defn config [] (single-rule-config 'lint/loop-do))
+
+(defdescribe loop-do-test
+  (it "works"
+    (expect-match
+      [{:rule-name 'lint/loop-do
+        :form '(loop [] (do a b))
+        :alt '(loop [] a b)}]
+      "(loop [] (do a b))"
+      (config))))

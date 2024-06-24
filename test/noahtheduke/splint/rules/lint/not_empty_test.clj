@@ -4,18 +4,29 @@
 
 (ns noahtheduke.splint.rules.lint.not-empty-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it describe]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect not-empty?-test
-  (expect-match
-    '[{:alt (seq x)}]
-    "(not (empty? x))"))
+(defn config [& [extra]]
+  (merge (single-rule-config 'lint/not-empty?)
+         extra))
 
-(defexpect not-empty?-not-empty-style-test
-  (expect-match
-    '[{:alt (not-empty x)}]
-    "(not (empty? x))"
-    '{lint/not-empty? {:chosen-style :not-empty}}))
+(defdescribe not-empty?-test
+  (describe "chosen style:"
+    (it ":seq"
+      (expect-match
+        [{:rule-name 'lint/not-empty?
+          :form '(not (empty? x))
+          :alt '(seq x)}]
+        "(not (empty? x))"
+        (config)))
+
+    (it ":not-empty"
+      (expect-match
+        [{:rule-name 'lint/not-empty?
+          :form '(not (empty? x))
+          :alt '(not-empty x)}]
+        "(not (empty? x))"
+        (config '{lint/not-empty? {:chosen-style :not-empty}})))))

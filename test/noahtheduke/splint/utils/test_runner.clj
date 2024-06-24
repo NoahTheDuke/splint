@@ -61,8 +61,6 @@
                 lazy-ret (lazy/run {:dir (:dir args)
                                     :output 'lazytest.reporters/nested})]
             (merge-with (fnil + 0 0) ctr-ret lazy-ret))
-        (with-out-str-data-map)
-        (:result)
         (time-data-map)))))
 
 (defn- print-summary

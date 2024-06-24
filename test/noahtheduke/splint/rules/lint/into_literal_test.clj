@@ -4,45 +4,63 @@
 
 (ns noahtheduke.splint.rules.lint.into-literal-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it describe]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'lint/into-literal))
 
-(defexpect into-vec-test
-  (expect-match
-    '[{:alt (vec coll)}]
-    "(into [] coll)"
-    (config))
-  (expect-match
-    '[{:alt (vec (range 100))}]
-    "(into [] (range 100))"
-    (config))
-  (expect-match
-    nil
-    "(into [] xf coll)"
-    (config))
-  (expect-match
-    nil
-    "(into [1 2] coll)"
-    (config)))
+(defdescribe into-literal-test
 
-(defexpect into-set-test
-  (expect-match
-    '[{:alt (set coll)}]
-    "(into #{} coll)"
-    (config))
-  (expect-match
-    '[{:alt (set (range 100))}]
-    "(into #{} (range 100))"
-    (config))
-  (expect-match
-    nil
-    "(into #{} xf coll)"
-    (config))
-  (expect-match
-    nil
-    "(into #{1 2} coll)"
-    (config)))
+  (describe "vectors"
+    (it "respects symbols"
+      (expect-match
+        [{:rule-name 'lint/into-literal
+          :form '(into [] coll)
+          :alt '(vec coll)}]
+        "(into [] coll)"
+        (config)))
+    (it "respects lists"
+      (expect-match
+        [{:rule-name 'lint/into-literal
+          :form '(into [] (range 100))
+          :alt '(vec (range 100))}]
+        "(into [] (range 100))"
+        (config)))
+    (it "ignores transducer arity"
+      (expect-match
+        nil
+        "(into [] xf coll)"
+        (config)))
+    (it "ignores non-empty vectors"
+      (expect-match
+        nil
+        "(into [1 2] coll)"
+        (config))))
+
+  (describe "sets"
+    (it "respects symbols"
+      (expect-match
+        [{:rule-name 'lint/into-literal
+          :form '(into #{} coll)
+          :alt '(set coll)}]
+        "(into #{} coll)"
+        (config)))
+    (it "respects lists"
+      (expect-match
+        [{:rule-name 'lint/into-literal
+          :form '(into #{} (range 100))
+          :alt '(set (range 100))}]
+        "(into #{} (range 100))"
+        (config)))
+    (it "ignores transducer arity"
+      (expect-match
+        nil
+        "(into #{} xf coll)"
+        (config)))
+    (it "ignores non-empty sets"
+      (expect-match
+        nil
+        "(into #{1 2} coll)"
+        (config)))))

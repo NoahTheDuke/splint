@@ -4,17 +4,31 @@
 
 (ns noahtheduke.splint.rules.lint.redundant-call-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect redundant-call-test
-  (doseq [given ["(-> x)" "(->> x)"
-                 "(cond-> x)" "(cond->> x)"
-                 "(some-> x)" "(some->> x)"
-                 "(comp x)" "(partial x)" "(merge x)"
-                 "(min x)" "(max x)" "(distinct? x)"]]
-    (expect-match '[{:alt x}] given))
-  (expect-match nil "(-> a b (merge c))")
-  (expect-match nil "(case elem (-> ->>) true false)"))
+(defn config [] (single-rule-config 'lint/redundant-call))
+
+(defdescribe redundant-call-test
+  (it "handles specific core functions"
+    (doseq [given ['(-> x) '(->> x)
+                   '(cond-> x) '(cond->> x)
+                   '(some-> x) '(some->> x)
+                   '(comp x) '(partial x) '(merge x)
+                   '(min x) '(max x) '(distinct? x)]]
+      (expect-match
+        [{:rule-name 'lint/redundant-call
+          :form given
+          :alt 'x}]
+        (str given)
+        (config))))
+  (it "ignores multiple arg"
+    (expect-match nil
+      "(-> a b (merge c))"
+      (config)))
+  (it "ignores case"
+    (expect-match nil
+      "(case elem (-> ->>) true false)"
+      (config))))

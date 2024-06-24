@@ -4,12 +4,18 @@
 
 (ns noahtheduke.splint.rules.lint.if-not-both-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect if-not-x-y-x-test
-  (expect-match
-    '[{:alt (if-not x y z)}]
-    "(if (not x) y z)"))
+(defn config [] (single-rule-config 'lint/if-not-both))
+
+(defdescribe if-not-x-y-x-test
+  (it "works"
+    (expect-match
+      [{:rule-name 'lint/if-not-both
+        :form '(if (not x) y z)
+        :alt '(if-not x y z)}]
+      "(if (not x) y z)"
+      (config))))

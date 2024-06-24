@@ -4,8 +4,8 @@
 
 (ns noahtheduke.splint.rules.lint.fn-wrapper-test
   (:require
-    [lazytest.core :refer [defdescribe it]]
-    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 

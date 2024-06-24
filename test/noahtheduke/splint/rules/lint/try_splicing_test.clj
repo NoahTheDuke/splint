@@ -4,12 +4,18 @@
 
 (ns noahtheduke.splint.rules.lint.try-splicing-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect try-splicing-test
-  (expect-match
-    '[{:alt (try (do (splint/unquote-splicing body)) (finally :true))}]
-    "(try ~@body (finally :true))"))
+(defn config [] (single-rule-config 'lint/try-splicing))
+
+(defdescribe try-splicing-test
+  (it "works"
+    (expect-match
+      [{:rule-name 'lint/try-splicing
+        :form '(try (splint/unquote-splicing body) (finally :true))
+        :alt '(try (do (splint/unquote-splicing body)) (finally :true))}]
+      "(try ~@body (finally :true))"
+      (config))))

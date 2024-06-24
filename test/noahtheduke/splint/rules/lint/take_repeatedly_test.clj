@@ -4,12 +4,18 @@
 
 (ns noahtheduke.splint.rules.lint.take-repeatedly-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect take-repeatedly-test
-  (expect-match
-    '[{:alt (repeatedly n coll)}]
-    "(take n (repeatedly coll))"))
+(defn config [] (single-rule-config 'lint/take-repeatedly))
+
+(defdescribe take-repeatedly-test
+  (it "works"
+    (expect-match
+      [{:rule-name 'lint/take-repeatedly
+        :form '(take n (repeatedly coll))
+        :alt '(repeatedly n coll)}]
+      "(take n (repeatedly coll))"
+      (config))))

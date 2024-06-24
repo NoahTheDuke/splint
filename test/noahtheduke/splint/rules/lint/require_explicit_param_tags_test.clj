@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.rules.lint.require-explicit-param-tags-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe describe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
@@ -15,48 +15,60 @@
   ([style]
    (assoc-in (config) '[lint/require-explicit-param-tags :chosen-style] style)))
 
-(defexpect missing-test
-  (doseq [style [:missing :both]]
-    (expect-match
-      [{:rule-name 'lint/require-explicit-param-tags
-        :form 'File/mkdir
-        :message "Set explicit :param-tags on method values"
-        :alt nil}]
-      "(ns foo (:import (java.io File))) (File/mkdir (clojure.java.io/file \"a\"))"
-      (config style)))
-  (expect-match
-    nil
-    "(ns foo (:import (java.io File))) (File/mkdir (clojure.java.io/file \"a\"))"
-    (config :wildcard)))
+(defdescribe require-explicit-param-tags
+  (describe "no tag"
+    (describe "chosen style"
+      (map (fn [style]
+             (it style
+               (expect-match
+                 [{:rule-name 'lint/require-explicit-param-tags
+                   :form 'File/mkdir
+                   :message "Set explicit :param-tags on method values"
+                   :alt nil}]
+                 "(ns foo (:import (java.io File))) (File/mkdir (clojure.java.io/file \"a\"))"
+                 (config style))))
+           [:missing :both])
+      (it :wildcard
+        (expect-match
+          nil
+          "(ns foo (:import (java.io File))) (File/mkdir (clojure.java.io/file \"a\"))"
+          (config :wildcard)))))
 
-(defexpect wildcard-test
-  (doseq [style [:wildcard :both]]
-    (expect-match
-      [{:rule-name 'lint/require-explicit-param-tags
-        :form 'File/createTempFile
-        :message "Prefer explicit :param-tags on method values"
-        :alt nil}]
-      "(ns foo (:import (java.io File))) (^[_ _] File/createTempFile \"abc\" \"b\")"
-      (config style)))
-  (expect-match
-    nil
-    "(ns foo (:import (java.io File))) (^[_ _] File/createTempFile \"abc\" \"b\")"
-    (config :missing)))
+  (describe "with tag"
+    (describe "chosen style"
+      (map (fn [style]
+             (it style
+               (expect-match
+                 [{:rule-name 'lint/require-explicit-param-tags
+                   :form 'File/createTempFile
+                   :message "Prefer explicit :param-tags on method values"
+                   :alt nil}]
+                 "(ns foo (:import (java.io File))) (^[_ _] File/createTempFile \"abc\" \"b\")"
+                 (config style))))
+           [:wildcard :both])
+      (it :missing
+        (expect-match
+          nil
+          "(ns foo (:import (java.io File))) (^[_ _] File/createTempFile \"abc\" \"b\")"
+          (config :missing)))))
 
-(defexpect under-version-test
-  (expect-match
-    nil
-    "(^[_ _] File/createTempFile \"abc\" \"b\")"
-    (assoc (config :both)
-      :clojure-version {:major 1 :minor 11})))
+  (describe "Wrong version"
+    (it "doesn't match"
+      (expect-match
+        nil
+        "(^[_ _] File/createTempFile \"abc\" \"b\")"
+        (assoc (config :both)
+               :clojure-version {:major 1 :minor 11}))))
 
-(defexpect passing-test
-  (doseq [style [:missing :wildcard :both]]
-    (expect-match
-      nil
-      "(^[] String/toUpperCase \"hi\")"
-      (config style))
-    (expect-match
-      nil
-      "(ns foo (:import (java.util Date))) (^[long] Date/new 1707771694522)"
-      (config style))))
+  (describe "ignores conforming param-tags"
+    (map (fn [style]
+           (it style
+             (expect-match
+               nil
+               "(^[] String/toUpperCase \"hi\")"
+               (config style))
+             (expect-match
+               nil
+               "(ns foo (:import (java.util Date))) (^[long] Date/new 1707771694522)"
+               (config style))))
+         [:missing :wildcard :both])))

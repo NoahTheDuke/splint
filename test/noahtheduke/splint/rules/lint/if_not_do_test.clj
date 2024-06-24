@@ -4,15 +4,25 @@
 
 (ns noahtheduke.splint.rules.lint.if-not-do-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect if-not-do-test
-  (expect-match
-    '[{:alt (when-not x y z)}]
-    "(if-not x (do y z))")
-  (expect-match
-    '[{:alt (when-not x y z)}]
-    "(if-not x (do y z) nil)"))
+(defn config [] (single-rule-config 'lint/if-not-do))
+
+(defdescribe if-not-do-test
+  (it "handles 2 arity"
+    (expect-match
+      [{:rule-name 'lint/if-not-do
+        :form '(if-not x (do y z))
+        :alt '(when-not x y z)}]
+      "(if-not x (do y z))"
+      (config)))
+  (it "handles 3 arity"
+    (expect-match
+      [{:rule-name 'lint/if-not-do
+        :form '(if-not x (do y z) nil)
+        :alt '(when-not x y z)}]
+      "(if-not x (do y z) nil)"
+      (config))))

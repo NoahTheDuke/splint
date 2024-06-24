@@ -4,14 +4,22 @@
 
 (ns noahtheduke.splint.rules.lint.if-same-truthy-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect if-x-x-y-test
-  (expect-match
-    '[{:alt (or x y)}]
-    "(if x x y)")
-  (expect-match nil
-    "(if false (reset! state true) (go a))"))
+(defn config [] (single-rule-config 'lint/if-same-truthy))
+
+(defdescribe if-x-x-y-test
+  (it "respects 3 arity"
+    (expect-match
+      [{:rule-name 'lint/if-same-truthy
+        :form '(if x x y)
+        :alt '(or x y)}]
+      "(if x x y)"
+      (config)))
+  (it "ignores when no match"
+    (expect-match nil
+      "(if false (reset! state true) (go a))"
+      (config))))

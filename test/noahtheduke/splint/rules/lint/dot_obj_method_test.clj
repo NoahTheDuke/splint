@@ -4,25 +4,27 @@
 
 (ns noahtheduke.splint.rules.lint.dot-obj-method-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'lint/dot-obj-method))
 
-(defexpect dot-obj-usage-test
-  (expect-match
-    [{:rule-name 'lint/dot-obj-method
-      :form '(. obj method 1 2 3)
-      :message "Intention is clearer with `.method` form."
-      :alt '(.method obj 1 2 3)}]
-    "(. obj method 1 2 3)"
-    (config))
-  (expect-match
-    [{:rule-name 'lint/prefer-method-values
-      :alt '(CLASS/.method obj 1 2 3)}]
-    "(. obj method 1 2 3)"
-    (-> (config)
-      (assoc :clojure-version {:major 1 :minor 12})
-      (assoc-in ['lint/prefer-method-values :enabled] true))))
+(defdescribe dot-obj-usage-test
+  (it "handles raw symbosl"
+    (expect-match
+      [{:rule-name 'lint/dot-obj-method
+        :form '(. obj method 1 2 3)
+        :message "Intention is clearer with `.method` form."
+        :alt '(.method obj 1 2 3)}]
+      "(. obj method 1 2 3)"
+      (config)))
+  (it "handles namespaced symbosl"
+    (expect-match
+      [{:rule-name 'lint/prefer-method-values
+        :alt '(CLASS/.method obj 1 2 3)}]
+      "(. obj method 1 2 3)"
+      (-> (config)
+          (assoc :clojure-version {:major 1 :minor 12})
+          (assoc-in ['lint/prefer-method-values :enabled] true)))))

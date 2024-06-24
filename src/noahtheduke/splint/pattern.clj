@@ -208,9 +208,15 @@
 
 (defn match-optional
   [ctx pattern]
-  (let [[_?sym bind & [pred]] pattern
+  (let [[_?sym bind pred] pattern
         body-form (gensym "optional-form-")
-        pred-check (if pred `(every? ~pred ~body-form) true)]
+        pred-check (if (= 3 (count pattern))
+                     `(every? ~pred ~body-form)
+                     true)]
+    (when-not (#{2 3} (count pattern))
+      (throw (IllegalArgumentException. "?? only accepts 1 or 2 arguments")))
+    (when (and (= 3 (count pattern)) (not (symbol? pred)))
+      (throw (IllegalArgumentException. "?? pred must be a symbol")))
     [(gensym "optional-fn-")
      `(fn [~ctx form# cont#]
         (let [~body-form (vary-meta () assoc ::rest true)]

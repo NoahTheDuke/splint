@@ -4,12 +4,25 @@
 
 (ns noahtheduke.splint.rules.lint.if-let-else-nil-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect if-let-else-nil-test
-  (expect-match
-    '[{:alt (when-let ?binding ?expr)}]
-    "(if-let ?binding ?expr nil)"))
+(defn config [] (single-rule-config 'lint/if-let-else-nil))
+
+(defdescribe if-let-else-nil-test
+  (it "handles no else"
+    (expect-match
+      [{:rule-name 'lint/if-let-else-nil
+        :form '(if-let binding expr)
+        :alt '(when-let binding expr)}]
+      "(if-let binding expr)"
+      (config)))
+  (it "handles else nil"
+    (expect-match
+      [{:rule-name 'lint/if-let-else-nil
+        :form '(if-let binding expr nil)
+        :alt '(when-let binding expr)}]
+      "(if-let binding expr nil)"
+      (config))))

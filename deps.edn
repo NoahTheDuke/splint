@@ -37,7 +37,6 @@
                                                             :git/sha "dfb30dd"}
                       io.github.noahtheduke/lazytest {:mvn/version "0.2.0"}}}
   :runner {:main-opts ["-m" "noahtheduke.splint.utils.test-runner"]}
-  :lazytest {:main-opts ["-m" "lazytest.main"]}
   :profile {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.0.3"}
                          com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.3.0"}}
             :jvm-opts ["-Djdk.attach.allowAttachSelf"

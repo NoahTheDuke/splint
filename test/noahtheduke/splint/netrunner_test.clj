@@ -20,7 +20,7 @@
   '{lint/assoc-fn 3
     lint/fn-wrapper 37
     lint/if-else-nil 14
-    lint/if-let-else-nil 1
+    lint/if-let-else-nil 2
     lint/if-nil-else 1
     lint/if-not-both 24
     lint/if-same-truthy 4

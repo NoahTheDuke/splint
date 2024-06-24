@@ -59,7 +59,7 @@
       :else
       (-> (let [ctr-ret (ctr/test (:options args))
                 lazy-ret (lazy/run {:dir (:dir args)
-                                    :output 'lazytest.reporters/results})]
+                                    :output 'lazytest.reporters/nested})]
             (merge-with (fnil + 0 0) ctr-ret lazy-ret))
         (with-out-str-data-map)
         (:result)

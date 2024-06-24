@@ -4,13 +4,18 @@
 
 (ns noahtheduke.splint.rules.lint.duplicate-field-name-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect duplicate-field-name-test
-  (expect-match
-    [{:alt nil
+(defn config [] (single-rule-config 'lint/duplicate-field-name))
+
+(defdescribe duplicate-field-name-test
+  (it "works"
+    (expect-match
+    [{:rule-name 'lint/duplicate-field-name
+      :alt nil
       :message "Duplicate field has been found"}]
-    "(defrecord Foo [a b a])"))
+    "(defrecord Foo [a b a])"
+    (config))))

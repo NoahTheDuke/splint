@@ -4,44 +4,53 @@
 
 (ns noahtheduke.splint.rules.lint.assoc-fn-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'lint/assoc-fn))
 
-(defexpect assoc-fn-key-coll-test
-  (expect-match
-    '[{:alt (update coll :k f arg)}]
-    "(assoc coll :k (f (:k coll) arg))"
-    (config))
-  (expect-match
-    '[{:alt (update coll :k f arg)}]
-    "(clojure.core/assoc coll :k (f (:k coll) arg))"
-    (config)))
+(defdescribe assoc-fn-test
 
-(defexpect assoc-fn-coll-key-test
-  (expect-match
-    '[{:alt (update coll :k f arg1 arg2)}]
-    "(assoc coll :k (f (coll :k) arg1 arg2))"
-    (config)))
+  (it "respects key-coll"
+    (expect-match
+      [{:rule-name 'lint/assoc-fn
+        :form '(assoc coll :k (f (:k coll) arg))
+        :alt '(update coll :k f arg)}]
+      "(assoc coll :k (f (:k coll) arg))"
+      (config))
+    (expect-match
+      [{:rule-name 'lint/assoc-fn
+        :form '(clojure.core/assoc coll :k (f (:k coll) arg))
+        :alt '(update coll :k f arg)}]
+      "(clojure.core/assoc coll :k (f (:k coll) arg))"
+      (config)))
 
-(defexpect assoc-fn-get-test
-  (expect-match
-    [{:form '(assoc coll :k (f (get coll :k) arg1 arg2 arg3))
-      :message "Use `update` instead of recreating it."
-      :alt '(update coll :k f arg1 arg2 arg3)}]
-    "(assoc coll :k (f (get coll :k) arg1 arg2 arg3))"
-    (config)))
+  (it "respects coll-key"
+    (expect-match
+      [{:rule-name 'lint/assoc-fn
+        :form '(assoc coll :k (f (coll :k) arg1 arg2))
+        :alt '(update coll :k f arg1 arg2)}]
+      "(assoc coll :k (f (coll :k) arg1 arg2))"
+      (config)))
 
-(defexpect assoc-fn-bad-match-test
-  (expect-match
-    nil
-    "(assoc coll :k (assoc (:k coll) arg))"
-    (config))
-  ;; https://github.com/NoahTheDuke/splint/issues/15
-  (expect-match
-    nil
-    "(assoc x :a (or (:a x) y))"
-    (config)))
+  (it "respects get coll key"
+    (expect-match
+      [{:rule-name 'lint/assoc-fn
+        :form '(assoc coll :k (f (get coll :k) arg1 arg2 arg3))
+        :message "Use `update` instead of recreating it."
+        :alt '(update coll :k f arg1 arg2 arg3)}]
+      "(assoc coll :k (f (get coll :k) arg1 arg2 arg3))"
+      (config)))
+
+  (it "gracefully handles misses"
+    (expect-match
+      nil
+      "(assoc coll :k (assoc (:k coll) arg))"
+      (config))
+    ;; https://github.com/NoahTheDuke/splint/issues/15
+    (expect-match
+      nil
+      "(assoc x :a (or (:a x) y))"
+      (config))))

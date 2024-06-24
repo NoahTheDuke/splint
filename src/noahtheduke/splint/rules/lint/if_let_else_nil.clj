@@ -19,6 +19,6 @@
   ; prefer
   (when-let [a 1] a)
   "
-  {:pattern '(if-let ?binding ?expr nil)
+  {:pattern '(if-let ?binding ?expr (?? _ nil?))
    :message "Use `when-let` instead of recreating it."
    :replace '(when-let ?binding ?expr)})

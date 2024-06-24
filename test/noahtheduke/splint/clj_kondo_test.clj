@@ -23,6 +23,7 @@
     lint/dot-obj-method 1
     lint/fn-wrapper 1
     lint/if-else-nil 42
+    lint/if-let-else-nil 2
     lint/if-nil-else 2
     lint/if-not-both 3
     lint/into-literal 1

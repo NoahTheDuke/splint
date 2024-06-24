@@ -18,6 +18,7 @@
 
 (def re-frame-diagnostics
   '{lint/if-else-nil 2
+    lint/if-let-else-nil 2
     lint/thread-macro-one-arg 15
     lint/try-splicing 1
     lint/warn-on-reflection 4

@@ -10,7 +10,8 @@
    [clojure.java.io :as io]
    [clojure.spec.alpha :as s]
    [clojure.string :as str]
-   [expectations.clojure.test :refer [expect]]
+   [lazytest.core :refer [expect]]
+   [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.core :as mc]
    [matcher-combinators.model :refer [->Mismatch]]
    [matcher-combinators.result :as-alias result]
@@ -43,7 +44,7 @@
   ([expected s config]
    `(let [diagnostics# (check-all ~s ~config)
           expected# ~expected]
-      (expect (~'match? expected# diagnostics#)))))
+      (expect (match? expected# diagnostics#)))))
 
 (s/fdef expect-match
   :args (s/cat :expected (s/or :nil nil? :vector #(vector? (drop-quote %)))

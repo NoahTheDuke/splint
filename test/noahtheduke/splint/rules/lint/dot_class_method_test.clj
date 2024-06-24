@@ -4,30 +4,36 @@
 
 (ns noahtheduke.splint.rules.lint.dot-class-method-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
 (defn config [] (single-rule-config 'lint/dot-class-method))
 
-(defexpect dot-class-usage-test
-  (expect-match
-    [{:form '(. Object method 1 2 3)
-      :message "Intention is clearer with `Obj/staticMethod` form."
-      :alt '(Object/method 1 2 3)}]
-    "(ns foo (:import (java.lang Object))) (. Object method 1 2 3)"
-    (config))
-  (expect-match
-    [{:form '(. Object (method) 1 2 3)
-      :message "Intention is clearer with `Obj/staticMethod` form."
-      :alt '(Object/method 1 2 3)}]
-    "(ns foo (:import (java.lang Object))) (. Object (method) 1 2 3)"
-    (config))
-  (expect-match
-    [{:rule-name 'lint/prefer-method-values
-      :alt '(Object/method 1 2 3)}]
-    "(ns foo (:import (java.lang Object))) (. Object (method) 1 2 3)"
-    (-> (config)
-      (assoc :clojure-version {:major 1 :minor 12})
-      (assoc-in ['lint/prefer-method-values :enabled] true))))
+(defdescribe dot-class-usage-test
+  (it "handles raw symbols"
+    (expect-match
+      [{:rule-name 'lint/dot-class-method
+        :form '(. Object method 1 2 3)
+        :message "Intention is clearer with `Obj/staticMethod` form."
+        :alt '(Object/method 1 2 3)}]
+      "(ns foo (:import (java.lang Object))) (. Object method 1 2 3)"
+      (config)))
+  (it "handles lists"
+    (expect-match
+      [{:rule-name 'lint/dot-class-method
+        :form '(. Object (method) 1 2 3)
+        :message "Intention is clearer with `Obj/staticMethod` form."
+        :alt '(Object/method 1 2 3)}]
+      "(ns foo (:import (java.lang Object))) (. Object (method) 1 2 3)"
+      (config)))
+  (it "respects lint/prefer-method-values"
+    (expect-match
+      [{:rule-name 'lint/prefer-method-values
+        :form '(. Object (method) 1 2 3)
+        :alt '(Object/method 1 2 3)}]
+      "(ns foo (:import (java.lang Object))) (. Object (method) 1 2 3)"
+      (-> (config)
+          (assoc :clojure-version {:major 1 :minor 12})
+          (assoc-in ['lint/prefer-method-values :enabled] true)))))

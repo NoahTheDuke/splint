@@ -4,12 +4,15 @@
 
 (ns noahtheduke.splint.rules.lint.dorun-map-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect dorun-map-test
-  (expect-match
-    '[{:alt (run! f coll)}]
-    "(dorun (map f coll))"))
+(defdescribe dorun-map-test
+  (it "works"
+    (expect-match
+      [{:rule-name 'lint/dorun-map
+        :form '(dorun (map f coll))
+        :alt '(run! f coll)}]
+      "(dorun (map f coll))")))

@@ -4,10 +4,9 @@
 
 (ns noahtheduke.splint.pattern-test
   (:require
-   [lazytest.core :refer [defdescribe expect describe it given throws?]]
+   [lazytest.core :refer [defdescribe expect it throws?]]
    [noahtheduke.splint.pattern :as sut]
-   [noahtheduke.splint.test-helpers :refer [parse-string]]
-   [lazytest.extensions.matcher-combinators :refer [match?]]))
+   [noahtheduke.splint.test-helpers :refer [parse-string]]))
 
 (set! *warn-on-reflection* true)
 

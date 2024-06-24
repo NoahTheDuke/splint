@@ -15,6 +15,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Use [org.flatland/ordered](https://github.com/clj-commons/ordered) (when run in Clojure) to keep parsed maps and sets in their read order.
 - Add exceptions to diagnostics and print stack traces in all errors. Should fix bugs where all that's printed is `Splint encountered an error: ""` which is unhelpful and shameful.
 - External links in `default.edn` are now `:links`, a vector of strings. This allows for listing multiple references.
+- Switch all tests to Lazytest to do some dogfooding.
 
 ## 1.15.2 - 2024-05-09
 

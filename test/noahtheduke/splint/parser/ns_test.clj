@@ -3,95 +3,92 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 (ns noahtheduke.splint.parser.ns-test
-  (:require [expectations.clojure.test :refer [defexpect expect from-each]]
-            [noahtheduke.splint.parser.ns :as sut]))
+  (:require
+    [lazytest.core :refer [defdescribe expect it]]
+    [noahtheduke.splint.parser.ns :as sut]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect parse-ns-import-test
-  (expect
-    '{:imports
-      {a a,
-       b.c b.c,
-       i g.h.i,
-       g.h.i g.h.i,
-       j g.h.j,
-       g.h.j g.h.j,
-       k g.h.k,
-       g.h.k g.h.k}}
-    (sut/parse-ns
-      '(import a b.c (d.e.f) (g.h i j k)))))
+(defdescribe parse-ns-test
+  (it "respects import"
+    (expect
+      (= '{:imports
+           {a a
+            b.c b.c
+            i g.h.i
+            g.h.i g.h.i
+            j g.h.j
+            g.h.j g.h.j
+            k g.h.k
+            g.h.k g.h.k}}
+         (sut/parse-ns
+           '(import a b.c (d.e.f) (g.h i j k))))))
 
-(defexpect parse-ns-require-test
-  (expect
-    '{:aliases {str clojure.string
-                react-dom "react-dom"}}
-    (sut/parse-ns
-      '(require
-         [clojure.string :refer [join] :as-alias str]
-         ["react-dom" :refer [cool-stuff] :as react-dom]
-         :reload-all))))
+  (it "respects require"
+    (expect
+      (= '{:aliases {str clojure.string
+                     react-dom "react-dom"}}
+         (sut/parse-ns
+           '(require
+              [clojure.string :refer [join] :as-alias str]
+              ["react-dom" :refer [cool-stuff] :as react-dom]
+              :reload-all)))))
 
-(defexpect parse-ns-use-test
-  (expect
-    '{:aliases {set clojure.set}}
-    (sut/parse-ns
-      '(use [clojure.set :as set])))
-  (expect
-    '{:aliases {set clojure.set}}
-    (sut/parse-ns
-      '(use [clojure.set :as-alias set]))))
+  (it "respects :as and :as-alias"
+    (expect
+      (= '{:aliases {set clojure.set}}
+         (sut/parse-ns
+           '(use [clojure.set :as set]))))
+    (expect
+      (= '{:aliases {set clojure.set}}
+         (sut/parse-ns
+           '(use [clojure.set :as-alias set])))))
 
-(defexpect parse-ns-ns-test
-  (expect
-    '{:current noahtheduke.splint.ns-parser,
-      :aliases
-      {str clojure.string,
-       react-dom "react-dom",
-       z clojure.zip,
-       set clojure.set,
-       edn clojure.edn},
-      :imports
-      {java.lang.Byte java.lang.Byte,
-       Character java.lang.Character,
-       java.lang.Character java.lang.Character,
-       ArrayList java.lang.ArrayList,
-       java.lang.ArrayList java.lang.ArrayList}}
-    (sut/parse-ns
-      '(ns noahtheduke.splint.ns-parser
-         (:refer-clojure :exclude [asdf])
-         (:use [clojure.set :as-alias set])
-         (:use [clojure.edn :as edn])
-         (:require
-          [clojure.string :refer [join] :as-alias str]
-          ["react-dom" :refer [cool-stuff] :as react-dom]
-          :reload-all)
-         (:require
-          [clojure.zip :reload :all :as z])
-         (:import
-          java.lang.Byte
-          (java.lang Character ArrayList))))))
+  (it "handles ns form"
+    (expect
+      (= '{:current noahtheduke.splint.ns-parser
+           :aliases {str clojure.string
+                     react-dom "react-dom"
+                     z clojure.zip
+                     set clojure.set
+                     edn clojure.edn}
+           :imports {java.lang.Byte java.lang.Byte
+                     Character java.lang.Character
+                     java.lang.Character java.lang.Character
+                     ArrayList java.lang.ArrayList
+                     java.lang.ArrayList java.lang.ArrayList}}
+         (sut/parse-ns
+           '(ns noahtheduke.splint.ns-parser
+              (:refer-clojure :exclude [asdf])
+              (:use [clojure.set :as-alias set])
+              (:use [clojure.edn :as edn])
+              (:require
+                [clojure.string :refer [join] :as-alias str]
+                ["react-dom" :refer [cool-stuff] :as react-dom]
+                :reload-all)
+              (:require
+                [clojure.zip :reload :all :as z])
+              (:import
+                java.lang.Byte
+                (java.lang Character ArrayList)))))))
 
-(defexpect parse-ns-in-ns-test
-  (expect
-    '{:current foo}
-    (sut/parse-ns '(in-ns 'foo))))
+  (it "respects in-ns"
+    (expect
+      (= '{:current foo}
+         (sut/parse-ns '(in-ns 'foo)))))
 
-(defexpect parse-ns-alias-test
-  (expect '{:aliases {asdf qwer.qwer}}
-    (sut/parse-ns '(alias 'asdf 'qwer.qwer)))
-  (expect nil?
-    (from-each [input ['(alias a b)
-                       '(alias 'a b)
-                       '(alias a 'b)]]
-      (sut/parse-ns input))))
+  (it "respects alias"
+    (expect (= '{:aliases {asdf qwer.qwer}}
+               (sut/parse-ns '(alias 'asdf 'qwer.qwer))))
+    (doseq [input ['(alias a b)
+                   '(alias 'a b)
+                   '(alias a 'b)]]
+      (expect (nil? (sut/parse-ns input)))))
 
-(defexpect parse-ns-refer-test
-  (expect nil?
-    (sut/parse-ns
-      '(refer clojure.string :only [join]))))
-
-(defexpect parse-ns-refer-clojure-test
-  (expect nil?
-    (sut/parse-ns
-      '(refer clojure.string :only [join]))))
+  (it "ignores refer"
+    (expect (nil?
+              (sut/parse-ns
+                '(refer clojure.string :only [join]))))
+    (expect (nil?
+              (sut/parse-ns
+                '(refer clojure.string :only [join]))))))

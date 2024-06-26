@@ -9,7 +9,9 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config '{{genre}}/{{rule-name}}))
+(defn config [& [style]]
+  (cond-> (single-rule-config '{{genre}}/{{rule-name}})
+    style (update '{{genre}}/{{rule-name}} merge style)))
 
 (defdescribe {{rule-name}}-test
   (expect-match

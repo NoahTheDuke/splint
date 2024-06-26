@@ -4,81 +4,84 @@
 
 (ns noahtheduke.splint.rules.metrics.fn-length-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe describe given it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(def config
-  '{metrics/fn-length {:enabled true}
-    style/multiple-arity-order {:enabled false}})
+(defn config [& [style]]
+  (cond-> (single-rule-config 'metrics/fn-length)
+    style (update 'metrics/fn-length merge style)))
 
-(defexpect fn-length-defn-test
-  (let [config (assoc-in config '[metrics/fn-length :chosen-style] :defn)]
-    (expect-match nil "(defn n\n[]\n1 2 3)" config)
-    (expect-match
-      '[{:message "defn forms shouldn't be longer than 10 lines."}]
-      "(defn n\n[arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11)" config)
-    (expect-match
-      '[{:alt nil
-         :line 1
-         :column 1
-         :end-line 13
-         :end-column 4}]
-      "(defn n\n[arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11)" config)
-    (expect-match
-      '[{:alt nil
-         :line 1
-         :column 1
-         :end-line 13
-         :end-column 5}]
-      "(defn n\n([arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11))" config)
-    (expect-match
-      '[{:alt nil
-         :line 1
-         :column 1
-         :end-line 14
-         :end-column 5}]
-      "(defn n\n([] 1 2 3)\n([arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11))"
-      config)))
+(defdescribe fn-length-defn-test
 
-(defexpect fn-length-body-test
-  (let [config (assoc-in config '[metrics/fn-length :chosen-style] :body)]
-    (expect-match nil "(defn n\n[]\n1 2 3)" config)
-    (expect-match
-      '[{:message "Function bodies shouldn't be longer than 10 lines."}]
-      "(defn n\n[arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11)" config)
-    (expect-match
-      '[{:alt nil
-         :line 2
-         :column 1
-         :end-line 13
-         :end-column 3}]
-      "(defn n\n[arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11)" config)
-    (expect-match
-      '[{:alt nil
-         :line 2
-         :column 1
-         :end-line 13
-         :end-column 4}]
-      "(defn n\n([arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11))" config)
-    (expect-match
-      '[{:alt nil
-         :line 3
-         :column 1
-         :end-line 14
-         :end-column 4}]
-      "(defn n\n([] 1 2 3)\n([arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11))"
-      config)))
+  (describe "chosen style"
+    (given [config (config {:chosen-style :defn})]
+      (it :defn
+        (expect-match nil "(defn n\n[]\n1 2 3)" config)
+        (expect-match
+          '[{:message "defn forms shouldn't be longer than 10 lines."}]
+          "(defn n\n[arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11)" config)
+        (expect-match
+          '[{:alt nil
+             :line 1
+             :column 1
+             :end-line 13
+             :end-column 4}]
+          "(defn n\n[arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11)" config)
+        (expect-match
+          '[{:alt nil
+             :line 1
+             :column 1
+             :end-line 13
+             :end-column 5}]
+          "(defn n\n([arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11))" config)
+        (expect-match
+          '[{:alt nil
+             :line 1
+             :column 1
+             :end-line 14
+             :end-column 5}]
+          "(defn n\n([] 1 2 3)\n([arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11))"
+          config)))
+    (given [config (config {:chosen-style :body})]
+      (it :body
+        (expect-match nil "(defn n\n[]\n1 2 3)" config)
+        (expect-match
+          '[{:message "Function bodies shouldn't be longer than 10 lines."}]
+          "(defn n\n[arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11)" config)
+        (expect-match
+          '[{:alt nil
+             :line 2
+             :column 1
+             :end-line 13
+             :end-column 3}]
+          "(defn n\n[arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11)" config)
+        (expect-match
+          '[{:alt nil
+             :line 2
+             :column 1
+             :end-line 13
+             :end-column 4}]
+          "(defn n\n([arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11))" config)
+        (expect-match
+          '[{:alt nil
+             :line 3
+             :column 1
+             :end-line 14
+             :end-column 4}]
+          "(defn n\n([] 1 2 3)\n([arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11))"
+          config))))
 
-(defexpect fn-length-config-length-test
-  (let [config (assoc-in config '[metrics/fn-length :length] 5)]
-    (expect-match nil "(defn n\n[]\n0\n1\n2\n3)" config)
-    (expect-match
-      '[{:alt nil
-         :message "Function bodies shouldn't be longer than 5 lines."
-         :line 2
-         :column 1
-         :end-line 8
-         :end-column 2}]
-      "(defn n\n[]\n0\n1\n2\n3\n4\n5)" config)))
+  (describe "config length"
+    (given [config (config {:length 5})]
+      (it "custom length"
+        (expect-match nil "(defn n\n[]\n0\n1\n2\n3)" config)
+        (expect-match
+          '[{:alt nil
+             :message "Function bodies shouldn't be longer than 5 lines."
+             :line 2
+             :column 1
+             :end-line 8
+             :end-column 2}]
+          "(defn n\n[]\n0\n1\n2\n3\n4\n5)" config)))))

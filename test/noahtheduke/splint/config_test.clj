@@ -25,12 +25,13 @@
 
   (describe ":required-files"
     (it "merges required-files correctly"
-      (expect (match? {:required-files nil}
-                (sut/load-config {} nil)))
-      (expect (match? {:required-files ["a" "b"]}
-                (sut/load-config {:require ["a" "b"]} nil)))
-      (expect (match? {:required-files ["c" "d"]}
-                (sut/load-config {:require ["a" "b"]} {:required-files ["c" "d"]}))))))
+      (with-redefs [sut/require-file! identity]
+        (expect (match? {:required-files nil}
+                        (sut/load-config {} nil)))
+        (expect (match? {:required-files ["a" "b"]}
+                        (sut/load-config {:require ["a" "b"]} nil)))
+        (expect (match? {:required-files ["a" "b" "c" "d"]}
+                        (sut/load-config {:require ["a" "b"]} {:required-files ["c" "d"]})))))))
 
 (defdescribe disable-single-rule-test
   (it "handles rules"

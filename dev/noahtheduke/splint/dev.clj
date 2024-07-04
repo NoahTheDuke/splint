@@ -4,7 +4,6 @@
 
 (ns noahtheduke.splint.dev
   (:require
-   [clojure.java.io :as io]
    [nextjournal.beholder :as beholder]
    [noahtheduke.splint.config :as config]
    [noahtheduke.splint.rules :refer [global-rules]]
@@ -13,11 +12,8 @@
 
 (set! *warn-on-reflection* true)
 
-(doseq [dev-rule (file-seq (io/file "dev" "noahtheduke" "splint" "rules" "dev"))
-        :when (.isFile ^java.io.File dev-rule)]
-  (load-file (str dev-rule)))
-
 (defn build-default-config []
+  (load-file "dev/noahtheduke/splint/rules/dev/throws_on_match.clj")
   (let [dev-rules (->> (keys (:rules @global-rules))
                     (filter #(.equals "dev" (namespace %)))
                     (map (fn [r] (clojure.lang.MapEntry. r {:enabled true})))

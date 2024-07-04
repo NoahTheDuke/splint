@@ -3,6 +3,8 @@
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 {
+ require ["dev/noahtheduke/splint/rules/dev/sorted_rules_require.clj"]
+
  dev {:enabled true}
  lint {:enabled true}
  metrics {:enabled true}

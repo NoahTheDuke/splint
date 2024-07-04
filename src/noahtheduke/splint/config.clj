@@ -60,14 +60,12 @@
         parallel (config 'parallel (config :parallel true))
         summary (config 'summary (config :summary true))
         quiet (config 'quiet (config :quiet false))
-        silent (config 'silent (config :silent false))
-        required-files (config 'require (config :require))]
+        silent (config 'silent (config :silent false))]
     {:output output
      :parallel parallel
      :summary summary
      :quiet quiet
-     :silent silent
-     :required-files required-files}))
+     :silent silent}))
 
 (defn make-rule-config [rule genre-config local-config]
   (let [combined-rule
@@ -122,11 +120,25 @@
         opts (get-opts-from-config local)]
     (conj new-config opts)))
 
+(defn- require-file! [f]
+  (try (load-file f)
+       (catch java.io.FileNotFoundException _
+         (println "Can't load" f "as it doesn't exist.")))
+  f)
+
+(defn require-files! [local options]
+  (->> (:required-files options)
+       (concat (:require local ('require local)))
+       (mapv* require-file!)
+       (not-empty)))
+
 (defn load-config
   ([options] (load-config (:local (find-local-config)) options))
   ([local options]
-   (conj (merge-config @default-config local)
-     options)))
+   (let [required-files (require-files! local options)]
+     (conj (merge-config @default-config local)
+           options
+           {:required-files required-files}))))
 
 (defn get-config
   "Return merged config for a specific rule."

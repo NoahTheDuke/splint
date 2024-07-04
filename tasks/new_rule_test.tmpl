@@ -9,15 +9,18 @@
 
 (set! *warn-on-reflection* true)
 
+(def rule-name '{{genre}}/{{rule-name}})
+
 (defn config [& [style]]
-  (cond-> (single-rule-config '{{genre}}/{{rule-name}})
-    style (update '{{genre}}/{{rule-name}} merge style)))
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
 
 (defdescribe {{rule-name}}-test
-  (expect-match
-    [{:rule-name '{{genre}}/{{rule-name}}
-      :form nil
-      :message ""
-      :alt nil}]
-    "()"
-    (config)))
+  (it "works"
+    (expect-match
+      [{:rule-name rule-name
+        :form nil
+        :message ""
+        :alt nil}]
+      "()"
+      (config))))

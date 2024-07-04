@@ -232,12 +232,6 @@
     :else
     (check-files-serial ctx files)))
 
-(defn require-files! [config]
-  (doseq [f (:required-files config)]
-    (try (load-file f)
-      (catch java.io.FileNotFoundException _
-        (println "Can't load" f "as it doesn't exist.")))))
-
 (defn prepare-rules [config rules]
   (let [rule-names (set (concat (keys config) (keys rules)))]
     (-> (reduce
@@ -329,7 +323,6 @@
 (defn run-impl
   "Actually perform check."
   [paths options]
-  (require-files! options)
   (let [config (or (:config-override options) (conf/load-config options))
         rules-by-type (prepare-rules config (:rules @global-rules))
         config (apply dissoc config (keys (:rules rules-by-type)))

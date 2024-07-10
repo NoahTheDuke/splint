@@ -4,30 +4,38 @@
 
 (ns noahtheduke.splint.rules.performance.get-keyword-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'performance/get-keyword))
+(def rule-name 'performance/get-keyword)
 
-(defexpect get-keyword-test
-  (expect-match
-    [{:rule-name 'performance/get-keyword
-      :form '(get m :some-key)
-      :message "Use keywords as functions instead of the polymorphic function `get`."
-      :alt '(:some-key m)}]
-    "(get m :some-key)"
-    (config))
-  (expect-match
-    nil
-    "(get m 'some-key)"
-    (config))
-  (expect-match
-    nil
-    "(m :some-key)"
-    (config))
-  (expect-match
-    nil
-    "(get m \"some-key\")"
-    (config)))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe get-keyword-test
+  (it "only looks for keywords"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(get m :some-key)
+        :message "Use keywords as functions instead of the polymorphic function `get`."
+        :alt '(:some-key m)}]
+      "(get m :some-key)"
+      (config)))
+  (it "ignores symbols"
+    (expect-match
+      nil
+      "(get m 'some-key)"
+      (config)))
+  (it "ignores strings"
+    (expect-match
+      nil
+      "(get m \"some-key\")"
+      (config)))
+  (it "ignores calls without 'get'"
+    (expect-match
+      nil
+      "(m :some-key)"
+      (config))))

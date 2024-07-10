@@ -4,22 +4,27 @@
 
 (ns noahtheduke.splint.rules.naming.single-segment-namespace-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'naming/single-segment-namespace))
+(def rule-name 'naming/single-segment-namespace)
 
-(defexpect single-segment-namespace-test
-  (expect-match
-    [{:form '(ns simple)
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe single-segment-namespace-test
+  (it "works on single segmets" (expect-match
+    [{:rule-name rule-name
+      :form '(ns simple)
       :message "simple is a single segment. Consider adding an additional segment."
       :alt nil}]
     "(ns simple)"
     (config))
-  (expect-match nil "(ns foo.bar)" (config)))
+    (expect-match nil "(ns foo.bar)" (config)))
 
-(defexpect single-segment-namespace-special-exceptions-test
-  (expect-match nil "(ns build)" (config))
-  (expect-match nil "(ns user)" (config)))
+  (it "ignores special cases"
+    (expect-match nil "(ns build)" (config))
+    (expect-match nil "(ns user)" (config))))

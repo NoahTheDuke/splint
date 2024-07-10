@@ -4,28 +4,37 @@
 
 (ns noahtheduke.splint.rules.performance.into-transducer-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it describe]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]
    [noahtheduke.splint.rules.performance.into-transducer :refer [transducers]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'performance/into-transducer))
+(def rule-name 'performance/into-transducer)
 
-(defexpect into-transducer-test
-  (doseq [t transducers]
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe into-transducer-test
+  (describe "handles built-ins"
+    (map (fn [t]
+           (it t
+             (expect-match
+               [{:rule-name 'performance/into-transducer
+                 :form (list 'into [] (list t 'f '(range 100)))
+                 :message "Rely on the transducer form."
+                 :alt (list 'into [] (list t 'f) '(range 100))}]
+               (format "(into [] (%s f (range 100)))" t)
+               (config))))
+         transducers))
+  (it "ignores non-empty into vectors"
     (expect-match
-      [{:rule-name 'performance/into-transducer
-        :form (list 'into [] (list t 'f '(range 100)))
-        :message "Rely on the transducer form."
-        :alt (list 'into [] (list t 'f) '(range 100))}]
-      (format "(into [] (%s f (range 100)))" t)
+      nil
+      "(into [1 2 3] (map f (range 100)))"
       (config)))
-  (expect-match
-    nil
-    "(into [1 2 3] (map f (range 100)))"
-    (config))
-  (expect-match
-    nil
-    "(into [] (mapv f (range 100)))"
-    (config)))
+  (it "ignores mapv"
+    (expect-match
+      nil
+      "(into [] (mapv f (range 100)))"
+      (config))))

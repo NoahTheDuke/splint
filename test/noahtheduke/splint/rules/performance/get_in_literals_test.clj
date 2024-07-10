@@ -4,30 +4,35 @@
 
 (ns noahtheduke.splint.rules.performance.get-in-literals-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'performance/get-in-literals))
+(def rule-name 'performance/get-in-literals)
 
-(defexpect get-in-literals-test
-  (expect-match
-    [{:rule-name 'performance/get-in-literals
-      :form '(get-in m [:some-key1 :some-key2 :some-key3])
-      :message "Use keywords as functions instead of `get-in`."
-      :alt '(-> m :some-key1 :some-key2 :some-key3)}]
-    "(get-in m [:some-key1 :some-key2 :some-key3])"
-    (config))
-  (expect-match
-    nil
-    "(get-in m [:some-key1 :some-key2 'some-key3])"
-    (config))
-  (expect-match
-    nil
-    "(get-in m [:some-key1 some-key2 :some-key3])"
-    (config))
-  (expect-match
-    nil
-    "(get-in m [])"
-    (config)))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe get-in-literals-test
+  (it "requires only keywords"
+    (expect-match
+      [{:rule-name 'performance/get-in-literals
+        :form '(get-in m [:some-key1 :some-key2 :some-key3])
+        :message "Use keywords as functions instead of `get-in`."
+        :alt '(-> m :some-key1 :some-key2 :some-key3)}]
+      "(get-in m [:some-key1 :some-key2 :some-key3])"
+      (config))
+    (expect-match
+      nil
+      "(get-in m [:some-key1 :some-key2 'some-key3])"
+      (config))
+    (expect-match
+      nil
+      "(get-in m [:some-key1 some-key2 :some-key3])"
+      (config))
+    (expect-match
+      nil
+      "(get-in m [])"
+      (config))))

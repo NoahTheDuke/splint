@@ -9,20 +9,22 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [& [style]]
-  (cond-> (single-rule-config 'naming/conventional-aliases)
-    style (update 'naming/conventional-aliases merge style)))
+(def rule-name 'naming/conventional-aliases)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
 
 (defdescribe conventional-aliases-test
   (it "works"
     (expect-match
-      [{:rule-name 'naming/conventional-aliases
+      [{:rule-name rule-name
         :form '(:require [clojure.string :as string])
         :alt '(:require [clojure.string :as str])}]
       "(ns foo.bar (:require [clojure.string :as string]))"
       (config))
     (expect-match
-      [{:rule-name 'naming/conventional-aliases
+      [{:rule-name rule-name
         :form '(:require [clojure.string :as string]
                          clojure.set
                          [clojure.edn]

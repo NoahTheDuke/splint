@@ -4,21 +4,36 @@
 
 (ns noahtheduke.splint.rules.naming.record-name-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect record-name-test
-  (expect-match
-    '[{:alt (defrecord Foo [a b c])}]
-    "(defrecord foo [a b c])")
-  (expect-match
-    '[{:alt (defrecord FooBar [a b c])}]
-    "(defrecord fooBar [a b c])")
-  (expect-match
-    '[{:alt (defrecord FooBar [a b c])}]
-    "(defrecord foo-bar [a b c])")
-  (expect-match
-    '[{:alt (defrecord FooBar [a b c])}]
-    "(defrecord Foo-bar [a b c])"))
+(def rule-name 'naming/record-name)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe record-name-test
+  (it "handles all cases"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(defrecord foo [a b c])
+        :alt '(defrecord Foo [a b c])}]
+      "(defrecord foo [a b c])")
+    (expect-match
+      [{:rule-name rule-name
+        :form '(defrecord fooBar [a b c])
+        :alt '(defrecord FooBar [a b c])}]
+      "(defrecord fooBar [a b c])")
+    (expect-match
+      [{:rule-name rule-name
+        :form '(defrecord foo-bar [a b c])
+        :alt '(defrecord FooBar [a b c])}]
+      "(defrecord foo-bar [a b c])")
+    (expect-match
+      [{:rule-name rule-name
+        :form '(defrecord Foo-bar [a b c])
+        :alt '(defrecord FooBar [a b c])}]
+      "(defrecord Foo-bar [a b c])")))

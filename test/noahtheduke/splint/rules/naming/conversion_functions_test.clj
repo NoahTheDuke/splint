@@ -4,21 +4,27 @@
 
 (ns noahtheduke.splint.rules.naming.conversion-functions-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'naming/conversion-functions))
+(def rule-name 'naming/conversion-functions)
 
-(defexpect conversion-functions-test
-  (expect-match
-    [{:form '(defn f-to-c ...)
-      :message "Use `->` instead of `to` in the names of conversion functions."
-      :alt '(defn f->c ...)}]
-    "(defn f-to-c [a] {:a a})"
-    (config))
-  (expect-match
-    nil
-    "(defn expect-f-to-c [a] {:a a})"
-    (config)))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe conversion-functions-test
+  (it "expects single words"
+    (expect-match
+      [{:form '(defn f-to-c ...)
+        :message "Use `->` instead of `to` in the names of conversion functions."
+        :alt '(defn f->c ...)}]
+      "(defn f-to-c [a] {:a a})"
+      (config)))
+  (it "rejects multi-words"
+    (expect-match
+      nil
+      "(defn expect-f-to-c [a] {:a a})"
+      (config))))

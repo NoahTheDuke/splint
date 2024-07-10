@@ -4,28 +4,38 @@
 
 (ns noahtheduke.splint.rules.style.filter-complement-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect filter-complement-test
-  (expect-match
-    '[{:alt (remove pred coll)}]
-    "(filter (complement pred) coll)"))
+(def rule-name 'style/filter-complement)
 
-(defexpect filter-not-pred-test
-  (expect-match
-    '[{:alt (remove pred coll)}]
-    "(filter #(not (pred %)) coll)"))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
 
-(defexpect filter-fn*-not-pred-test
-  (expect-match
-    '[{:alt (remove pred coll)}]
-    "(filter (fn* [x] (not (pred x))) coll)"))
+(defdescribe filter-complement-test
+  (it "complement"
+    (expect-match
+      [{:alt '(remove pred coll)}]
+      "(filter (complement pred) coll)"
+      (config)))
 
-(defexpect filter-fn-not-pred-test
-  (expect-match
-    '[{:alt (remove pred coll)}]
-    "(filter (fn [x] (not (pred x))) coll)"))
+  (it "anonymous literal"
+    (expect-match
+      [{:alt '(remove pred coll)}]
+      "(filter #(not (pred %)) coll)"
+      (config)))
 
+  (it "fn*"
+    (expect-match
+      [{:alt '(remove pred coll)}]
+      "(filter (fn* [x] (not (pred x))) coll)"
+      (config)))
+
+  (it "fn"
+    (expect-match
+      [{:alt '(remove pred coll)}]
+      "(filter (fn [x] (not (pred x))) coll)"
+      (config))))

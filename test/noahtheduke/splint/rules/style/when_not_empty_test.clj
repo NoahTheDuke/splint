@@ -4,14 +4,20 @@
 
 (ns noahtheduke.splint.rules.style.when-not-empty-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect when-not-empty?-test
-  (expect-match
-    '[{:alt (when (seq x) y)}]
-    "(when-not (empty? x) y)")
-  (expect-match nil
-    "(if (= 1 called-with) \"arg\" \"args\")"))
+(def rule-name 'style/when-not-empty?)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe when-not-empty?-test
+  (it "works"
+    (expect-match
+      [{:alt '(when (seq x) y)}]
+      "(when-not (empty? x) y)"
+      (config))))

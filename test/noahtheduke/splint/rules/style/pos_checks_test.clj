@@ -4,17 +4,30 @@
 
 (ns noahtheduke.splint.rules.style.pos-checks-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect lt-0-x-test
-  (expect-match
-    '[{:alt (pos? x)}]
-    "(< 0 x)"))
+(def rule-name 'style/pos-checks)
 
-(defexpect gt-x-0-test
-  (expect-match
-    '[{:alt (pos? x)}]
-    "(> x 0)"))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe lt-0-x-test
+  (it "works with less than"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(< 0 x)
+        :alt '(pos? x)}]
+      "(< 0 x)"
+      (config)))
+
+  (it "works with greater than"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(> x 0)
+        :alt '(pos? x)}]
+      "(> x 0)"
+      (config))))

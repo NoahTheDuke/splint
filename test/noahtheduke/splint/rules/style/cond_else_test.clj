@@ -4,21 +4,36 @@
 
 (ns noahtheduke.splint.rules.style.cond-else-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect cond-else-test
-  (expect-match
-    '[{:alt (cond (pos? x) (inc x) :else -1)}]
-    "(cond (pos? x) (inc x) :default -1)")
-  (expect-match
-    '[{:alt (cond (pos? x) (inc x) :else -1)}]
-    "(cond (pos? x) (inc x) true -1)")
-  (expect-match nil
-    "(cond (pos? x) (inc x) (neg? x) (dec x))"))
+(def rule-name 'style/cond-else)
 
-(defexpect cond-no-pairs-test
-  (expect-match nil
-    "(cond :else true)"))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe cond-else-test
+  (it "checks keywords"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(cond (pos? x) (inc x) :default -1)
+        :alt '(cond (pos? x) (inc x) :else -1)}]
+      "(cond (pos? x) (inc x) :default -1)"
+      (config)))
+  (it "checks for true"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(cond (pos? x) (inc x) true -1)
+        :alt '(cond (pos? x) (inc x) :else -1)}]
+      "(cond (pos? x) (inc x) true -1)"
+      (config)))
+  (it "ignores no default branch"
+    (expect-match nil
+      "(cond (pos? x) (inc x) (neg? x) (dec x))"
+      (config)))
+
+  (it "ignores existing :else"
+    (expect-match nil "(cond :else true)" (config))))

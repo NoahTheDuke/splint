@@ -4,15 +4,29 @@
 
 (ns noahtheduke.splint.rules.style.prefer-clj-math-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect prefer-clj-math-test
-  (expect-match '[{:alt clojure.math/atan}] "(Math/atan 45)")
-  (expect-match '[{:alt clojure.math/PI}] "Math/PI"))
+(def rule-name 'style/prefer-clj-math)
 
-(defexpect bad-clojure-version-test
-  (expect-match nil "(Math/atan 45)"
-    {:clojure-version {:major 1 :minor 9}}))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe prefer-clj-math-test
+  (it "checks function calls"
+    (expect-match
+      '[{:alt clojure.math/atan}]
+      "(Math/atan 45)"
+      (config)))
+  (it "checks bare symbols"
+    (expect-match
+      '[{:alt clojure.math/PI}]
+      "Math/PI"
+      (config)))
+
+  (it "ignores if version is too low"
+    (expect-match nil "(Math/atan 45)"
+      (assoc (config) :clojure-version {:major 1 :minor 9}))))

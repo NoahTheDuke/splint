@@ -11,7 +11,7 @@
 
 (def rule-name '{{genre}}/{{rule-name}})
 
-(defn config [& [style]]
+(defn config [& {:as style}]
   (cond-> (single-rule-config rule-name)
     style (update rule-name merge style)))
 

@@ -4,18 +4,28 @@
 
 (ns noahtheduke.splint.rules.style.trivial-for-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'style/trivial-for))
+(def rule-name 'style/trivial-for)
 
-(defexpect trivial-for-test
-  (expect-match
-    [{:rule-name 'style/trivial-for
-      :form '(for [item items] (f item))
-      :message "Avoid trivial usage of `for`."
-      :alt '(map f items)}]
-    "(for [item items] (f item))"
-    (config)))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe trivial-for-test
+  (it "works"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(for [item items] (f item))
+        :message "Avoid trivial usage of `for`."
+        :alt '(map f items)}]
+      "(for [item items] (f item))"
+      (config)))
+  (it "ignores multi-arity f calls"
+    (expect-match
+      nil
+      "(for [item items] (f item other-item))"
+      (config))))

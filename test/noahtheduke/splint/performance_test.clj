@@ -23,9 +23,8 @@
       ; v1.3 -> v1.8
       ; (swap! global-rules update-vals #(assoc % :pattern (constantly nil)))
       ; v1.9+
-      (swap! global-rules update :rules update-vals #(assoc % :pattern (constantly nil)))
-      (with-redefs [noahtheduke.splint.config/find-local-config
-                    (constantly all-enabled-config)]
+      ; (swap! global-rules update :rules update-vals #(assoc % :pattern (constantly nil)))
+      (with-redefs [noahtheduke.splint.runner/check-pattern (constantly nil)]
         #_:clj-kondo/ignore
         (user/quick-bench
           (with-out-str (run ["--quiet" "--no-parallel" (str analyzer)]))))

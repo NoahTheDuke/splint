@@ -4,12 +4,22 @@
 
 (ns noahtheduke.splint.rules.style.first-first-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect first-first-test
-  (expect-match
-    '[{:alt (ffirst coll)}]
-    "(first (first coll))"))
+(def rule-name 'style/first-first)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe first-first-test
+  (it "works"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(first (first coll))
+        :alt '(ffirst coll)}]
+      "(first (first coll))"
+      (config))))

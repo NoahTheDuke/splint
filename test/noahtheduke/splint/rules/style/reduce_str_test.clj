@@ -4,23 +4,34 @@
 
 (ns noahtheduke.splint.rules.style.reduce-str-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'style/reduce-str))
+(def rule-name 'style/reduce-str)
 
-(defexpect reduce-str-test
-  (expect-match
-    [{:rule-name 'style/reduce-str
-      :form '(reduce str x)
-      :message "Use `clojure.string/join` for efficient string concatenation."
-      :alt '(clojure.string/join x)}]
-    "(reduce str x)"
-    (config))
-  (expect-match
-    [{:form '(reduce str "" x)
-      :alt '(clojure.string/join x)}]
-    "(reduce str \"\" x)"
-    (config)))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe reduce-str-test
+  (it "works with no init-arg"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(reduce str x)
+        :message "Use `clojure.string/join` for efficient string concatenation."
+        :alt '(clojure.string/join x)}]
+      "(reduce str x)"
+      (config)))
+  (it "works with an empty init-arg"
+    (expect-match
+      [{:form '(reduce str "" x)
+        :alt '(clojure.string/join x)}]
+      "(reduce str \"\" x)"
+      (config)))
+  (it "ignores a non-empty init-arg"
+    (expect-match
+      nil
+      "(reduce str \"abc\" x)"
+      (config))))

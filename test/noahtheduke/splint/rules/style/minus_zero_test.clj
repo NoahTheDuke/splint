@@ -4,12 +4,27 @@
 
 (ns noahtheduke.splint.rules.style.minus-zero-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect minus-0-test
-  (expect-match
-    '[{:alt x}]
-    "(- x 0)"))
+(def rule-name 'style/minus-zero)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe minus-0-test
+  (it "expects 0 to be in final position"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(- x 0)
+        :alt 'x}]
+      "(- x 0)"
+      (config)))
+  (it "ignores multi-arity minus"
+    (expect-match
+      nil
+      "(- x y 0)"
+      (config))))

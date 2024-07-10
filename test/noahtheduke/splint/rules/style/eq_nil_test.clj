@@ -4,15 +4,29 @@
 
 (ns noahtheduke.splint.rules.style.eq-nil-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect eq-nil-test
-  (expect-match
-    '[{:alt (nil? x)}]
-    "(= nil x)")
-  (expect-match
-    '[{:alt (nil? x)}]
-    "(= x nil)"))
+(def rule-name 'style/eq-nil)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe eq-nil-test
+  (it "checks nil first"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(= nil x)
+        :alt '(nil? x)}]
+      "(= nil x)"
+      (config)))
+  (it "checks nil second"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(= x nil)
+        :alt '(nil? x)}]
+      "(= x nil)"
+      (config))))

@@ -4,23 +4,32 @@
 
 (ns noahtheduke.splint.rules.style.redundant-regex-constructor-test
   (:require
-   [expectations.clojure.test :refer [defexpect expecting]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect redundant-regex-constructor-test
-  (expect-match
-    [{:message "Rely on regex literal directly."
-      :alt '(splint/re-pattern "asdf")}]
-    "(re-pattern #\"asdf\")")
-  (expecting "handles strings"
+(def rule-name 'style/redundant-regex-constructor)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe redundant-regex-constructor-test
+  (it "works"
     (expect-match
       [{:message "Rely on regex literal directly."
         :alt '(splint/re-pattern "asdf")}]
-      "(re-pattern \"asdf\")"))
-  (expecting "compiles strings into regex"
+      "(re-pattern #\"asdf\")"
+      (config)))
+  (it "handles strings"
     (expect-match
-      [{:message "Rely on regex literal directly."
+      [{:alt '(splint/re-pattern "asdf")}]
+      "(re-pattern \"asdf\")"
+      (config)))
+  (it "compiles strings into regex"
+    (expect-match
+      [{:form '(re-pattern "\\asdf")
         :alt '(splint/re-pattern "\\asdf")}]
-      "(re-pattern \"\\\\asdf\")")))
+      "(re-pattern \"\\\\asdf\")"
+      (config))))

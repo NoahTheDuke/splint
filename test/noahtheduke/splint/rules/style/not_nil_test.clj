@@ -4,12 +4,27 @@
 
 (ns noahtheduke.splint.rules.style.not-nil-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect not-nil?-test
-  (expect-match
-    '[{:alt (some? x)}]
-    "(not (nil? x))"))
+(def rule-name 'style/not-nil?)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe not-nil?-test
+  (it "works"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(not (nil? x))
+        :alt '(some? x)}]
+      "(not (nil? x))"
+      (config)))
+  (it "ignores plain nil"
+    (expect-match
+      nil
+      "(not nil)"
+      (config))))

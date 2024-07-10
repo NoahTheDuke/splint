@@ -4,12 +4,25 @@
 
 (ns noahtheduke.splint.rules.style.prefer-vary-meta-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect prefer-vary-meta-test
-  (expect-match
-    '[{:alt (vary-meta x f args)}]
-    "(with-meta x (f (meta x) args))"))
+(def rule-name 'style/prefer-vary-meta)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe prefer-vary-meta-test
+  (it "works"
+    (expect-match
+      [{:alt '(vary-meta x f args)}]
+      "(with-meta x (f (meta x) args))"
+      (config)))
+  (it "ignores direct non-meta calls"
+    (expect-match
+      nil
+      "(let [xm (meta x)] (with-meta x (f xm args)))"
+      (config))))

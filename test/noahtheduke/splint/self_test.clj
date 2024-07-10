@@ -10,12 +10,24 @@
    [clojure.string :as str]
    [lazytest.core :refer [defdescribe expect it given]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
-   [noahtheduke.splint.runner :as splint]
-   [noahtheduke.splint.utils.test-runner :refer [with-out-str-data-map]])
+   [noahtheduke.splint.runner :as splint])
   (:import
    (java.io File)))
 
 (set! *warn-on-reflection* true)
+
+(defmacro with-out-str-data-map
+  "Adapted from clojure.core/with-out-str.
+
+  Evaluates exprs in a context in which *out* is bound to a fresh
+  StringWriter. Returns the result of the body and the string created by any
+  nested printing calls in a map under the respective keys :result and :string."
+  [& body]
+  `(let [s# (java.io.StringWriter.)]
+     (binding [*out* s#]
+       (let [r# (do ~@body)]
+         {:result r#
+          :string (str s#)}))))
 
 (defdescribe dogfooding-test
   (it "no diagnostics in splint"

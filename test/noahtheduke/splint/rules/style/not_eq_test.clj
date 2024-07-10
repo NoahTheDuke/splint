@@ -4,12 +4,22 @@
 
 (ns noahtheduke.splint.rules.style.not-eq-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect not-eq-test
-  (expect-match
-    '[{:alt (not= arg1 arg2 arg3)}]
-    "(not (= arg1 arg2 arg3))"))
+(def rule-name 'style/not-eq)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe not-eq-test
+  (it "works"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(not (= arg1 arg2 arg3))
+        :alt '(not= arg1 arg2 arg3)}]
+      "(not (= arg1 arg2 arg3))"
+      (config))))

@@ -4,15 +4,24 @@
 
 (ns noahtheduke.splint.rules.style.when-not-do-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect when-not-do-test
-  (expect-match
-    '[{:alt (when-not x y z)}]
-    "(when-not x (do y z))")
-  (expect-match
-    '[{:alt (when-not x y z)}]
-    "(when-not x (do y z) nil)"))
+(def rule-name 'style/when-not-do)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe when-not-do-test
+  (it "works with multiple args"
+    (expect-match
+      [{:alt '(when-not x y z)}]
+      "(when-not x (do y z))"
+      (config))
+    (expect-match
+      [{:alt '(when-not x y z)}]
+      "(when-not x (do y z) nil)"
+      (config))))

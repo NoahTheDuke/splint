@@ -4,12 +4,22 @@
 
 (ns noahtheduke.splint.rules.style.apply-str-reverse-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect str-apply-reverse-test
-  (expect-match
-    '[{:alt (clojure.string/reverse x)}]
-    "(apply str (reverse x))"))
+(def rule-name 'style/apply-str-reverse)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe str-apply-reverse-test
+  (it "works"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(apply str (reverse x))
+        :alt '(clojure.string/reverse x)}]
+      "(apply str (reverse x))"
+      (config))))

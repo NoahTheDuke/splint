@@ -4,15 +4,24 @@
 
 (ns noahtheduke.splint.rules.style.nested-multiply-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect nested-addition-test
-  (expect-match
-    '[{:alt (* x y z)}]
-    "(* x (* y z))")
-  (expect-match
-    '[{:alt (* x y z a)}]
-    "(* x (* y z a))"))
+(def rule-name 'style/nested-multiply)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe nested-multiply-test
+  (it "works"
+    (expect-match
+      [{:alt '(* x y z)}]
+      "(* x (* y z))"
+      (config))
+    (expect-match
+      [{:alt '(* x y z a)}]
+      "(* x (* y z a))"
+      (config))))

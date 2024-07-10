@@ -4,15 +4,29 @@
 
 (ns noahtheduke.splint.rules.style.plus-one-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect plus-x-1-test
-  (expect-match
-    '[{:alt (inc x)}]
-    "(+ x 1)")
-  (expect-match
-    '[{:alt (inc x)}]
-    "(+ 1 x)"))
+(def rule-name 'style/plus-one)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe plus-x-1-test
+  (it "understands 1 in either position"
+    (expect-match
+      [{:alt '(inc x)}]
+      "(+ x 1)"
+      (config))
+    (expect-match
+      [{:alt '(inc x)}]
+      "(+ 1 x)"
+      (config)))
+  (it "ignores multi-arity plus"
+    (expect-match
+      nil
+      "(+ x y 1)"
+      (config))))

@@ -4,23 +4,32 @@
 
 (ns noahtheduke.splint.rules.style.apply-str-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'style/apply-str))
+(def rule-name 'style/apply-str)
 
-(defexpect apply-str-test
-  (expect-match
-    '[{:alt (clojure.string/join x)}]
-    "(apply str x)"
-    (config))
-  (expect-match
-    nil
-    "(apply str (reverse x))"
-    (config))
-  (expect-match
-    nil
-    "(apply str (interpose x))"
-    (config)))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe apply-str-test
+  (it "works"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(apply str x)
+        :alt '(clojure.string/join x)}]
+      "(apply str x)"
+      (config)))
+  (it "ignores nested reverse"
+    (expect-match
+      nil
+      "(apply str (reverse x))"
+      (config)))
+  (it "ignores nested interpose"
+    (expect-match
+      nil
+      "(apply str (interpose x))"
+      (config))))

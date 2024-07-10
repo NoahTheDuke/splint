@@ -4,12 +4,22 @@
 
 (ns noahtheduke.splint.rules.style.apply-str-interpose-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect str-apply-interpose-test
-  (expect-match
-    '[{:alt (clojure.string/join x y)}]
-    "(apply str (interpose x y))"))
+(def rule-name 'style/apply-str-interpose)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe str-apply-interpose-test
+  (it "works"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(apply str (interpose x y))
+        :alt '(clojure.string/join x y)}]
+      "(apply str (interpose x y))"
+      (config))))

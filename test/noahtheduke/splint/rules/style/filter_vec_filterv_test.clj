@@ -4,12 +4,25 @@
 
 (ns noahtheduke.splint.rules.style.filter-vec-filterv-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect filter-vec-filterv-test
-  (expect-match
-    '[{:alt (filterv pred coll)}]
-    "(vec (filter pred coll))"))
+(def rule-name 'style/filter-vec-filterv)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe filter-vec-filterv-test
+  (it "looks for filter"
+    (expect-match
+      [{:alt '(filterv pred coll)}]
+      "(vec (filter pred coll))"
+      (config)))
+  (it "ignores filterv"
+    (expect-match
+      nil
+      "(vec (filterv pred coll))"
+      (config))))

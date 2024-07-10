@@ -4,11 +4,21 @@
 
 (ns noahtheduke.splint.rules.style.multiply-by-zero-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect multiply-by-0-test
-  (expect-match [{:alt 0}] "(* x 0)")
-  (expect-match [{:alt 0}] "(* 0 x)"))
+(def rule-name 'style/multiply-by-zero)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe multiply-by-1-test
+  (it "works in either order"
+    (expect-match [{:alt 0}] "(* x 0)" (config))
+    (expect-match [{:alt 0}] "(* 0 x)" (config)))
+  (it "ignores multi-arity multiply"
+    (expect-match nil "(* x y 0)" (config))
+    (expect-match nil "(* 0 x y)" (config))))

@@ -4,12 +4,22 @@
 
 (ns noahtheduke.splint.rules.style.mapcat-apply-apply-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect mapcat-apply-apply-test
-  (expect-match
-    '[{:alt (mapcat x y)}]
-    "(apply concat (apply map x y))"))
+(def rule-name 'style/mapcat-apply-apply)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe mapcat-apply-apply-test
+  (it "works"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(apply concat (apply map x y)) 
+        :alt '(mapcat x y)}]
+      "(apply concat (apply map x y))"
+      (config))))

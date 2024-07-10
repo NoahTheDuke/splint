@@ -4,19 +4,26 @@
 
 (ns noahtheduke.splint.rules.style.useless-do-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'style/useless-do))
+(def rule-name 'style/useless-do)
 
-(defexpect useless-do-x-test
-  (expect-match
-    [{:form '(do x)
-      :message "Unnecessary `do`."
-      :alt 'x}]
-    "(do x)"
-    (config))
-  (expect-match nil "#(do [%1 %2])" (config))
-  (expect-match nil "(do ~@body)" (config)))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe useless-do-x-test
+  (it "works"
+    (expect-match
+      [{:form '(do x)
+        :message "Unnecessary `do`."
+        :alt 'x}]
+      "(do x)"
+      (config)))
+  (it "ignores function literal context"
+    (expect-match nil "#(do [%1 %2])" (config)))
+  (it "ignores unquote-splicing context"
+    (expect-match nil "(do ~@body)" (config))))

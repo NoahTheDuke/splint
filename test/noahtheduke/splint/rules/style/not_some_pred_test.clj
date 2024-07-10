@@ -4,12 +4,30 @@
 
 (ns noahtheduke.splint.rules.style.not-some-pred-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect not-some-pred-test
-  (expect-match
-    '[{:alt (not-any? pred coll)}]
-    "(not (some pred coll))"))
+(def rule-name 'style/not-some-pred)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe not-some-pred-test
+  (it "works with symbols"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(not (some pred coll))
+        :alt '(not-any? pred coll)}]
+      "(not (some pred coll))"
+      (config)))
+  
+  (it "works with non-symbols"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(not (some (splint/fn [%1] (even? (+ 1 %1))) coll))
+        :alt '(not-any? (splint/fn [%1] (even? (+ 1 %1))) coll)}]
+      "(not (some #(even? (+ 1 %)) coll))"
+      (config))))

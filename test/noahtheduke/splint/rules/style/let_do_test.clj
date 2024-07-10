@@ -4,12 +4,27 @@
 
 (ns noahtheduke.splint.rules.style.let-do-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect let-do-test
-  (expect-match
-    '[{:alt (let [a 1 b 2] a b)}]
-    "(let [a 1 b 2] (do a b))"))
+(def rule-name 'style/let-do)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe let-do-test
+  (it "works with one child"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(let [a 1 b 2] (do a b))
+        :alt '(let [a 1 b 2] a b)}]
+      "(let [a 1 b 2] (do a b))"
+      (config)))
+  (it "ignores multiple children"
+    (expect-match
+      nil
+      "(let [a 1 b 2] (do a b) (do a b))"
+      (config))))

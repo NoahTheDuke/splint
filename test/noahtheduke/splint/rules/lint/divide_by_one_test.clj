@@ -5,14 +5,21 @@
 (ns noahtheduke.splint.rules.lint.divide-by-one-test
   (:require
    [lazytest.core :refer [defdescribe it]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
+
+(def rule-name 'lint/divide-by-one)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
 
 (defdescribe divide-by-1-test
   (it "works"
     (expect-match
-      [{:rule-name 'lint/divide-by-one
+      [{:rule-name rule-name
         :form '(/ x 1)
         :alt 'x}]
-      "(/ x 1)")))
+      "(/ x 1)"
+      (config))))

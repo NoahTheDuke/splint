@@ -4,17 +4,23 @@
 
 (ns noahtheduke.splint.rules.style.conj-vector-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'style/conj-vector))
+(def rule-name 'style/conj-vector)
 
-(defexpect conj-vec-test
-  (expect-match
-    [{:form '(conj [] x)
-      :message "Use `vector` instead of recreating it."
-      :alt '(vector x)}]
-    "(conj [] x)"
-    (config)))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe conj-vec-test
+  (it "works"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(conj [] x)
+        :message "Use `vector` instead of recreating it."
+        :alt '(vector x)}]
+      "(conj [] x)"
+      (config))))

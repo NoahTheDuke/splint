@@ -4,27 +4,42 @@
 
 (ns noahtheduke.splint.rules.style.eq-zero-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it describe]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect eq-0-x-test
-  (expect-match
-    '[{:alt (zero? x)}]
-    "(= 0 x)"))
+(def rule-name 'style/eq-zero)
 
-(defexpect eq-x-0-test
-  (expect-match
-    '[{:alt (zero? x)}]
-    "(= x 0)"))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
 
-(defexpect eqeq-0-x-test
-  (expect-match
-    '[{:alt (zero? x)}]
-    "(== 0 x)"))
+(defdescribe eq-0-test
+  (describe =
+    (it "checks 0 first"
+      (expect-match
+        [{:rule-name rule-name
+          :form '(= 0 x)
+          :alt '(zero? x)}]
+        "(= 0 x)"
+        (config)))
 
-(defexpect eqeq-x-0-test
-  (expect-match
-    '[{:alt (zero? x)}]
-    "(== x 0)"))
+    (it "checks 0 second"
+      (expect-match
+        [{:alt '(zero? x)}]
+        "(= x 0)"
+        (config))))
+
+  (describe ==
+    (it "checks 0 first"
+      (expect-match
+        [{:alt '(zero? x)}]
+        "(== 0 x)"
+        (config)))
+
+    (it "checks 0 second"
+      (expect-match
+        [{:alt '(zero? x)}]
+        "(== x 0)"
+        (config)))))

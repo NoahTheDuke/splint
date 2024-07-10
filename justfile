@@ -29,10 +29,7 @@ clj-kondo:
 
 [no-exit-message]
 test *args:
-    just clj-kondo
-    bb run splint
-    # just format
-    clojure -M:dev:test:runner -e :integration {{args}}
+    clojure -M:dev:test:runner {{args}}
 
 [no-exit-message]
 test-all *args:

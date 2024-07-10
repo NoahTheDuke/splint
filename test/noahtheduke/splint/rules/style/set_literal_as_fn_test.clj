@@ -4,27 +4,35 @@
 
 (ns noahtheduke.splint.rules.style.set-literal-as-fn-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'style/set-literal-as-fn))
+(def rule-name 'style/set-literal-as-fn)
 
-(defexpect set-literal-as-fn-test
-  (expect-match
-    [{:rule-name 'style/set-literal-as-fn
-      :form '(#{'a 'b 'c} elem)
-      :message "Prefer `case` to set literal with constant members."
-      :alt '(case elem (a b c) elem nil)}]
-    "(#{'a 'b 'c} elem)"
-    (config))
-  (expect-match
-    [{:rule-name 'style/set-literal-as-fn
-      :form '(#{nil 1 :b 'c} elem)
-      :message "Prefer `case` to set literal with constant members."
-      :alt '(case elem (nil 1 :b c) elem nil)}]
-    "(#{nil 1 :b 'c} elem)"
-    (config))
-  (expect-match nil "(#{'a 'b c} elem)" (config))
-  (expect-match nil "(#{'a 'b 'c '(1 2 3)} elem)" (config)))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe set-literal-as-fn-test
+  (it "plain strings"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(#{'a 'b 'c} elem)
+        :message "Prefer `case` to set literal with constant members."
+        :alt '(case elem (a b c) elem nil)}]
+      "(#{'a 'b 'c} elem)"
+      (config)))
+  (it "other constant types"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(#{nil 1 :b 'c} elem)
+        :message "Prefer `case` to set literal with constant members."
+        :alt '(case elem (nil 1 :b c) elem nil)}]
+      "(#{nil 1 :b 'c} elem)"
+      (config)))
+  (it "ignores if not all elements are quoted"
+    (expect-match nil "(#{'a 'b c} elem)" (config)))
+  (it "ignores if element can't be treated as constant"
+    (expect-match nil "(#{'a 'b 'c '(1 2 3)} elem)" (config))))

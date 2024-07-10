@@ -4,12 +4,20 @@
 
 (ns noahtheduke.splint.rules.style.when-not-not-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect when-not-not-test
-  (expect-match
-    '[{:alt (when x y)}]
-    "(when-not (not x) y)"))
+(def rule-name 'style/when-not-not)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe when-not-not-test
+  (it "works"
+    (expect-match
+      [{:alt '(when x y)}]
+      "(when-not (not x) y)"
+      (config))))

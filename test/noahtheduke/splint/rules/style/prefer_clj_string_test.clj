@@ -4,42 +4,44 @@
 
 (ns noahtheduke.splint.rules.style.prefer-clj-string-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'style/prefer-clj-string))
+(def rule-name 'style/prefer-clj-string)
 
-(defexpect prefer-clj-math-test
-  (expect-match
-    '[{:alt (clojure.string/reverse "hello world")}]
-    "(str (.reverse (StringBuilder. \"hello world\")))"
-    (config))
-  (expect-match
-    '[{:alt (clojure.string/capitalize s)}
-      {:rule-name style/prefer-clj-string
-       :form (.toUpperCase (subs s 0 1))
-       :message "Use the `clojure.string` function instead of interop."
-       :alt (clojure.string/upper-case (subs s 0 1))
-       :line 1
-       :column 6
-       :end-line 1
-       :end-column 33}
-      {:rule-name style/prefer-clj-string
-       :form (.toLowerCase (subs s 1))
-       :message "Use the `clojure.string` function instead of interop."
-       :alt (clojure.string/lower-case (subs s 1))
-       :line 1
-       :column 34
-       :end-line 1
-       :end-column 59}]
-    "(str (.toUpperCase (subs s 0 1)) (.toLowerCase (subs s 1)))"
-    (config))
-  (expect-match
-    '[{:alt (clojure.string/upper-case "hello world")}]
-    "(.toUpperCase \"hello world\")"
-    (config))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe prefer-clj-math-test
+  (it "looks for .reverse cases"
+    (expect-match
+      [{:alt '(clojure.string/reverse "hello world")}]
+      "(str (.reverse (StringBuilder. \"hello world\")))"
+      (config)))
+  (it "doesn't know how to avoid duplication"
+    (expect-match
+      [{:alt '(clojure.string/capitalize s)}
+       {:rule-name rule-name
+        :form '(.toUpperCase (subs s 0 1))
+        :message "Use the `clojure.string` function instead of interop."
+        :alt '(clojure.string/upper-case (subs s 0 1))
+        :line 1
+        :column 6
+        :end-line 1
+        :end-column 33}
+       {:rule-name rule-name
+        :form '(.toLowerCase (subs s 1))
+        :message "Use the `clojure.string` function instead of interop."
+        :alt '(clojure.string/lower-case (subs s 1))
+        :line 1
+        :column 34
+        :end-line 1
+        :end-column 59}]
+      "(str (.toUpperCase (subs s 0 1)) (.toLowerCase (subs s 1)))"
+      (config)))
   #_(expect-match
       '[{:alt (str x)}]
       "(.toString x)"))

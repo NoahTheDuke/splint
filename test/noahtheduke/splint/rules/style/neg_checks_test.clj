@@ -4,17 +4,30 @@
 
 (ns noahtheduke.splint.rules.style.neg-checks-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect lt-x-0-test
-  (expect-match
-    '[{:alt (neg? x)}]
-    "(< x 0)"))
+(def rule-name 'style/neg-checks)
 
-(defexpect gt-0-x-test
-  (expect-match
-    '[{:alt (neg? x)}]
-    "(> 0 x)"))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe lt-x-0-test
+  (it "recognizes < (less than)"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(< x 0)
+        :alt '(neg? x)}]
+      "(< x 0)"
+      (config)))
+
+  (it "recognizes > (greater than)"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(> 0 x)
+        :alt '(neg? x)}]
+      "(> 0 x)"
+      (config))))

@@ -4,15 +4,29 @@
 
 (ns noahtheduke.splint.rules.style.eq-false-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect eq-false-test
-  (expect-match
-    '[{:alt (false? x)}]
-    "(= false x)")
-  (expect-match
-    '[{:alt (false? x)}]
-    "(= x false)"))
+(def rule-name 'style/eq-false)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe eq-false-test
+  (it "checks false first"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(= false x)
+        :alt '(false? x)}]
+      "(= false x)"
+      (config)))
+  (it "checks false second"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(= x false)
+        :alt '(false? x)}]
+      "(= x false)"
+      (config))))

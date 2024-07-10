@@ -4,29 +4,34 @@
 
 (ns noahtheduke.splint.rules.style.def-fn-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'style/def-fn))
+(def rule-name 'style/def-fn)
 
-(defexpect def-let-fn-test
-  (expect-match
-    [{:form '(def check-inclusion
-               (let [allowed #{:a :b :c}]
-                 (fn [i] (contains? allowed i))))
-      :message "Prefer `let` wrapping `defn`."
-      :alt '(let [allowed #{:a :b :c}]
-              (defn check-inclusion [i]
-                (contains? allowed i)))}]
-    "(def check-inclusion (let [allowed #{:a :b :c}] (fn [i] (contains? allowed i))))"
-    (config)))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
 
-(defexpect def-fn-test
-  (expect-match
-    [{:form '(def some-func (fn [i] (+ i 100)))
-      :message "Prefer `defn` instead of `def` wrapping `fn`."
-      :alt '(defn some-func [i] (+ i 100))}]
-    "(def some-func (fn [i] (+ i 100)))"
-    (config)))
+(defdescribe def-let-fn-test
+  (it "finds fn in let in def"
+    (expect-match
+      [{:form '(def check-inclusion
+                 (let [allowed #{:a :b :c}]
+                   (fn [i] (contains? allowed i))))
+        :message "Prefer `let` wrapping `defn`."
+        :alt '(let [allowed #{:a :b :c}]
+                (defn check-inclusion [i]
+                  (contains? allowed i)))}]
+      "(def check-inclusion (let [allowed #{:a :b :c}] (fn [i] (contains? allowed i))))"
+      (config)))
+
+  (it "finds fn in def"
+    (expect-match
+      [{:form '(def some-func (fn [i] (+ i 100)))
+        :message "Prefer `defn` instead of `def` wrapping `fn`."
+        :alt '(defn some-func [i] (+ i 100))}]
+      "(def some-func (fn [i] (+ i 100)))"
+      (config))))

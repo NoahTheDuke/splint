@@ -4,22 +4,38 @@
 
 (ns noahtheduke.splint.rules.style.assoc-assoc-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect assoc-assoc-key-coll-test
-  (expect-match
-    '[{:alt (assoc-in coll [:k1 :k2] v)}]
-    "(assoc coll :k1 (assoc (:k1 coll) :k2 v))"))
+(def rule-name 'style/assoc-assoc)
 
-(defexpect assoc-assoc-coll-key-test
-  (expect-match
-    '[{:alt (assoc-in coll [:k1 :k2] v)}]
-    "(assoc coll :k1 (assoc (coll :k1) :k2 v))"))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
 
-(defexpect assoc-assoc-get-test
-  (expect-match
-    '[{:alt (assoc-in coll [:k1 :k2] v)}]
-    "(assoc coll :k1 (assoc (get coll :k1) :k2 v))"))
+(defdescribe assoc-assoc-key-coll-test
+  (it "respects keyword first"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(assoc coll :k1 (assoc (:k1 coll) :k2 v))
+        :alt '(assoc-in coll [:k1 :k2] v)}]
+      "(assoc coll :k1 (assoc (:k1 coll) :k2 v))"
+      (config)))
+
+  (it "respects nested coll-first"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(assoc coll :k1 (assoc (coll :k1) :k2 v))
+        :alt '(assoc-in coll [:k1 :k2] v)}]
+      "(assoc coll :k1 (assoc (coll :k1) :k2 v))"
+      (config)))
+
+  (it "respects nested get"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(assoc coll :k1 (assoc (get coll :k1) :k2 v))
+        :alt '(assoc-in coll [:k1 :k2] v)}]
+      "(assoc coll :k1 (assoc (get coll :k1) :k2 v))"
+      (config))))

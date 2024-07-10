@@ -4,40 +4,40 @@
 
 (ns noahtheduke.splint.rules.style.is-eq-order-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'style/is-eq-order))
+(def rule-name 'style/is-eq-order)
 
-(defexpect is-eq-order-test
-  (expect-match
-    [{:rule-name 'style/is-eq-order
-      :form '(is (= status 200))
-      :message "Expected value should go first"
-      :alt '(is (= 200 status))}]
-    "(is (= status 200))"
-    (config))
-  (expect-match
-    [{:rule-name 'style/is-eq-order
-      :form '(is (= status 200))
-      :message "Expected value should go first"
-      :alt '(is (= 200 status))}]
-    "(is (= status 200))"
-    (config))
-  (expect-match
-    [{:rule-name 'style/is-eq-order
-      :form '(is (= status 200) "message")
-      :message "Expected value should go first"
-      :alt '(is (= 200 status) "message")}]
-    "(is (= status 200) \"message\")"
-    (config))
-  (expect-match
-    nil
-    "(is (= (hash-map :a 1) {:a 1}))"
-    (config))
-  (expect-match
-    nil
-    "(is (= (hash-set :a 1) #{:a 1}))"
-    (config)))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe is-eq-order-test
+  (it "understands no message"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(is (= status 200))
+        :message "Expected value should go first"
+        :alt '(is (= 200 status))}]
+      "(is (= status 200))"
+      (config)))
+  (it "understands a message"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(is (= status 200) "message")
+        :message "Expected value should go first"
+        :alt '(is (= 200 status) "message")}]
+      "(is (= status 200) \"message\")"
+      (config)))
+  (it "ignores no literal"
+    (expect-match
+      nil
+      "(is (= (hash-map :a 1) {:a 1}))"
+      (config))
+    (expect-match
+      nil
+      "(is (= (hash-set :a 1) #{:a 1}))"
+      (config))))

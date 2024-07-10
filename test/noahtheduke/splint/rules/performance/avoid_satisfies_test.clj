@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.rules.performance.avoid-satisfies-test
   (:require
-   [lazytest.core :refer [defdescribe]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
@@ -16,10 +16,11 @@
     style (update rule-name merge style)))
 
 (defdescribe avoid-satisfies-test
-  (expect-match
-    [{:rule-name rule-name
-      :form '(satisfies? Foo :bar)
-      :message "Avoid using `satisfies?`."
-      :alt nil}]
-    "(satisfies? Foo :bar)"
-    (config)))
+  (it "works"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(satisfies? Foo :bar)
+        :message "Avoid using `satisfies?`."
+        :alt nil}]
+      "(satisfies? Foo :bar)"
+      (config))))

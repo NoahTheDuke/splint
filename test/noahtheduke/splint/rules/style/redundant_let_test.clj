@@ -4,12 +4,22 @@
 
 (ns noahtheduke.splint.rules.style.redundant-let-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
-   [noahtheduke.splint.test-helpers :refer [expect-match]]))
+   [lazytest.core :refer [defdescribe it]]
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defexpect redundant-let-test
-  (expect-match
-    '[{:alt (let [a 1 b 2] (println a b))}]
-    "(let [a 1] (let [b 2] (println a b)))"))
+(def rule-name 'style/redundant-let)
+
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe redundant-let-test
+  (it "works"
+    (expect-match
+      [{:rule-name 'style/redundant-let
+        :form '(let [a 1] (let [b 2] (println a b)))
+        :alt '(let [a 1 b 2] (println a b))}]
+      "(let [a 1] (let [b 2] (println a b)))"
+      (config))))

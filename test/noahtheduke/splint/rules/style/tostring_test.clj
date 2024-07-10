@@ -4,23 +4,29 @@
 
 (ns noahtheduke.splint.rules.style.tostring-test
   (:require
-   [expectations.clojure.test :refer [defexpect]]
+   [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'style/tostring))
+(def rule-name 'style/tostring)
 
-(defexpect str-to-string-test
-  (expect-match
-    [{:form '(.toString x)
-      :message "Use `str` instead of interop."
-      :alt '(str x)}]
-    "(.toString x)"
-    (config))
-  (expect-match
-    [{:form '(String/toString x)
-      :message "Use `str` instead of interop."
-      :alt '(str x)}]
-    "(String/toString x)"
-    (config)))
+(defn config [& {:as style}]
+  (cond-> (single-rule-config rule-name)
+    style (update rule-name merge style)))
+
+(defdescribe str-to-string-test
+  (it "checks dot syntax"
+    (expect-match
+      [{:form '(.toString x)
+        :message "Use `str` instead of interop."
+        :alt '(str x)}]
+      "(.toString x)"
+      (config)))
+  (it "checks method values syntax"
+    (expect-match
+      [{:form '(String/toString x)
+        :message "Use `str` instead of interop."
+        :alt '(str x)}]
+      "(String/toString x)"
+      (config))))

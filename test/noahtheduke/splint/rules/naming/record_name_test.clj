@@ -21,19 +21,23 @@
       [{:rule-name rule-name
         :form '(defrecord foo [a b c])
         :alt '(defrecord Foo [a b c])}]
-      "(defrecord foo [a b c])")
+      "(defrecord foo [a b c])"
+      (config))
     (expect-match
       [{:rule-name rule-name
         :form '(defrecord fooBar [a b c])
         :alt '(defrecord FooBar [a b c])}]
-      "(defrecord fooBar [a b c])")
+      "(defrecord fooBar [a b c])"
+      (config))
     (expect-match
       [{:rule-name rule-name
         :form '(defrecord foo-bar [a b c])
         :alt '(defrecord FooBar [a b c])}]
-      "(defrecord foo-bar [a b c])")
+      "(defrecord foo-bar [a b c])"
+      (config))
     (expect-match
       [{:rule-name rule-name
         :form '(defrecord Foo-bar [a b c])
         :alt '(defrecord FooBar [a b c])}]
-      "(defrecord Foo-bar [a b c])")))
+      "(defrecord Foo-bar [a b c])"
+      (config))))

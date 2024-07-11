@@ -11,14 +11,10 @@
 
 (def rule-name 'style/multiply-by-zero)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe multiply-by-1-test
   (it "works in either order"
-    (expect-match [{:alt 0}] "(* x 0)" (config))
-    (expect-match [{:alt 0}] "(* 0 x)" (config)))
+    (expect-match [{:alt 0}] "(* x 0)" (single-rule-config rule-name))
+    (expect-match [{:alt 0}] "(* 0 x)" (single-rule-config rule-name)))
   (it "ignores multi-arity multiply"
-    (expect-match nil "(* x y 0)" (config))
-    (expect-match nil "(* 0 x y)" (config))))
+    (expect-match nil "(* x y 0)" (single-rule-config rule-name))
+    (expect-match nil "(* 0 x y)" (single-rule-config rule-name))))

@@ -11,10 +11,6 @@
 
 (def rule-name 'performance/assoc-many)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe assoc-many-test
   (it "handles normal vargs"
     (expect-match
@@ -26,7 +22,7 @@
                   (assoc :k2 2)
                   (assoc :k3 3))}]
       "(assoc m :k1 1 :k2 2 :k3 3)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "recognizes nested in threading macros"
     (expect-match
       [{:rule-name 'performance/assoc-many
@@ -37,7 +33,7 @@
                   (assoc :k2 2)
                   (assoc :k3 3))}]
       "(-> m (assoc :k1 1 :k2 2 :k3 3))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "handles multiple calls in thread macros"
     (expect-match
       [{:rule-name 'performance/assoc-many
@@ -49,9 +45,9 @@
                   (assoc :k3 3)
                   (assoc :k4 4))}]
       "(-> m (assoc :k1 1) (assoc :k2 2) (assoc :k3 3 :k4 4))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores normal pair calls"
     (expect-match
       nil
       "(assoc m :k1 1)"
-      (config))))
+      (single-rule-config rule-name))))

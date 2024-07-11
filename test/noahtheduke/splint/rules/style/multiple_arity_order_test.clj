@@ -11,10 +11,6 @@
 
 (def rule-name 'style/multiple-arity-order)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe multiple-arity-order-test
   (it "works"
     (expect-match
@@ -31,9 +27,9 @@
          ([x] (foo x 1))
          ([x y & more] (reduce foo (+ x y) more))
          ([x y] (+ x y)))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores incorrect defns"
     (expect-match
       nil
       "(defn foo ([a] 1) [a b])"
-      (config))))
+      (single-rule-config rule-name))))

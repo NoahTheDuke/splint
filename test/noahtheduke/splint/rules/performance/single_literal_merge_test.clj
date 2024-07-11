@@ -11,10 +11,6 @@
 
 (def rule-name 'performance/single-literal-merge)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe single-literal-merge-test
   (it "flattens given map"
     (expect-match
@@ -23,7 +19,7 @@
         :message "Prefer assoc for merging literal maps"
         :alt '(assoc m :a 1 :b 2)}]
       "(merge m {:a 1 :b 2})"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "works on nil"
     (expect-match
@@ -32,7 +28,7 @@
         :message "Prefer assoc for merging literal maps"
         :alt '(assoc nil :a 1 :b 2)}]
       "(merge nil {:a 1 :b 2})"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "respects :chosen-style :multiple"
     (expect-match
@@ -43,7 +39,7 @@
                   (assoc :a 1)
                   (assoc :b 2))}]
       "(merge m {:a 1 :b 2})"
-      (config {:chosen-style :multiple})))
+      (single-rule-config rule-name {:chosen-style :multiple})))
 
   (it "it respects performance/assoc-many"
     (expect-match
@@ -54,7 +50,7 @@
                   (assoc :a 1)
                   (assoc :b 2))}]
       "(merge m {:a 1 :b 2})"
-      (update (config) 'performance/assoc-many assoc :enabled true)))
+      (update (single-rule-config rule-name) 'performance/assoc-many assoc :enabled true)))
 
   (it "keeps the order in the alt"
     (expect-match
@@ -63,7 +59,7 @@
         :message "Prefer assoc for merging literal maps"
         :alt '(assoc a {:x :y} :a {:foo :bar} :b)}]
       "(merge a {{:x :y} :a {:foo :bar} :b})"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:rule-name 'performance/single-literal-merge
         :form '(merge a {:a :b :c :d :e :f :g :h :i :j :k :l :m
@@ -71,22 +67,22 @@
         :message "Prefer assoc for merging literal maps"
         :alt '(assoc a :a :b :c :d :e :f :g :h :i :j :k :l :m :n :o :p :q :r :s :t :u :v :w :x :y :z)}]
       "(merge a {:a :b :c :d :e :f :g :h :i :j :k :l :m :n :o :p :q :r :s :t :u :v :w :x :y :z})"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "ignores multiple maps"
     (expect-match
       nil
       "(merge m {:a 1 :b 2} {:c 3 :d 4})"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "ignores empty map literals"
     (expect-match
       nil
       "(merge m {})"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "ignores multiple symbols"
     (expect-match
       nil
       "(merge m b)"
-      (config))))
+      (single-rule-config rule-name))))

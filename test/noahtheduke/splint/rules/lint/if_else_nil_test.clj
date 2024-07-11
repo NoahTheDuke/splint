@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/if-else-nil))
+(def rule-name 'lint/if-else-nil)
 
 (defdescribe if-else-nil-test
   (it "works on 2 arity"
@@ -18,24 +18,24 @@
         :message "Use `when` which doesn't require specifying the else branch."
         :alt '(when x y)}]
       "(if x y)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "respects else nils"
     (expect-match
       [{:form '(if x y nil)
         :alt '(when x y)}]
       "(if x y nil)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "handles `do`"
     (expect-match
       [{:form '(if x (do y))
         :alt '(when x y)}]
       "(if x (do y))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores non-nil 3 arity"
-    (expect-match nil "(if x y z)" (config)))
+    (expect-match nil "(if x y z)" (single-rule-config rule-name)))
 
   (it "respects nested ifs"
     (expect-match
       '[{:alt (when x (if y (z a b c) d))}]
       "(if x (if y (z a b c) d))"
-      (config))))
+      (single-rule-config rule-name))))

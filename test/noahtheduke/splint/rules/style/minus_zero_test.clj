@@ -11,10 +11,6 @@
 
 (def rule-name 'style/minus-zero)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe minus-0-test
   (it "expects 0 to be in final position"
     (expect-match
@@ -22,9 +18,9 @@
         :form '(- x 0)
         :alt 'x}]
       "(- x 0)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores multi-arity minus"
     (expect-match
       nil
       "(- x y 0)"
-      (config))))
+      (single-rule-config rule-name))))

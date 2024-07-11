@@ -11,16 +11,12 @@
 
 (def rule-name 'style/prefer-clj-string)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe prefer-clj-math-test
   (it "looks for .reverse cases"
     (expect-match
       [{:alt '(clojure.string/reverse "hello world")}]
       "(str (.reverse (StringBuilder. \"hello world\")))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "doesn't know how to avoid duplication"
     (expect-match
       [{:alt '(clojure.string/capitalize s)}
@@ -41,7 +37,7 @@
         :end-line 1
         :end-column 59}]
       "(str (.toUpperCase (subs s 0 1)) (.toLowerCase (subs s 1)))"
-      (config)))
+      (single-rule-config rule-name)))
   #_(expect-match
       '[{:alt (str x)}]
       "(.toString x)"))

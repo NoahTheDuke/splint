@@ -29,7 +29,7 @@
           :alt '(java.util.ArrayList. 100)
           :message "Foo. is preferred."}]
         "(new java.util.ArrayList 100)"
-        (config)))
+        (single-rule-config rule-name)))
     (describe ":method-value"
       (it "works"
         (expect-match
@@ -60,4 +60,4 @@
     (expect-match
       nil
       "(java.util.ArrayList. 100)"
-      (config))))
+      (single-rule-config rule-name))))

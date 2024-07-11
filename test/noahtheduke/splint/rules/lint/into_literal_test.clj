@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/into-literal))
+(def rule-name 'lint/into-literal)
 
 (defdescribe into-literal-test
 
@@ -20,24 +20,24 @@
           :form '(into [] coll)
           :alt '(vec coll)}]
         "(into [] coll)"
-        (config)))
+        (single-rule-config rule-name)))
     (it "respects lists"
       (expect-match
         [{:rule-name 'lint/into-literal
           :form '(into [] (range 100))
           :alt '(vec (range 100))}]
         "(into [] (range 100))"
-        (config)))
+        (single-rule-config rule-name)))
     (it "ignores transducer arity"
       (expect-match
         nil
         "(into [] xf coll)"
-        (config)))
+        (single-rule-config rule-name)))
     (it "ignores non-empty vectors"
       (expect-match
         nil
         "(into [1 2] coll)"
-        (config))))
+        (single-rule-config rule-name))))
 
   (describe "sets"
     (it "respects symbols"
@@ -46,21 +46,21 @@
           :form '(into #{} coll)
           :alt '(set coll)}]
         "(into #{} coll)"
-        (config)))
+        (single-rule-config rule-name)))
     (it "respects lists"
       (expect-match
         [{:rule-name 'lint/into-literal
           :form '(into #{} (range 100))
           :alt '(set (range 100))}]
         "(into #{} (range 100))"
-        (config)))
+        (single-rule-config rule-name)))
     (it "ignores transducer arity"
       (expect-match
         nil
         "(into #{} xf coll)"
-        (config)))
+        (single-rule-config rule-name)))
     (it "ignores non-empty sets"
       (expect-match
         nil
         "(into #{1 2} coll)"
-        (config)))))
+        (single-rule-config rule-name)))))

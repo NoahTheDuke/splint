@@ -9,11 +9,15 @@
 
 (set! *warn-on-reflection* true)
 
+(def rule-name 'lint/require-explicit-param-tags)
+
 (defn config
-  ([] (assoc (single-rule-config 'lint/require-explicit-param-tags)
-        :clojure-version {:major 1 :minor 12}))
+  ([]
+   (-> (single-rule-config rule-name)
+       (assoc :clojure-version {:major 1 :minor 12})))
   ([style]
-   (assoc-in (config) '[lint/require-explicit-param-tags :chosen-style] style)))
+   (-> (config)
+       (assoc-in '[lint/require-explicit-param-tags :chosen-style] style))))
 
 (defdescribe require-explicit-param-tags
   (describe "no tag"

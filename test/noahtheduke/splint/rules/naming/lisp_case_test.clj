@@ -11,10 +11,6 @@
 
 (def rule-name 'naming/lisp-case)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe lisp-case-test
   (it "relies on camel-snake-kebab"
     (doseq [input ["(def someVar 1)"
@@ -24,14 +20,14 @@
       (expect-match
         '[{:alt (def some-var 1)}]
         input
-        (config))))
+        (single-rule-config rule-name))))
   (it "checks defns too"
     (doseq [input ["(defn someVar [arg] 1)"
                    "(defn some_var [arg] 1)"]]
       (expect-match
         '[{:alt (defn some-var [arg] 1)}]
         input
-        (config))))
+        (single-rule-config rule-name))))
   (it "doesn't get fancy"
     (doseq [input ["(def somevar 1)"
                    "(defn somevar [args] 1)"
@@ -40,4 +36,4 @@
                    "(def Somevar 1)"
                    "(defn Somevar [args] 1)"
                    "(list (def someVar 1))"]]
-      (expect-match nil input (config)))))
+      (expect-match nil input (single-rule-config rule-name)))))

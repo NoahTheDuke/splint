@@ -11,31 +11,27 @@
 
 (def rule-name 'style/filter-complement)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe filter-complement-test
   (it "complement"
     (expect-match
       [{:alt '(remove pred coll)}]
       "(filter (complement pred) coll)"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "anonymous literal"
     (expect-match
       [{:alt '(remove pred coll)}]
       "(filter #(not (pred %)) coll)"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "fn*"
     (expect-match
       [{:alt '(remove pred coll)}]
       "(filter (fn* [x] (not (pred x))) coll)"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "fn"
     (expect-match
       [{:alt '(remove pred coll)}]
       "(filter (fn [x] (not (pred x))) coll)"
-      (config))))
+      (single-rule-config rule-name))))

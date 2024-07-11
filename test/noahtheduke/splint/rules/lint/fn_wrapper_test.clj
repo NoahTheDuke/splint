@@ -9,15 +9,15 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/fn-wrapper))
+(def rule-name 'lint/fn-wrapper)
 
 (defdescribe fn-wrapper-test
   (it "handles various anonymous functions"
-    (expect-match '[{:alt f}] "(fn* [arg] (f arg))" (config))
-    (expect-match '[{:alt f}] "(fn [arg] (f arg))" (config))
-    (expect-match '[{:alt f}] "#(f %)" (config)))
+    (expect-match '[{:alt f}] "(fn* [arg] (f arg))" (single-rule-config rule-name))
+    (expect-match '[{:alt f}] "(fn [arg] (f arg))" (single-rule-config rule-name))
+    (expect-match '[{:alt f}] "#(f %)" (single-rule-config rule-name)))
 
   (it "ignores interop functions"
-    (expect-match nil "#(Integer/parseInt %)" (config))
-    (expect-match nil "(do (import (java.util.regex Pattern)) #(Pattern/compile %))" (config))
-    (expect-match nil "#(.getPath %)" (config))))
+    (expect-match nil "#(Integer/parseInt %)" (single-rule-config rule-name))
+    (expect-match nil "(do (import (java.util.regex Pattern)) #(Pattern/compile %))" (single-rule-config rule-name))
+    (expect-match nil "#(.getPath %)" (single-rule-config rule-name))))

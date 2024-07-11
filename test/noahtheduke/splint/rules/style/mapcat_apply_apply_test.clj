@@ -11,10 +11,6 @@
 
 (def rule-name 'style/mapcat-apply-apply)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe mapcat-apply-apply-test
   (it "works"
     (expect-match
@@ -22,4 +18,4 @@
         :form '(apply concat (apply map x y)) 
         :alt '(mapcat x y)}]
       "(apply concat (apply map x y))"
-      (config))))
+      (single-rule-config rule-name))))

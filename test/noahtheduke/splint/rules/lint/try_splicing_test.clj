@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/try-splicing))
+(def rule-name 'lint/try-splicing)
 
 (defdescribe try-splicing-test
   (it "works"
@@ -18,4 +18,4 @@
         :form '(try (splint/unquote-splicing body) (finally :true))
         :alt '(try (do (splint/unquote-splicing body)) (finally :true))}]
       "(try ~@body (finally :true))"
-      (config))))
+      (single-rule-config rule-name))))

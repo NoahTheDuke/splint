@@ -11,10 +11,6 @@
 
 (def rule-name 'performance/get-in-literals)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe get-in-literals-test
   (it "requires only keywords"
     (expect-match
@@ -23,16 +19,16 @@
         :message "Use keywords as functions instead of `get-in`."
         :alt '(-> m :some-key1 :some-key2 :some-key3)}]
       "(get-in m [:some-key1 :some-key2 :some-key3])"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       nil
       "(get-in m [:some-key1 :some-key2 'some-key3])"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       nil
       "(get-in m [:some-key1 some-key2 :some-key3])"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       nil
       "(get-in m [])"
-      (config))))
+      (single-rule-config rule-name))))

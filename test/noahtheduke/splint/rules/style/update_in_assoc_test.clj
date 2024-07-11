@@ -11,10 +11,6 @@
 
 (def rule-name 'style/update-in-assoc)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe update-in-assoc-test
   (it "works"
     (expect-match
@@ -22,4 +18,4 @@
         :form '(update-in coll ks assoc v)
         :alt '(assoc-in coll ks v)}]
       "(update-in coll ks assoc v)"
-      (config))))
+      (single-rule-config rule-name))))

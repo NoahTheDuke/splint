@@ -124,10 +124,12 @@
      (binding [*out* file#]
        ~@(map #(list `println %) body))))
 
-(defn single-rule-config [rule-name]
+(defn single-rule-config [rule-name & {:as style}]
   (-> @dev/dev-config
     (update-vals #(assoc % :enabled false))
-    (update rule-name assoc :enabled true)))
+    (update rule-name assoc :enabled true)
+    (cond->
+      style (update rule-name merge style))))
 
 (defn file-match [^File this actual]
   (cond

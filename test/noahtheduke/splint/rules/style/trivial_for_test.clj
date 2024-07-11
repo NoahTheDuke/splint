@@ -11,10 +11,6 @@
 
 (def rule-name 'style/trivial-for)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe trivial-for-test
   (it "works"
     (expect-match
@@ -23,9 +19,9 @@
         :message "Avoid trivial usage of `for`."
         :alt '(map f items)}]
       "(for [item items] (f item))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores multi-arity f calls"
     (expect-match
       nil
       "(for [item items] (f item other-item))"
-      (config))))
+      (single-rule-config rule-name))))

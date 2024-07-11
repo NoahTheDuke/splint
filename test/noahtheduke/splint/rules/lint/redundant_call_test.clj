@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/redundant-call))
+(def rule-name 'lint/redundant-call)
 
 (defdescribe redundant-call-test
   (it "handles specific core functions"
@@ -23,12 +23,12 @@
           :form given
           :alt 'x}]
         (str given)
-        (config))))
+        (single-rule-config rule-name))))
   (it "ignores multiple arg"
     (expect-match nil
       "(-> a b (merge c))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores case"
     (expect-match nil
       "(case elem (-> ->>) true false)"
-      (config))))
+      (single-rule-config rule-name))))

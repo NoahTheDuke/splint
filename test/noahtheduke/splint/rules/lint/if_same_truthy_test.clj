@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/if-same-truthy))
+(def rule-name 'lint/if-same-truthy)
 
 (defdescribe if-x-x-y-test
   (it "respects 3 arity"
@@ -18,8 +18,8 @@
         :form '(if x x y)
         :alt '(or x y)}]
       "(if x x y)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores when no match"
     (expect-match nil
       "(if false (reset! state true) (go a))"
-      (config))))
+      (single-rule-config rule-name))))

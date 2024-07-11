@@ -11,10 +11,6 @@
 
 (def rule-name 'performance/dot-equals)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe dot-equals-test
   (it "without lint/prefer-method-values"
     (expect-match
@@ -23,22 +19,22 @@
         :message "Rely on `.equals` when comparing against string literals."
         :alt '(.equals "foo" bar)}]
       "(= \"foo\" bar)"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:rule-name rule-name
         :form '(= bar "foo")
         :message "Rely on `.equals` when comparing against string literals."
         :alt '(.equals "foo" bar)}]
       "(= bar \"foo\")"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       nil
       "(= bar foo)"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       nil
       "(= foo bar)"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "with lint/prefer-method-values enabled"
     (expect-match
@@ -47,7 +43,7 @@
         :message "Rely on `String/.equals` when comparing against string literals."
         :alt '(String/.equals "foo" bar)}]
       "(= \"foo\" bar)"
-      (-> (config)
+      (-> (single-rule-config rule-name)
           (assoc :clojure-version {:major 1 :minor 12})
           (update 'lint/prefer-method-values assoc :enabled true)))
     (expect-match
@@ -56,6 +52,6 @@
         :message "Rely on `String/.equals` when comparing against string literals."
         :alt '(String/.equals "foo" bar)}]
       "(= bar \"foo\")"
-      (-> (config)
+      (-> (single-rule-config rule-name)
           (assoc :clojure-version {:major 1 :minor 12})
           (update 'lint/prefer-method-values assoc :enabled true)))))

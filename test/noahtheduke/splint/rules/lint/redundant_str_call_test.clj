@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/redundant-str-call))
+(def rule-name 'lint/redundant-str-call)
 
 (defdescribe redundant-str-call-test
   (it "works with string literal"
@@ -19,7 +19,7 @@
         :message "Use the literal directly."
         :alt "foo"}]
       "(str \"foo\")"
-      (config)))
+      (single-rule-config rule-name)))
   (it "works with format"
     (expect-match
       [{:rule-name 'lint/redundant-str-call
@@ -27,7 +27,7 @@
         :message "`format` unconditionally returns a string."
         :alt '(format "foo-%s" some-var)}]
       "(str (format \"foo-%s\" some-var))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "works with nested strs"
     (expect-match
       [{:rule-name 'lint/redundant-str-call
@@ -35,8 +35,8 @@
         :message "`str` unconditionally returns a string."
         :alt '(str "foo" some-var)}]
       "(str (str \"foo\" some-var))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "doesn't do any other checking"
     (expect-match nil
       "(str (str/join \newline (range 10)))"
-      (config))))
+      (single-rule-config rule-name))))

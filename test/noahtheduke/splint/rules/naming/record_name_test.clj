@@ -11,10 +11,6 @@
 
 (def rule-name 'naming/record-name)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe record-name-test
   (it "handles all cases"
     (expect-match
@@ -22,22 +18,22 @@
         :form '(defrecord foo [a b c])
         :alt '(defrecord Foo [a b c])}]
       "(defrecord foo [a b c])"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:rule-name rule-name
         :form '(defrecord fooBar [a b c])
         :alt '(defrecord FooBar [a b c])}]
       "(defrecord fooBar [a b c])"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:rule-name rule-name
         :form '(defrecord foo-bar [a b c])
         :alt '(defrecord FooBar [a b c])}]
       "(defrecord foo-bar [a b c])"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:rule-name rule-name
         :form '(defrecord Foo-bar [a b c])
         :alt '(defrecord FooBar [a b c])}]
       "(defrecord Foo-bar [a b c])"
-      (config))))
+      (single-rule-config rule-name))))

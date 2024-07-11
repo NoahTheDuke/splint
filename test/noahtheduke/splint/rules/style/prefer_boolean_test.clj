@@ -11,10 +11,6 @@
 
 (def rule-name 'style/prefer-boolean)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe prefer-boolean-test
   (it "works with symbol predicates"
     (expect-match
@@ -22,11 +18,11 @@
         :form '(if some-val true false)
         :alt '(boolean some-val)}]
       "(if some-val true false)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "works with function predicates"
     (expect-match
       [{:rule-name rule-name
         :form '(if (some-func a b c) true false)
         :alt '(boolean (some-func a b c))}]
       "(if (some-func a b c) true false)"
-      (config))))
+      (single-rule-config rule-name))))

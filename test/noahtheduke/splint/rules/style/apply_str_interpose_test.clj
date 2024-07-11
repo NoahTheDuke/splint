@@ -11,10 +11,6 @@
 
 (def rule-name 'style/apply-str-interpose)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe str-apply-interpose-test
   (it "works"
     (expect-match
@@ -22,4 +18,4 @@
         :form '(apply str (interpose x y))
         :alt '(clojure.string/join x y)}]
       "(apply str (interpose x y))"
-      (config))))
+      (single-rule-config rule-name))))

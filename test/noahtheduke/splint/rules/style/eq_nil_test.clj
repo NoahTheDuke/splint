@@ -11,10 +11,6 @@
 
 (def rule-name 'style/eq-nil)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe eq-nil-test
   (it "checks nil first"
     (expect-match
@@ -22,11 +18,11 @@
         :form '(= nil x)
         :alt '(nil? x)}]
       "(= nil x)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "checks nil second"
     (expect-match
       [{:rule-name rule-name
         :form '(= x nil)
         :alt '(nil? x)}]
       "(= x nil)"
-      (config))))
+      (single-rule-config rule-name))))

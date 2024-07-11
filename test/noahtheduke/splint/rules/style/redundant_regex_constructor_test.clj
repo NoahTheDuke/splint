@@ -11,25 +11,21 @@
 
 (def rule-name 'style/redundant-regex-constructor)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe redundant-regex-constructor-test
   (it "works"
     (expect-match
       [{:message "Rely on regex literal directly."
         :alt '(splint/re-pattern "asdf")}]
       "(re-pattern #\"asdf\")"
-      (config)))
+      (single-rule-config rule-name)))
   (it "handles strings"
     (expect-match
       [{:alt '(splint/re-pattern "asdf")}]
       "(re-pattern \"asdf\")"
-      (config)))
+      (single-rule-config rule-name)))
   (it "compiles strings into regex"
     (expect-match
       [{:form '(re-pattern "\\asdf")
         :alt '(splint/re-pattern "\\asdf")}]
       "(re-pattern \"\\\\asdf\")"
-      (config))))
+      (single-rule-config rule-name))))

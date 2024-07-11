@@ -11,10 +11,6 @@
 
 (def rule-name 'style/not-eq)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe not-eq-test
   (it "works"
     (expect-match
@@ -22,4 +18,4 @@
         :form '(not (= arg1 arg2 arg3))
         :alt '(not= arg1 arg2 arg3)}]
       "(not (= arg1 arg2 arg3))"
-      (config))))
+      (single-rule-config rule-name))))

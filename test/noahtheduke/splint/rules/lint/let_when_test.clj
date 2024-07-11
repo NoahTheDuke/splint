@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/let-when))
+(def rule-name 'lint/let-when)
 
 (defdescribe let-when-test
   (it "works with when"
@@ -18,16 +18,16 @@
         :form '(let [result (some-func)] (when result (do-stuff result)))
         :alt '(when-let [result (some-func)] (do-stuff result))}]
       "(let [result (some-func)] (when result (do-stuff result)))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "works with ifs with one branch"
     (expect-match
       [{:rule-name 'lint/let-when
         :form '(let [result (some-func)] (if result (do-stuff result)))
         :alt '(when-let [result (some-func)] (do-stuff result))}]
       "(let [result (some-func)] (if result (do-stuff result)))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores ifs with 2 branches"
     (expect-match
       nil
       "(let [result (some-func)] (if result (do-stuff result) (some-func)))"
-      (config))))
+      (single-rule-config rule-name))))

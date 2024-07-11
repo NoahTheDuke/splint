@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/missing-body-in-when))
+(def rule-name 'lint/missing-body-in-when)
 
 (defdescribe missing-body-in-when-test
   (it "handles symbols"
@@ -19,7 +19,7 @@
         :alt nil
         :message "Missing body in when"}]
       "(when true)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "handles expressions"
     (expect-match
       [{:rule-name 'lint/missing-body-in-when
@@ -27,4 +27,4 @@
         :alt nil
         :message "Missing body in when"}]
       "(when (some-func))"
-      (config))))
+      (single-rule-config rule-name))))

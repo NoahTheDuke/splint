@@ -11,17 +11,13 @@
 
 (def rule-name 'style/when-not-do)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe when-not-do-test
   (it "works with multiple args"
     (expect-match
       [{:alt '(when-not x y z)}]
       "(when-not x (do y z))"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:alt '(when-not x y z)}]
       "(when-not x (do y z) nil)"
-      (config))))
+      (single-rule-config rule-name))))

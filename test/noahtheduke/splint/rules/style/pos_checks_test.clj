@@ -11,10 +11,6 @@
 
 (def rule-name 'style/pos-checks)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe lt-0-x-test
   (it "works with less than"
     (expect-match
@@ -22,7 +18,7 @@
         :form '(< 0 x)
         :alt '(pos? x)}]
       "(< 0 x)"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "works with greater than"
     (expect-match
@@ -30,4 +26,4 @@
         :form '(> x 0)
         :alt '(pos? x)}]
       "(> x 0)"
-      (config))))
+      (single-rule-config rule-name))))

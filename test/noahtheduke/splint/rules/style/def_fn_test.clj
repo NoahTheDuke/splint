@@ -11,10 +11,6 @@
 
 (def rule-name 'style/def-fn)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe def-let-fn-test
   (it "finds fn in let in def"
     (expect-match
@@ -26,7 +22,7 @@
                 (defn check-inclusion [i]
                   (contains? allowed i)))}]
       "(def check-inclusion (let [allowed #{:a :b :c}] (fn [i] (contains? allowed i))))"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "finds fn in def"
     (expect-match
@@ -34,4 +30,4 @@
         :message "Prefer `defn` instead of `def` wrapping `fn`."
         :alt '(defn some-func [i] (+ i 100))}]
       "(def some-func (fn [i] (+ i 100)))"
-      (config))))
+      (single-rule-config rule-name))))

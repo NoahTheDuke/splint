@@ -10,7 +10,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/warn-on-reflection))
+(def rule-name 'lint/warn-on-reflection)
 
 (defdescribe warn-on-reflection-test
   (it "works"
@@ -25,12 +25,12 @@
         :end-column 20
         :filename (io/file "corpus" "arglists.clj")}]
       (io/file "corpus" "arglists.clj")
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:rule-name 'lint/warn-on-reflection}]
       "(ns example) (+ 1 1)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores when no namespaces"
-    (expect-match nil "(+ 1 1)" (config)))
+    (expect-match nil "(+ 1 1)" (single-rule-config rule-name)))
   (it "ignores when namespace is broken"
-    (expect-match nil "(ns) (+ 1 1)" (config))))
+    (expect-match nil "(ns) (+ 1 1)" (single-rule-config rule-name))))

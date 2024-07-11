@@ -11,10 +11,6 @@
 
 (def rule-name 'naming/conversion-functions)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe conversion-functions-test
   (it "expects single words"
     (expect-match
@@ -22,9 +18,9 @@
         :message "Use `->` instead of `to` in the names of conversion functions."
         :alt '(defn f->c ...)}]
       "(defn f-to-c [a] {:a a})"
-      (config)))
+      (single-rule-config rule-name)))
   (it "rejects multi-words"
     (expect-match
       nil
       "(defn expect-f-to-c [a] {:a a})"
-      (config))))
+      (single-rule-config rule-name))))

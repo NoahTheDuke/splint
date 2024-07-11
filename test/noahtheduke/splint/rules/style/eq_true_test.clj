@@ -11,10 +11,6 @@
 
 (def rule-name 'style/eq-true)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe eq-true-test
   (it "checks true first"
     (expect-match
@@ -22,11 +18,11 @@
         :form '(= true x)
         :alt '(true? x)}]
       "(= true x)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "checks true second"
     (expect-match
       [{:rule-name rule-name
         :form '(= x true)
         :alt '(true? x)}]
       "(= x true)"
-      (config))))
+      (single-rule-config rule-name))))

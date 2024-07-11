@@ -11,18 +11,14 @@
 
 (def rule-name 'style/filter-vec-filterv)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe filter-vec-filterv-test
   (it "looks for filter"
     (expect-match
       [{:alt '(filterv pred coll)}]
       "(vec (filter pred coll))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores filterv"
     (expect-match
       nil
       "(vec (filterv pred coll))"
-      (config))))
+      (single-rule-config rule-name))))

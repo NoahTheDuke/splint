@@ -12,10 +12,6 @@
 
 (def rule-name 'performance/into-transducer)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe into-transducer-test
   (describe "handles built-ins"
     (map (fn [t]
@@ -26,15 +22,15 @@
                  :message "Rely on the transducer form."
                  :alt (list 'into [] (list t 'f) '(range 100))}]
                (format "(into [] (%s f (range 100)))" t)
-               (config))))
+               (single-rule-config rule-name))))
          transducers))
   (it "ignores non-empty into vectors"
     (expect-match
       nil
       "(into [1 2 3] (map f (range 100)))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores mapv"
     (expect-match
       nil
       "(into [] (mapv f (range 100)))"
-      (config))))
+      (single-rule-config rule-name))))

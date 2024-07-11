@@ -11,10 +11,6 @@
 
 (def rule-name 'lint/dorun-map)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe dorun-map-test
   (it "works"
     (expect-match
@@ -22,4 +18,4 @@
         :form '(dorun (map f coll))
         :alt '(run! f coll)}]
       "(dorun (map f coll))"
-      (config))))
+      (single-rule-config rule-name))))

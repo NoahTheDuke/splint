@@ -11,10 +11,6 @@
 
 (def rule-name 'style/apply-str)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe apply-str-test
   (it "works"
     (expect-match
@@ -22,14 +18,14 @@
         :form '(apply str x)
         :alt '(clojure.string/join x)}]
       "(apply str x)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores nested reverse"
     (expect-match
       nil
       "(apply str (reverse x))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores nested interpose"
     (expect-match
       nil
       "(apply str (interpose x))"
-      (config))))
+      (single-rule-config rule-name))))

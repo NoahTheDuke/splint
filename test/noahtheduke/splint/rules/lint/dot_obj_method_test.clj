@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/dot-obj-method))
+(def rule-name 'lint/dot-obj-method)
 
 (defdescribe dot-obj-usage-test
   (it "handles raw symbosl"
@@ -19,12 +19,12 @@
         :message "Intention is clearer with `.method` form."
         :alt '(.method obj 1 2 3)}]
       "(. obj method 1 2 3)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "handles namespaced symbosl"
     (expect-match
       [{:rule-name 'lint/prefer-method-values
         :alt '(CLASS/.method obj 1 2 3)}]
       "(. obj method 1 2 3)"
-      (-> (config)
+      (-> (single-rule-config rule-name)
           (assoc :clojure-version {:major 1 :minor 12})
           (assoc-in ['lint/prefer-method-values :enabled] true)))))

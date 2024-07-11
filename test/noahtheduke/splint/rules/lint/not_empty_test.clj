@@ -9,24 +9,22 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [& [extra]]
-  (merge (single-rule-config 'lint/not-empty?)
-         extra))
+(def rule-name 'lint/not-empty?)
 
 (defdescribe not-empty?-test
   (describe "chosen style:"
     (it ":seq"
       (expect-match
-        [{:rule-name 'lint/not-empty?
+        [{:rule-name rule-name
           :form '(not (empty? x))
           :alt '(seq x)}]
         "(not (empty? x))"
-        (config)))
+        (single-rule-config rule-name)))
 
     (it ":not-empty"
       (expect-match
-        [{:rule-name 'lint/not-empty?
+        [{:rule-name rule-name
           :form '(not (empty? x))
           :alt '(not-empty x)}]
         "(not (empty? x))"
-        (config '{lint/not-empty? {:chosen-style :not-empty}})))))
+        (single-rule-config rule-name {:chosen-style :not-empty})))))

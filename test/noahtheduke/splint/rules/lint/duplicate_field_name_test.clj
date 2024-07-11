@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/duplicate-field-name))
+(def rule-name 'lint/duplicate-field-name)
 
 (defdescribe duplicate-field-name-test
   (it "works"
@@ -18,4 +18,4 @@
       :alt nil
       :message "Duplicate field has been found"}]
     "(defrecord Foo [a b a])"
-    (config))))
+    (single-rule-config rule-name))))

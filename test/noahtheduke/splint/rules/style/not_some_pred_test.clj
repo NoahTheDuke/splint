@@ -11,10 +11,6 @@
 
 (def rule-name 'style/not-some-pred)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe not-some-pred-test
   (it "works with symbols"
     (expect-match
@@ -22,7 +18,7 @@
         :form '(not (some pred coll))
         :alt '(not-any? pred coll)}]
       "(not (some pred coll))"
-      (config)))
+      (single-rule-config rule-name)))
   
   (it "works with non-symbols"
     (expect-match
@@ -30,4 +26,4 @@
         :form '(not (some (splint/fn [%1] (even? (+ 1 %1))) coll))
         :alt '(not-any? (splint/fn [%1] (even? (+ 1 %1))) coll)}]
       "(not (some #(even? (+ 1 %)) coll))"
-      (config))))
+      (single-rule-config rule-name))))

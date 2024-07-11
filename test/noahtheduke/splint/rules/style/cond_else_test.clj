@@ -11,10 +11,6 @@
 
 (def rule-name 'style/cond-else)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe cond-else-test
   (it "checks keywords"
     (expect-match
@@ -22,18 +18,18 @@
         :form '(cond (pos? x) (inc x) :default -1)
         :alt '(cond (pos? x) (inc x) :else -1)}]
       "(cond (pos? x) (inc x) :default -1)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "checks for true"
     (expect-match
       [{:rule-name rule-name
         :form '(cond (pos? x) (inc x) true -1)
         :alt '(cond (pos? x) (inc x) :else -1)}]
       "(cond (pos? x) (inc x) true -1)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores no default branch"
     (expect-match nil
       "(cond (pos? x) (inc x) (neg? x) (dec x))"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "ignores existing :else"
-    (expect-match nil "(cond :else true)" (config))))
+    (expect-match nil "(cond :else true)" (single-rule-config rule-name))))

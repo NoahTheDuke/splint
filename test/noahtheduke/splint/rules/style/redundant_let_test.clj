@@ -11,10 +11,6 @@
 
 (def rule-name 'style/redundant-let)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe redundant-let-test
   (it "works"
     (expect-match
@@ -22,4 +18,4 @@
         :form '(let [a 1] (let [b 2] (println a b)))
         :alt '(let [a 1 b 2] (println a b))}]
       "(let [a 1] (let [b 2] (println a b)))"
-      (config))))
+      (single-rule-config rule-name))))

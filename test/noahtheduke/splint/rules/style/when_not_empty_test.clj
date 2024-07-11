@@ -11,13 +11,9 @@
 
 (def rule-name 'style/when-not-empty?)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe when-not-empty?-test
   (it "works"
     (expect-match
       [{:alt '(when (seq x) y)}]
       "(when-not (empty? x) y)"
-      (config))))
+      (single-rule-config rule-name))))

@@ -11,10 +11,6 @@
 
 (def rule-name 'style/assoc-assoc)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe assoc-assoc-key-coll-test
   (it "respects keyword first"
     (expect-match
@@ -22,7 +18,7 @@
         :form '(assoc coll :k1 (assoc (:k1 coll) :k2 v))
         :alt '(assoc-in coll [:k1 :k2] v)}]
       "(assoc coll :k1 (assoc (:k1 coll) :k2 v))"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "respects nested coll-first"
     (expect-match
@@ -30,7 +26,7 @@
         :form '(assoc coll :k1 (assoc (coll :k1) :k2 v))
         :alt '(assoc-in coll [:k1 :k2] v)}]
       "(assoc coll :k1 (assoc (coll :k1) :k2 v))"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "respects nested get"
     (expect-match
@@ -38,4 +34,4 @@
         :form '(assoc coll :k1 (assoc (get coll :k1) :k2 v))
         :alt '(assoc-in coll [:k1 :k2] v)}]
       "(assoc coll :k1 (assoc (get coll :k1) :k2 v))"
-      (config))))
+      (single-rule-config rule-name))))

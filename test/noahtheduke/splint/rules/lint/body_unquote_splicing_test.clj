@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/body-unquote-splicing))
+(def rule-name 'lint/body-unquote-splicing)
 
 (defdescribe body-unquote-splicing-test
 
@@ -21,7 +21,7 @@
           :message "Wrap ~@/unquote-splicing in `(let [res# (do ...)] res#)` to avoid unhygenic macro expansion."
           :alt (list input '(let [res# (do (splint/unquote-splicing body))] res#))}]
         (format "(%s ~@body)" input)
-        (config))))
+        (single-rule-config rule-name))))
 
   (it "respects built-in macros"
     (doseq [input '[binding locking sync with-bindings with-in-str
@@ -31,14 +31,14 @@
           :message "Wrap ~@/unquote-splicing in `(let [res# (do ...)] res#)` to avoid unhygenic macro expansion."
           :alt (list input 'arg '(let [res# (do (splint/unquote-splicing body))] res#))}]
         (format "(%s arg ~@body)" input)
-        (config))))
+        (single-rule-config rule-name))))
 
   (it "doesn't touch non-symbols"
     (expect-match
       nil
       "(future ~@(map inc body))"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       nil
       "(future ~@[body])"
-      (config))))
+      (single-rule-config rule-name))))

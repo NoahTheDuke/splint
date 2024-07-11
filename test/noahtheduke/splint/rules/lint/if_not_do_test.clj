@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/if-not-do))
+(def rule-name 'lint/if-not-do)
 
 (defdescribe if-not-do-test
   (it "handles 2 arity"
@@ -18,11 +18,11 @@
         :form '(if-not x (do y z))
         :alt '(when-not x y z)}]
       "(if-not x (do y z))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "handles 3 arity"
     (expect-match
       [{:rule-name 'lint/if-not-do
         :form '(if-not x (do y z) nil)
         :alt '(when-not x y z)}]
       "(if-not x (do y z) nil)"
-      (config))))
+      (single-rule-config rule-name))))

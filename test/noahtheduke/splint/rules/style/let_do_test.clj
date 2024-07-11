@@ -11,10 +11,6 @@
 
 (def rule-name 'style/let-do)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe let-do-test
   (it "works with one child"
     (expect-match
@@ -22,9 +18,9 @@
         :form '(let [a 1 b 2] (do a b))
         :alt '(let [a 1 b 2] a b)}]
       "(let [a 1 b 2] (do a b))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores multiple children"
     (expect-match
       nil
       "(let [a 1 b 2] (do a b) (do a b))"
-      (config))))
+      (single-rule-config rule-name))))

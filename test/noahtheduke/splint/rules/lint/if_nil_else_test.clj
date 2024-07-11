@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/if-nil-else))
+(def rule-name 'lint/if-nil-else)
 
 (defdescribe if-nil-else-test
   (it "matches correctly"
@@ -18,4 +18,4 @@
         :form '(if x nil y) 
         :alt '(when-not x y)}]
       "(if x nil y)"
-      (config))))
+      (single-rule-config rule-name))))

@@ -11,22 +11,18 @@
 
 (def rule-name 'style/plus-one)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe plus-x-1-test
   (it "understands 1 in either position"
     (expect-match
       [{:alt '(inc x)}]
       "(+ x 1)"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:alt '(inc x)}]
       "(+ 1 x)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores multi-arity plus"
     (expect-match
       nil
       "(+ x y 1)"
-      (config))))
+      (single-rule-config rule-name))))

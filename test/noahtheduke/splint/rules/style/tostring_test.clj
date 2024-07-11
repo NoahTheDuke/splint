@@ -11,10 +11,6 @@
 
 (def rule-name 'style/tostring)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe str-to-string-test
   (it "checks dot syntax"
     (expect-match
@@ -22,11 +18,11 @@
         :message "Use `str` instead of interop."
         :alt '(str x)}]
       "(.toString x)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "checks method values syntax"
     (expect-match
       [{:form '(String/toString x)
         :message "Use `str` instead of interop."
         :alt '(str x)}]
       "(String/toString x)"
-      (config))))
+      (single-rule-config rule-name))))

@@ -11,10 +11,6 @@
 
 (def rule-name 'style/next-next)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe next-next-test
   (it "works"
     (expect-match
@@ -22,4 +18,4 @@
         :form '(next (next coll))
         :alt '(nnext coll)}]
       "(next (next coll))"
-      (config))))
+      (single-rule-config rule-name))))

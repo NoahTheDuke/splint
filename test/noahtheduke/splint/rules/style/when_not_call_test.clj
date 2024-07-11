@@ -11,10 +11,6 @@
 
 (def rule-name 'style/when-not-call)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe when-not-x-y-test
   (it "works"
     (expect-match
@@ -22,4 +18,4 @@
         :form '(when (not x) y)
         :alt '(when-not x y)}]
       "(when (not x) y)"
-      (config))))
+      (single-rule-config rule-name))))

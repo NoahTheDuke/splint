@@ -11,10 +11,6 @@
 
 (def rule-name 'style/single-key-in)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe single-key-in-test
   (it assoc-in
     (expect-match
@@ -22,26 +18,26 @@
          :message "Use `assoc` instead of recreating it."
          :alt (assoc coll :k v)}]
       "(assoc-in coll [:k] v)"
-      (config)))
+      (single-rule-config rule-name)))
   (it get-in
     (expect-match
       '[{:alt (get coll :k)
          :message "Use `get` instead of recreating it."}]
       "(get-in coll [:k])"
-      (config)))
+      (single-rule-config rule-name)))
   (it "get-in with default"
     (expect-match
       '[{:alt (get coll :k :default)}]
       "(get-in coll [:k] :default)"
-      (config)))
+      (single-rule-config rule-name)))
   (it update-in
     (expect-match
       '[{:alt (update coll :k inc)
          :message "Use `update` instead of recreating it."}]
       "(update-in coll [:k] inc)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "update-in with varargs"
     (expect-match
       '[{:alt (update coll :k + 1 2 3)}]
       "(update-in coll [:k] + 1 2 3)"
-      (config))))
+      (single-rule-config rule-name))))

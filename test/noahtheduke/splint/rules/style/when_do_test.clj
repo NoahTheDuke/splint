@@ -11,10 +11,6 @@
 
 (def rule-name 'style/when-do)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe when-do-test
   (it "works with variable do args"
     (expect-match
@@ -22,18 +18,18 @@
         :form '(when x (do y))
         :alt '(when x y)}]
       "(when x (do y))"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:form '(when x (do y z))
         :alt '(when x y z)}]
       "(when x (do y z))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores if when has multiple args"
     (expect-match
       nil
       "(when x y (do z))"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       nil
       "(when x (do y) y)"
-      (config))))
+      (single-rule-config rule-name))))

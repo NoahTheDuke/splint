@@ -11,10 +11,6 @@
 
 (def rule-name 'style/is-eq-order)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe is-eq-order-test
   (it "understands no message"
     (expect-match
@@ -23,7 +19,7 @@
         :message "Expected value should go first"
         :alt '(is (= 200 status))}]
       "(is (= status 200))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "understands a message"
     (expect-match
       [{:rule-name rule-name
@@ -31,13 +27,13 @@
         :message "Expected value should go first"
         :alt '(is (= 200 status) "message")}]
       "(is (= status 200) \"message\")"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores no literal"
     (expect-match
       nil
       "(is (= (hash-map :a 1) {:a 1}))"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       nil
       "(is (= (hash-set :a 1) #{:a 1}))"
-      (config))))
+      (single-rule-config rule-name))))

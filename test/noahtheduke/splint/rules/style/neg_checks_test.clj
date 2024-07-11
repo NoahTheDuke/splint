@@ -11,10 +11,6 @@
 
 (def rule-name 'style/neg-checks)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe lt-x-0-test
   (it "recognizes < (less than)"
     (expect-match
@@ -22,7 +18,7 @@
         :form '(< x 0)
         :alt '(neg? x)}]
       "(< x 0)"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "recognizes > (greater than)"
     (expect-match
@@ -30,4 +26,4 @@
         :form '(> 0 x)
         :alt '(neg? x)}]
       "(> 0 x)"
-      (config))))
+      (single-rule-config rule-name))))

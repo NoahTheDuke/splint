@@ -9,9 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [& [style]]
-  (cond-> (single-rule-config 'lint/thread-macro-one-arg)
-    style (assoc-in ['lint/thread-macro-one-arg :chosen-style] style)))
+(def rule-name 'lint/thread-macro-one-arg)
 
 (defdescribe thread-macro-one-arg-test
   (it "-> 1 arg"
@@ -20,15 +18,15 @@
         :form '(-> arg form)
         :alt '(form arg)}]
       "(-> arg form)"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:alt '(form arg)}]
       "(-> arg (form))"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:alt '(form arg 10)}]
       "(-> arg (form 10))"
-      (config)))
+      (single-rule-config rule-name)))
 
   (it "->> 1 arg"
     (expect-match
@@ -36,15 +34,15 @@
         :form '(->> arg form)
         :alt '(form arg)}]
       "(->> arg form)"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:alt '(form arg)}]
       "(->> arg (form))"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:alt '(form 10 arg)}]
       "(->> arg (form 10))"
-      (config)))
+      (single-rule-config rule-name)))
 
   (describe "chosen style"
     (it :inline
@@ -53,35 +51,35 @@
           :form '(-> arg form)
           :alt '(form arg)}]
         "(-> arg form)"
-        (config :inline))
+        (single-rule-config rule-name :chosen-style :inline))
       (expect-match
         [{:alt '(form [arg])}]
         "(-> [arg] form)"
-        (config :inline))
+        (single-rule-config rule-name :chosen-style :inline))
       (expect-match
         [{:alt '(form {:a arg})}]
         "(-> {:a arg} form)"
-        (config :inline))
+        (single-rule-config rule-name :chosen-style :inline))
       (expect-match
         [{:alt '(form #{arg})}]
         "(-> #{arg} form)"
-        (config :inline))
+        (single-rule-config rule-name :chosen-style :inline))
       (expect-match
         [{:alt '(form arg)}]
         "(->> arg form)"
-        (config :inline))
+        (single-rule-config rule-name :chosen-style :inline))
       (expect-match
         [{:alt '(form [arg])}]
         "(->> [arg] form)"
-        (config :inline))
+        (single-rule-config rule-name :chosen-style :inline))
       (expect-match
         [{:alt '(form {:a arg})}]
         "(->> {:a arg} form)"
-        (config :inline))
+        (single-rule-config rule-name :chosen-style :inline))
       (expect-match
         [{:alt '(form #{arg})}]
         "(->> #{arg} form)"
-        (config :inline)))
+        (single-rule-config rule-name :chosen-style :inline)))
 
     (it :avoid-collections
       (expect-match
@@ -89,26 +87,26 @@
           :form '(-> arg form)
           :alt '(form arg)}]
         "(-> arg form)"
-        (config :avoid-collections))
+        (single-rule-config rule-name :chosen-style :avoid-collections))
       (expect-match nil
         "(-> [arg] form)"
-        (config :avoid-collections))
+        (single-rule-config rule-name :chosen-style :avoid-collections))
       (expect-match nil
         "(-> {:a arg} form)"
-        (config :avoid-collections))
+        (single-rule-config rule-name :chosen-style :avoid-collections))
       (expect-match nil
         "(-> #{arg} form)"
-        (config :avoid-collections))
+        (single-rule-config rule-name :chosen-style :avoid-collections))
       (expect-match
         [{:alt '(form arg)}]
         "(->> arg form)"
-        (config :avoid-collections))
+        (single-rule-config rule-name :chosen-style :avoid-collections))
       (expect-match nil
         "(->> [arg] form)"
-        (config :avoid-collections))
+        (single-rule-config rule-name :chosen-style :avoid-collections))
       (expect-match nil
         "(->> {:a arg} form)"
-        (config :avoid-collections))
+        (single-rule-config rule-name :chosen-style :avoid-collections))
       (expect-match nil
         "(->> #{arg} form)"
-        (config :avoid-collections)))))
+        (single-rule-config rule-name :chosen-style :avoid-collections)))))

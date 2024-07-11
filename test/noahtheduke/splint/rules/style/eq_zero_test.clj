@@ -11,10 +11,6 @@
 
 (def rule-name 'style/eq-zero)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe eq-0-test
   (describe =
     (it "checks 0 first"
@@ -23,23 +19,23 @@
           :form '(= 0 x)
           :alt '(zero? x)}]
         "(= 0 x)"
-        (config)))
+        (single-rule-config rule-name)))
 
     (it "checks 0 second"
       (expect-match
         [{:alt '(zero? x)}]
         "(= x 0)"
-        (config))))
+        (single-rule-config rule-name))))
 
   (describe ==
     (it "checks 0 first"
       (expect-match
         [{:alt '(zero? x)}]
         "(== 0 x)"
-        (config)))
+        (single-rule-config rule-name)))
 
     (it "checks 0 second"
       (expect-match
         [{:alt '(zero? x)}]
         "(== x 0)"
-        (config)))))
+        (single-rule-config rule-name)))))

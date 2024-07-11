@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/loop-do))
+(def rule-name 'lint/loop-do)
 
 (defdescribe loop-do-test
   (it "works"
@@ -18,4 +18,4 @@
         :form '(loop [] (do a b))
         :alt '(loop [] a b)}]
       "(loop [] (do a b))"
-      (config))))
+      (single-rule-config rule-name))))

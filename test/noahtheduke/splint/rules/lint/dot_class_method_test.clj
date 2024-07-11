@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/dot-class-method))
+(def rule-name 'lint/dot-class-method)
 
 (defdescribe dot-class-usage-test
   (it "handles raw symbols"
@@ -19,7 +19,7 @@
         :message "Intention is clearer with `Obj/staticMethod` form."
         :alt '(Object/method 1 2 3)}]
       "(ns foo (:import (java.lang Object))) (. Object method 1 2 3)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "handles lists"
     (expect-match
       [{:rule-name 'lint/dot-class-method
@@ -27,13 +27,13 @@
         :message "Intention is clearer with `Obj/staticMethod` form."
         :alt '(Object/method 1 2 3)}]
       "(ns foo (:import (java.lang Object))) (. Object (method) 1 2 3)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "respects lint/prefer-method-values"
     (expect-match
       [{:rule-name 'lint/prefer-method-values
         :form '(. Object (method) 1 2 3)
         :alt '(Object/method 1 2 3)}]
       "(ns foo (:import (java.lang Object))) (. Object (method) 1 2 3)"
-      (-> (config)
+      (-> (single-rule-config rule-name)
           (assoc :clojure-version {:major 1 :minor 12})
           (assoc-in ['lint/prefer-method-values :enabled] true)))))

@@ -11,10 +11,6 @@
 
 (def rule-name 'style/reduce-str)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe reduce-str-test
   (it "works with no init-arg"
     (expect-match
@@ -23,15 +19,15 @@
         :message "Use `clojure.string/join` for efficient string concatenation."
         :alt '(clojure.string/join x)}]
       "(reduce str x)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "works with an empty init-arg"
     (expect-match
       [{:form '(reduce str "" x)
         :alt '(clojure.string/join x)}]
       "(reduce str \"\" x)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores a non-empty init-arg"
     (expect-match
       nil
       "(reduce str \"abc\" x)"
-      (config))))
+      (single-rule-config rule-name))))

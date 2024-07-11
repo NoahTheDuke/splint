@@ -11,10 +11,6 @@
 
 (def rule-name 'style/not-nil?)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe not-nil?-test
   (it "works"
     (expect-match
@@ -22,9 +18,9 @@
         :form '(not (nil? x))
         :alt '(some? x)}]
       "(not (nil? x))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores plain nil"
     (expect-match
       nil
       "(not nil)"
-      (config))))
+      (single-rule-config rule-name))))

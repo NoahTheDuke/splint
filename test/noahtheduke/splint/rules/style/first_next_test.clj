@@ -11,10 +11,6 @@
 
 (def rule-name 'style/first-next)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe first-next-test
   (it "works"
     (expect-match
@@ -22,4 +18,4 @@
         :form '(first (next coll))
         :alt '(fnext coll)}]
       "(first (next coll))"
-      (config))))
+      (single-rule-config rule-name))))

@@ -11,10 +11,6 @@
 
 (def rule-name 'performance/avoid-satisfies)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe avoid-satisfies-test
   (it "works"
     (expect-match
@@ -23,4 +19,4 @@
         :message "Avoid using `satisfies?`."
         :alt nil}]
       "(satisfies? Foo :bar)"
-      (config))))
+      (single-rule-config rule-name))))

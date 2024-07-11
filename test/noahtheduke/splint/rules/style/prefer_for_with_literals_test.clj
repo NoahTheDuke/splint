@@ -11,10 +11,6 @@
 
 (def rule-name 'style/prefer-for-with-literals)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe prefer-for-with-literals-test
   (it "works with function literals"
     (expect-match
@@ -23,7 +19,7 @@
         :message "Prefer `for` when creating a seq of data literals."
         :alt '(for [item (range 10)] {:a 1 :b item})}]
       "(map #(hash-map :a 1 :b %) (range 10))"
-      (config)))
+      (single-rule-config rule-name)))
   (describe "anonymous functions"
     (it hash-map
       (expect-match
@@ -31,34 +27,34 @@
           :form '(map (fn [x] (hash-map :a 1 :b x)) (range 10))
           :alt '(for [item (range 10)] {:a 1 :b item})}]
         "(map (fn [x] (hash-map :a 1 :b x)) (range 10))"
-        (config))))
+        (single-rule-config rule-name))))
   (it array-map
     (expect-match
       [{:rule-name rule-name
         :form '(map (fn [x] (array-map :a 1 :b x)) (range 10))
         :alt '(for [item (range 10)] {:a 1 :b item})}]
       "(map (fn [x] (array-map :a 1 :b x)) (range 10))"
-      (config)))
+      (single-rule-config rule-name)))
   (it hash-set
     (expect-match
       [{:rule-name rule-name
         :form '(map (fn [x] (hash-set :a 1 :b x)) (range 10))
         :alt '(for [item (range 10)] #{item :b :a 1})}]
       "(map (fn [x] (hash-set :a 1 :b x)) (range 10))"
-      (config)))
+      (single-rule-config rule-name)))
   (it vector
     (expect-match
       [{:rule-name rule-name
         :form '(map (fn [x] (vector :a 1 :b x)) (range 10))
         :alt '(for [item (range 10)] [:a 1 :b item])}]
       "(map (fn [x] (vector :a 1 :b x)) (range 10))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores threaded contexts"
     (expect-match
       nil
       "(->> (range 10) (map (fn [x] (hash-map :a 1 :b x))))"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       nil
       "(->> [(range 10)] (map (fn [x] (apply hash-map :a 1 :b x))))"
-      (config))))
+      (single-rule-config rule-name))))

@@ -11,10 +11,6 @@
 
 (def rule-name 'style/useless-do)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe useless-do-x-test
   (it "works"
     (expect-match
@@ -22,8 +18,8 @@
         :message "Unnecessary `do`."
         :alt 'x}]
       "(do x)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores function literal context"
-    (expect-match nil "#(do [%1 %2])" (config)))
+    (expect-match nil "#(do [%1 %2])" (single-rule-config rule-name)))
   (it "ignores unquote-splicing context"
-    (expect-match nil "(do ~@body)" (config))))
+    (expect-match nil "(do ~@body)" (single-rule-config rule-name))))

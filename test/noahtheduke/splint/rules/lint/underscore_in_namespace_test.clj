@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/underscore-in-namespace))
+(def rule-name 'lint/underscore-in-namespace)
 
 (defdescribe underscore-in-namespace-test
   (it "work"
@@ -19,7 +19,7 @@
         :message "Avoid underscores in namespaces."
         :alt 'foo-bar.baz-qux}]
       "(ns foo_bar.baz_qux)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "respects namespaces with args"
     (expect-match
       [{:rule-name 'lint/underscore-in-namespace
@@ -27,7 +27,7 @@
         :message "Avoid underscores in namespaces."
         :alt 'foo-bar.baz-qux}]
       "(ns foo_bar.baz_qux (:require [clojure.string :as str]))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "only reports the namespace symbol itself"
     (expect-match
       [{:line 3
@@ -35,9 +35,9 @@
         :end-line 3
         :end-column 18}]
       "\n(ns\n  foo_bar.baz_qux)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores kebab-case namespaces"
     (expect-match
       nil
       "(ns foo-bar.baz-qux)"
-      (config))))
+      (single-rule-config rule-name))))

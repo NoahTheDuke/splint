@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/if-not-not))
+(def rule-name 'lint/if-not-not)
 
 (defdescribe if-not-not-test
   (it "works"
@@ -18,4 +18,4 @@
         :form '(if-not (not x) y z)
         :alt '(if x y z)}]
       "(if-not (not x) y z)"
-      (config))))
+      (single-rule-config rule-name))))

@@ -11,10 +11,6 @@
 
 (def rule-name 'style/conj-vector)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe conj-vec-test
   (it "works"
     (expect-match
@@ -23,4 +19,4 @@
         :message "Use `vector` instead of recreating it."
         :alt '(vector x)}]
       "(conj [] x)"
-      (config))))
+      (single-rule-config rule-name))))

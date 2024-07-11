@@ -11,10 +11,6 @@
 
 (def rule-name 'style/mapcat-concat-map)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe mapcat-concat-map-test
   (it "works with multiple map arities"
     (expect-match
@@ -22,10 +18,10 @@
         :form '(apply concat (map x y))
         :alt '(mapcat x y)}]
       "(apply concat (map x y))"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:rule-name rule-name
         :form '(apply concat (map x y z))
         :alt '(mapcat x y z)}]
       "(apply concat (map x y z))"
-      (config))))
+      (single-rule-config rule-name))))

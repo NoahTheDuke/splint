@@ -11,10 +11,6 @@
 
 (def rule-name 'performance/get-keyword)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe get-keyword-test
   (it "only looks for keywords"
     (expect-match
@@ -23,19 +19,19 @@
         :message "Use keywords as functions instead of the polymorphic function `get`."
         :alt '(:some-key m)}]
       "(get m :some-key)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores symbols"
     (expect-match
       nil
       "(get m 'some-key)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores strings"
     (expect-match
       nil
       "(get m \"some-key\")"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores calls without 'get'"
     (expect-match
       nil
       "(m :some-key)"
-      (config))))
+      (single-rule-config rule-name))))

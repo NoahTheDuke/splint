@@ -11,10 +11,6 @@
 
 (def rule-name 'naming/predicate)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe predicate-test
   (it "checks for 'is-x'"
     (expect-match
@@ -22,16 +18,16 @@
         :form '(defn is-palindrome [a] true)
         :alt '(defn palindrome? [a] true)}]
       "(defn is-palindrome [a] true)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "checks for 'x-p'"
     (expect-match
       '[{:alt (defn palindrome? [a] true)}]
       "(defn palindrome-p [a] true)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores existing ?"
-    (expect-match nil "(defn palindrome? [a] true)" (config)))
+    (expect-match nil "(defn palindrome? [a] true)" (single-rule-config rule-name)))
   (it "trims leading is- when ? exists"
     (expect-match
       '[{:alt (defn palindrome? [a] true)}]
       "(defn is-palindrome? [a] true)"
-      (config))))
+      (single-rule-config rule-name))))

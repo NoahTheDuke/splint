@@ -11,18 +11,14 @@
 
 (def rule-name 'style/prefer-vary-meta)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe prefer-vary-meta-test
   (it "works"
     (expect-match
       [{:alt '(vary-meta x f args)}]
       "(with-meta x (f (meta x) args))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores direct non-meta calls"
     (expect-match
       nil
       "(let [xm (meta x)] (with-meta x (f xm args)))"
-      (config))))
+      (single-rule-config rule-name))))

@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/duplicate-case-test))
+(def rule-name 'lint/duplicate-case-test)
 
 (defdescribe duplicate-case-test-test
   (it "respects"
@@ -23,7 +23,7 @@
         :end-line 1
         :end-column 29}]
       "(case x :foo :bar :foo :baz)"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:rule-name 'lint/duplicate-case-test
         :form '(case x 'foo :bar 'foo :baz)
@@ -34,7 +34,7 @@
         :message "Duplicate case test constant: quote"
         :alt nil}]
       "(case x 'foo :bar 'foo :baz)"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:rule-name 'lint/duplicate-case-test
         :form '(case x (foo bar) 1 bar 2 (bar baz) 5)
@@ -50,4 +50,4 @@
         :end-line 1
         :end-column 24}]
       "(case x (foo bar) 1 bar 2 (bar baz) 5)"
-      (config))))
+      (single-rule-config rule-name))))

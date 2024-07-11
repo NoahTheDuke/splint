@@ -11,10 +11,6 @@
 
 (def rule-name 'style/set-literal-as-fn)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe set-literal-as-fn-test
   (it "plain strings"
     (expect-match
@@ -23,7 +19,7 @@
         :message "Prefer `case` to set literal with constant members."
         :alt '(case elem (a b c) elem nil)}]
       "(#{'a 'b 'c} elem)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "other constant types"
     (expect-match
       [{:rule-name rule-name
@@ -31,8 +27,8 @@
         :message "Prefer `case` to set literal with constant members."
         :alt '(case elem (nil 1 :b c) elem nil)}]
       "(#{nil 1 :b 'c} elem)"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores if not all elements are quoted"
-    (expect-match nil "(#{'a 'b c} elem)" (config)))
+    (expect-match nil "(#{'a 'b c} elem)" (single-rule-config rule-name)))
   (it "ignores if element can't be treated as constant"
-    (expect-match nil "(#{'a 'b 'c '(1 2 3)} elem)" (config))))
+    (expect-match nil "(#{'a 'b 'c '(1 2 3)} elem)" (single-rule-config rule-name))))

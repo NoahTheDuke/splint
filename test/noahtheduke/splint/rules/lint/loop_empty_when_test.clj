@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/loop-empty-when))
+(def rule-name 'lint/loop-empty-when)
 
 (defdescribe loop-empty-when-test
   (it "handles top-level recur"
@@ -18,9 +18,9 @@
         :form '(loop [] (when (= 1 1) (prn 1) (prn 2) (recur)))
         :alt '(while (= 1 1) (prn 1) (prn 2))}]
       "(loop [] (when (= 1 1) (prn 1) (prn 2) (recur)))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "ignores nested recurs"
     (expect-match
       nil
       "(loop [] (when (= 1 1) (prn 1) (prn 2) (do (recur))))"
-      (config))))
+      (single-rule-config rule-name))))

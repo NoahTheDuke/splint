@@ -9,7 +9,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn config [] (single-rule-config 'lint/take-repeatedly))
+(def rule-name 'lint/take-repeatedly)
 
 (defdescribe take-repeatedly-test
   (it "works"
@@ -18,4 +18,4 @@
         :form '(take n (repeatedly coll))
         :alt '(repeatedly n coll)}]
       "(take n (repeatedly coll))"
-      (config))))
+      (single-rule-config rule-name))))

@@ -11,10 +11,6 @@
 
 (def rule-name 'lint/divide-by-one)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe divide-by-1-test
   (it "works"
     (expect-match
@@ -22,4 +18,4 @@
         :form '(/ x 1)
         :alt 'x}]
       "(/ x 1)"
-      (config))))
+      (single-rule-config rule-name))))

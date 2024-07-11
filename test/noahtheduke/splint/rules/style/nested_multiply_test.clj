@@ -11,17 +11,13 @@
 
 (def rule-name 'style/nested-multiply)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe nested-multiply-test
   (it "works"
     (expect-match
       [{:alt '(* x y z)}]
       "(* x (* y z))"
-      (config))
+      (single-rule-config rule-name))
     (expect-match
       [{:alt '(* x y z a)}]
       "(* x (* y z a))"
-      (config))))
+      (single-rule-config rule-name))))

@@ -11,10 +11,6 @@
 
 (def rule-name 'naming/single-segment-namespace)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe single-segment-namespace-test
   (it "works on single segmets" (expect-match
     [{:rule-name rule-name
@@ -22,9 +18,9 @@
       :message "simple is a single segment. Consider adding an additional segment."
       :alt nil}]
     "(ns simple)"
-    (config))
-    (expect-match nil "(ns foo.bar)" (config)))
+    (single-rule-config rule-name))
+    (expect-match nil "(ns foo.bar)" (single-rule-config rule-name)))
 
   (it "ignores special cases"
-    (expect-match nil "(ns build)" (config))
-    (expect-match nil "(ns user)" (config))))
+    (expect-match nil "(ns build)" (single-rule-config rule-name))
+    (expect-match nil "(ns user)" (single-rule-config rule-name))))

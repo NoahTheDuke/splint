@@ -4,7 +4,8 @@
 
 (ns noahtheduke.splint.printer
   (:require
-   [clojure.data.json :as json]
+   #?(:bb [cheshire.core :as json]
+      :clj[clojure.data.json :as json])
    [clojure.main :refer [demunge]]
    [clojure.string :as str]
    [fipp.clojure :as fipp.clj]
@@ -128,7 +129,8 @@
                      (update :filename str)
                      (update :exception update-trace)
                      (->> (into (sorted-map))))]
-    (json/write diagnostic *out* {:escape-slash false})
+    #?(:bb (json/generate-string diagnostic *out*)
+       :clj (json/write diagnostic *out* {:escape-slash false}))
     (newline)))
 
 (defmethod print-find "json-pretty" [_ diagnostic]
@@ -139,7 +141,8 @@
                      (update :filename str)
                      (update :exception update-trace)
                      (->> (into (sorted-map))))]
-    (json/pprint diagnostic {:escape-slash false})
+    #?(:bb (json/generate-string diagnostic *out*)
+       :clj (json/pprint diagnostic {:escape-slash false}))
     (newline)))
 
 (defmethod print-find "edn" [_ diagnostic]

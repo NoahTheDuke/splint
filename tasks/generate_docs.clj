@@ -156,6 +156,6 @@
     (spit filename (str page \newline))))
 
 (defn -main [& genres]
-  (when-let [genres (seq (or genres (:genres @global-rules)))]
+  (when-let [genres (seq (or genres (map name (:genres @global-rules))))]
     (println "Saving genres to file")
     (run! print-genre-to-file genres)))

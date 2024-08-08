@@ -48,7 +48,7 @@ today := `date +%F`
 current_version := `cat resources/SPLINT_VERSION | xargs`
 
 # Set version, change all instances of <<next>> to version
-set-version version:
+@set-version version:
     echo '{{version}}' > resources/SPLINT_VERSION
     fd '.(clj|edn|md)' . -x sd '<<next>>' '{{version}}' {}
     sd '{{current_version}}' '{{version}}' README.md

@@ -146,7 +146,7 @@ NOTE: This rule is disabled if `lint/prefer-method-values` is enabled to prevent
 
 | Enabled by default | Version Added | Version Updated |
 | ------------------ | ------------- | --------------- |
-| true               | <<next>>      | <<next>>        |
+| true               | 1.16.0        | 1.16.0          |
 
 It's an error to have duplicate `case` test constants.
 
@@ -442,7 +442,7 @@ determine if `result` binding is used in falsy branch.
 
 | Enabled by default | Version Added | Version Updated |
 | ------------------ | ------------- | --------------- |
-| true               | <<next>>      | <<next>>        |
+| true               | 1.16.0        | 1.16.0          |
 
 Synchronizing on interned objects is really bad. If multiple places lock on the same type of interned objects, those places are competing for locks.
 
@@ -665,7 +665,7 @@ x
 
 | Enabled by default | Version Added | Version Updated |
 | ------------------ | ------------- | --------------- |
-| true               | <<next>>      | <<next>>        |
+| true               | 1.16.0        | 1.16.0          |
 
 `clojure.core/str` calls `.toString()` on non-nil input. However, `.toString()` on a string literal returns itself, making it a no-op. Likewise, `clojure.core/format` unconditionally returns a string, making any calls to `str` on the results a no-op.
 

@@ -48,8 +48,8 @@
  lint/duplicate-case-test
  {:description "Warn if there are duplicate test constants in a `case` call."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.16.0"
+  :updated "1.16.0"
   :links ["https://clojuredocs.org/clojure.core/case"
           "https://github.com/clj-kondo/clj-kondo/blob/18448daa0ca2b53b2dddce5773f641bed3b5fc85/doc/linters.md#duplicate-case-test"]}
 
@@ -133,8 +133,8 @@
  lint/locking-object
  {:description "Prefer locking on a symbol pointing at an (Object.)."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.16.0"
+  :updated "1.16.0"}
 
  lint/loop-do
  {:description "`loop` has an implicit `do`."
@@ -188,8 +188,8 @@
  lint/redundant-str-call
  {:description "Avoid calls to `str` on string literals or calls to `str` or `format`."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.16.0"
+  :updated "1.16.0"}
 
  lint/require-explicit-param-tags
  {:description "Require explicit :param-tags on method values."

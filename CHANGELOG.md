@@ -10,6 +10,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - `lint/duplicate-case-test`: Don't use the same case test constant more than once.
 - `lint/locking-object`: Prefer to lock on a symbol bound to `(Object.)`.
 
+### Added
+
+- `--only RULE` cli flag to run only specified rules or genres. Can be used multiple times. ([#13](https://github.com/NoahTheDuke/splint/issues/13))
+
 ### Changed
 
 - Switched from `clojure.pprint` to [fipp](https://github.com/brandonbloom/fipp) for pretty-printing code. Fast and easy to extend.
@@ -18,6 +22,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - External links in `default.edn` are now `:links`, a vector of strings. This allows for listing multiple references.
 - Switch all tests to Lazytest to do some dogfooding.
 - Enforce that `??` only 1 or 2 arguments, and if provided, that the predicate is a symbol.
+- Updated all dependencies.
 
 ## 1.15.2 - 2024-05-09
 

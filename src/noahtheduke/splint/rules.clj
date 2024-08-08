@@ -73,7 +73,7 @@
                     :on-match (or ~on-match (replace->diagnostic ~replace))}]
          (swap! global-rules #(-> %
                                 (assoc-in [:rules '~full-name] rule#)
-                                (update :genres conj ~genre)))
+                                (update :genres conj '~(symbol genre))))
          (def ~(symbol rule-name) ~docs rule#)))))
 
 (s/def ::rule-name qualified-symbol?)

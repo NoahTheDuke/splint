@@ -35,6 +35,7 @@ Linting took 241ms, checked 115 files, 5 style warnings
 
 * `-o`, `--output FMT`: Output format: `simple`, `full`, `clj-kondo`, `markdown`, `json`, `json-pretty`. Defaults to `full`. (See below for description of each.)
 * `-r`, `--require FILE`: Require additional custom rules by loading specified files. Can be provided multiple times. (See [Writing a new rule][new rule] for further details.)
+* `--only RULE`: Run only the specified rule(s) or genre(s).
 * `--[no-]parallel`: Run Splint in parallel. Defaults to `true`.
 * `-q`, `--quiet`: Print no diagnostics, only summary.
 * `-s`, `--silent`: Print no diagnostics or summary. Overrides `--summary`.

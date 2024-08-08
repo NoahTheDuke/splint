@@ -33,7 +33,7 @@
   ([path config]
    (let [config (conj {:clojure-version (or (:clojure-version config)
                                           *clojure-version*)}
-                  (merge-config @dev/dev-config config)
+                  (merge-config nil @dev/dev-config config)
                   {:parallel false})
          paths (if (sequential? path) path [path])
          results (run-impl paths config)]

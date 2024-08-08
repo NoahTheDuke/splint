@@ -87,14 +87,18 @@
   custom rules configuration as well.
 
   If .splint.edn has both `'output` and `:output`, it will use `'output`."
-  [default local]
+  [options default local]
   (let [default (or default {})
         ;; Select all settings that apply globally
         global (make-rule-config ('global local {}) nil nil)
         ;; Select whole genres from local config
-        whole-genres (select-keys local (map symbol (:genres @global-rules)))
+        whole-genres (select-keys local (:genres @global-rules))
         ;; Select non-opts, non-genres
         local-rules (into {} (filter (comp qualified-symbol? key)) local)
+        {only-genres false
+         only-rules true} (group-by (comp boolean namespace) (:only options))
+        only-genres (set only-genres)
+        only-rules (set only-rules)
         ;; For each loaded rule:
         ;; * Merge (left to right) the default config,
         ;;   the whole genre config, and the local config for that rule.
@@ -105,11 +109,17 @@
                        (fn [m rule-name]
                          (let [genre (symbol (namespace rule-name))
                                genre-config (whole-genres genre)
-                               local-config (local-rules rule-name)
+                               local-config (or (local-rules rule-name) {})
+                               only-config (when (:only options)
+                                             (if (or (only-genres genre)
+                                                     (only-rules rule-name))
+                                               {:enabled true}
+                                               {:enabled false}))
                                rule-config (make-rule-config
-                                             (assoc (default rule-name) :rule-name rule-name)
-                                             genre-config
-                                             local-config)]
+                                            (assoc (default rule-name) :rule-name rule-name)
+                                            genre-config
+                                            (conj local-config
+                                                  only-config))]
                            (assoc! m rule-name rule-config)))
                        (transient {}))
                      (persistent!))
@@ -136,7 +146,7 @@
   ([options] (load-config (:local (find-local-config)) options))
   ([local options]
    (let [required-files (require-files! local options)]
-     (conj (merge-config @default-config local)
+     (conj (merge-config options @default-config local)
            options
            {:required-files required-files}))))
 

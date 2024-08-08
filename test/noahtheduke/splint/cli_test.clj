@@ -92,4 +92,14 @@
               (sut/validate-opts ["--require" "a"])))
     (expect
       (match? {:options {:required-files ["a" "b"]}}
-              (sut/validate-opts ["--require" "a" "--require" "b"])))))
+              (sut/validate-opts ["--require" "a" "--require" "b"]))))
+  (it "--only"
+    (expect
+      (match? {:options {:only #{'style/def-fn}}}
+              (sut/validate-opts ["--only" "style/def-fn"])))
+    (expect
+      (match? {:options {:only #{'style/def-fn}}}
+              (sut/validate-opts ["--only" "style/def-fn" "--only" "style/def-fn"])))
+    (expect
+      (match? {:options {:only #{'style/def-fn 'performance}}}
+              (sut/validate-opts ["--only" "style/def-fn" "--only" "performance"])))))

@@ -9,7 +9,9 @@
    [clojure.string :as str]
    [clojure.tools.cli :as cli]
    [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]
-   [noahtheduke.splint.config :refer [default-config find-local-config load-config splint-version]]))
+   [noahtheduke.splint.config :refer [default-config find-local-config
+                                      load-config splint-version]]
+   [noahtheduke.splint.rules :refer [global-rules]]))
 
 (set! *warn-on-reflection* true)
 
@@ -21,6 +23,13 @@
     :id :required-files
     :multi true
     :update-fn (fnil conj [])]
+   [nil "--only RULE" "Run only the chosen rule(s) or genre(s)."
+    :multi true
+    :parse-fn symbol
+    :validate [#(or (contains? (:rules @global-rules) %)
+                    (contains? (:genres @global-rules) %))
+               "Not a valid rule."]
+    :update-fn (fnil conj #{})]
    [nil "--[no-]parallel" "Run splint in parallel. Defaults to true."]
    ["-q" "--quiet" "Print no diagnostics, only summary."]
    ["-s" "--silent" "Don't print suggestions or summary."]

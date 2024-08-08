@@ -42,15 +42,25 @@
   (describe ":enable"
     (given [config (update-vals @sut/default-config #(assoc % :enabled true))]
       (it "can disable a whole genre"
-        (doseq [c (->> (sut/merge-config config {'style {:enabled false}})
+        (doseq [c (->> (sut/merge-config nil config {'style {:enabled false}})
                     (vals)
                     (filter #(.equals "style" (namespace (:rule-name % :a)))))]
           (expect (match? {:enabled false} c))))
       (it "chooses the more specific config"
         (expect
           (match? {'style/plus-one {:enabled true}}
-            (sut/merge-config config {'style {:enabled false}
-                                      'style/plus-one {:enabled true}})))))))
+                  (sut/merge-config nil config {'style {:enabled false}
+                                                'style/plus-one {:enabled true}})))))))
+
+(defdescribe only-flag-test
+  (given [config (update-vals @sut/default-config #(assoc % :enabled true))]
+    (it "overrides other config options"
+      (expect
+        (match?
+         {'style/eq-nil {:enabled true}
+          'performance/dot-equals {:enabled true}
+          'performance/assoc-many {:enabled false}}
+         (sut/merge-config {:only #{'style 'performance/dot-equals}} config {'style {:enabled false}}))))))
 
 (defn get-global [a]
   (select-keys a [:global]))

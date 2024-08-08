@@ -24,6 +24,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Enforce that `??` only 1 or 2 arguments, and if provided, that the predicate is a symbol.
 - Updated all dependencies.
 
+### Fixed
+
+- Outputs `json` and `json-pretty` now work with Babashka, by relying on Babashka's built-in `chehire.core` instead of `clojure.data.json`. This shouldn't result in any observable differences. I'd use `cheshire.core` for both, but `cheshire.core` is much bigger and more complicated than `clojure.data.json`, and it's a pain in the ass imo.
+
 ## 1.15.2 - 2024-05-09
 
 ### Changed

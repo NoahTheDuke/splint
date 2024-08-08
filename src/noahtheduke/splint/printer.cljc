@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.printer
   (:require
    #?(:bb [cheshire.core :as json]
-      :clj[clojure.data.json :as json])
+      :clj [clojure.data.json :as json])
    [clojure.main :refer [demunge]]
    [clojure.string :as str]
    [fipp.clojure :as fipp.clj]

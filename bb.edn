@@ -2,6 +2,11 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-{:deps {noahtheduke/splint {:local/root "."}}
+{:paths ["src" "resources"]
+ :deps {org.clojure/clojure {:mvn/version "1.11.4"}
+        org.clojure/tools.cli {:mvn/version "1.1.230"}
+        borkdude/edamame {:mvn/version "1.4.26"}
+        camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
+        fipp/fipp {:mvn/version "0.6.26"}}
  :tasks {splint noahtheduke.splint/-main}
  :bbin/bin {splint {:main-opts ["-m" "noahtheduke.splint"]}}}

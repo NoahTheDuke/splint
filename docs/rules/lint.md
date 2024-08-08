@@ -438,6 +438,27 @@ determine if `result` binding is used in falsy branch.
 
 ---
 
+## lint/locking-object
+
+| Enabled by default | Version Added | Version Updated |
+| ------------------ | ------------- | --------------- |
+| true               | <<next>>      | <<next>>        |
+
+Synchronizing on interned objects is really bad. If multiple places lock on the same type of interned objects, those places are competing for locks.
+
+### Examples
+
+```clojure
+; avoid
+(locking :hello (+ 1 1))
+
+; prefer
+(def hello (Object.))
+(locking hello (+ 1 1))
+```
+
+---
+
 ## lint/loop-do
 
 | Enabled by default | Version Added | Version Updated |

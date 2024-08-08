@@ -35,6 +35,7 @@
    noahtheduke.splint.rules.lint.into-literal
    noahtheduke.splint.rules.lint.let-if
    noahtheduke.splint.rules.lint.let-when
+   noahtheduke.splint.rules.lint.locking-object
    noahtheduke.splint.rules.lint.loop-do
    noahtheduke.splint.rules.lint.loop-empty-when
    noahtheduke.splint.rules.lint.missing-body-in-when

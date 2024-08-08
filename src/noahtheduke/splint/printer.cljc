@@ -129,7 +129,7 @@
                      (update :filename str)
                      (update :exception update-trace)
                      (->> (into (sorted-map))))]
-    #?(:bb (json/generate-string diagnostic *out*)
+    #?(:bb (println (json/generate-string diagnostic))
        :clj (json/write diagnostic *out* {:escape-slash false}))
     (newline)))
 
@@ -141,7 +141,7 @@
                      (update :filename str)
                      (update :exception update-trace)
                      (->> (into (sorted-map))))]
-    #?(:bb (json/generate-string diagnostic *out*)
+    #?(:bb (println (json/generate-string diagnostic {:pretty true}))
        :clj (json/pprint diagnostic {:escape-slash false}))
     (newline)))
 

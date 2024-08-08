@@ -28,12 +28,25 @@
 
 (set! *warn-on-reflection* true)
 
+(defmacro with-out-str-data-map
+  "Adapted from clojure.core/with-out-str.
+
+  Evaluates exprs in a context in which *out* is bound to a fresh
+  StringWriter. Returns the result of the body and the string created by any
+  nested printing calls in a map under the respective keys :result and :string."
+  [& body]
+  `(let [s# (java.io.StringWriter.)]
+     (binding [*out* s#]
+       (let [r# (do ~@body)]
+         {:result r#
+          :string (str s#)}))))
+
 (defn check-all
   ([path] (check-all path nil))
   ([path config]
    (let [config (conj {:clojure-version (or (:clojure-version config)
                                           *clojure-version*)}
-                  (merge-config nil @dev/dev-config config)
+                  (merge-config @dev/dev-config config)
                   {:parallel false})
          paths (if (sequential? path) path [path])
          results (run-impl paths config)]

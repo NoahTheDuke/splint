@@ -90,6 +90,7 @@
 (defn print-errors
   [errors]
   {:exit-message (str/join \newline (cons "splint errors:" errors))
+   :errors errors
    :ok false})
 
 (defn validate-paths

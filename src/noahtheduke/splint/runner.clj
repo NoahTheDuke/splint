@@ -233,7 +233,12 @@
     (check-files-serial ctx files)))
 
 (defn prepare-rules [config rules]
-  (let [rule-names (set (concat (keys config) (keys rules)))]
+  (let [{only-genres false
+         only-rules true} (when-let [only (:only config)]
+                            (group-by (comp boolean namespace) only))
+        only-genres (set only-genres)
+        only-rules (set only-rules)
+        rule-names (set (concat (keys config) (keys rules)))]
     (-> (reduce
           (fn [acc rule-name]
             (if (symbol? rule-name)
@@ -241,12 +246,18 @@
                     rule-config (config rule-name)
                     rule (if (and (map? rule-config)
                                (contains? rule-config :enabled))
-                           (let [rule-config (assoc rule-config :rule-name rule-name)
+                           (let [only-config (when (:only config)
+                                               (if (or (only-genres (symbol (namespace rule-name)))
+                                                       (only-rules rule-name))
+                                                 {:enabled true}
+                                                 {:enabled false}))
+                                 rule-config (assoc rule-config :rule-name rule-name)
                                  rule-config (if (support-clojure-version?
                                                    (:min-clojure-version rule)
                                                    (:clojure-version config))
                                                rule-config
-                                               (assoc rule-config :enabled false))]
+                                               (assoc rule-config :enabled false))
+                                 rule-config (conj rule-config only-config)]
                              (assoc rule :config rule-config))
                            rule)]
                 (-> acc
@@ -340,7 +351,7 @@
   [args]
   (try
     (let [start-time (System/currentTimeMillis)
-          {:keys [options paths exit-message ok]} (validate-opts args)
+          {:keys [options paths exit-message errors ok]} (validate-opts args)
           project-file (conf/read-project-file
                          (io/file "deps.edn") (io/file "project.clj"))
           paths (mapv* #(hash-map :path %)
@@ -350,7 +361,9 @@
       (cond
         exit-message
         (do (when-not (:quiet options) (println exit-message))
-          {:exit (if ok 0 1)})
+          {:exit (if ok 0 1)
+           :message exit-message
+           :errors errors})
         (empty? paths)
         (do (when-not (:quiet options)
               (println "splint errors:")

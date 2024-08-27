@@ -21,7 +21,7 @@
   (when-let [parent-form (:parent-form ctx)]
     (and (seq? parent-form)
       (case (first parent-form)
-        (case -> ->>) true
+        (case -> ->> cond-> cond->> some-> some->>) true
         false))))
 
 (defrule lint/redundant-call

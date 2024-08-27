@@ -39,4 +39,11 @@
   (it "doesn't do any other checking"
     (expect-match nil
       "(str (str/join \newline (range 10)))"
+      (single-rule-config rule-name)))
+  (it "checks for threading macros"
+    (expect-match nil
+      "(-> \"foo\" (str \"bar\"))"
+      (single-rule-config rule-name))
+    (expect-match nil
+      "(->> \"foo\" (str \"bar\"))"
       (single-rule-config rule-name))))

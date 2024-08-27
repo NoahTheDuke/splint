@@ -27,6 +27,12 @@
   (it "ignores multiple arg"
     (expect-match nil
       "(-> a b (merge c))"
+      (single-rule-config rule-name))
+    (expect-match nil
+      "(cond-> a b (merge c))"
+      (single-rule-config rule-name))
+    (expect-match nil
+      "(some-> a b (merge c))"
       (single-rule-config rule-name)))
   (it "ignores case"
     (expect-match nil

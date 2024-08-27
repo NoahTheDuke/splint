@@ -33,11 +33,14 @@
   {:patterns ['((? fn str??) (? literal string?))
               '((? fn str??) ((? nested nested??) ?*args))]
    :on-match (fn [ctx rule form {:syms [?fn ?literal ?nested ?args]}]
-               (let [new-form (if ?nested
-                                (list* ?nested ?args)
-                                ?literal)
-                     msg (if ?nested
-                           (format "`%s` unconditionally returns a string." ?nested)
-                           "Use the literal directly.")]
-                 (->diagnostic ctx rule form {:replace-form new-form
-                                              :message msg})))})
+               (let [parent-form (:parent-form ctx)]
+                 (when-not (and (seq? parent-form)
+                                (#{'-> '->> 'cond-> 'cond->> 'some-> 'some->>} (first parent-form)))
+                   (let [new-form (if ?nested
+                                    (list* ?nested ?args)
+                                    ?literal)
+                         msg (if ?nested
+                               (format "`%s` unconditionally returns a string." ?nested)
+                               "Use the literal directly.")]
+                     (->diagnostic ctx rule form {:replace-form new-form
+                                                  :message msg})))))})

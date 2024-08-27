@@ -4,6 +4,11 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Fixed
+
+- `lint/redundant-str-call` ignores when used in threading macros. (See [#20](https://github.com/NoahTheDuke/splint/issues/20).)
+- `lint/redundant-call` ignores when used in threading macros. (See [#21](https://github.com/NoahTheDuke/splint/issues/21).)
+
 ## 1.16.0 - 2024-08-08
 
 ### New rules

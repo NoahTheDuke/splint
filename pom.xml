@@ -37,7 +37,7 @@
     <dependency>
       <groupId>borkdude</groupId>
       <artifactId>edamame</artifactId>
-      <version>1.4.26</version>
+      <version>1.4.27</version>
     </dependency>
   </dependencies>
   <build>

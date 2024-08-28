@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Changed
+
+- Update dependencies. `edamame` 1.4.27 supports the Clojure 1.12 array syntax: `Integer/1`.
+
 ### Fixed
 
 - `lint/redundant-str-call` ignores when used in threading macros. (See [#20](https://github.com/NoahTheDuke/splint/issues/20).)
@@ -30,6 +34,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Switch all tests to Lazytest to do some dogfooding.
 - Enforce that `??` only 1 or 2 arguments, and if provided, that the predicate is a symbol.
 - Updated all dependencies.
+- Switch tests to use [Lazytest](https://github.com/NoahTheDuke/lazytest).
 
 ### Fixed
 

@@ -29,7 +29,7 @@ clj-kondo:
 
 [no-exit-message]
 test *args:
-    clojure -M:dev:test:runner {{args}}
+    clojure -M:dev:test:runner -e :integration {{args}}
 
 [no-exit-message]
 test-all *args:

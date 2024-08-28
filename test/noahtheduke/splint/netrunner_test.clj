@@ -27,8 +27,8 @@
     lint/into-literal 40
     lint/let-if 3
     lint/let-when 1
-    lint/redundant-call 3
-    lint/redundant-str-call 58
+    lint/redundant-call 2
+    lint/redundant-str-call 46
     lint/thread-macro-one-arg 71
     lint/warn-on-reflection 169
     metrics/fn-length 485

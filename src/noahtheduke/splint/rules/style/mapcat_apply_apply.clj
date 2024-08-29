@@ -11,7 +11,7 @@
 (defrule style/mapcat-apply-apply
   "Check for `(apply concat (apply map x y))`.
 
-  Examples:
+  @examples
 
   ; avoid
   (apply concat (apply map x y))

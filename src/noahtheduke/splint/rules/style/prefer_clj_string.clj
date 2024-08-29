@@ -36,7 +36,7 @@
   | `.toUpperCase` | `clojure.string/upper-case` |
   | `.trim` | `clojure.string/trim` |
 
-  Examples:
+  @examples
 
   ; avoid
   (.toUpperCase \"hello world\")
@@ -50,6 +50,7 @@
               '((? _ to-str??) (.reverse (StringBuilder. ?rev)))
               '((? plain string-interop-method?) ?*args)]
    :message "Use the `clojure.string` function instead of interop."
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?cap ?rev ?plain ?args]}]
                (cond
                  ?cap

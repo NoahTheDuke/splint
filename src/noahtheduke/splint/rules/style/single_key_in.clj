@@ -18,7 +18,7 @@
   "`assoc-in` loops over the args, calling `assoc` for each key. If given a single key,
   just call `assoc` directly instead for performance and readability improvements.
 
-  Examples:
+  @examples
 
   ; avoid
   (assoc-in coll [:k] 10)
@@ -27,6 +27,7 @@
   (assoc coll :k 10)
   "
   {:pattern '((? f multi->single) ?coll [?key] ?*vals)
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?f ?coll ?key ?vals]}]
                (let [f (multi->single ?f)
                      new-form (list* f ?coll ?key ?vals)

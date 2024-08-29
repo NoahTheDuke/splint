@@ -19,7 +19,7 @@
 (defrule style/cond-else
   "It's nice when the default branch is consistent.
 
-  Examples:
+  @examples
 
   ; avoid
   (cond

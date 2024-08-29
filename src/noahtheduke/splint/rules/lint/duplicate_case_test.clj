@@ -39,11 +39,12 @@
 (defrule lint/duplicate-case-test
   "It's an error to have duplicate `case` test constants.
 
-  Examples:
+  @examples
 
   ; avoid
   (case x :foo :bar :foo :baz)
   "
   {:pattern '(case _ ?*clauses)
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?clauses]}]
                (build-diagnostics ctx rule form ?clauses))})

@@ -11,7 +11,7 @@
 (defrule style/when-do
   "`when` already defines an implicit `do`. Rely on it.
 
-  Examples:
+  @examples
 
   ; avoid
   (when x (do (println :a) (println :b) :c))

@@ -4,14 +4,27 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+**Big feature:** Mark each rule with safety information.
+
+Every rule has been marked as safe or unsafe. Safe rules don't generate false positives and any suggested alternatives can be used directly. Unsafe rules may generate false positives or their suggested alternatives may contain errors. This doesn't mean much at the moment except for a note in the documentation, but I hope it will make it easier to add autocorrection in the future.
+
+Alongside that, rules now track if they "autocorrect", which at the moment only means that they return a alternative form. This was included merely because I was already touching all of the rules.
+
+The [Rules Overview](docs/rules-overview.md) has been expanded as well.
+
 ### Changed
 
 - Update dependencies. `edamame` 1.4.27 supports the Clojure 1.12 array syntax: `Integer/1`.
+- Rules documentation can now handle 3 different directives: `@note`, `@safety`, and `@examples`. All existing `# Examples` have been converted to `@examples`, and the relevant rule docstrings have been updated.
+- Rules documentation generation has been changed to handle the above.
+- Added `:autocorrect` to `defrule`, `:safe` to config schema.
 
 ### Fixed
 
 - `lint/redundant-str-call` ignores when used in threading macros. (See [#20](https://github.com/NoahTheDuke/splint/issues/20).)
 - `lint/redundant-call` ignores when used in threading macros. (See [#21](https://github.com/NoahTheDuke/splint/issues/21).)
+- Fix matching `nil` when input is too short in patterns, which fixes subtle issues with `lint/cond-else`.
+- Make `support-clojure-version?` only compare minor versions if major version numbers match, and likewise with incremental/minor version numbers.
 
 ## 1.16.0 - 2024-08-08
 

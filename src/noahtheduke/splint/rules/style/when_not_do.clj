@@ -11,7 +11,7 @@
 (defrule style/when-not-do
   "`when-not` already defines an implicit `do`. Rely on it.
 
-  Examples:
+  @examples
 
   ; avoid
   (when-not x (do (println :a) (println :b) :c))

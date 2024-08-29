@@ -11,7 +11,7 @@
 (defrule style/neg-checks
   "`neg?` exists so use it.
 
-  Examples:
+  @examples
 
   ; avoid
   (< num 0)

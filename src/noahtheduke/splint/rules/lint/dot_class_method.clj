@@ -18,9 +18,13 @@
 (defrule lint/dot-class-method
   "Using the `Obj/staticMethod` form maps the method call to Clojure's natural function position.
 
-  NOTE: This rule is disabled if `lint/prefer-method-values` is enabled to prevent conflicting disagnostics.
+  @note
+  This rule is disabled if `lint/prefer-method-values` is enabled to prevent conflicting disagnostics.
 
-  Examples:
+  @safety
+  This rule is unsafe, as it can misunderstand when a symbol is or is not a class.
+
+  @examples
 
   ; avoid
   (. Obj staticMethod args)
@@ -31,6 +35,7 @@
   "
   {:pattern '(. (? class symbol-class?) (? method method??) ?*args)
    :message "Intention is clearer with `Obj/staticMethod` form."
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?class ?method ?args] :as binds}]
                (when-not (:enabled (get-config ctx 'lint/prefer-method-values))
                  (let [?method (if (list? ?method) (first ?method) ?method)

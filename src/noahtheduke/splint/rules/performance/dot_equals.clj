@@ -17,7 +17,7 @@
 
   If `lint/prefer-method-values` is enabled, then the suggestion will use that syntax.
 
-  Examples:
+  @examples
 
   ; avoid
   (= \"foo\" s)
@@ -29,6 +29,7 @@
   {:patterns ['(= (? string string?) ?any)
               '(= ?any (? string string?))]
    :ext :clj
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?string ?any]}]
                (let [method-values (:enabled (get-config ctx 'lint/prefer-method-values))
                      replace-form (if method-values

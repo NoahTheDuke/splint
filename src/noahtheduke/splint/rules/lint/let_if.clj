@@ -9,10 +9,12 @@
 (set! *warn-on-reflection* true)
 
 (defrule lint/let-if
-  "`if-let` exists so use it. Suggestions can be wrong as there's no code-walking to
-  determine if `result` binding is used in falsy branch.
+  "`if-let` exists so use it.
+  
+  @safety
+  Suggestions can be wrong as there's no code-walking to determine if `result` binding is used in falsy branch.
 
-  Examples:
+  @examples
 
   ; avoid
   (let [result (some-func)] (if result (do-stuff result) (other-stuff)))

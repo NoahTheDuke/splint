@@ -27,27 +27,40 @@
           :form '(map (fn [x] (hash-map :a 1 :b x)) (range 10))
           :alt '(for [item (range 10)] {:a 1 :b item})}]
         "(map (fn [x] (hash-map :a 1 :b x)) (range 10))"
+        (single-rule-config rule-name)))
+    (it array-map
+      (expect-match
+        [{:rule-name rule-name
+          :form '(map (fn [x] (array-map :a 1 :b x)) (range 10))
+          :alt '(for [item (range 10)] {:a 1 :b item})}]
+        "(map (fn [x] (array-map :a 1 :b x)) (range 10))"
+        (single-rule-config rule-name)))
+    (it hash-set
+      (expect-match
+        [{:rule-name rule-name
+          :form '(map (fn [x] (hash-set :a 1 :b x)) (range 10))
+          :alt '(for [item (range 10)] #{item :b :a 1})}]
+        "(map (fn [x] (hash-set :a 1 :b x)) (range 10))"
+        (single-rule-config rule-name)))
+    (it vector
+      (expect-match
+        [{:rule-name rule-name
+          :form '(map (fn [x] (vector :a 1 :b x)) (range 10))
+          :alt '(for [item (range 10)] [:a 1 :b item])}]
+        "(map (fn [x] (vector :a 1 :b x)) (range 10))"
         (single-rule-config rule-name))))
-  (it array-map
+  (it "keeps inputs ordered in clj"
     (expect-match
       [{:rule-name rule-name
-        :form '(map (fn [x] (array-map :a 1 :b x)) (range 10))
-        :alt '(for [item (range 10)] {:a 1 :b item})}]
-      "(map (fn [x] (array-map :a 1 :b x)) (range 10))"
-      (single-rule-config rule-name)))
-  (it hash-set
+        :form '(map (fn [x] (hash-map :a 1 :b 2 :c 3 :d 4 :e 5 :f 6 :g 7 :h 8 :i 9 :j 10)) (range 10))
+        :alt '(for [item (range 10)] {:a 1 :b 2 :c 3 :d 4 :e 5 :f 6 :g 7 :h 8 :i 9 :j 10})}]
+      "(map (fn [x] (hash-map :a 1 :b 2 :c 3 :d 4 :e 5 :f 6 :g 7 :h 8 :i 9 :j 10)) (range 10))"
+      (single-rule-config rule-name))
     (expect-match
       [{:rule-name rule-name
-        :form '(map (fn [x] (hash-set :a 1 :b x)) (range 10))
-        :alt '(for [item (range 10)] #{item :b :a 1})}]
-      "(map (fn [x] (hash-set :a 1 :b x)) (range 10))"
-      (single-rule-config rule-name)))
-  (it vector
-    (expect-match
-      [{:rule-name rule-name
-        :form '(map (fn [x] (vector :a 1 :b x)) (range 10))
-        :alt '(for [item (range 10)] [:a 1 :b item])}]
-      "(map (fn [x] (vector :a 1 :b x)) (range 10))"
+        :form '(map (fn [x] (hash-set :a 1 :b 2 :c 3 :d 4 :e 5 :f 6 :g 7 :h 8 :i 9 :j 10)) (range 10))
+        :alt '(for [item (range 10)] #{:a 1 :b 2 :c 3 :d 4 :e 5 :f 6 :g 7 :h 8 :i 9 :j 10})}]
+      "(map (fn [x] (hash-set :a 1 :b 2 :c 3 :d 4 :e 5 :f 6 :g 7 :h 8 :i 9 :j 10)) (range 10))"
       (single-rule-config rule-name)))
   (it "ignores threaded contexts"
     (expect-match

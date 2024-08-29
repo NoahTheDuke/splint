@@ -11,7 +11,7 @@
 (defrule style/when-not-call
   "`when-not` exists so use it lol.
 
-  Examples:
+  @examples
 
   ; avoid
   (when (not x) :a :b :c)

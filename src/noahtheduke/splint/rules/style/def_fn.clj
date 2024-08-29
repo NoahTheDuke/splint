@@ -10,9 +10,9 @@
 (set! *warn-on-reflection* true)
 
 (defrule style/def-fn
-  "`(defn [])` is preferable over `(def (fn []))`. Extrapolate to closures.
+  "`(defn [])` is preferable over `(def (fn []))`. Extrapolate to closures too.
 
-  Examples:
+  @examples
 
   ; avoid
   (def check-inclusion
@@ -34,6 +34,7 @@
   "
   {:patterns ['(def ?name ?*args ((? fn fn??) ?*fn-body))
               '(def ?name ?*args (let ?binds ((? fn fn??) ?*fn-body)))]
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?name ?args ?binds ?fn-body]}]
                (let [new-form (if ?binds
                                 (list 'let ?binds (list* 'defn ?name (concat ?args ?fn-body)))

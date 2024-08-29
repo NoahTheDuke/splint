@@ -11,7 +11,7 @@
 (defrule style/first-next
   "`fnext` is succinct and meaningful.
 
-  Examples:
+  @examples
 
   ; avoid
   (first (next coll))

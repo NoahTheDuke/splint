@@ -8,7 +8,7 @@
   ["Installation" {:file "docs/installation.md"}]
   ["Usage" {:file "docs/usage.md"}]
   ["Configuration" {:file "docs/configuration.md"}]
-  ["Rules Overview" {:file "docs/genre-overview.md"}
+  ["Rules Overview" {:file "docs/rules-overview.md"}
    ["Lint" {:file "docs/rules/lint.md"}]
    ["Metrics" {:file "docs/rules/metrics.md"}]
    ["Naming" {:file "docs/rules/naming.md"}]

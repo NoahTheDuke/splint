@@ -14,7 +14,7 @@
 (defrule style/eq-zero
   "`zero?` exists so use it.
 
-  Examples:
+  @examples
 
   ; avoid
   (= 0 num)

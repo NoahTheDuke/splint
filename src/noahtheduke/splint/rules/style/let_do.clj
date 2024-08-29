@@ -11,7 +11,7 @@
 (defrule style/let-do
   "`let` has an implicit `do`, so use it.
 
-  Examples:
+  @examples
 
   ; avoid
   (let [a 1 b 2] (do (println a) (println b)))

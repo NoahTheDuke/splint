@@ -19,7 +19,10 @@
 
   Will only warn when there is no `-` before the `-to-`.
 
-  Examples:
+  @safety
+  Uses simple string checking and can misunderstand English intention when `X-to-Y` isn't a conversion function.
+
+  @examples
 
   ; avoid
   (defn f-to-c ...)

@@ -11,7 +11,7 @@
 (defrule style/apply-str-reverse
   "Check for round-about `clojure.string/reverse`.
 
-  Examples:
+  @examples
 
   ; avoid
   (apply str (reverse x))

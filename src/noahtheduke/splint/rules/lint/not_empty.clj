@@ -20,10 +20,9 @@
      :replace-form (list 'not-empty ?x)}))
 
 (defrule lint/not-empty?
-  "`seq` returns `nil` when given an empty collection. `empty?` is implemented as
-  `(not (seq coll))` so it's best and fastest to use `seq` directly.
+  "`seq` returns `nil` when given an empty collection. `empty?` is implemented as `(not (seq coll))` so it's idiomatic to use `seq` directly.
 
-  Examples:
+  @examples
 
   ; avoid
   (not (empty? coll))
@@ -35,6 +34,7 @@
   (not-empty coll)
   "
   {:pattern '(not (empty? ?x))
+   :autocorrect true
    :on-match (fn [ctx rule form bindings]
                (condp = (:chosen-style (:config rule))
                  :seq (seq-diagnostic ctx rule form bindings)

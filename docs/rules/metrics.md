@@ -2,9 +2,9 @@
 
 ## metrics/fn-length
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| false              | 1.6.0         | 1.6.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| false              | true | 1.6.0         | 1.6.0           |
 
 Avoid `defn`-defined functions longer than some number (10) of lines of code. Longer functions are harder to read and should be split into smaller-purpose functions that are composed.
 
@@ -66,9 +66,9 @@ The total length is configurable, and the size can be configured (`:body` or `:d
 
 ## metrics/parameter-count
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| false              | 1.7.0         | 1.7.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| false              | true | 1.7.0         | 1.7.0           |
 
 Avoid parameter lists with more than 4 positional parameters.
 

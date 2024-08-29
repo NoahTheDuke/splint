@@ -11,7 +11,7 @@
 (defrule style/minus-one
   "Checks for simple -1 that should use `clojure.core/dec`.
 
-  Examples:
+  @examples
 
   ; avoid
   (- x 1)

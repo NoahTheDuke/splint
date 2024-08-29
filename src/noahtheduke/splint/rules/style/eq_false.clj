@@ -11,7 +11,7 @@
 (defrule style/eq-false
   "`false?` exists so use it.
 
-  Examples:
+  @examples
 
   ; avoid
   (= false x)

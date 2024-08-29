@@ -11,7 +11,10 @@
 (defrule lint/let-when
   "`when-let` exists so use it.
 
-  Examples:
+  @safety
+  Suggestions can be wrong as there's no code-walking to determine if `result` binding is used in falsy branch.
+
+  @examples
 
   ; avoid
   (let [result (some-func)] (when result (do-stuff result)))

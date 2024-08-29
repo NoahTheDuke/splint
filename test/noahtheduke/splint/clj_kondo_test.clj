@@ -52,7 +52,7 @@
     splint/parsing-error 4
     style/apply-str 14
     style/apply-str-interpose 3
-    style/cond-else 8
+    style/cond-else 5
     style/def-fn 3
     style/eq-false 2
     style/eq-true 5
@@ -94,4 +94,4 @@
         (match?
           (m/equals clj-kondo-diagnostics)
           (update-vals diagnostics count)))
-      (expect 1257 (count (:diagnostics results))))))
+      (expect (= 1256 (count (:diagnostics results)))))))

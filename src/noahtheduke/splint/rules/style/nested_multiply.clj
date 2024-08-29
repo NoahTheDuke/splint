@@ -16,7 +16,7 @@
 (defrule style/nested-multiply
   "Checks for simple nested multiply.
 
-  Examples:
+  @examples
 
   ; avoid
   (* x (* y z))

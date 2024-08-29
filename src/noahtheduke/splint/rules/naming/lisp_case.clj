@@ -22,7 +22,10 @@
 (defrule naming/lisp-case
   "Use lisp-case for function and variable names. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)
 
-  Examples:
+  @safety
+  Interop, json, and other styles can make it necessary to use such forms.
+
+  @examples
 
   ; avoid
   (def someVar ...)

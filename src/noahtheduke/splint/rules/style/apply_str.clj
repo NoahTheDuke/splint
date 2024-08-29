@@ -16,7 +16,7 @@
 (defrule style/apply-str
   "Check for round-about `clojure.string/join`.
 
-  Examples:
+  @examples
 
   ; avoid
   (apply str x)

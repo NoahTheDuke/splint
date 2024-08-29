@@ -6,7 +6,10 @@
   (:require
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]
-   [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]))
+   [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]
+   #?@(:bb []
+       :clj [[flatland.ordered.map :refer [ordered-map]]
+             [flatland.ordered.set :refer [ordered-set]]])))
 
 (set! *warn-on-reflection* true)
 
@@ -22,14 +25,14 @@
 
 (defn builder->literal [builder-fn args]
   (case (name builder-fn)
-    ("array-map" "hash-map") (apply sorted-map args)
-    "hash-set" (apply hash-set args)
+    ("array-map" "hash-map") (apply #?(:bb hash-map :clj ordered-map) args)
+    "hash-set" (apply #?(:bb hash-map :clj ordered-set) args)
     "vector" (apply vector args)))
 
 (defrule style/prefer-for-with-literals
   "The core builder functions are helpful when creating an object from an opaque sequence, but are much less readable when used in maps to get around issues with anonymous function syntax peculiarities.
 
-  Examples:
+  @examples
 
   ; avoid
   (map #(hash-map :a 1 :b %) (range 10))
@@ -41,7 +44,8 @@
                               ((? builder-fn builder) (?* builder-args)))
                (? coll))
    :message "Prefer `for` when creating a seq of data literals."
-   :on-match (fn [ctx rule form {:syms [?arg ?builder-fn ?builder-args ?coll] :as wtf}]
+   :autocorrect true
+   :on-match (fn [ctx rule form {:syms [?arg ?builder-fn ?builder-args ?coll]}]
                (let [builder-args (replace-fn-arg ?arg 'item ?builder-args)
                      new-form (list 'for ['item ?coll]
                                 (builder->literal ?builder-fn builder-args))]

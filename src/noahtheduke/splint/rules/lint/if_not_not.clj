@@ -11,7 +11,7 @@
 (defrule lint/if-not-not
   "Two `not`s cancel each other out.
 
-  Examples:
+  @examples
 
   ; avoid
   (if-not (not x) y z)

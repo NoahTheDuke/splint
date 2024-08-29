@@ -13,7 +13,7 @@
 (defrule style/multiple-arity-order
   "Sort the arities of a function from fewest to most arguments.
 
-  Examples:
+  @examples
 
   ; avoid
   (defn foo
@@ -29,6 +29,7 @@
   "
   {:pattern '((? defn defn??) ?name ?*args)
    :message "defn arities should be sorted fewest to most arguments."
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?defn ?name]}]
                (when-let [defn-form (:splint/defn-form (meta form))]
                  (when-let [arglists (drop-quote (:arglists defn-form))]

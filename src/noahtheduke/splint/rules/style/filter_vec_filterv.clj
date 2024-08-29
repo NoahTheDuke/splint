@@ -11,7 +11,7 @@
 (defrule style/filter-vec-filterv
   "filterv is preferable for using transients.
 
-  Examples:
+  @examples
 
   ; avoid
   (vec (filter pred coll))

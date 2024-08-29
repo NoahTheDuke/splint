@@ -40,7 +40,7 @@
   "Threading macros require more effort to understand so only use them with multiple
   args to help with readability.
 
-  Examples:
+  @examples
 
   ; avoid
   (-> x y)
@@ -62,6 +62,7 @@
   (y z x)
   "
   {:pattern '((? f thread-macro?) ?arg ?form)
+   :autocorrect true
    :on-match (fn [ctx rule form bindings]
                (when (symbol-or-keyword-or-list? ('?form bindings))
                  (condp = (:chosen-style (:config rule))

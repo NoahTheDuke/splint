@@ -11,7 +11,7 @@
 (defrule lint/if-let-else-nil
   "Idiomatic `if-let` defines both branches. `when-let` returns `nil` in the else branch.
 
-  Examples:
+  @examples
 
   ; avoid
   (if-let [a 1] a nil)

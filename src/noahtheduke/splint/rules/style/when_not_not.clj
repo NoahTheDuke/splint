@@ -11,7 +11,7 @@
 (defrule style/when-not-not
   "Two `not`s cancel each other out.
 
-  Examples:
+  @examples
 
   ; avoid
   (when-not (not x) y z)

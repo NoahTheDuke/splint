@@ -11,7 +11,7 @@
 (defrule lint/if-nil-else
   "Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy branch.
 
-  Examples:
+  @examples
 
   ; avoid
   (if (some-func) nil :a)

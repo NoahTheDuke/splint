@@ -42,7 +42,7 @@
   "Assoc takes multiple pairs but relies on `seq` stepping. This is slower than
   relying on multiple `assoc` invocations.
 
-  Examples:
+  @examples
 
   ; avoid
   (assoc m :k1 1 :k2 2 :k3 3)
@@ -55,6 +55,7 @@
   "
   {:pattern '(assoc ?*pairs)
    :message "Faster to call assoc multiple times."
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?pairs]}]
                (let [cnt (count ?pairs)]
                  (if (even? cnt)

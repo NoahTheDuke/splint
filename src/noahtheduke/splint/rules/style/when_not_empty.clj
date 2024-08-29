@@ -12,7 +12,7 @@
   "`seq` returns `nil` when given an empty collection. `empty?` is implemented as
   `(not (seq coll))` so it's best and fastest to use `seq` directly.
 
-  Examples:
+  @examples
 
   ; avoid
   (when-not (empty? ?x) &&. ?y)

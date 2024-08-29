@@ -11,7 +11,7 @@
 (defrule style/prefer-vary-meta
   "`vary-meta` works like `swap!`, so no need to access and overwrite in two steps.
 
-  Examples:
+  @examples
 
   ; avoid
   (with-meta x (assoc (meta x) :filename filename))

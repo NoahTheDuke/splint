@@ -257,7 +257,10 @@
                                                    (:clojure-version config))
                                                rule-config
                                                (assoc rule-config :enabled false))
-                                 rule-config (conj rule-config only-config)]
+                                 safety-config (:safe rule-config true)
+                                 rule-config (-> rule-config
+                                                 (conj only-config)
+                                                 (assoc :safe safety-config))]
                              (assoc rule :config rule-config))
                            rule)]
                 (-> acc

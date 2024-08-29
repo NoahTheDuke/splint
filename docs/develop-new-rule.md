@@ -26,7 +26,7 @@ To load them, use the `-r`/`--require` command line arg with `-r path/to/file.cl
 
 Rule names should be short descriptions of the problem domain or the preferred solution. Genres are meant to loosely group rules according to their focus.
 
-The genres are described in [Genre Overview](genre-overview.md).
+The genres are described in [Rules Overview](rules-overview.md).
 
 ### Docstrings
 

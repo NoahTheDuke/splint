@@ -30,7 +30,7 @@
   they contain constants, making them fairly fast. However, they're not as fast
   as [[case]] and their meaning is less clear at first glance.
 
-  Examples:
+  @examples
 
   ; avoid
   (#{'a 'b 'c} elem)
@@ -40,6 +40,7 @@
   "
   {:pattern '((? sfn set?) ?elem)
    :message "Prefer `case` to set literal with constant members."
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?sfn ?elem]}]
                (when (and (not (list? ?elem))
                        (every? literal-or-quote? ?sfn))

@@ -134,7 +134,7 @@
   | clojure.walk | walk |
   | clojure.zip | zip |
 
-  Examples:
+  @examples
 
   ; avoid
   (:require [clojure.string :as string])

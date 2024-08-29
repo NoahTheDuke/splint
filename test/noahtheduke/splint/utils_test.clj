@@ -24,3 +24,25 @@
          [{1 2} :map]
          [#{1 2 3} :set]
          [#"asdf" java.util.regex.Pattern]]))
+
+(defdescribe support-clojure-version?-test
+  (it "checks major, minor, and incremental"
+    (expect
+      (sut/support-clojure-version?
+       {:major 1 :minor 12 :incremental 2}
+       {:major 1 :minor 12 :incremental 2}))
+    (expect
+      (not
+       (sut/support-clojure-version?
+        {:major 1 :minor 12 :incremental 2}
+        {:major 1 :minor 12 :incremental 1}))))
+  (it "doesn't check minor if major is greater"
+    (expect
+      (sut/support-clojure-version?
+       {:major 1 :minor 12}
+       {:major 3 :minor 0})))
+  (it "doesn't check incremental if minor is greater"
+    (expect
+      (sut/support-clojure-version?
+       {:major 1 :minor 9 :incremental 100}
+       {:major 1 :minor 12 :incremental 0}))))

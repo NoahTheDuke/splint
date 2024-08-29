@@ -21,7 +21,7 @@
   "`assoc`-ing an update with the same key is hard to read. `update` is known and
   idiomatic.
 
-  Examples:
+  @examples
 
   ; avoid
   (assoc coll :a (+ (:a coll) 5))

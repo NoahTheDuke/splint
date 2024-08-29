@@ -24,24 +24,28 @@
     (mapv (fn [[k v]] (list 'assoc k v)) ?literal)))
 
 (defrule performance/single-literal-merge
-  "`clojure.core/merge` is inherently slow. Its major benefit is handling nil
-  values. If there is only a single object to merge in and it's a map literal,
-  that benefit is doubly unused. Better to directly assoc the values in.
+  "`clojure.core/merge` is inherently slow. Its major benefit is handling nil values. If there is only a single object to merge in and it's a map literal, that benefit is doubly unused. Better to directly assoc the values in.
 
-  NOTE: If the chosen style is `:single` and `performance/assoc-many` is
-  enabled, the style will be treated as `:multiple` to make the warnings
-  consistent.
+  @note
+  If the chosen style is `:single` and `performance/assoc-many` is enabled, the style will be treated as `:multiple` to make the warnings consistent.
 
-  Examples:
+  @examples
 
   ; avoid
   (merge m {:a 1 :b 2 :c 3})
 
-  ; prefer
+  ; prefer (chosen style :single (default))
   (assoc m :a 1 :b 2 :c 3)
+
+  ; prefer (chosen style :multiple)
+  (-> m
+      (assoc :a 1)
+      (assoc :b 2)
+      (assoc :c 3))
   "
   {:pattern '(merge ?given (? literal map?))
    :message "Prefer assoc for merging literal maps"
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?given ?literal]}]
                (when-let [?literal (not-empty ?literal)]
                  (let [new-form (condp = (select-style ctx rule)

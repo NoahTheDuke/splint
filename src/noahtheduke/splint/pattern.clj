@@ -258,7 +258,8 @@
   (mapcat
     (fn [item]
       [ctx `(when ~ctx
-              ~(read-form ctx item `(first ~children-form)))
+              (when (seq ~children-form)
+                ~(read-form ctx item `(first ~children-form))))
        children-form `(when ~ctx
                         (next ~children-form))])
     items))

@@ -11,7 +11,7 @@
 (defrule style/not-eq
   "`not=` exists, so use it.
 
-  Examples:
+  @examples
 
   ; avoid
   (not (= num1 num2))

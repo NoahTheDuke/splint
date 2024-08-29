@@ -11,7 +11,7 @@
 (defrule style/first-first
   "ffirst is succinct and meaningful.
 
-  Examples:
+  @examples
 
   ; avoid
   (first (first coll))

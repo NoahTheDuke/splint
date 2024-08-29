@@ -11,7 +11,7 @@
 (defrule style/minus-zero
   "Checks for x - 0.
 
-  Examples:
+  @examples
 
   ; avoid
   (- x 0)

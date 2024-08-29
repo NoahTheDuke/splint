@@ -11,7 +11,7 @@
 (defrule style/tostring
   "Convert `(.toString)` to `(str)`.
 
-  Examples:
+  @examples
 
   ; avoid
   (.toString x)

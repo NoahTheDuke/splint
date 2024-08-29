@@ -19,7 +19,7 @@
   new coll but when given a transducer in the 4-arity form, the transducer is
   efficiently applied in between.
 
-  Examples:
+  @examples
 
   ; avoid
   (into [] (map inc (range 100)))

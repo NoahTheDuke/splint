@@ -35,7 +35,7 @@
 
   The total length is configurable, and the size can be configured (`:body` or `:defn` styles) to be measured from the entire `defn` form or the vector+body.
 
-  Examples:
+  @examples
 
   ;; :body style (default)
   (defn foo

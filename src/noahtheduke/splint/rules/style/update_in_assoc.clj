@@ -12,7 +12,7 @@
   "`update-in`-ing an `assoc` with the same key are hard to read. `assoc-in` is known
   and idiomatic.
 
-  Examples:
+  @examples
 
   ; avoid
   (update-in coll [:a :b] assoc 5)

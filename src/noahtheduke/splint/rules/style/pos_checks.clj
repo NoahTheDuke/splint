@@ -11,7 +11,7 @@
 (defrule style/pos-checks
   "`pos?` exists so use it.
 
-  Examples:
+  @examples
 
   ; avoid
   (< 0 num)

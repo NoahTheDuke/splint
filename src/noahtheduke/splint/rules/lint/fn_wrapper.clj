@@ -20,7 +20,10 @@
 (defrule lint/fn-wrapper
   "Avoid wrapping functions in pass-through anonymous function defitions.
 
-  Examples:
+  @safety
+  This rule is unsafe, as it can misunderstand when a function is or is not a method.
+
+  @examples
 
   ; avoid
   (fn [num] (even? num))
@@ -36,6 +39,7 @@
   "
   {:patterns ['((? _ fn??) [?arg] (?fun ?arg))
               '((? _ fn??) ([?arg] (?fun ?arg)))]
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?fun ?args]}]
                (when-not (interop? ?fun)
                  (->diagnostic ctx rule form {:replace-form ?fun

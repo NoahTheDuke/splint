@@ -11,7 +11,7 @@
 (defrule style/prefer-boolean
   "Use `boolean` if you must return `true` or `false` from an expression.
 
-  Examples:
+  @examples
 
   ; avoid
   (if some-val true false)

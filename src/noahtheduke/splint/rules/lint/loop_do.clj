@@ -11,7 +11,7 @@
 (defrule lint/loop-do
   "`loop` has an implicit `do`. Use it.
 
-  Examples:
+  @examples
 
   ; avoid
   (loop [] (do (println 1) (println 2)))

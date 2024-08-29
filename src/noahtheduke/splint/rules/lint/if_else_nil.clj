@@ -17,7 +17,7 @@
 (defrule lint/if-else-nil
   "Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
 
-  Examples:
+  @examples
 
   ; avoid
   (if (some-func) :a nil)
@@ -28,6 +28,7 @@
   {:patterns ['(if ?x (? y not-do) (?? _ nil?))
               '(if ?x (do ?*y) (?? _ nil?))]
    :message "Use `when` which doesn't require specifying the else branch."
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?x ?y]}]
                (let [new-form (if (rest-arg? ?y)
                                 (list* 'when ?x ?y)

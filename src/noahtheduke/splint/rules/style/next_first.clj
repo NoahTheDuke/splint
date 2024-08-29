@@ -9,9 +9,9 @@
 (set! *warn-on-reflection* true)
 
 (defrule style/next-first
-  "nfirst is succinct and meaningful.
+  "`nfirst` is succinct and meaningful.
 
-  Examples:
+  @examples
 
   ; avoid
   (next (first coll))

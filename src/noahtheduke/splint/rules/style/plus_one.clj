@@ -11,7 +11,7 @@
 (defrule style/plus-one
   "Checks for simple +1 that should use `clojure.core/inc`.
 
-  Examples:
+  @examples
 
   ; avoid
   (+ x 1)

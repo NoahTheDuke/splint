@@ -60,14 +60,21 @@
 (defn support-clojure-version?
   [{:keys [major minor incremental] :as min-clojure-version} current-version]
   (if min-clojure-version
-    (and
-      (if major
-        (<= major (:major current-version))
-        true)
-      (if minor
-        (<= minor (:minor current-version))
-        true)
-      (if incremental
-        (<= incremental (:incremental current-version))
-        true))
+    (if major
+      (cond
+        (< major (:major current-version))
+        true
+        (= major (:major current-version))
+        (if minor
+          (cond
+            (< minor (:minor current-version))
+            true
+            (= minor (:minor current-version))
+            (if incremental
+              (<= incremental (:incremental current-version))
+              true)
+            :else false)
+          true)
+        :else false)
+      true)
     true))

@@ -11,7 +11,7 @@
 (defrule style/not-nil?
   "`some?` exists so use it.
 
-  Examples:
+  @examples
 
   ; avoid
   (not (nil? x))

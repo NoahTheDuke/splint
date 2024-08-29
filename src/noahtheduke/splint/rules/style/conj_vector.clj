@@ -11,7 +11,7 @@
 (defrule style/conj-vector
   "`vector` is succinct and meaningful.
 
-  Examples:
+  @examples
 
   ; avoid
   (conj [] :a b {:c 1})

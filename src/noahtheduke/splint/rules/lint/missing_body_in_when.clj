@@ -12,7 +12,7 @@
 (defrule lint/missing-body-in-when
   "`when` calls should have at least 1 expression after the condition.
 
-  Examples:
+  @examples
 
   ; avoid
   (when true)

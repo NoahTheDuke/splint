@@ -11,7 +11,7 @@
 (defrule lint/if-not-do
   "`when-not` already defines an implicit `do`. Rely on it.
 
-  Examples:
+  @examples
 
   ; avoid
   (if-not x (do (println :a) (println :b) :c))

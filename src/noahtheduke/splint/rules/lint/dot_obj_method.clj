@@ -21,9 +21,13 @@
 (defrule lint/dot-obj-method
   "Using the `.method` form maps the method symbol to Clojure's natural function position.
 
-  NOTE: This rule is disabled if `lint/prefer-method-values` is enabled to prevent conflicting disagnostics.
+  @note
+  This rule is disabled if `lint/prefer-method-values` is enabled to prevent conflicting disagnostics.
 
-  Examples:
+  @safety
+  This rule is unsafe, as it can misunderstand when a symbol is or is not a class.
+
+  @examples
 
   ; avoid
   (. obj method args)
@@ -33,6 +37,7 @@
   "
   {:pattern '(. ?obj (? method symbol-not-class?) ?*args)
    :message "Intention is clearer with `.method` form."
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?obj ?method ?args]}]
                (when-not (:enabled (get-config ctx 'lint/prefer-method-values))
                  (let [replace-form `(~(symbol (str "." ?method)) ~?obj ~@?args)]

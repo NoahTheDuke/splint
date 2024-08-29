@@ -11,7 +11,7 @@
 (defrule style/eq-true
   "`true?` exists so use it.
 
-  Examples:
+  @examples
 
   ; avoid
   (= true x)

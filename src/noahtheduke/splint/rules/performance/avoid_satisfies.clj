@@ -12,7 +12,7 @@
 (defrule performance/avoid-satisfies
   "Avoid use of `satisfies?` as it is extremely slow. Restructure your code to rely on protocols or other polymorphic forms.
 
-  Examples:
+  @examples
 
   ; avoid
   (satisfies? Foo :bar)

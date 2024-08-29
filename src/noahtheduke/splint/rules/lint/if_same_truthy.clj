@@ -11,7 +11,7 @@
 (defrule lint/if-same-truthy
   "`or` exists so use it lol.
 
-  Examples:
+  @examples
 
   ; avoid
   (if x x y)

@@ -15,7 +15,7 @@
 (defrule style/redundant-regex-constructor
   "Clojure regex literals (#\"\") are passed to `java.util.regex.Pattern/compile` at read time. `re-pattern` checks if the given arg is a Pattern, making it a no-op when given a regex literal.
 
-  Examples:
+  @examples
 
   ; avoid
   (re-pattern #\".*\")
@@ -25,6 +25,7 @@
   "
   {:pattern '(re-pattern ?pat)
    :message "Rely on regex literal directly."
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?pat]}]
                (if (string? ?pat)
                  (let [new-form (list 'splint/re-pattern (str (re-pattern ?pat)))]

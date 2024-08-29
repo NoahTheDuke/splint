@@ -24,7 +24,7 @@
   * Is the first argument a symbol or a list with a symbol at the head? (A variable/local or a call.)
   * Is the second argument a nil, boolean, char, number, keyword, or string?
 
-  Examples:
+  @examples
 
   ; avoid
   (is (= status 200))

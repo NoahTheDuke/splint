@@ -2,9 +2,9 @@
 
 ## style/apply-str
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Check for round-about `clojure.string/join`.
 
@@ -22,9 +22,9 @@ Check for round-about `clojure.string/join`.
 
 ## style/apply-str-interpose
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Check for round-about `clojure.string/join`.
 
@@ -42,9 +42,9 @@ Check for round-about `clojure.string/join`.
 
 ## style/apply-str-reverse
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Check for round-about `clojure.string/reverse`.
 
@@ -62,9 +62,9 @@ Check for round-about `clojure.string/reverse`.
 
 ## style/assoc-assoc
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Layering `assoc` calls are hard to read. `assoc-in` is known and idiomatic.
 
@@ -84,9 +84,9 @@ Layering `assoc` calls are hard to read. `assoc-in` is known and idiomatic.
 
 ## style/cond-else
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 0.1.85          |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 0.1.85          |
 
 It's nice when the default branch is consistent.
 
@@ -114,9 +114,9 @@ It's nice when the default branch is consistent.
 
 ## style/conj-vector
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 `vector` is succinct and meaningful.
 
@@ -134,11 +134,11 @@ It's nice when the default branch is consistent.
 
 ## style/def-fn
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 1.0           | 1.0             |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 1.0           | 1.0             |
 
-`(defn [])` is preferable over `(def (fn []))`. Extrapolate to closures.
+`(defn [])` is preferable over `(def (fn []))`. Extrapolate to closures too.
 
 ### Examples
 
@@ -166,9 +166,9 @@ It's nice when the default branch is consistent.
 
 ## style/eq-false
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 `false?` exists so use it.
 
@@ -187,9 +187,9 @@ It's nice when the default branch is consistent.
 
 ## style/eq-nil
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 `nil?` exists so use it.
 
@@ -208,9 +208,9 @@ It's nice when the default branch is consistent.
 
 ## style/eq-true
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 `true?` exists so use it.
 
@@ -229,9 +229,9 @@ It's nice when the default branch is consistent.
 
 ## style/eq-zero
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 `zero?` exists so use it.
 
@@ -252,9 +252,9 @@ It's nice when the default branch is consistent.
 
 ## style/filter-complement
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Check for `(filter (complement pred) coll)`.
 
@@ -272,9 +272,9 @@ Check for `(filter (complement pred) coll)`.
 
 ## style/filter-vec-filterv
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 filterv is preferable for using transients.
 
@@ -292,9 +292,9 @@ filterv is preferable for using transients.
 
 ## style/first-first
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 ffirst is succinct and meaningful.
 
@@ -312,9 +312,9 @@ ffirst is succinct and meaningful.
 
 ## style/first-next
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 `fnext` is succinct and meaningful.
 
@@ -332,9 +332,9 @@ ffirst is succinct and meaningful.
 
 ## style/is-eq-order
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 1.15.0        | 1.15.0          |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 1.15.0        | 1.15.0          |
 
 `clojure.test/is` expects `=`-based assertions to put the expected value first.
 
@@ -362,9 +362,9 @@ This rule uses two checks on the `=` call to determine if it should issue a diag
 
 ## style/let-do
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 `let` has an implicit `do`, so use it.
 
@@ -382,9 +382,9 @@ This rule uses two checks on the `=` call to determine if it should issue a diag
 
 ## style/mapcat-apply-apply
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Check for `(apply concat (apply map x y))`.
 
@@ -402,9 +402,9 @@ Check for `(apply concat (apply map x y))`.
 
 ## style/mapcat-concat-map
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Check for `(apply concat (map x y z))`.
 
@@ -424,9 +424,9 @@ Check for `(apply concat (map x y z))`.
 
 ## style/minus-one
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Checks for simple -1 that should use `clojure.core/dec`.
 
@@ -444,9 +444,9 @@ Checks for simple -1 that should use `clojure.core/dec`.
 
 ## style/minus-zero
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Checks for x - 0.
 
@@ -464,9 +464,9 @@ x
 
 ## style/multiple-arity-order
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 1.3.0         | 1.3.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 1.3.0         | 1.3.0           |
 
 Sort the arities of a function from fewest to most arguments.
 
@@ -494,9 +494,9 @@ Sort the arities of a function from fewest to most arguments.
 
 ## style/multiply-by-one
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Checks for (* x 1).
 
@@ -515,9 +515,9 @@ x
 
 ## style/multiply-by-zero
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Checks for (* x 0).
 
@@ -536,9 +536,9 @@ Checks for (* x 0).
 
 ## style/neg-checks
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 `neg?` exists so use it.
 
@@ -557,9 +557,9 @@ Checks for (* x 0).
 
 ## style/nested-addition
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Checks for simple nested additions.
 
@@ -579,9 +579,9 @@ Checks for simple nested additions.
 
 ## style/nested-multiply
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Checks for simple nested multiply.
 
@@ -601,11 +601,13 @@ Checks for simple nested multiply.
 
 ## style/new-object
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1.69        | 1.15.2          |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1.69        | 1.15.2          |
 
 `new` special form is discouraged for dot usage.
+
+**NOTE:** The style `:method-value` requires Clojure version 1.12+.
 
 ### Examples
 
@@ -616,7 +618,10 @@ Checks for simple nested multiply.
 ; prefer (chosen style :dot (default))
 (java.util.ArrayList. 100)
 
-; prefer (chosen style :method-value, requires clojure version 1.12+)
+; avoid (chosen style :method-value)
+(java.util.ArrayList. 100)
+
+; prefer (chosen style :method-value)
 (java.util.ArrayList/new 100)
 ```
 
@@ -630,11 +635,11 @@ Checks for simple nested multiply.
 
 ## style/next-first
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
-nfirst is succinct and meaningful.
+`nfirst` is succinct and meaningful.
 
 ### Examples
 
@@ -650,11 +655,11 @@ nfirst is succinct and meaningful.
 
 ## style/next-next
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
-nnext is succinct and meaningful.
+`nnext` is succinct and meaningful.
 
 ### Examples
 
@@ -670,9 +675,9 @@ nnext is succinct and meaningful.
 
 ## style/not-eq
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 `not=` exists, so use it.
 
@@ -694,9 +699,9 @@ nnext is succinct and meaningful.
 
 ## style/not-nil?
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 `some?` exists so use it.
 
@@ -714,9 +719,9 @@ nnext is succinct and meaningful.
 
 ## style/not-some-pred
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 not-any? is succinct and meaningful.
 
@@ -734,9 +739,9 @@ not-any? is succinct and meaningful.
 
 ## style/plus-one
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Checks for simple +1 that should use `clojure.core/inc`.
 
@@ -755,9 +760,9 @@ Checks for simple +1 that should use `clojure.core/inc`.
 
 ## style/plus-zero
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Checks for x + 0.
 
@@ -776,9 +781,9 @@ x
 
 ## style/pos-checks
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 `pos?` exists so use it.
 
@@ -797,9 +802,9 @@ x
 
 ## style/prefer-boolean
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1.69        | 0.1.69          |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1.69        | 0.1.69          |
 
 Use `boolean` if you must return `true` or `false` from an expression.
 
@@ -823,11 +828,11 @@ Use `boolean` if you must return `true` or `false` from an expression.
 
 ## style/prefer-clj-math
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1.69        | 0.1.69          |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1.69        | 0.1.69          |
 
-**NOTE**: Requires Clojure version 1.11.0.
+**NOTE:** Requires Clojure version 1.11.0.
 
 Prefer clojure.math to interop.
 
@@ -851,9 +856,9 @@ clojure.math/PI
 
 ## style/prefer-clj-string
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 1.9.0         | 1.9.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 1.9.0         | 1.9.0           |
 
 Prefer clojure.string to interop.
 
@@ -886,26 +891,25 @@ Prefer clojure.string to interop.
 
 ## style/prefer-condp
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1.69        | 1.0             |
+| Enabled by default | Safe  | Version Added | Version Updated |
+| ------------------ | ----- | ------------- | --------------- |
+| true               | false | 0.1.69        | 1.0             |
 
 `cond` checking against the same value in every branch is a code smell.
 
-This rule uses the first test-expr as the template to compare against each
-other test-expr. It has a number of conditions it checks as it runs:
+This rule uses the first test-expr as the template to compare against each other test-expr. It has a number of conditions it checks as it runs:
 
 * The `cond` is well-formed (aka even number of args).
 * The `cond` has more than 1 pair.
 * The first test-expr is a list with 3 forms.
-* The function of every test-expr must match the test-expr of the first
-  test-expr.
+* The function of every test-expr must match the test-expr of the first test-expr.
 * The last test-expr isn't checked if it is `true` or a keyword.
-* The last argument of every test-expr must match the last argument of the
-  first test-expr.
+* The last argument of every test-expr must match the last argument of the first test-expr.
 
-Provided all of that is true, then the middle arguments of the test-exprs are
-gathered and rendered into a `condp`.
+Provided all of that is true, then the middle arguments of the test-exprs are gathered and rendered into a `condp`.
+
+### Safety
+It's possible that the check isn't written correctly, so be wary of the suggested output.
 
 ### Examples
 
@@ -947,9 +951,9 @@ gathered and rendered into a `condp`.
 
 ## style/prefer-for-with-literals
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 1.15.0        | 1.15.0          |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 1.15.0        | 1.15.0          |
 
 The core builder functions are helpful when creating an object from an opaque sequence, but are much less readable when used in maps to get around issues with anonymous function syntax peculiarities.
 
@@ -967,9 +971,9 @@ The core builder functions are helpful when creating an object from an opaque se
 
 ## style/prefer-vary-meta
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 0.1.69          |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 0.1.69          |
 
 `vary-meta` works like `swap!`, so no need to access and overwrite in two steps.
 
@@ -987,9 +991,9 @@ The core builder functions are helpful when creating an object from an opaque se
 
 ## style/reduce-str
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 1.11          | 1.11            |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 1.11          | 1.11            |
 
 `reduce` calls the provided function on every element in the provided
 collection. Because of how `str` is implemented, a new string is created
@@ -1015,9 +1019,9 @@ generally not what is expected when calling `str` on something.
 
 ## style/redundant-let
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1.69        | 0.1.69          |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1.69        | 0.1.69          |
 
 Directly nested lets can be merged into a single let block.
 
@@ -1038,9 +1042,9 @@ Directly nested lets can be merged into a single let block.
 
 ## style/redundant-regex-constructor
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 1.10.0        | 1.10.0          |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 1.10.0        | 1.10.0          |
 
 Clojure regex literals (#"") are passed to `java.util.regex.Pattern/compile` at read time. `re-pattern` checks if the given arg is a Pattern, making it a no-op when given a regex literal.
 
@@ -1058,9 +1062,9 @@ Clojure regex literals (#"") are passed to `java.util.regex.Pattern/compile` at 
 
 ## style/set-literal-as-fn
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| false              | 0.1.119       | 1.11            |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| false              | true | 0.1.119       | 1.11            |
 
 Sets can be used as functions and they're converted to static items when
 they contain constants, making them fairly fast. However, they're not as fast
@@ -1080,9 +1084,9 @@ as [[case]] and their meaning is less clear at first glance.
 
 ## style/single-key-in
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1.69        | 0.1.69          |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1.69        | 0.1.69          |
 
 `assoc-in` loops over the args, calling `assoc` for each key. If given a single key,
 just call `assoc` directly instead for performance and readability improvements.
@@ -1101,9 +1105,9 @@ just call `assoc` directly instead for performance and readability improvements.
 
 ## style/tostring
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Convert `(.toString)` to `(str)`.
 
@@ -1121,9 +1125,9 @@ Convert `(.toString)` to `(str)`.
 
 ## style/trivial-for
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 1.11          | 1.11            |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 1.11          | 1.11            |
 
 `for` is a complex and weighty macro. When simply applying a function to each element, better to rely on other built-ins.
 
@@ -1146,9 +1150,9 @@ Convert `(.toString)` to `(str)`.
 
 ## style/update-in-assoc
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 `update-in`-ing an `assoc` with the same key are hard to read. `assoc-in` is known
 and idiomatic.
@@ -1167,9 +1171,9 @@ and idiomatic.
 
 ## style/useless-do
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1.69        | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1.69        | 1.2.0           |
 
 A single item in a `do` is a no-op. However, it is sometimes necessary to wrap expressions in `do`s to avoid issues, so `do` surrounding `~@something` will be skipped as well as `#(do something)`.
 
@@ -1191,9 +1195,9 @@ coll
 
 ## style/when-do
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1.69        | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1.69        | 1.2.0           |
 
 `when` already defines an implicit `do`. Rely on it.
 
@@ -1211,9 +1215,9 @@ coll
 
 ## style/when-not-call
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 `when-not` exists so use it lol.
 
@@ -1231,9 +1235,9 @@ coll
 
 ## style/when-not-do
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 `when-not` already defines an implicit `do`. Rely on it.
 
@@ -1251,9 +1255,9 @@ coll
 
 ## style/when-not-empty?
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 0.1.69          |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 0.1.69          |
 
 `seq` returns `nil` when given an empty collection. `empty?` is implemented as
 `(not (seq coll))` so it's best and fastest to use `seq` directly.
@@ -1272,9 +1276,9 @@ coll
 
 ## style/when-not-not
 
-| Enabled by default | Version Added | Version Updated |
-| ------------------ | ------------- | --------------- |
-| true               | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Version Added | Version Updated |
+| ------------------ | ---- | ------------- | --------------- |
+| true               | true | 0.1           | 1.2.0           |
 
 Two `not`s cancel each other out.
 

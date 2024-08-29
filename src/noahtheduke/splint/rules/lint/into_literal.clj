@@ -17,7 +17,7 @@
 (defrule lint/into-literal
   "`vec` and `set` are succinct and meaningful.
 
-  Examples:
+  @examples
 
   ; avoid
   (into [] coll)
@@ -32,6 +32,7 @@
   (set coll)
   "
   {:pattern '(into (? literal set-or-vec?) ?coll)
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?literal ?coll]}]
                (let [replace-form (list (if (set? ?literal) 'set 'vec) ?coll)
                      message (format "Use `%s` instead of recreating it."

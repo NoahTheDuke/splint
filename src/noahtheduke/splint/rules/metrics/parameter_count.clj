@@ -36,7 +36,7 @@
 
   Functions with multiple arities will have each arity checked.
 
-  Examples:
+  @examples
 
   ;; :positional style (default)
   ; avoid

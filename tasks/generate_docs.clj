@@ -10,10 +10,19 @@
    [noahtheduke.splint]
    [noahtheduke.splint.config :refer [default-config]]
    [noahtheduke.splint.rules :refer [global-rules]]
-   [noahtheduke.splint.utils :refer [simple-type]]))
+   [noahtheduke.splint.runner :refer [prepare-rules]]
+   [noahtheduke.splint.utils :refer [simple-type]])
+  (:import
+   (java.util.regex Pattern)))
+
+(def rules
+  (-> @default-config
+      (assoc :clojure-version {:major 99})
+      (prepare-rules (:rules @global-rules))
+      :rules))
 
 (defn rule-config [rule]
-  (@default-config (:full-name rule)))
+  (:config (rules (:full-name rule))))
 
 (defn print-table
   [headers maps]
@@ -30,6 +39,7 @@
 (defn render-details
   [rule]
   (let [headers [{:name :enabled :title "Enabled by default" :align :left}
+                 {:name :safe :title "Safe" :align :left}
                  {:name :added :title "Version Added" :align :left}
                  {:name :updated :title "Version Updated" :align :left}]]
     (print-table headers [(rule-config rule)])))
@@ -39,8 +49,13 @@
     (let [min-clojure-version (conj {:major 1 :minor 9 :incremental 0}
                                 min-clojure-version)]
       (binding [*clojure-version* min-clojure-version]
-        (format "**NOTE**: Requires Clojure version %s."
+        (format "**NOTE:** Requires Clojure version %s."
           (clojure-version))))))
+
+(def docs-re
+  (Pattern/compile
+   "^(?<docs>.*?)(?<note>@note.*?)?(?<safety>@safety.*?)?(?<examples>@examples.*?)?$"
+   Pattern/DOTALL))
 
 (defn render-docstring [rule]
   (when-let [docstring (:docstring rule)]
@@ -52,15 +67,35 @@
                        (apply min))
           dedented-lines (map #(if (str/blank? %) % (subs % min-indent)) (next lines))
           lines (str/join \newline (cons (first lines) dedented-lines))
-          [docs examples] (str/split lines #"Examples:")]
+          matcher (re-matcher docs-re lines)
+          _ (.matches matcher)
+          docs (.group matcher "docs")
+          note (.group matcher "note")
+          safety (.group matcher "safety")
+          examples (.group matcher "examples")]
       (str (str/trim docs)
+        (when note
+          (str \newline \newline
+            "**NOTE:** "
+            (-> note
+                (subs 5)
+                (str/trim))))
+        (when safety
+          (str \newline \newline
+            "### Safety"
+            \newline
+            (-> safety
+                (subs 7)
+                (str/trim))))
         (when examples
           (str \newline \newline
             "### Examples"
             \newline \newline
             "```clojure"
             \newline
-            (str/trim examples)
+            (-> examples
+                (subs 9)
+                (str/trim))
             \newline
             "```"))))))
 
@@ -81,10 +116,12 @@
 (defn build-other-configs [rule]
   (let [config (rule-config rule)
         opts (-> config
-               (dissoc :description :enabled
+               (dissoc :rule-name
+                 :description :enabled
                  :added :updated
                  :guide-ref :links
-                 :chosen-style :supported-styles)
+                 :chosen-style :supported-styles
+                 :safe :safe-autocorrect)
                (not-empty))]
     (when opts
       (mapv (fn [[k v]]
@@ -132,7 +169,7 @@
     (str/join (str \newline \newline))))
 
 (def grouped-genres
-  (group-by :genre (vals (:rules @global-rules))))
+  (dissoc (group-by :genre (vals rules)) "dev"))
 
 (defn build-rules [genre]
   (->> (grouped-genres genre)
@@ -156,6 +193,9 @@
     (spit filename (str page \newline))))
 
 (defn -main [& genres]
-  (when-let [genres (seq (or genres (map name (:genres @global-rules))))]
+  (when-let [genres (seq (or genres (keys grouped-genres)))]
     (println "Saving genres to file")
     (run! print-genre-to-file genres)))
+
+(comment
+  (-main))

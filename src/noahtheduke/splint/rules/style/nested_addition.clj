@@ -16,7 +16,7 @@
 (defrule style/nested-addition
   "Checks for simple nested additions.
 
-  Examples:
+  @examples
 
   ; avoid
   (+ x (+ y z))

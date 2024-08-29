@@ -13,7 +13,7 @@
 
   `run!` uses `reduce` which non-lazy and has no `seq` overhead.
 
-  Examples:
+  @examples
 
   ; avoid
   (dorun (map println (range 10)))

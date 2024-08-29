@@ -5,19 +5,24 @@
 (ns user
   (:require
    [clj-java-decompiler.core :as decompiler]
-   [clojure.main :as main]
+   [clojure.java.javadoc]
+   [clojure.pprint]
+   [clojure.repl]
    [clojure.tools.namespace.repl :as tns]
    [criterium.core :as criterium]
    [noahtheduke.splint.dev]
    [potemkin :refer [import-vars]]
-   clojure.repl
    [taoensso.tufte :as tufte]))
 
 (set! *warn-on-reflection* true)
 
-(apply require main/repl-requires)
-
 (import-vars
+  [clojure.repl
+   source apropos dir pst doc find-doc]
+  [clojure.java.javadoc
+   javadoc]
+  [clojure.pprint
+   pp pprint]
   [clojure.tools.namespace.repl
    refresh-all]
   [clj-java-decompiler.core

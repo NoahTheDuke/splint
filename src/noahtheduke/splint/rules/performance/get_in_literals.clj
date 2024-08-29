@@ -11,7 +11,7 @@
 (defrule performance/get-in-literals
   "`clojure.core/get-in` is both polymorphic and relies on seq stepping, which has heavy overhead when the listed slots are keyword literals. Faster to call them as functions.
 
-  Examples:
+  @examples
 
   ; avoid
   (get-in m [:some-key1 :some-key2 :some-key3])

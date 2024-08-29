@@ -11,7 +11,7 @@
 (defrule style/eq-nil
   "`nil?` exists so use it.
 
-  Examples:
+  @examples
 
   ; avoid
   (= nil x)

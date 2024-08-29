@@ -11,7 +11,7 @@
 (defrule style/apply-str-interpose
   "Check for round-about `clojure.string/join`.
 
-  Examples:
+  @examples
 
   ; avoid
   (apply str (interpose \",\" x))

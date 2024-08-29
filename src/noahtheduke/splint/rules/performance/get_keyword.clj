@@ -11,7 +11,7 @@
 (defrule performance/get-keyword
   "`clojure.core/get` is polymorphic and overkill if accessing a map with a keyword literal. The fastest is to fall the map itself as a function but that requires a `nil` check, so the safest fast method is to use the keyword as function.
 
-  Examples:
+  @examples
 
   ; avoid
   (get m :some-key)

@@ -78,7 +78,7 @@
 (defrule style/prefer-clj-math
   "Prefer clojure.math to interop.
 
-  Examples:
+  @examples
 
   ; avoid
   Math/PI
@@ -92,6 +92,7 @@
    :init-type :symbol
    :message "Use the `clojure.math` function instead of interop."
    :min-clojure-version {:major 1 :minor 11}
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?sym]}]
                (let [new-form (Math->clj-math ?sym)]
                  (->diagnostic ctx rule form {:replace-form new-form})))})

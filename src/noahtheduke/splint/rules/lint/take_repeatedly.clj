@@ -11,7 +11,7 @@
 (defrule lint/take-repeatedly
   "`repeatedly` has an arity for limiting the number of repeats with `take`.
 
-  Examples:
+  @examples
 
   ; avoid
   (take 5 (repeatedly (range 10))

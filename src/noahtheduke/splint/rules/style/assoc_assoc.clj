@@ -11,7 +11,7 @@
 (defrule style/assoc-assoc
   "Layering `assoc` calls are hard to read. `assoc-in` is known and idiomatic.
 
-  Examples:
+  @examples
 
   ; avoid
   (assoc coll :key1 (assoc (:key2 coll) :key2 new-val))

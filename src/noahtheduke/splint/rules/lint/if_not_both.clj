@@ -11,7 +11,7 @@
 (defrule lint/if-not-both
   "`if-not` exists, so use it.
 
-  Examples:
+  @examples
 
   ; avoid
   (if (not x) y z)

@@ -18,7 +18,7 @@
 (defrule naming/single-segment-namespace
   "Namespaces exist to disambiguate names. Using a single segment namespace puts you in direct conflict with everyone else using single segment namespaces, thus making it more likely you will conflict with another code base.
 
-  Examples:
+  @examples
 
   ; avoid
   (ns simple)

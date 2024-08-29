@@ -18,7 +18,7 @@
   libraries which expect that underscores in class names should be dashes in
   Clojure.
 
-  Examples:
+  @examples
 
   ; avoid
   (ns foo_bar.baz_qux)
@@ -27,6 +27,7 @@
   (ns foo-bar.baz-qux)"
   {:pattern '(ns (? ns-sym includes-underscore?) ?*_)
    :message "Avoid underscores in namespaces."
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?ns-sym]}]
                (let [new-namespace (symbol (str/replace (str ?ns-sym) "_" "-"))]
                  (->diagnostic ctx rule form {:replace-form new-namespace

@@ -11,7 +11,7 @@
 (defrule style/filter-complement
   "Check for `(filter (complement pred) coll)`.
 
-  Examples:
+  @examples
 
   ; avoid
   (filter (complement even?) coll)

@@ -30,6 +30,16 @@
     (expect-match nil
       "(cond (pos? x) (inc x) (neg? x) (dec x))"
       (single-rule-config rule-name)))
-
+  (it "ignores no default branch"
+    (expect-match nil
+      "(cond
+         (pos-int? v) :pos-int
+         (nat-int? v) :nat-int
+         (neg-int? v) :neg-int)"
+      (single-rule-config rule-name)))
+  (it "ignores uneven branches"
+    (expect-match nil
+      "(cond (pos? x) (inc x) (dec x))"
+      (single-rule-config rule-name)))
   (it "ignores existing :else"
     (expect-match nil "(cond :else true)" (single-rule-config rule-name))))

@@ -13,7 +13,7 @@
   "`deftype` and `defrecord` will throw errors if you define multiple fields
   with the same name, but it's good to catch these things early too.
 
-  Examples:
+  @examples
 
   ; avoid
   (defrecord Foo [a b a])
@@ -22,6 +22,7 @@
   (defrecord Foo [a b c])
   "
   {:pattern '(defrecord ?name (? fields vector?) ?*body)
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?fields]}]
                (when (not= (count ?fields) (count (set ?fields)))
                  (->diagnostic ctx rule form {:message "Duplicate field has been found"})))})

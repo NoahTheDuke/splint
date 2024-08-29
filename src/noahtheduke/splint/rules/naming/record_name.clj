@@ -17,7 +17,7 @@
 (defrule naming/record-name
   "Records should use PascalCase. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)
 
-  Examples:
+  @examples
 
   ; avoid
   (defrecord foo [a b c])

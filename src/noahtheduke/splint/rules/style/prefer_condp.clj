@@ -46,22 +46,21 @@
 (defrule style/prefer-condp
   "`cond` checking against the same value in every branch is a code smell.
 
-  This rule uses the first test-expr as the template to compare against each
-  other test-expr. It has a number of conditions it checks as it runs:
+  This rule uses the first test-expr as the template to compare against each other test-expr. It has a number of conditions it checks as it runs:
 
   * The `cond` is well-formed (aka even number of args).
   * The `cond` has more than 1 pair.
   * The first test-expr is a list with 3 forms.
-  * The function of every test-expr must match the test-expr of the first
-    test-expr.
+  * The function of every test-expr must match the test-expr of the first test-expr.
   * The last test-expr isn't checked if it is `true` or a keyword.
-  * The last argument of every test-expr must match the last argument of the
-    first test-expr.
+  * The last argument of every test-expr must match the last argument of the first test-expr.
 
-  Provided all of that is true, then the middle arguments of the test-exprs are
-  gathered and rendered into a `condp`.
+  Provided all of that is true, then the middle arguments of the test-exprs are gathered and rendered into a `condp`.
 
-  Examples:
+  @safety
+  It's possible that the check isn't written correctly, so be wary of the suggested output.
+
+  @examples
 
   ; avoid
   (cond
@@ -92,6 +91,7 @@
     :big)
   "
   {:pattern '(cond ?*pairs)
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?pairs]}]
                (when-let [new-form (find-issue ?pairs)]
                  (let [message "Prefer condp when predicate and arguments are the same"]

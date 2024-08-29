@@ -18,7 +18,10 @@
 (defrule style/new-object
   "`new` special form is discouraged for dot usage.
 
-  Examples:
+  @note
+  The style `:method-value` requires Clojure version 1.12+.
+
+  @examples
 
   ; avoid
   (new java.util.ArrayList 100)
@@ -26,11 +29,15 @@
   ; prefer (chosen style :dot (default))
   (java.util.ArrayList. 100)
 
-  ; prefer (chosen style :method-value, requires clojure version 1.12+)
+  ; avoid (chosen style :method-value)
+  (java.util.ArrayList. 100)
+
+  ; prefer (chosen style :method-value)
   (java.util.ArrayList/new 100)
   "
   {:patterns ['(new ?class ?*args)
               '((? class end-with-period?) ?*args)]
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?class ?args]}]
                (let [chosen-style (:chosen-style (:config rule))
                      dot-call? (str/ends-with? (str ?class) ".")]

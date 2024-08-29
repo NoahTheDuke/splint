@@ -9,9 +9,9 @@
 (set! *warn-on-reflection* true)
 
 (defrule style/next-next
-  "nnext is succinct and meaningful.
+  "`nnext` is succinct and meaningful.
 
-  Examples:
+  @examples
 
   ; avoid
   (next (next coll))

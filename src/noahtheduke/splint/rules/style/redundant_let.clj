@@ -12,7 +12,7 @@
 (defrule style/redundant-let
   "Directly nested lets can be merged into a single let block.
 
-  Examples:
+  @examples
 
   ; avoid
   (let [a 1]
@@ -26,6 +26,7 @@
   {:pattern '(let (? outer-bindings vector?)
                (let (? inner-bindings vector?) ?*body))
    :message "Redundant let expressions can be merged."
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?outer-bindings ?inner-bindings ?body]}]
                (let [new-form (list* 'let
                                 (vec (concat ?outer-bindings ?inner-bindings))

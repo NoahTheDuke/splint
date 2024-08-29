@@ -32,10 +32,12 @@
   "Define a new rule. Must include:
 
   * EITHER `:pattern` or `:patterns`,
-  * EITHER `:replace` or `:on-match`"
+  * EITHER `:replace` or `:on-match`
+
+  If `:autocorrect` isn't provided and `:replace` is, `:autocorrect` is set to true."
   [rule-name docs opts]
   (let [{:keys [pattern patterns replace on-match message init-type
-                min-clojure-version ext]} opts]
+                min-clojure-version ext autocorrect]} opts]
     (assert (not (and pattern patterns))
       "defrule cannot define both :pattern and :patterns")
     (when patterns
@@ -54,7 +56,10 @@
           init-type (or init-type
                       (if pattern
                         (simple-type pattern)
-                        (simple-type (first patterns))))]
+                        (simple-type (first patterns))))
+          autocorrect (when (or (some? autocorrect)
+                              (some? replace))
+                        true)]
       `(let [rule# {:name ~rule-name
                     :genre ~genre
                     :full-name '~full-name
@@ -70,7 +75,8 @@
                     :pattern (when ~(some? pattern) (p/pattern ~pattern))
                     :patterns (when ~(some? patterns)
                                 ~(mapv #(list `p/pattern %) patterns))
-                    :on-match (or ~on-match (replace->diagnostic ~replace))}]
+                    :on-match (or ~on-match (replace->diagnostic ~replace))
+                    :autocorrect ~autocorrect}]
          (swap! global-rules #(-> %
                                 (assoc-in [:rules '~full-name] rule#)
                                 (update :genres conj '~(symbol genre))))
@@ -88,9 +94,10 @@
 (s/def ::minor int?)
 (s/def ::incremental int?)
 (s/def ::min-clojure-version (s/keys :opt-un [::major ::minor ::incremental]))
+(s/def ::autocorrect boolean?)
 (s/def ::opts (s/keys :req-un [(or ::pattern ::patterns)
                                (or ::replace ::on-match)]
-                :opt-un [::message ::init-type ::min-clojure-version]))
+                :opt-un [::message ::init-type ::min-clojure-version ::autocorrect]))
 
 (s/fdef defrule
   :args (s/cat :rule-name ::rule-name

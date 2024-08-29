@@ -13,7 +13,7 @@
   "Because we can't (or won't) check for interop, `*warn-on-reflection*` should
   be at the top of every file out of caution.
 
-  Examples:
+  @examples
 
   ; avoid
   (ns foo.bar)
@@ -26,8 +26,8 @@
   "
   {:pattern '[(ns (?+ _)) ?warn (?* _)]
    :init-type :file
-   :message "*warn-on-reflection* should be immediately after ns declaration."
    :ext :clj
+   :message "*warn-on-reflection* should be immediately after ns declaration."
    :on-match (fn [ctx rule form {:syms [?warn]}]
                (when-not (= '(set! *warn-on-reflection* true) ?warn)
                  (->diagnostic ctx rule

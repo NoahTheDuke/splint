@@ -13,7 +13,7 @@
   to subtle hard to debug errors. Better to wrap the splicing unquote in a `do`
   to force it into 'expression position'.
 
-  Examples:
+  @examples
 
   ; avoid
   `(try ~@body (finally :true))

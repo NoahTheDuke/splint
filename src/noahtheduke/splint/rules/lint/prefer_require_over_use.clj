@@ -24,7 +24,7 @@
 (defrule lint/prefer-require-over-use
   "In the `ns` form prefer `:require :as` over `:require :refer` over `:require :refer :all`. Prefer `:require` over `:use`; the latter form should be considered deprecated for new code.
 
-  Examples:
+  @examples
 
   ; avoid
   (ns examples.ns

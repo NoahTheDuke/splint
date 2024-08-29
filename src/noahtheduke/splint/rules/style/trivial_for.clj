@@ -11,7 +11,7 @@
 (defrule style/trivial-for
   "`for` is a complex and weighty macro. When simply applying a function to each element, better to rely on other built-ins.
 
-  Examples:
+  @examples
 
   ; avoid
   (for [item items]

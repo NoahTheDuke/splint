@@ -20,7 +20,7 @@
 (defrule lint/redundant-str-call
   "`clojure.core/str` calls `.toString()` on non-nil input. However, `.toString()` on a string literal returns itself, making it a no-op. Likewise, `clojure.core/format` unconditionally returns a string, making any calls to `str` on the results a no-op.
 
-  Examples:
+  @examples
 
   ; avoid
   (str \"foo\")
@@ -32,6 +32,7 @@
   "
   {:patterns ['((? fn str??) (? literal string?))
               '((? fn str??) ((? nested nested??) ?*args))]
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?fn ?literal ?nested ?args]}]
                (let [parent-form (:parent-form ctx)]
                  (when-not (and (seq? parent-form)

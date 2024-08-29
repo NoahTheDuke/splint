@@ -11,7 +11,7 @@
 (defrule style/not-some-pred
   "not-any? is succinct and meaningful.
 
-  Examples:
+  @examples
 
   ; avoid
   (not (some even? coll))

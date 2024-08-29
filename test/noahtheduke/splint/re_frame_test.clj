@@ -55,4 +55,4 @@
                :diagnostics
                (group-by :rule-name)
                (#(update-vals % count)))))
-      (expect 71 (count (:diagnostics results))))))
+      (expect (= 73 (count (:diagnostics results)))))))

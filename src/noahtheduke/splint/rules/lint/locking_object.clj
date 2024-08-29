@@ -16,7 +16,7 @@
 (defrule lint/locking-object
   "Synchronizing on interned objects is really bad. If multiple places lock on the same type of interned objects, those places are competing for locks.
 
-  Examples:
+  @examples
 
   ; avoid
   (locking :hello (+ 1 1))

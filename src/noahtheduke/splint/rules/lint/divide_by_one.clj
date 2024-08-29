@@ -11,7 +11,7 @@
 (defrule lint/divide-by-one
   "Checks for `(/ x 1)`.
 
-  Examples:
+  @examples
 
   ; avoid
   (/ x 1)

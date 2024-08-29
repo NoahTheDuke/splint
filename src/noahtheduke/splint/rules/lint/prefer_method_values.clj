@@ -20,9 +20,9 @@
 (defrule lint/prefer-method-values
   "Uniform qualified method values are a new syntax for calling into java code. They must resolve to a single static or instance method and to help with that, a new metadata syntax can be used: `^[]` aka `^{:param-tags []}`. Types are specified with classes, each corrosponding to an argument in the target method: `(^[long String] SomeClass/.someMethod 1 \"Hello world!\")`. It compiles to a direct call without any reflection, guaranteeing optimal performance.
 
-  If it doesn't resolve to a single method, then the Clojure compiler throws a syntax error (IllegalArgumentException). Such ahead-of-time compilation checking is a powerful and helpful tool in writing correct and performant code. Given that, it is preferable to exclusively use method values.
+  Given that, it is preferable to exclusively use method values.
 
-  Examples:
+  @examples
 
   ; avoid
   (.toUpperCase \"noah\")
@@ -35,6 +35,7 @@
    :ext :clj
    :min-clojure-version {:major 1 :minor 12}
    :message "Prefer uniform Class/member syntax instead of traditional interop."
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?fn ?obj ?args]}]
                (let [[?method ?args]
                      (if (= '. ?fn)

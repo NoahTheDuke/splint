@@ -37,7 +37,7 @@
   * `comp`, `partial`, `merge`
   * `min`, `max`, `distinct?`
 
-  Examples:
+  @examples
 
   ; avoid
   (-> x)
@@ -57,6 +57,7 @@
   x
   "
   {:pattern '((? the-fn right-fn?) ?x)
+   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?the-fn ?x]}]
                (when-not (check-parent ctx)
                  (let [message (format "Single-arg `%s` always returns the arg." ?the-fn)]

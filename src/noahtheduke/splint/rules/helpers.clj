@@ -19,31 +19,31 @@
 
 (defn deref?? [sexp]
   (and (symbol? sexp)
-    (#{"deref" "splint/deref"} (name sexp))))
+    (.equals "deref" (name sexp))))
 
 (defn syntax-quote?? [sexp]
   (and (symbol? sexp)
-    (.equals "splint/syntax-quote" (name sexp))))
+    (.equals "splint/syntax-quote" (str sexp))))
 
 (defn unquote?? [sexp]
   (and (symbol? sexp)
-    (#{"unquote" "splint/unquote"} (name sexp))))
+    (.equals "unquote" (name sexp))))
 
 (defn unquote-splicing?? [sexp]
   (and (symbol? sexp)
-    (#{"unquote-splicing" "splint/unquote-splicing"} (name sexp))))
+    (.equals "unquote-splicing" (name sexp))))
 
 (defn var?? [sexp]
   (and (symbol? sexp)
-    (#{"var" "splint/var"} (name sexp))))
+    (.equals "var" (name sexp))))
 
 (defn read-eval?? [sexp]
   (and (symbol? sexp)
-    (.equals "splint/read-eval" (name sexp))))
+    (.equals "splint/read-eval" (str sexp))))
 
 (defn fn?? [sexp]
   (and (symbol? sexp)
-    (#{"fn" "fn*" "splint/fn"} (name sexp))))
+    (#{"fn" "fn*"} (name sexp))))
 
 (defn defn?? [sexp]
   (and (symbol? sexp)
@@ -51,11 +51,11 @@
 
 (defn defn-fn?? [sexp]
   (and (symbol? sexp)
-    (#{"defn" "defn-" "fn" "fn*" "splint/fn"} (name sexp))))
+    (#{"defn" "defn-" "fn" "fn*"} (name sexp))))
 
 (defn re-pattern?? [sexp]
   (and (symbol? sexp)
-    (#{"re-pattern" "splint/re-pattern"} (name sexp))))
+    (.equals "re-pattern" (name sexp))))
 
 (def ^:private built-in-classes
   '#{;; bare

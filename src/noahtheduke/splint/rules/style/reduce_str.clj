@@ -21,7 +21,7 @@
   calling `str` on it if it only has one item total, which is
   generally not what is expected when calling `str` on something.
 
-  Examples:
+  @examples
 
   ; avoid
   (reduce str x)

@@ -28,4 +28,5 @@
   "
   {:pattern '((? p *?) ?x (?p ?*xs))
    :message "Use the variadic arity of `*`."
+   :autocorrect true
    :replace '(?p ?x ?xs)})

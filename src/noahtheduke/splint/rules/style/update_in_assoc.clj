@@ -22,4 +22,5 @@
   "
   {:pattern '(update-in ?coll ?keys assoc ?val)
    :message "Use `assoc-in` instead of recreating it."
+   :autocorrect true
    :replace '(assoc-in ?coll ?keys ?val)})

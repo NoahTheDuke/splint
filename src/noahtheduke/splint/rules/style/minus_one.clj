@@ -21,4 +21,5 @@
   "
   {:pattern '(- ?x 1)
    :message "Use `dec` instead of recreating it."
+   :autocorrect true
    :replace '(dec ?x)})

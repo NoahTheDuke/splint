@@ -23,4 +23,5 @@
               '(filter ((? _ fn??) [?arg] (not (?pred ?arg))) ?coll)
               '(filter (comp not ?pred) ?coll)]
    :message "Use `remove` instead of recreating it."
+   :autocorrect true
    :replace '(remove ?pred ?coll)})

@@ -22,4 +22,5 @@
   "
   {:pattern '(when-not (empty? ?x) ?*y)
    :message "`seq` is idiomatic, gotta learn to love it."
+   :autocorrect true
    :replace '(when (seq ?x) ?y)})

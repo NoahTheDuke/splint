@@ -21,4 +21,5 @@
   "
   {:pattern '(- ?x 0)
    :message "Subtracting 0 is a no-op."
+   :autocorrect true
    :replace '?x})

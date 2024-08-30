@@ -21,4 +21,5 @@
   "
   {:pattern '(if ?x ?x ?y)
    :message "Use `or` instead of recreating it."
+   :autocorrect true
    :replace '(or ?x ?y)})

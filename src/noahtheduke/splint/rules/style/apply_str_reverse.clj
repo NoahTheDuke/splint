@@ -21,4 +21,5 @@
   "
   {:pattern '(apply str (reverse ?x))
    :message "Use `clojure.string/reverse` instead of recreating it."
+   :autocorrect true
    :replace '(clojure.string/reverse ?x)})

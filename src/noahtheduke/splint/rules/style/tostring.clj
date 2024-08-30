@@ -21,4 +21,5 @@
   "
   {:pattern '((?| _ [.toString String/toString]) ?x)
    :message "Use `str` instead of interop."
+   :autocorrect true
    :replace '(str ?x)})

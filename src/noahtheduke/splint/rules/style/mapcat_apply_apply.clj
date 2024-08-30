@@ -21,4 +21,5 @@
   "
   {:pattern '(apply concat (apply map ?x ?y))
    :message "Use `mapcat` instead of recreating it."
+   :autocorrect true
    :replace '(mapcat ?x ?y)})

@@ -22,4 +22,5 @@
   "
   {:pattern '(for [?item ?items] (?f ?item))
    :message "Avoid trivial usage of `for`."
+   :autocorrect true
    :replace '(map ?f ?items)})

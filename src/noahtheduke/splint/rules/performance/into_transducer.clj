@@ -29,4 +29,5 @@
   "
   {:pattern '(into [] ((? trans transducers) ?f ?coll))
    :message "Rely on the transducer form."
+   :autocorrect true
    :replace '(into [] (?trans ?f) ?coll)})

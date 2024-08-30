@@ -21,4 +21,5 @@
   "
   {:pattern '(not (= ?+args))
    :message "Use `not=` instead of recreating it."
+   :autocorrect true
    :replace '(not= ?args)})

@@ -35,4 +35,5 @@
   "
   {:pattern '(cond (?+ pairs not-else) (? _ not-else-other) ?else)
    :message "Use `:else` as the catch-all branch."
+   :autocorrect true
    :replace '(cond ?pairs :else ?else)})

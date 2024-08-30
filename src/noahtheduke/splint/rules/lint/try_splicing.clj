@@ -23,4 +23,5 @@
   "
   {:pattern '(try (splint/unquote-splicing ?body) ?*args)
    :message "Wrap splicing unquotes in a `try` in a `do` to catch subtle bugs."
+   :autocorrect true
    :replace '(try (do (splint/unquote-splicing ?body)) ?args)})

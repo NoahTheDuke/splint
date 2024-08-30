@@ -21,4 +21,5 @@
   "
   {:pattern '(not (nil? ?x))
    :message "Use `some?` instead of recreating it."
+   :autocorrect true
    :replace '(some? ?x)})

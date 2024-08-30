@@ -23,4 +23,5 @@
   {:patterns ['(= true ?x)
               '(= ?x true)]
    :message "Use `true?` instead of recreating it."
+   :autocorrect true
    :replace '(true? ?x)})

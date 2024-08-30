@@ -21,4 +21,5 @@
   "
   {:pattern '(take ?n (repeatedly ?coll))
    :message "Rely on the `n` arity of `repeatedly`."
+   :autocorrect true
    :replace '(repeatedly ?n ?coll)})

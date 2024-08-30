@@ -23,4 +23,5 @@
   {:patterns ['(< 0 ?x)
               '(> ?x 0)]
    :message "Use `pos?` instead of recreating it."
+   :autocorrect true
    :replace '(pos? ?x)})

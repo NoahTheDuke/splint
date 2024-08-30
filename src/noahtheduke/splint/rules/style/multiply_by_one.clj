@@ -23,4 +23,5 @@
   {:patterns ['(* ?x 1)
               '(* 1 ?x)]
    :message "Multiplying by 1 is a no-op."
+   :autocorrect true
    :replace '?x})

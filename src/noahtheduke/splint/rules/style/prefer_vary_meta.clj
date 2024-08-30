@@ -21,4 +21,5 @@
   "
   {:pattern '(with-meta ?x (?f (meta ?x) ?*args))
    :message "Use `vary-meta` instead of recreating it."
+   :autocorrect true
    :replace '(vary-meta ?x ?f ?args)})

@@ -21,4 +21,5 @@
   "
   {:pattern '(get ?m (? k keyword?))
    :message "Use keywords as functions instead of the polymorphic function `get`."
+   :autocorrect true
    :replace '(?k ?m)})

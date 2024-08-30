@@ -32,4 +32,5 @@
   "
   {:pattern '(reduce str (?? _ str-empty?) ?coll)
    :message "Use `clojure.string/join` for efficient string concatenation."
+   :autocorrect true
    :replace '(clojure.string/join ?coll)})

@@ -21,4 +21,5 @@
   "
   {:pattern '(when-not (not ?x) ?*y)
    :message "Use `when` instead of double negation."
+   :autocorrect true
    :replace '(when ?x ?y)})

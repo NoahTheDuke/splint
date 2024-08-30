@@ -21,4 +21,5 @@
   "
   {:pattern '(/ ?x 1)
    :message "Dividing by 1 is a no-op."
+   :autocorrect true
    :replace '?x})

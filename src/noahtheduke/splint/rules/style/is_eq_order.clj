@@ -40,4 +40,5 @@
   "
   {:pattern '(is (= (? actual call-or-sym?) (? expected simple-literal?)) ??msg)
    :message "Expected value should go first"
+   :autocorrect true
    :replace '(is (= ?expected ?actual) ?msg)})

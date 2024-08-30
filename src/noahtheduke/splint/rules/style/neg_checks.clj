@@ -23,4 +23,5 @@
   {:patterns ['(< ?x 0)
               '(> 0 ?x)]
    :message "Use `neg?` instead of recreating it."
+   :autocorrect true
    :replace '(neg? ?x)})

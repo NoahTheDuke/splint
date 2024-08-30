@@ -21,4 +21,5 @@
   "
   {:pattern '(if (not ?x) ?y ?z)
    :message "Use `if-not` instead of recreating it."
+   :autocorrect true
    :replace '(if-not ?x ?y ?z)})

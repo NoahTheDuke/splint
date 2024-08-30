@@ -23,4 +23,5 @@
   {:patterns ['(+ ?x 1)
               '(+ 1 ?x)]
    :message "Use `inc` instead of recreating it."
+   :autocorrect true
    :replace '(inc ?x)})

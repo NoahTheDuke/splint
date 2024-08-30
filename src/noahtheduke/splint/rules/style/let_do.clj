@@ -21,4 +21,5 @@
   "
   {:pattern '(let ?binding (do ?*exprs))
    :message "Unnecessary `do` in `let` body."
+   :autocorrect true
    :replace '(let ?binding ?exprs)})

@@ -21,4 +21,5 @@
   "
   {:pattern '(when ?x (do ?*y))
    :message "Unnecessary `do` in `when` body."
+   :autocorrect true
    :replace '(when ?x ?y)})

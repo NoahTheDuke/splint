@@ -21,4 +21,5 @@
   "
   {:pattern '(if-not (not ?x) ?y ?z)
    :message "Use `if` instead of double negation."
+   :autocorrect true
    :replace '(if ?x ?y ?z)})

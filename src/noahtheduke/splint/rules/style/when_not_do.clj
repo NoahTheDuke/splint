@@ -21,4 +21,5 @@
   "
   {:pattern '(when-not ?x (do ?*y) (?? _ nil?))
    :message "Unnecessary `do` in `when-not` body."
+   :autocorrect true
    :replace '(when-not ?x ?y)})

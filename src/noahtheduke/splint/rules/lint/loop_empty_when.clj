@@ -21,4 +21,5 @@
   "
   {:pattern '(loop [] (when ?test ?*exprs (recur)))
    :message "Use `while` instead of recreating it."
+   :autocorrect true
    :replace '(while ?test ?exprs)})

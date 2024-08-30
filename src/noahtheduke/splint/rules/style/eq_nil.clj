@@ -23,4 +23,5 @@
   {:patterns ['(= nil ?x)
               '(= ?x nil)]
    :message "Use `nil?` instead of recreating it."
+   :autocorrect true
    :replace '(nil? ?x)})

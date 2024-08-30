@@ -21,4 +21,5 @@
   "
   {:pattern '(conj [] ?+x)
    :message "Use `vector` instead of recreating it."
+   :autocorrect true
    :replace '(vector ?x)})

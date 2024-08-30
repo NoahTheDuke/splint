@@ -21,4 +21,5 @@
   "
   {:pattern '(not (some ?pred ?coll))
    :message "Use `not-any?` instead of recreating it."
+   :autocorrect true
    :replace '(not-any? ?pred ?coll)})

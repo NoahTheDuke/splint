@@ -25,4 +25,5 @@
               '(assoc ?coll ?key1 (assoc (?key1 ?coll) ?key2 ?val))
               '(assoc ?coll ?key1 (assoc (get ?coll ?key1) ?key2 ?val))]
    :message "Use `assoc-in` instead of recreating it."
+   :autocorrect true
    :replace '(assoc-in ?coll [?key1 ?key2] ?val)})

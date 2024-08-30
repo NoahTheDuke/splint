@@ -21,4 +21,5 @@
   "
   {:pattern '(vec (filter ?pred ?coll))
    :message "Use `filterv` instead of recreating it."
+   :autocorrect true
    :replace '(filterv ?pred ?coll)})

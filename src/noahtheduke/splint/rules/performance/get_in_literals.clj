@@ -21,4 +21,5 @@
   "
   {:pattern '(get-in m [(?+ keys keyword?)])
    :message "Use keywords as functions instead of `get-in`."
+   :autocorrect true
    :replace '(-> m ?keys)})

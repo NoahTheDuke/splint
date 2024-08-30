@@ -21,4 +21,5 @@
   "
   {:pattern '(first (first ?coll))
    :message "Use `ffirst` instead of recreating it."
+   :autocorrect true
    :replace '(ffirst ?coll)})

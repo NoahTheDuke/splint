@@ -21,4 +21,5 @@
   "
   {:pattern '(if-let ?binding ?expr (?? _ nil?))
    :message "Use `when-let` instead of recreating it."
+   :autocorrect true
    :replace '(when-let ?binding ?expr)})

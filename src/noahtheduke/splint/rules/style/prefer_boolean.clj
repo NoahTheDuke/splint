@@ -22,4 +22,5 @@
   (boolean (some-func))"
   {:pattern '(if ?test-expr true false)
    :message "Use `boolean` if you must return `true` or `false`."
+   :autocorrect true
    :replace '(boolean ?test-expr)})

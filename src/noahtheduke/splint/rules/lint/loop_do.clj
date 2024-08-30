@@ -21,4 +21,5 @@
   "
   {:pattern '(loop ?binding (do ?*exprs))
    :message "Unnecessary `do` in `loop` body."
+   :autocorrect true
    :replace '(loop ?binding ?exprs)})

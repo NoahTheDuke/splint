@@ -23,4 +23,5 @@
   "
   {:pattern '(dorun (map ?fn ?coll))
    :message "Use `run!`, a non-lazy function."
+   :autocorrect true
    :replace '(run! ?fn ?coll)})

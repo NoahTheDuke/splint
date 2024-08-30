@@ -31,10 +31,11 @@
 (defmacro defrule
   "Define a new rule. Must include:
 
-  * EITHER `:pattern` or `:patterns`,
+  * EITHER `:pattern` or `:patterns`
   * EITHER `:replace` or `:on-match`
 
-  If `:autocorrect` isn't provided and `:replace` is, `:autocorrect` is set to true."
+
+  "
   [rule-name docs opts]
   (let [{:keys [pattern patterns replace on-match message init-type
                 min-clojure-version ext autocorrect]} opts]
@@ -56,10 +57,7 @@
           init-type (or init-type
                       (if pattern
                         (simple-type pattern)
-                        (simple-type (first patterns))))
-          autocorrect (when (or (some? autocorrect)
-                              (some? replace))
-                        true)]
+                        (simple-type (first patterns))))]
       `(let [rule# {:name ~rule-name
                     :genre ~genre
                     :full-name '~full-name

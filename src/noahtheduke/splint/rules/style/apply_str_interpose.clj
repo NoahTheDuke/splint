@@ -21,4 +21,5 @@
   "
   {:pattern '(apply str (interpose ?x ?y))
    :message "Use `clojure.string/join` instead of recreating it."
+   :autocorrect true
    :replace '(clojure.string/join ?x ?y)})

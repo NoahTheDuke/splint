@@ -21,4 +21,5 @@
   "
   {:pattern '(next (next ?coll))
    :message "Use `nnext` instead of recreating it."
+   :autocorrect true
    :replace '(nnext ?coll)})

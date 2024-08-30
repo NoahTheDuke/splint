@@ -21,4 +21,5 @@
   "
   {:pattern '(if-not ?x (do ?*y) (?? _ nil?))
    :message "Use `when-not` instead of recreating it."
+   :autocorrect true
    :replace '(when-not ?x ?y)})

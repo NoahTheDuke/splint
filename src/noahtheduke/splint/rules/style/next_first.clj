@@ -21,4 +21,5 @@
   "
   {:pattern '(next (first ?coll))
    :message "Use `nfirst` instead of recreating it."
+   :autocorrect true
    :replace '(nfirst ?coll)})

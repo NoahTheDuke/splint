@@ -35,4 +35,5 @@
               '((? _ assoc?) ?coll ?key ((? fn not-assoc?) (?coll ?key) ?*args))
               '((? _ assoc?) ?coll ?key ((? fn not-assoc?) (get ?coll ?key) ?*args))]
    :message "Use `update` instead of recreating it."
+   :autocorrect true
    :replace '(update ?coll ?key ?fn ?args)})

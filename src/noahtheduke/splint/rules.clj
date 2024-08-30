@@ -8,7 +8,7 @@
   Rules don't actually use defrecord, but act like they do with the following definition:
 
   (defrecord Rule
-    [name genre full-name docstring init-type pattern-raw replace-raw message min-clojure-version ext pattern patterns on-match])"
+    [name genre full-name docstring init-type pattern-raw replace-raw message min-clojure-version ext pattern patterns on-match autocorrect])"
   (:require
    [clojure.spec.alpha :as s]
    [noahtheduke.splint.pattern :as p]
@@ -19,7 +19,7 @@
 (set! *warn-on-reflection* true)
 
 (defonce
-  ^{:doc "All registered rules, grouped by :init-type and full-name"}
+  ^{:doc "All registered rules, indexed by their qualified name, and all registered genres."}
   global-rules
   (atom {:rules {} :genres #{}}))
 

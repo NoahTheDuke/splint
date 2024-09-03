@@ -11,10 +11,10 @@
     [name genre full-name docstring init-type pattern-raw replace-raw message min-clojure-version ext pattern patterns on-match autocorrect])"
   (:require
    [clojure.spec.alpha :as s]
-   [noahtheduke.splint.pattern :as p]
-   [noahtheduke.splint.utils :refer [simple-type]]
+   [noahtheduke.splint.clojure-ext.core :refer [->list postwalk*]]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-   [noahtheduke.splint.replace :refer [postwalk-splicing-replace]]))
+   [noahtheduke.splint.pattern :as p]
+   [noahtheduke.splint.utils :refer [simple-type]]))
 
 (set! *warn-on-reflection* true)
 
@@ -22,6 +22,28 @@
   ^{:doc "All registered rules, indexed by their qualified name, and all registered genres."}
   global-rules
   (atom {:rules {} :genres #{}}))
+
+(defn- splicing-replace [item]
+  (let [new-item (reduce
+                   (fn [acc cur]
+                     (if (::p/rest (meta cur))
+                       (into acc cur)
+                       (conj acc cur)))
+                   []
+                   item)]
+    (if (vector? item)
+      new-item
+      (->list new-item))))
+
+(defn postwalk-splicing-replace [binds replace-form]
+  (postwalk*
+    (fn [item]
+      (cond
+        (seq? item) (splicing-replace item)
+        (contains? binds item) (binds item)
+        :else
+        item))
+    replace-form))
 
 (defn replace->diagnostic [replace-form]
   (fn [ctx rule form binds]

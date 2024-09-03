@@ -2,12 +2,13 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.splint.replace-test
+(ns noahtheduke.splint.rules-test
   (:require
    [lazytest.core :refer [defdescribe it expect]]
-   [noahtheduke.splint.replace :as sut]))
+   [noahtheduke.splint.rules :as sut]))
 
 (set! *warn-on-reflection* true)
+
 
 (defdescribe postwalk-splicing-replace-test
   (it "deref"

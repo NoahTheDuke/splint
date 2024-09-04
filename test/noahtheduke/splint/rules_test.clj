@@ -9,7 +9,6 @@
 
 (set! *warn-on-reflection* true)
 
-
 (defdescribe postwalk-splicing-replace-test
   (it "deref"
     (expect '(splint/deref b)

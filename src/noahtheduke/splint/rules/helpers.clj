@@ -5,7 +5,8 @@
 (ns noahtheduke.splint.rules.helpers
   "Functions available by default in patterns."
   (:require
-   [noahtheduke.splint.pattern :as-alias p]))
+   [noahtheduke.splint.pattern :as-alias p]
+   [noahtheduke.splint.utils :as utils]))
 
 (set! *warn-on-reflection* true)
 
@@ -56,6 +57,9 @@
 (defn re-pattern?? [sexp]
   (and (symbol? sexp)
     (.equals "re-pattern" (name sexp))))
+
+(defn simple-literal? [sexp]
+  (utils/simple-literal? sexp))
 
 (def ^:private built-in-classes
   '#{;; bare

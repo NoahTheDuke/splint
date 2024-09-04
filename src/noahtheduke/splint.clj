@@ -7,6 +7,7 @@
   to library functions."
   (:gen-class)
   (:require
+   [noahtheduke.splint.runners.autocorrect] 
    [noahtheduke.splint.path-matcher]
    [noahtheduke.splint.pattern]
    [noahtheduke.splint.rules.helpers]

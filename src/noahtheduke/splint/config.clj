@@ -60,12 +60,14 @@
         parallel (config 'parallel (config :parallel true))
         summary (config 'summary (config :summary true))
         quiet (config 'quiet (config :quiet false))
-        silent (config 'silent (config :silent false))]
+        silent (config 'silent (config :silent false))
+        autocorrect (config :autocorrect false)]
     {:output output
      :parallel parallel
      :summary summary
      :quiet quiet
-     :silent silent}))
+     :silent silent
+     :autocorrect autocorrect}))
 
 (defn make-rule-config [rule genre-config local-config]
   (let [combined-rule

@@ -76,7 +76,9 @@
 
 (defn print-find-dispatch [output _diagnostic] output)
 
-(defmulti print-find #'print-find-dispatch)
+(defmulti print-find
+  {:arglists '([output diagnostic])}
+  #'print-find-dispatch)
 
 (defmethod print-find "full" [_ {:keys [filename rule-name form line column message alt]}]
   (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)

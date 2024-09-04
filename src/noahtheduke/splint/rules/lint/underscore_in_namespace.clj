@@ -14,9 +14,7 @@
   (str/includes? (str ?ns-sym) "_"))
 
 (defrule lint/underscore-in-namespace
-  "Due to munging rules, underscores in namespaces can confuse tools and
-  libraries which expect that underscores in class names should be dashes in
-  Clojure.
+  "Due to munging rules, underscores in namespaces can confuse tools and libraries which expect that underscores in class names should be dashes in Clojure.
 
   @examples
 
@@ -27,7 +25,6 @@
   (ns foo-bar.baz-qux)"
   {:pattern '(ns (? ns-sym includes-underscore?) ?*_)
    :message "Avoid underscores in namespaces."
-   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?ns-sym]}]
                (let [new-namespace (symbol (str/replace (str ?ns-sym) "_" "-"))]
                  (->diagnostic ctx rule form {:replace-form new-namespace

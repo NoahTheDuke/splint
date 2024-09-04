@@ -70,7 +70,7 @@
         nil
         patterns))))
 
-(defn check-all-rules-of-type
+(defn check-form
   "For each rule: if the rule is enabled, call `check-rule`.
   If `check-rule` returns a non-nil result, add or append it to the accumulator.
   Otherwise, return the accumulator."
@@ -80,12 +80,11 @@
       (let [rule (-> ctx :rules rule-name)]
         (if (-> rule :config :enabled)
           (try
-            (let [result (check-rule ctx rule form)]
-              (if (nil? result)
-                acc
-                (if (sequential? result)
-                  (into acc result)
-                  (conj acc result))))
+            (if-some [result (check-rule ctx rule form)]
+              (if (sequential? result)
+                (into acc result)
+                (conj acc result))
+              acc)
             (catch Exception ex
               (conj acc (runner-error->diagnostic
                           ex {:error-name 'splint/error
@@ -96,11 +95,11 @@
     nil
     rule-names))
 
-(defn check-form
+(defn check-and-store!
   "Checks a given form against the appropriate rules then calls `on-match` to build the
   diagnostic and store it in `ctx`."
   [ctx rule-names form]
-  (when-let [diagnostics (check-all-rules-of-type ctx rule-names form)]
+  (when-let [diagnostics (check-form ctx rule-names form)]
     (update ctx :diagnostics swap! into diagnostics)))
 
 (defn update-rules [rules-map form]
@@ -128,28 +127,27 @@
 
 (defn check-and-recur
   "Check a given form and then map recur over each of the form's children."
-  [ctx filename parent-form form]
-  (let [ctx (-> ctx
-              (assoc :parent-form parent-form)
-              (update :rules update-rules form))
+  [ctx form]
+  (let [ctx (update ctx :rules update-rules form)
         form-type (simple-type form)]
     (when-let [rules-for-type (-> ctx :rules-by-type form-type not-empty)]
-      (check-form ctx rules-for-type form))
-    ;; Can't recur in non-seqable forms
-    (case form-type
-      :list (when-not (#{'quote 'splint/quote} (first form))
-              (run!* #(check-and-recur ctx filename form %) form))
-      ;; There is currently no need for checking MapEntry,
-      ;; so check each individually.
-      :map (run!*
-             (fn [kv]
-               (check-and-recur ctx filename form (key kv))
-               (check-and-recur ctx filename form (val kv)))
-             form)
-      (:set :vector)
-      (run!* #(check-and-recur ctx filename form %) form)
-      ; else
-      nil)
+      (check-and-store! ctx rules-for-type form))
+    (let [ctx (assoc ctx :parent-form form)]
+      ;; Can't recur in non-seqable forms
+      (case form-type
+        :list (when-not (#{'quote 'splint/quote} (first form))
+                (run!* #(check-and-recur ctx %) form))
+        ;; There is currently no need for checking MapEntry,
+        ;; so check each individually.
+        :map (run!*
+              (fn [kv]
+                (check-and-recur ctx (key kv))
+                (check-and-recur ctx (val kv)))
+              form)
+        (:set :vector)
+        (run!* #(check-and-recur ctx %) form)
+        ; else
+        nil))
     nil))
 
 (defn right-ext? [ext rule]
@@ -165,10 +163,17 @@
         rule)
       rule)))
 
+(defn requires-autocorrect? [autocorrect rule]
+  (if autocorrect
+    (when (:autocorrect rule)
+      rule)
+    rule))
+
 (defn pre-filter-rules
   "Fully remove disabled rules or rules that don't apply to the current filetype."
   [ctx]
-  (let [ext (:ext ctx)]
+  (let [ext (:ext ctx)
+        #_#_autocorrect (-> ctx :config :autocorrect)]
     (update
       ctx
       :rules
@@ -177,7 +182,8 @@
         (if (map? rule)
           (some->> rule
             (right-ext? ext)
-            (right-path? ctx))
+            (right-path? ctx)
+            #_(requires-autocorrect? autocorrect))
           rule)))))
 
 (defn parse-and-check-file
@@ -193,9 +199,9 @@
                   (pre-filter-rules))]
         ;; Check any full-file rules
         (when-let [file-rules (-> ctx :rules-by-type :file not-empty)]
-          (check-form ctx file-rules parsed-file))
+          (check-and-store! ctx file-rules parsed-file))
         ;; Step over each top-level form (parent-form is nil)
-        (run!* #(check-and-recur ctx file nil %) parsed-file)
+        (run!* #(check-and-recur ctx %) parsed-file)
         nil))
     (catch Exception ex
       (let [data (ex-data ex)]
@@ -227,6 +233,8 @@
   "Call into the relevant `check-path-X` function, depending on the given config."
   [ctx files]
   (cond
+    (-> ctx :config :autocorrect)
+    ((requiring-resolve 'noahtheduke.splint.runners.autocorrect/check-files) ctx files)
     (-> ctx :config :parallel)
     (check-files-parallel ctx files)
     :else
@@ -272,7 +280,7 @@
           rule-names)
       (update :rules-by-type update-vals sort))))
 
-(defn prepare-context [rules config]
+(defn init-context [rules config]
   (-> rules
     (assoc :diagnostics (atom []))
     (assoc :checked-files (atom []))
@@ -334,13 +342,20 @@
      :config (:config ctx)
      :exit (if (pos? (count filtered-diagnostics)) 1 0)}))
 
+(defn prepare-context
+  [options]
+  (let [config (or (:config-override options) (conf/load-config options))
+        rules-by-type (prepare-rules config (:rules @global-rules))
+        config (apply dissoc config (keys (:rules rules-by-type)))]
+    (-> rules-by-type
+      (assoc :diagnostics (atom []))
+      (assoc :checked-files (atom []))
+      (assoc :config config))))
+
 (defn run-impl
   "Actually perform check."
   [paths options]
-  (let [config (or (:config-override options) (conf/load-config options))
-        rules-by-type (prepare-rules config (:rules @global-rules))
-        config (apply dissoc config (keys (:rules rules-by-type)))
-        ctx (prepare-context rules-by-type config)
+  (let [ctx (prepare-context options)
         files (resolve-files-from-paths ctx paths)]
     (check-files! ctx files)
     (build-result-map ctx files)))

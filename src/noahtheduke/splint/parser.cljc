@@ -5,6 +5,7 @@
 (ns noahtheduke.splint.parser
   (:require
    [clojure.string :as str]
+   clojure.tools.reader.reader-types
    [edamame.core :as e]
    [edamame.impl.read-fn :as read-fn]
    #?@(:bb []
@@ -165,3 +166,6 @@
 (defn parse-file
   [file-obj]
   (e/parse-string-all (:contents file-obj) (make-edamame-opts file-obj)))
+
+(comment
+  (parse-file {:contents "#=(+ 1 1)"}))

@@ -4,8 +4,7 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.is-eq-order
   (:require
-   [noahtheduke.splint.rules :refer [defrule]]
-   [noahtheduke.splint.utils :refer [simple-type]]))
+   [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
 
@@ -13,9 +12,6 @@
   (or (symbol? form)
     (and (list? form)
       (symbol? (first form)))))
-
-(defn simple-literal? [form]
-  (#{:nil :boolean :char :number :keyword :string} (simple-type form)))
 
 (defrule style/is-eq-order
   "`clojure.test/is` expects `=`-based assertions to put the expected value first.

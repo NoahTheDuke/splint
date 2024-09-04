@@ -41,15 +41,17 @@
          {:result r#
           :string (str s#)}))))
 
+(defn prep-dev-config [config]
+  (conj {:clojure-version (or (:clojure-version config)
+                              *clojure-version*)}
+        (merge-config @dev/dev-config config)
+        {:parallel false}))
+
 (defn check-all
   ([path] (check-all path nil))
   ([path config]
-   (let [config (conj {:clojure-version (or (:clojure-version config)
-                                          *clojure-version*)}
-                  (merge-config @dev/dev-config config)
-                  {:parallel false})
-         paths (if (sequential? path) path [path])
-         results (run-impl paths config)]
+   (let [paths (if (sequential? path) path [path])
+         results (run-impl paths (prep-dev-config config))]
      (seq (:diagnostics results)))))
 
 (defmacro expect-match

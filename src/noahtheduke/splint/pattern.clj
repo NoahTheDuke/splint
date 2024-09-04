@@ -63,7 +63,7 @@
   {:arglists '([ctx pattern form])}
   #'read-dispatch)
 
-(remove-all-methods read-form)
+#_(remove-all-methods read-form)
 
 (defmethod read-form :default [ctx pattern form]
   `(throw (ex-info "default" {:type ~(read-dispatch ctx pattern form)

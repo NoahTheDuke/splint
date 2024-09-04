@@ -55,7 +55,12 @@
 (comment
   (simple-type {:a 1})
   (simple-type (Object.))
-  (simple-type `(1 2 3)))
+  (simple-type `(1 2 3))
+  (simple-type #"asdf")
+  )
+
+(defn simple-literal? [form]
+  (#{:nil :boolean :char :number :keyword :string} (simple-type form)))
 
 (defn support-clojure-version?
   [{:keys [major minor incremental] :as min-clojure-version} current-version]

@@ -10,7 +10,8 @@
         camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
         org.clojure/data.json {:mvn/version "2.5.0"}
         org.flatland/ordered {:mvn/version "1.15.12"}
-        fipp/fipp {:mvn/version "0.6.26"}}
+        fipp/fipp {:mvn/version "0.6.26"}
+        rewrite-clj/rewrite-clj {:mvn/version "1.1.48"}}
  :aliases
  {:run {:extra-paths ["classes"]
         :main-opts ["-m" "noahtheduke.splint"]}

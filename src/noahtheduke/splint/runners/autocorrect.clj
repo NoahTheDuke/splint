@@ -5,12 +5,14 @@
 (ns noahtheduke.splint.runners.autocorrect 
   (:require
    [clojure.string :as str]
+   [edamame.impl.parser :as e]
    [edamame.impl.read-fn :as read-fn]
-   [noahtheduke.splint.clojure-ext.core :refer [with-meta*]]
-   [noahtheduke.splint.printer :as printer]
+   [noahtheduke.splint.clojure-ext.core :refer [->list postwalk* with-meta*]]
+   [noahtheduke.splint.printer :as printer :refer [pprint-str]]
    [noahtheduke.splint.runner :as run]
-   [noahtheduke.splint.utils :refer [drop-quote simple-type]]
-   [rewrite-clj.zip :as zip]) 
+   [noahtheduke.splint.utils :refer [simple-type]]
+   [rewrite-clj.node :as node]
+   [rewrite-clj.zip :as zip])
   (:import
    [java.io File]))
 
@@ -53,27 +55,51 @@
       (flush)
       true)))
 
+(defn node->sexpr [ctx node]
+  (let [tag (node/tag node)]
+    (if-not (node/inner? node)
+      (case tag
+        :regex (list 'splint/re-pattern node)
+        #_:else (node/sexpr node))
+      (let [children (->> (node/children node)
+                          (remove node/printable-only?)
+                          (map #(node->sexpr ctx %))
+                          (remove #{::missing-reader-cond}))]
+        (case tag
+          :deref (cons 'splint/deref children)
+          :eval (cons 'splint/read-eval children)
+          :forms (vec children)
+          :fn (->list (cons 'splint/fn (next (read-fn/read-fn children))))
+          :list (->list children)
+          :map (apply hash-map children)
+          :meta (let [[m obj] children]
+                  (vary-meta obj merge (e/desugar-meta m)))
+          :quote (cons 'quote children)
+          :reader-macro
+          (if (= '? (first children))
+            (let [branches (apply hash-map (fnext children))]
+              (get branches (:ext ctx ::missing-reader-cond)))
+            (let [tag-meta {:ext (:ext ctx)}
+                  tag (vary-meta 'splint/tagged-literal merge tag-meta)]
+              {tag (->list children)}))
+          :set (apply hash-set children)
+          :syntax-quote (cons 'splint/syntax-quote children)
+          :uneval nil
+          :unquote (cons 'splint/unquote children)
+          :unquote-splicing (cons 'splint/unquote-splicing children)
+          :var (cons 'splint/var children)
+          :vector (vec children)
+          #_:else (throw (ex-info "oops" {:node node :tag tag})))))))
+
+(comment
+  (->> "#_ a"
+       (zip/of-string)
+       (zip/node)
+       ; (node/children)
+       (node->sexpr nil)))
+
 (defn prep-form [ctx zloc]
-  (let [tag (zip/tag zloc)
-        form (zip/sexpr zloc)
-        form (case tag
-               :deref (cons 'splint/deref (next form))
-               :eval (cons 'splint/read-eval (drop-quote (next form)))
-               :forms (vec (zip/child-sexprs zloc))
-               :fn (cons 'splint/fn (read-fn/read-fn (next form)))
-               :quote (cons 'splint/quote (next form))
-               :reader-macro (let [tag-meta {:ext (:ext ctx)}
-                                   tag (vary-meta 'splint/tagged-literal merge tag-meta)
-                                   zloc (zip/next zloc)
-                                   r (zip/sexpr zloc)
-                                   zloc (zip/next zloc)
-                                   v (zip/sexpr zloc)]
-                               {tag (list r v)})
-               :syntax-quote (cons 'splint/syntax-quote (next form))
-               :unquote (cons 'splint/unquote (next form))
-               :unquote-splicing (cons 'splint/unquote-splicing (next form))
-               :var (cons 'splint/var (next form))
-               #_:else form)
+  (let [form (node->sexpr ctx (zip/node zloc))
         [[line column] [end-line end-column]] (zip/position-span zloc)]
     (with-meta* form {:line line
                       :column column
@@ -87,49 +113,78 @@
        second
        ))
 
+(defn sexpr->node [alt]
+  (postwalk*
+   (fn [obj]
+     (if (and (sequential? obj) (not (vector? obj)))
+       (case (first obj)
+         splint/deref (node/deref-node (next obj))
+         splint/fn (do (prn :obj obj) (node/fn-node
+                                       (->> (repeat (node/whitespace-node " "))
+                                            (interleave (nth obj 2))
+                                            (butlast))))
+         (quote splint/quote) (node/quote-node (next obj))
+         splint/re-pattern (node/regex-node (next obj))
+         splint/read-eval (node/eval-node (next obj))
+         splint/syntax-quote (node/syntax-quote-node (next obj))
+         splint/unquote (node/unquote-node (next obj))
+         splint/unquote-splicing (node/unquote-splicing-node (next obj))
+         splint/var (node/var-node (next obj))
+         #_:else obj)
+       obj))
+   alt))
+
 (defn check-form
   [ctx rule-names zloc]
-  (reduce
-   (fn [zloc rule-name]
-     (let [rule (-> ctx :rules rule-name)]
-       (if (-> rule :config :enabled)
-         (try
-           (let [form (prep-form ctx zloc)
-                 diagnostic (run/check-rule ctx rule form)]
-             (cond
-               (not diagnostic) zloc
-               (sequential? diagnostic)
-               (do #_{:clj-kondo/ignore [:unused-value]}
-                   (update ctx :diagnostics swap! into diagnostic)
-                   zloc)
-               :else
-               (do #_{:clj-kondo/ignore [:unused-value]}
-                   (update ctx :diagnostics swap! conj diagnostic)
-                   (if (and (-> ctx :config :autocorrect)
-                            (:autocorrect rule)
-                            (report-or-prompt ctx diagnostic))
-                     (reduced
-                      (let [zloc (zip/edit zloc
-                                   (fn -replace-zipper [_]
-                                     (let [alt (:alt diagnostic)]
-                                       (if (meta alt)
-                                         (vary-meta alt dissoc :line :column)
-                                         alt))))]
-                        (or (zip/left zloc)
-                            (zip/up zloc)
-                            zloc)))
-                     zloc))))
-           (catch Exception ex
-             (update ctx :diagnostics swap! conj
-                     (run/runner-error->diagnostic
-                      ex {:error-name 'splint/error
-                          :form zloc
-                          :rule-name (:full-name rule)
-                          :filename (:filename ctx)}))
-             zloc))
-         zloc)))
-   zloc
-   rule-names))
+  (let [form-cache (volatile! nil)]
+    (reduce
+     (fn [zloc rule-name]
+       (let [rule (-> ctx :rules rule-name)]
+         (if false
+           (try
+             (let [form (or @form-cache
+                            (vreset! form-cache (prep-form ctx zloc)))
+                   diagnostic (run/check-rule ctx rule form)]
+               (cond
+                 (not diagnostic) zloc
+                 (sequential? diagnostic)
+                 (do #_{:clj-kondo/ignore [:unused-value]}
+                     (update ctx :diagnostics swap! into diagnostic)
+                     zloc)
+                 :else
+                 (do #_{:clj-kondo/ignore [:unused-value]}
+                     (update ctx :diagnostics swap! conj diagnostic)
+                     (if (and (-> ctx :config :autocorrect)
+                              (:autocorrect rule)
+                              (report-or-prompt ctx diagnostic))
+                       (reduced
+                        (let [zloc (zip/edit zloc
+                                     (fn -replace-zipper [_]
+                                       (let [[line _column] (zip/position zloc)
+                                             [leading & lines] (str/split-lines (pprint-str (:alt diagnostic)))]
+                                         (prn (:alt diagnostic))
+                                         (->> lines
+                                              (map #(str (str/join (repeat line " ")) %))
+                                              (str/join "\n")
+                                              (str leading "\n")
+                                              (zip/of-string)
+                                              (zip/node)))))]
+                          (vreset! form-cache
+                                   (or (zip/left zloc)
+                                       (zip/up zloc)
+                                       zloc))))
+                       zloc))))
+             (catch Exception ex
+               (update ctx :diagnostics swap! conj
+                       (run/runner-error->diagnostic
+                        ex {:error-name 'splint/error
+                            :form zloc
+                            :rule-name (:full-name rule)
+                            :filename (:filename ctx)}))
+               zloc))
+           zloc)))
+     zloc
+     rule-names)))
 
 (defn simple-type-for-zloc
   "rewrite-clj has different types than splint, so we must bridge them."
@@ -176,13 +231,13 @@
                 zloc))]
     (if (zip/end? zloc)
       zloc
-      (let [form (zip/sexpr zloc)
+      (let [form (node->sexpr ctx (zip/node zloc))
             ctx (assoc ctx :parent-form form)]
         (if (and (= :list (simple-type form))
                  (#{'quote 'splint/quote} (first form)))
-          (walk ctx (or (zip/right zloc)
+          (recur ctx (or (zip/right zloc)
                         (zip/next zloc)))
-          (walk ctx zloc))))))
+          (recur ctx zloc))))))
 
 (defn check-files
   [ctx files]
@@ -212,7 +267,8 @@
                                               :column (:column data)}))
                   diagnostic (run/runner-error->diagnostic ex data)]
               (update ctx :diagnostics swap! conj diagnostic))
-            (let [diagnostic (run/runner-error->diagnostic
+            (let [_ (prn ex)
+                  diagnostic (run/runner-error->diagnostic
                               ex {:error-name 'splint/unknown-error
                                   :filename file})]
               (update ctx :diagnostics swap! conj diagnostic))))))))

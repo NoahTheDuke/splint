@@ -24,5 +24,4 @@
   "
   {:pattern '(let [?result ?given] (if ?result ?truthy ?falsy))
    :message "Use `if-let` instead of recreating it."
-   :autocorrect true
    :replace '(if-let [?result ?given] ?truthy ?falsy)})

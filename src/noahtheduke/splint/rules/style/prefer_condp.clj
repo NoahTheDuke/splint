@@ -91,7 +91,6 @@
     :big)
   "
   {:pattern '(cond ?*pairs)
-   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?pairs]}]
                (when-let [new-form (find-issue ?pairs)]
                  (let [message "Prefer condp when predicate and arguments are the same"]

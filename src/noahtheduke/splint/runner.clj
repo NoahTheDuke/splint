@@ -78,7 +78,7 @@
   (reduce
     (fn [acc rule-name]
       (let [rule (-> ctx :rules rule-name)]
-        (if (-> rule :config :enabled)
+        (if false
           (try
             (if-some [result (check-rule ctx rule form)]
               (if (sequential? result)

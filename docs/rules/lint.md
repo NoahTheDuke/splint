@@ -2,9 +2,9 @@
 
 ## lint/assoc-fn
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 0.1             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 0.1             |
 
 `assoc`-ing an update with the same key is hard to read. `update` is known and
 idiomatic.
@@ -25,9 +25,9 @@ idiomatic.
 
 ## lint/body-unquote-splicing
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 1.0           | 1.0             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 1.0           | 1.0             |
 
 A macro that nests an `unquote-splicing` in a macro with a `& body` can lead
 to subtle hard to debug errors. Better to wrap the `unquote-splicing` in
@@ -51,9 +51,9 @@ a `do` to force it into 'expression position'.
 
 ## lint/divide-by-one
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 0.1             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 0.1             |
 
 Checks for `(/ x 1)`.
 
@@ -71,9 +71,9 @@ x
 
 ## lint/dorun-map
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 1.2.1           |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 1.2.1           |
 
 `map` is lazy, which carries a performance and memory cost. `dorun` uses `seq` iteration to realize the entire sequence, returning `nil`. This style of iteration also carries a performance and memory cost. `dorun` is intended for more complex sequences, whereas a simple `map` can be accomplished with `reduce` + `conj`.
 
@@ -93,13 +93,13 @@ x
 
 ## lint/dot-class-method
 
-| Enabled by default | Safe  | Version Added | Version Updated |
-| ------------------ | ----- | ------------- | --------------- |
-| true               | false | 0.1           | 0.1             |
+| Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
+| ------------------ | ----- | ----------- | ------------- | --------------- |
+| true               | false | false       | 0.1           | 0.1             |
 
 Using the `Obj/staticMethod` form maps the method call to Clojure's natural function position.
 
-**NOTE:** This rule is disabled if `lint/prefer-method-values` is enabled to prevent conflicting disagnostics.
+**NOTE:** This rule is disabled if `lint/prefer-method-values` is enabled to prevent conflicting diagnostics.
 
 ### Safety
 This rule is unsafe, as it can misunderstand when a symbol is or is not a class.
@@ -119,13 +119,13 @@ This rule is unsafe, as it can misunderstand when a symbol is or is not a class.
 
 ## lint/dot-obj-method
 
-| Enabled by default | Safe  | Version Added | Version Updated |
-| ------------------ | ----- | ------------- | --------------- |
-| true               | false | 0.1           | 1.15.2          |
+| Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
+| ------------------ | ----- | ----------- | ------------- | --------------- |
+| true               | false | false       | 0.1           | 1.15.2          |
 
 Using the `.method` form maps the method symbol to Clojure's natural function position.
 
-**NOTE:** This rule is disabled if `lint/prefer-method-values` is enabled to prevent conflicting disagnostics.
+**NOTE:** This rule is disabled if `lint/prefer-method-values` is enabled to prevent conflicting diagnostics.
 
 ### Safety
 This rule is unsafe, as it can misunderstand when a symbol is or is not a class.
@@ -150,9 +150,9 @@ This rule is unsafe, as it can misunderstand when a symbol is or is not a class.
 
 ## lint/duplicate-case-test
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 1.16.0        | 1.16.0          |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 1.16.0        | 1.16.0          |
 
 It's an error to have duplicate `case` test constants.
 
@@ -172,9 +172,9 @@ It's an error to have duplicate `case` test constants.
 
 ## lint/duplicate-field-name
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1.119       | 0.1.119         |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1.119       | 0.1.119         |
 
 `deftype` and `defrecord` will throw errors if you define multiple fields
 with the same name, but it's good to catch these things early too.
@@ -193,9 +193,9 @@ with the same name, but it's good to catch these things early too.
 
 ## lint/fn-wrapper
 
-| Enabled by default | Safe  | Version Added | Version Updated |
-| ------------------ | ----- | ------------- | --------------- |
-| true               | false | 0.1           | 0.1             |
+| Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
+| ------------------ | ----- | ----------- | ------------- | --------------- |
+| true               | false | false       | 0.1           | 0.1             |
 
 Avoid wrapping functions in pass-through anonymous function defitions.
 
@@ -226,9 +226,9 @@ even?
 
 ## lint/if-else-nil
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 0.1             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 0.1             |
 
 Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
 
@@ -250,9 +250,9 @@ Idiomatic `if` defines both branches. `when` returns `nil` in the else branch.
 
 ## lint/if-let-else-nil
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 0.1             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 0.1             |
 
 Idiomatic `if-let` defines both branches. `when-let` returns `nil` in the else branch.
 
@@ -270,9 +270,9 @@ Idiomatic `if-let` defines both branches. `when-let` returns `nil` in the else b
 
 ## lint/if-nil-else
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 0.1             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 0.1             |
 
 Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy branch.
 
@@ -290,9 +290,9 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 
 ## lint/if-not-both
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 0.1             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 0.1             |
 
 `if-not` exists, so use it.
 
@@ -314,9 +314,9 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 
 ## lint/if-not-do
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 0.1             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 0.1             |
 
 `when-not` already defines an implicit `do`. Rely on it.
 
@@ -334,9 +334,9 @@ Idiomatic `if` defines both branches. `when-not` returns `nil` in the truthy bra
 
 ## lint/if-not-not
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 0.1             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 0.1             |
 
 Two `not`s cancel each other out.
 
@@ -354,9 +354,9 @@ Two `not`s cancel each other out.
 
 ## lint/if-same-truthy
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 0.1             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 0.1             |
 
 `or` exists so use it lol.
 
@@ -374,9 +374,9 @@ Two `not`s cancel each other out.
 
 ## lint/into-literal
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 0.1             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 0.1             |
 
 `vec` and `set` are succinct and meaningful.
 
@@ -400,9 +400,9 @@ Two `not`s cancel each other out.
 
 ## lint/let-if
 
-| Enabled by default | Safe  | Version Added | Version Updated |
-| ------------------ | ----- | ------------- | --------------- |
-| true               | false | 0.1.69        | 0.1.69          |
+| Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
+| ------------------ | ----- | ----------- | ------------- | --------------- |
+| true               | false | false       | 0.1.69        | 0.1.69          |
 
 `if-let` exists so use it.
 
@@ -427,9 +427,9 @@ Suggestions can be wrong as there's no code-walking to determine if `result` bin
 
 ## lint/let-when
 
-| Enabled by default | Safe  | Version Added | Version Updated |
-| ------------------ | ----- | ------------- | --------------- |
-| true               | false | 0.1.69        | 0.1.69          |
+| Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
+| ------------------ | ----- | ----------- | ------------- | --------------- |
+| true               | false | false       | 0.1.69        | 0.1.69          |
 
 `when-let` exists so use it.
 
@@ -454,9 +454,9 @@ Suggestions can be wrong as there's no code-walking to determine if `result` bin
 
 ## lint/locking-object
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 1.16.0        | 1.16.0          |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | 1.16.0        | 1.16.0          |
 
 Synchronizing on interned objects is really bad. If multiple places lock on the same type of interned objects, those places are competing for locks.
 
@@ -475,9 +475,9 @@ Synchronizing on interned objects is really bad. If multiple places lock on the 
 
 ## lint/loop-do
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 0.1             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 0.1             |
 
 `loop` has an implicit `do`. Use it.
 
@@ -495,9 +495,9 @@ Synchronizing on interned objects is really bad. If multiple places lock on the 
 
 ## lint/loop-empty-when
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 0.1             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 0.1             |
 
 Empty loops with nested `when` can be `while`. Doesn't apply if the final expr of the `when` isn't `(recur)`, which includes any nested cases (`let`, etc).
 
@@ -515,9 +515,9 @@ Empty loops with nested `when` can be `while`. Doesn't apply if the final expr o
 
 ## lint/missing-body-in-when
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1.69        | 0.1.69          |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | 0.1.69        | 0.1.69          |
 
 `when` calls should have at least 1 expression after the condition.
 
@@ -537,9 +537,9 @@ Empty loops with nested `when` can be `while`. Doesn't apply if the final expr o
 
 ## lint/not-empty?
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 1.2.0           |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 1.2.0           |
 
 `seq` returns `nil` when given an empty collection. `empty?` is implemented as `(not (seq coll))` so it's idiomatic to use `seq` directly.
 
@@ -570,9 +570,9 @@ Empty loops with nested `when` can be `while`. Doesn't apply if the final expr o
 
 ## lint/prefer-method-values
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 1.13          | 1.13            |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 1.13          | 1.13            |
 
 **NOTE:** Requires Clojure version 1.12.0.
 
@@ -599,9 +599,9 @@ Given that, it is preferable to exclusively use method values.
 
 ## lint/prefer-require-over-use
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 1.3.0         | 1.3.0           |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | 1.3.0         | 1.3.0           |
 
 In the `ns` form prefer `:require :as` over `:require :refer` over `:require :refer :all`. Prefer `:require` over `:use`; the latter form should be considered deprecated for new code.
 
@@ -635,9 +635,9 @@ In the `ns` form prefer `:require :as` over `:require :refer` over `:require :re
 
 ## lint/redundant-call
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 0.1             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 0.1             |
 
 A number of core functions take any number of arguments and return the arg
 if given only one. These calls are effectively no-ops, redundant, so they
@@ -676,9 +676,9 @@ x
 
 ## lint/redundant-str-call
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 1.16.0        | 1.16.0          |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 1.16.0        | 1.16.0          |
 
 `clojure.core/str` calls `.toString()` on non-nil input. However, `.toString()` on a string literal returns itself, making it a no-op. Likewise, `clojure.core/format` unconditionally returns a string, making any calls to `str` on the results a no-op.
 
@@ -698,9 +698,9 @@ x
 
 ## lint/require-explicit-param-tags
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| false              | true | 1.13          | 1.13            |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| false              | true | false       | 1.13          | 1.13            |
 
 **NOTE:** Requires Clojure version 1.12.0.
 
@@ -746,9 +746,9 @@ The styles are named after what they're looking for:
 
 ## lint/take-repeatedly
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 0.1             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 0.1           | 0.1             |
 
 `repeatedly` has an arity for limiting the number of repeats with `take`.
 
@@ -766,12 +766,20 @@ The styles are named after what they're looking for:
 
 ## lint/thread-macro-one-arg
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1           | 1.2.1           |
+| Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
+| ------------------ | ----- | ----------- | ------------- | --------------- |
+| true               | false | false       | 0.1           | <<next>>        |
 
 Threading macros require more effort to understand so only use them with multiple
 args to help with readability.
+
+### Safety
+Macros can be misinterpreted, leading to correct code being flagged:
+```clojure
+(cond-> foo
+  pred? (-> (assoc :hello 123)
+            (dissoc :goodbye)))
+```
 
 ### Examples
 
@@ -806,9 +814,9 @@ args to help with readability.
 
 ## lint/try-splicing
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 1.0           | 1.0             |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | true        | 1.0           | 1.0             |
 
 A macro that wraps a splicing unquote in a try-catch or try-finally can lead
 to subtle hard to debug errors. Better to wrap the splicing unquote in a `do`
@@ -832,13 +840,11 @@ to force it into 'expression position'.
 
 ## lint/underscore-in-namespace
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 1.11          | 1.11            |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | 1.11          | 1.11            |
 
-Due to munging rules, underscores in namespaces can confuse tools and
-libraries which expect that underscores in class names should be dashes in
-Clojure.
+Due to munging rules, underscores in namespaces can confuse tools and libraries which expect that underscores in class names should be dashes in Clojure.
 
 ### Examples
 
@@ -854,9 +860,9 @@ Clojure.
 
 ## lint/warn-on-reflection
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| false              | true | 1.8.0         | 1.8.0           |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| false              | true | false       | 1.8.0         | 1.8.0           |
 
 Because we can't (or won't) check for interop, `*warn-on-reflection*` should
 be at the top of every file out of caution.

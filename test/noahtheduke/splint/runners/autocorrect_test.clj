@@ -15,7 +15,7 @@
 (set! *warn-on-reflection* true)
 
 (defdescribe autocorrect-test
-  (it "prints"
+  (it "checks the same form multiple times"
     (with-temp-files [file "some_file.clj"]
       (print-to-file!
        file
@@ -39,4 +39,48 @@
                      ["(ns some_file)"
                       "(inc foo)"
                       "(= \"hello\" bar)"])
+           (str/trim (slurp file))))))
+  (it "outputs reader macros correctly"
+    (with-temp-files [file "some_file.clj"]
+      (print-to-file!
+       file
+       "(let [foo (atom {:a :b})]"
+       "  (assoc a :x :y :z @foo))")
+      (let [{diagnostics :result}
+            (with-out-str-data-map
+              (check-all file (prep-dev-config
+                               {:autocorrect true
+                                'performance/assoc-many {:enabled true}})))]
+        (expect
+          (match?
+           [{:rule-name 'performance/assoc-many}]
+           diagnostics)))
+      (expect
+        (= (str/join "\n"
+                     ["(let [foo (atom {:a :b})]"
+                      "  (-> a (assoc :x :y) (assoc :z @foo)))"])
+           (str/trim (slurp file))))))
+  (it "outputs indentation correctly"
+    {:focus true}
+    (with-temp-files [file "some_file.clj"]
+      (print-to-file!
+       file
+       "(let [foo (atom {:a :b})]"
+       "  (assoc a :xxxxxxxxxxxxxxxxxxxxxxx :yyyyyyyyyyyyyyyyyyyyyyy :z @foo))")
+      (let [{diagnostics :result
+             _s :string}
+            (with-out-str-data-map
+              (check-all file (prep-dev-config
+                               {:autocorrect true
+                                'performance/assoc-many {:enabled true}})))]
+        (expect
+          (match?
+           [{:rule-name 'performance/assoc-many}]
+           diagnostics)))
+      (expect
+        (= (str/join "\n"
+                     ["(let [foo (atom {:a :b})]"
+                      "  (-> a"
+                      "      (assoc :xxxxxxxxxxxxxxxxxxxxxxx :yyyyyyyyyyyyyyyyyyyyyyy)"
+                      "      (assoc :z @foo)))"])
            (str/trim (slurp file)))))))

@@ -39,7 +39,6 @@
   "
   {:patterns ['((? _ fn??) [?arg] (?fun ?arg))
               '((? _ fn??) ([?arg] (?fun ?arg)))]
-   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?fun ?args]}]
                (when-not (interop? ?fun)
                  (->diagnostic ctx rule form {:replace-form ?fun

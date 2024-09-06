@@ -214,8 +214,9 @@
  lint/thread-macro-one-arg
  {:description "Prefer `(y x)` to `(-> x y)`."
   :enabled true
+  :safe false
   :added "0.1"
-  :updated "1.2.1"
+  :updated "<<next>>"
   :chosen-style :inline
   :supported-styles [:inline :avoid-collections]}
 

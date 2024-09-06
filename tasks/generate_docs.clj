@@ -40,9 +40,13 @@
   [rule]
   (let [headers [{:name :enabled :title "Enabled by default" :align :left}
                  {:name :safe :title "Safe" :align :left}
+                 {:name :autocorrect :title "Autocorrect" :align :left}
                  {:name :added :title "Version Added" :align :left}
                  {:name :updated :title "Version Updated" :align :left}]]
-    (print-table headers [(rule-config rule)])))
+    (when (and (not (:safe (rule-config rule)))
+               (:autocorrect rule))
+      (println (:name rule) "isn't safe but can autocorrect???"))
+    (print-table headers [(assoc (rule-config rule) :autocorrect (or (:autocorrect rule) false))])))
 
 (defn render-version-note [rule]
   (when-let [min-clojure-version (:min-clojure-version rule)]

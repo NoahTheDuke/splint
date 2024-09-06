@@ -2,9 +2,9 @@
 
 ## naming/conventional-aliases
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 1.3.0         | 1.3.0           |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | 1.3.0         | 1.3.0           |
 
 Through community and core practices over the years, various core libraries have gained standard or expected aliases. To better align with the community, it's best to use those aliases in favor of alternatives.
 
@@ -50,9 +50,9 @@ Current namespaces and aliases:
 
 ## naming/conversion-functions
 
-| Enabled by default | Safe  | Version Added | Version Updated |
-| ------------------ | ----- | ------------- | --------------- |
-| true               | false | 0.1.94        | 0.1.94          |
+| Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
+| ------------------ | ----- | ----------- | ------------- | --------------- |
+| true               | false | false       | 0.1.94        | 0.1.94          |
 
 Use `->` instead of `to` in the names of conversion functions.
 
@@ -80,9 +80,9 @@ Uses simple string checking and can misunderstand English intention when `X-to-Y
 
 ## naming/lisp-case
 
-| Enabled by default | Safe  | Version Added | Version Updated |
-| ------------------ | ----- | ------------- | --------------- |
-| true               | false | 1.3.0         | 1.3.0           |
+| Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
+| ------------------ | ----- | ----------- | ------------- | --------------- |
+| true               | false | false       | 1.3.0         | 1.3.0           |
 
 Use lisp-case for function and variable names. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)
 
@@ -109,9 +109,9 @@ Interop, json, and other styles can make it necessary to use such forms.
 
 ## naming/predicate
 
-| Enabled by default | Safe  | Version Added | Version Updated |
-| ------------------ | ----- | ------------- | --------------- |
-| true               | false | 0.1.69        | 0.1.94          |
+| Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
+| ------------------ | ----- | ----------- | ------------- | --------------- |
+| true               | false | false       | 0.1.69        | 0.1.94          |
 
 Functions that return a boolean should end in a question mark.
 
@@ -137,9 +137,9 @@ Doesn't verify the kind of function, just checks for anti-patterns in the names.
 
 ## naming/record-name
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 0.1.69        | 1.15.2          |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | 0.1.69        | 1.15.2          |
 
 Records should use PascalCase. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)
 
@@ -164,9 +164,9 @@ Records should use PascalCase. (Replacement is generated with [camel-snake-kebab
 
 ## naming/single-segment-namespace
 
-| Enabled by default | Safe | Version Added | Version Updated |
-| ------------------ | ---- | ------------- | --------------- |
-| true               | true | 1.3.0         | 1.3.0           |
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | 1.3.0         | 1.3.0           |
 
 Namespaces exist to disambiguate names. Using a single segment namespace puts you in direct conflict with everyone else using single segment namespaces, thus making it more likely you will conflict with another code base.
 

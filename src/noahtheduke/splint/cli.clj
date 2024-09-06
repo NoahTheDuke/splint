@@ -31,6 +31,7 @@
                "Not a valid rule."]
     :update-fn (fnil conj #{})]
    [nil "--[no-]parallel" "Run splint in parallel. Defaults to true."]
+   [nil "--autocorrect" "Automatically apply safe changes."]
    ["-q" "--quiet" "Print no diagnostics, only summary."]
    ["-s" "--silent" "Don't print suggestions or summary."]
    [nil "--[no-]summary" "Don't print summary. Defaults to true."]

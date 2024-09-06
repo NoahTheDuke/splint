@@ -27,7 +27,7 @@ jobs:
         with:
           cli: 1.11.4.1474
           bb: 1.3.191
-          clj-kondo: 2024.08.01
+          clojure-lsp-version: 2024.08.05-18.16.00
 
       - name: Cache clojure dependencies
         uses: actions/cache@v4
@@ -38,8 +38,8 @@ jobs:
           key: cljdeps-${{ hashFiles('deps.edn', 'bb.edn') }}
           restore-keys: cljdeps-
 
-      - name: clj-kondo
-        run: clj-kondo --parallel --lint dev/ src/ test/
+      - name: clojure-lsp
+        run: clojure-lsp diagnostics
 
       - name: splint self
         run: bb run splint

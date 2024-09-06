@@ -24,8 +24,10 @@ format *args="check":
     clojure -M:cljfmt {{args}}
 
 clj-kondo:
-    clojure -M:clj-kondo --parallel --lint dev src test
-    # clj-kondo --parallel --lint dev src test
+    clj-kondo --parallel --lint dev src test
+
+clojure-lsp:
+    clojure-lsp diagnostics
 
 [no-exit-message]
 test *args:
@@ -33,9 +35,8 @@ test *args:
 
 [no-exit-message]
 test-all *args:
-    just clj-kondo
+    just clojure-lsp
     bb run splint
-    # just format
     clojure -M:dev:test:runner {{args}}
 
 @new-rule arg:

@@ -4,7 +4,11 @@
 
 (ns noahtheduke.splint.clojure-ext.core
   (:require
-   [noahtheduke.splint.utils :refer [simple-type]])
+   #?@(:bb []
+       :clj [[flatland.ordered.map :as om]
+             [flatland.ordered.set :as os]])
+   [noahtheduke.splint.utils :refer [simple-type]]
+   [clojure.string :as str])
   (:import
    (java.util.concurrent Executors Future)
    #?@(:bb []
@@ -221,3 +225,50 @@
     (apply vary-meta obj f args)
     obj))
 
+(deftype ParseMap [elements])
+(deftype ParseSet [elements])
+
+(defn throw-dup-keys
+  [kind ks]
+  (letfn [(duplicates [seq]
+            (for [[id freq] (frequencies seq)
+                  :when (> freq 1)]
+              id))]
+    (let [dups (duplicates ks)]
+      (apply str (str/capitalize (name kind)) " literal contains duplicate key"
+        (when (> (count dups) 1) "s")
+        ": " (interpose ", " dups)))))
+
+(defn parse-map
+  [^ParseMap obj loc]
+  (let [elements (.elements obj)
+        c (count elements)]
+    (when (pos? c)
+      (when (odd? c)
+        (throw (ex-info (str "The map literal starting with "
+                          (let [s (pr-str (first elements))]
+                            (subs s 0 (min 20 (count s))))
+                          " contains "
+                          (count elements)
+                          " form(s). Map literals must contain an even number of forms.")
+                 {:type :edamame/error
+                  :line (:line loc)
+                  :column (:column loc)})))
+      (let [ks (take-nth 2 elements)]
+        (when-not (apply distinct? ks)
+          (throw (ex-info (throw-dup-keys :map ks)
+                   {:type :edamame/error
+                    :line (:line loc)
+                    :column (:column loc)})))))
+    (apply #?(:bb hash-map :clj om/ordered-map) elements)))
+
+(defn parse-set
+  [^ParseSet obj loc]
+  (let [elements (.elements obj)
+        the-set (apply #?(:bb hash-set :clj os/ordered-set) elements)]
+    (when-not (= (count elements) (count the-set))
+      (throw (ex-info (throw-dup-keys :set elements)
+               {:type :edamame/error
+                :line (:line loc)
+                :column (:column loc)})))
+    the-set))

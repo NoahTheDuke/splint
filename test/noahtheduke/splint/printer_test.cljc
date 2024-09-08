@@ -9,7 +9,7 @@
    [lazytest.core :refer [defdescribe expect given it describe]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [noahtheduke.splint.parser :as parser]
-   [noahtheduke.splint.printer :as sut]
+   [noahtheduke.splint.printer :as sut :refer [*fipp-width*]]
    [noahtheduke.splint.test-helpers :refer [check-all]]))
 
 (set! *warn-on-reflection* true)
@@ -285,7 +285,8 @@
                                "~@a"
                                "~@(a b)"]
                               (str/join "\n ")))
-                 (->> parsed
-                      (sut/print-form)
-                      (with-out-str)
-                      (str/trim)))))))
+                 (binding [*fipp-width* 70]
+                   (->> parsed
+                        (sut/print-form)
+                        (with-out-str)
+                        (str/trim))))))))

@@ -61,12 +61,11 @@
                       "  (-> a (assoc :x :y) (assoc :z @foo)))"])
            (str/trim (slurp file))))))
   (it "outputs indentation correctly"
-    {:focus true}
     (with-temp-files [file "some_file.clj"]
       (print-to-file!
        file
        "(let [foo (atom {:a :b})]"
-       "  (assoc a :xxxxxxxxxxxxxxxxxxxxxxx :yyyyyyyyyyyyyyyyyyyyyyy :z @foo))")
+       "  (assoc a :xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx :yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy :z @foo))")
       (let [{diagnostics :result
              _s :string}
             (with-out-str-data-map
@@ -81,6 +80,6 @@
         (= (str/join "\n"
                      ["(let [foo (atom {:a :b})]"
                       "  (-> a"
-                      "      (assoc :xxxxxxxxxxxxxxxxxxxxxxx :yyyyyyyyyyyyyyyyyyyyyyy)"
+                      "      (assoc :xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx :yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy)"
                       "      (assoc :z @foo)))"])
            (str/trim (slurp file)))))))

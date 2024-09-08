@@ -44,14 +44,18 @@
      'splint/var pretty-quote}
     fipp.clj/default-symbols))
 
+(def ^:dynamic *fipp-width* 88)
+
 (defn pprint-str [form]
   (let [s (StringWriter.)]
     (fipp.clj/pprint form {:symbols specials
-                           :writer s})
+                           :writer s
+                           :width *fipp-width*})
     (str/trim (str s))))
 
 (defmacro print-form [form]
-  `(fipp.clj/pprint ~form {:symbols specials}))
+  `(fipp.clj/pprint ~form {:symbols specials
+                           :width *fipp-width*}))
 
 (defn st-element->str
   [[class-name method-name file-name line-number]]

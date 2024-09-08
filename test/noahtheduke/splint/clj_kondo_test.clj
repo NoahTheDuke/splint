@@ -5,17 +5,18 @@
 (ns noahtheduke.splint.clj-kondo-test
   (:require
    [clojure.tools.gitlibs :as gl]
-   [lazytest.core :refer [defdescribe it expect given]]
+   [lazytest.core :refer [defdescribe expect given it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.matchers :as m]
    [noahtheduke.splint.config :refer [default-config]]
-   [noahtheduke.splint.runner :refer [run-impl]]
-   [clojure.java.io :as io]))
+   [noahtheduke.splint.runner :refer [run-impl]]))
 
 (set! *warn-on-reflection* true)
 
 (def all-enabled-config
-  (update-vals @default-config #(assoc % :enabled true)))
+  (-> @default-config
+      (update-vals #(assoc % :enabled true))
+      (assoc-in ['style/set-literal-as-fn :enabled] false)))
 
 (def clj-kondo-diagnostics
   '{lint/assoc-fn 1
@@ -71,7 +72,6 @@
     style/prefer-condp 3
     style/prefer-vary-meta 6
     style/redundant-let 6
-    style/set-literal-as-fn 2
     style/single-key-in 2
     style/tostring 4
     style/useless-do 6
@@ -80,21 +80,20 @@
     style/when-not-do 1})
 
 (defdescribe ^:integration clj-kondo-test
-  (given [clj-kondo (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2024.08.29")
-          results (time (run-impl [{:path (io/file clj-kondo "src")}
-                             {:path (io/file clj-kondo "test")}]
+  (given [clj-kondo (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2023.05.26")
+          results (run-impl [{:path clj-kondo}]
                             {:config-override
                              (-> all-enabled-config
                                  (assoc :silent true)
                                  (assoc :parallel false)
-                                 ; (assoc :autocorrect true)
-                                 (assoc :clojure-version *clojure-version*))}))
+                                 #_(assoc :autocorrect true)
+                                 (assoc :clojure-version *clojure-version*))})
           diagnostics (->> results
                            :diagnostics
                            (group-by :rule-name))]
     (it "matches expectations"
-      #_(expect
+      (expect
         (match?
           (m/equals clj-kondo-diagnostics)
           (update-vals diagnostics count)))
-      (expect (= 1256 (count (:diagnostics results)))))))
+      (expect (= 1254 (count (:diagnostics results)))))))

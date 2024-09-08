@@ -8,13 +8,12 @@
    clojure.tools.reader.reader-types
    [edamame.core :as e]
    [edamame.impl.read-fn :as read-fn]
-   #?@(:bb []
-       :clj [[flatland.ordered.map :as om]])
-   #?@(:bb []
-       :clj [[flatland.ordered.set :as os]])
+   [noahtheduke.splint.clojure-ext.core :refer [parse-map parse-set]]
    [noahtheduke.splint.parser.defn :refer [parse-defn]]
    [noahtheduke.splint.parser.ns :refer [parse-ns]]
-   [noahtheduke.splint.vendor :refer [default-imports]]))
+   [noahtheduke.splint.vendor :refer [default-imports]])
+  (:import
+    (noahtheduke.splint.clojure_ext.core ParseMap ParseSet)))
 
 (set! *warn-on-reflection* true)
 
@@ -37,54 +36,6 @@
   (if-let [defn-form (parse-defn obj)]
     (vary-meta obj assoc :splint/defn-form defn-form)
     obj))
-
-(deftype ParseMap [elements])
-(deftype ParseSet [elements])
-
-(defn throw-dup-keys
-  [kind ks]
-  (letfn [(duplicates [seq]
-            (for [[id freq] (frequencies seq)
-                  :when (> freq 1)]
-              id))]
-    (let [dups (duplicates ks)]
-      (apply str (str/capitalize (name kind)) " literal contains duplicate key"
-        (when (> (count dups) 1) "s")
-        ": " (interpose ", " dups)))))
-
-(defn parse-map
-  [^ParseMap obj loc]
-  (let [elements (.elements obj)
-        c (count elements)]
-    (when (pos? c)
-      (when (odd? c)
-        (throw (ex-info (str "The map literal starting with "
-                          (let [s (pr-str (first elements))]
-                            (subs s 0 (min 20 (count s))))
-                          " contains "
-                          (count elements)
-                          " form(s). Map literals must contain an even number of forms.")
-                 {:type :edamame/error
-                  :line (:line loc)
-                  :column (:column loc)})))
-      (let [ks (take-nth 2 elements)]
-        (when-not (apply distinct? ks)
-          (throw (ex-info (throw-dup-keys :map ks)
-                   {:type :edamame/error
-                    :line (:line loc)
-                    :column (:column loc)})))))
-    (apply #?(:bb hash-map :clj om/ordered-map) elements)))
-
-(defn parse-set
-  [^ParseSet obj loc]
-  (let [elements (.elements obj)
-        the-set (apply #?(:bb hash-set :clj os/ordered-set) elements)]
-    (when-not (= (count elements) (count the-set))
-      (throw (ex-info (throw-dup-keys :set elements)
-               {:type :edamame/error
-                :line (:line loc)
-                :column (:column loc)})))
-    the-set))
 
 (defn- make-edamame-opts [{:keys [features ext ns-state]
                            :or {ns-state (atom {})}}]

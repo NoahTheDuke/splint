@@ -4,17 +4,20 @@
 
 (ns noahtheduke.splint.runners.autocorrect 
   (:require
+   [clojure.set :as set]
    [clojure.string :as str]
-   [edamame.impl.parser :as e]
+   clojure.tools.reader.reader-types
    [edamame.impl.read-fn :as read-fn]
-   [noahtheduke.splint.clojure-ext.core :refer [->list postwalk* with-meta*]]
-   [noahtheduke.splint.printer :as printer :refer [pprint-str]]
+   [noahtheduke.splint.clojure-ext.core :refer [->list parse-map parse-set
+                                                postwalk* with-meta*]]
+   [noahtheduke.splint.printer :as printer :refer [*fipp-width* pprint-str]]
    [noahtheduke.splint.runner :as run]
    [noahtheduke.splint.utils :refer [simple-type]]
    [rewrite-clj.node :as node]
    [rewrite-clj.zip :as zip])
   (:import
-   [java.io File]))
+   [java.io File]
+   [noahtheduke.splint.clojure_ext.core ParseMap ParseSet]))
 
 (set! *warn-on-reflection* true)
 
@@ -55,6 +58,17 @@
       (flush)
       true)))
 
+;; from edamame.impl.parser
+(defn desugar-meta
+  "Resolves syntactical sugar in metadata" ;; could be combined with some other desugar?
+  [f]
+  (cond
+    (keyword? f) {f true}
+    (symbol? f)  {:tag f}
+    (string? f)  {:tag f}
+    (vector? f)  {:param-tags f}
+    :else        f))
+
 (defn node->sexpr [ctx node]
   (let [tag (node/tag node)]
     (if-not (node/inner? node)
@@ -71,9 +85,13 @@
           :forms (vec children)
           :fn (->list (cons 'splint/fn (next (read-fn/read-fn children))))
           :list (->list children)
-          :map (apply hash-map children)
+          :map (parse-map (ParseMap. children)
+                          (set/rename-keys (meta node)
+                                           {:row :line
+                                            :col :column}))
+          :namespaced-map (second children)
           :meta (let [[m obj] children]
-                  (vary-meta obj merge (e/desugar-meta m)))
+                  (vary-meta obj merge (desugar-meta m)))
           :quote (cons 'quote children)
           :reader-macro
           (if (= '? (first children))
@@ -82,7 +100,10 @@
             (let [tag-meta {:ext (:ext ctx)}
                   tag (vary-meta 'splint/tagged-literal merge tag-meta)]
               {tag (->list children)}))
-          :set (apply hash-set children)
+          :set (parse-set (ParseSet. children)
+                          (set/rename-keys (meta node)
+                                           {:row :line
+                                            :col :column}))
           :syntax-quote (cons 'splint/syntax-quote children)
           :uneval nil
           :unquote (cons 'splint/unquote children)
@@ -92,7 +113,7 @@
           #_:else (throw (ex-info "oops" {:node node :tag tag})))))))
 
 (comment
-  (->> "#_ a"
+  (->> "#:ab{:b :c :d :e}"
        (zip/of-string)
        (zip/node)
        ; (node/children)
@@ -134,13 +155,20 @@
        obj))
    alt))
 
+(defn get-lines-from-alt [column alt]
+  (let [width (max 40 (- *fipp-width* column))]
+    (str/split
+      (binding [*fipp-width* width]
+        (pprint-str alt))
+      #",?\r?\n")))
+
 (defn check-form
   [ctx rule-names zloc]
   (let [form-cache (volatile! nil)]
     (reduce
      (fn [zloc rule-name]
        (let [rule (-> ctx :rules rule-name)]
-         (if false
+         (if (-> rule :config :enabled)
            (try
              (let [form (or @form-cache
                             (vreset! form-cache (prep-form ctx zloc)))
@@ -160,11 +188,10 @@
                        (reduced
                         (let [zloc (zip/edit zloc
                                      (fn -replace-zipper [_]
-                                       (let [[line _column] (zip/position zloc)
-                                             [leading & lines] (str/split-lines (pprint-str (:alt diagnostic)))]
-                                         (prn (:alt diagnostic))
+                                       (let [[_line column] (zip/position zloc)
+                                             [leading & lines] (get-lines-from-alt column (:alt diagnostic))]
                                          (->> lines
-                                              (map #(str (str/join (repeat line " ")) %))
+                                              (map #(str (str/join (repeat (dec column) " ")) %))
                                               (str/join "\n")
                                               (str leading "\n")
                                               (zip/of-string)
@@ -207,7 +234,7 @@
   [ctx zloc]
   (if (= :uneval (zip/tag zloc))
     (let [zloc (zip/next zloc)
-          m (zip/sexpr zloc)
+          m (node->sexpr ctx (zip/node zloc))
           zloc (zip/next zloc)]
       (cond
         (= :splint/disable m)

@@ -4,11 +4,11 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
-**Big feature:** Mark each rule with safety information.
+**Big feature:** Safety and Autocorrection
 
-Every rule has been marked as safe or unsafe. Safe rules don't generate false positives and any suggested alternatives can be used directly. Unsafe rules may generate false positives or their suggested alternatives may contain errors. This doesn't mean much at the moment except for a note in the documentation, but I hope it will make it easier to add autocorrection in the future.
+Every rule has been marked as safe or unsafe. Safe rules don't generate false positives and any suggested alternatives can be used directly. Unsafe rules may generate false positives or their suggested alternatives may contain errors.
 
-Alongside that, rules now track if they "autocorrect", which at the moment only means that they return a alternative form. This was included merely because I was already touching all of the rules.
+Rules that are safe may also perform autocorrection, which is tracked in `defrule` with `:autocorrect`. Rules may only perform autocorrection if they're safe.
 
 The [Rules Overview](docs/rules-overview.md) has been expanded as well.
 

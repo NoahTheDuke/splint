@@ -37,6 +37,7 @@ Linting took 241ms, checked 115 files, 5 style warnings
 * `-r`, `--require FILE`: Require additional custom rules by loading specified files. Can be provided multiple times. (See [Writing a new rule][new rule] for further details.)
 * `--only RULE`: Run only the specified rule(s) or genre(s).
 * `--[no-]parallel`: Run Splint in parallel. Defaults to `true`.
+* `--autocorrect`: Automatically apply safe changes.
 * `-q`, `--quiet`: Print no diagnostics, only summary.
 * `-s`, `--silent`: Print no diagnostics or summary. Overrides `--summary`.
 * `--[no-]summary`: Print summary. Defaults to `true`.

@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## 1.17.0 - 2024-09-08
+
 **Big feature:** Safety and Autocorrection
 
 Every rule has been marked as safe or unsafe. Safe rules don't generate false positives and any suggested alternatives can be used directly. Unsafe rules may generate false positives or their suggested alternatives may contain errors.

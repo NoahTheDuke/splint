@@ -953,7 +953,7 @@ It's possible that the check isn't written correctly, so be wary of the suggeste
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | true        | 1.15.0        | <<next>>        |
+| true               | true | true        | 1.15.0        | 1.17.0          |
 
 The core builder functions are helpful when creating an object from an opaque sequence, but are much less readable when used in maps to get around issues with anonymous function syntax peculiarities.
 

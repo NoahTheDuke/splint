@@ -768,7 +768,7 @@ The styles are named after what they're looking for:
 
 | Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
 | ------------------ | ----- | ----------- | ------------- | --------------- |
-| true               | false | false       | 0.1           | <<next>>        |
+| true               | false | false       | 0.1           | 1.17.0          |
 
 Threading macros require more effort to understand so only use them with multiple
 args to help with readability.

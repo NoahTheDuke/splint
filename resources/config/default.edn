@@ -216,7 +216,7 @@
   :enabled true
   :safe false
   :added "0.1"
-  :updated "<<next>>"
+  :updated "1.17.0"
   :chosen-style :inline
   :supported-styles [:inline :avoid-collections]}
 
@@ -613,7 +613,7 @@
  {:description "Prefer `(for [item coll] {:a item})` over `(map #(hash-map :a %) coll)`."
   :enabled true
   :added "1.15.0"
-  :updated "<<next>>"}
+  :updated "1.17.0"}
 
  style/prefer-vary-meta
  {:description "Prefer `vary-meta` to `(with-meta x (assoc (meta x) ...))`."

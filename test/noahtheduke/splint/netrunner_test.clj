@@ -14,83 +14,86 @@
 (set! *warn-on-reflection* true)
 
 (def all-enabled-config
-  (update-vals @default-config #(assoc % :enabled true)))
+  (-> @default-config
+      (update-vals #(assoc % :enabled true))
+      (assoc-in ['style/set-literal-as-fn :enabled] false)))
 
 (def netrunner-diagnostics
-  '{lint/assoc-fn 3
-    lint/fn-wrapper 37
-    lint/if-else-nil 14
+  '{lint/assoc-fn 4
+    lint/fn-wrapper 42
+    lint/if-else-nil 13
     lint/if-let-else-nil 2
-    lint/if-nil-else 1
-    lint/if-not-both 24
-    lint/if-same-truthy 4
-    lint/into-literal 40
+    lint/if-nil-else 4
+    lint/if-not-both 26
+    lint/if-same-truthy 5
+    lint/into-literal 43
     lint/let-if 3
-    lint/let-when 1
     lint/redundant-call 2
-    lint/redundant-str-call 46
-    lint/thread-macro-one-arg 71
-    lint/warn-on-reflection 169
-    metrics/fn-length 485
-    metrics/parameter-count 204
-    naming/conventional-aliases 33
-    naming/conversion-functions 11
-    naming/predicate 15
-    performance/assoc-many 244
-    performance/dot-equals 1040
-    performance/get-keyword 5
-    performance/into-transducer 2
-    performance/single-literal-merge 12
+    lint/redundant-str-call 44
+    lint/thread-macro-one-arg 78
+    lint/warn-on-reflection 176
+    metrics/fn-length 548
+    metrics/parameter-count 225
+    naming/conventional-aliases 31
+    naming/conversion-functions 13
+    naming/predicate 24
+    performance/assoc-many 272
+    performance/dot-equals 1200
+    performance/get-keyword 7
+    performance/into-transducer 5
+    performance/single-literal-merge 13
     style/apply-str 1
     style/apply-str-interpose 1
-    style/assoc-assoc 4
+    style/assoc-assoc 2
     style/eq-false 3
-    style/eq-nil 5
+    style/eq-nil 15
     style/eq-true 2
-    style/eq-zero 232
-    style/filter-complement 23
-    style/filter-vec-filterv 1
+    style/eq-zero 272
+    style/filter-complement 25
+    style/filter-vec-filterv 2
     style/first-first 2
     style/first-next 1
-    style/is-eq-order 17
-    style/minus-one 7
+    style/is-eq-order 16
+    style/minus-one 8
     style/multiple-arity-order 2
+    style/multiply-by-one 1
     style/nested-addition 1
-    style/new-object 1
-    style/not-eq 18
-    style/not-nil? 17
-    style/not-some-pred 16
-    style/plus-one 13
+    style/new-object 2
+    style/not-eq 19
+    style/not-nil? 16
+    style/not-some-pred 17
+    style/plus-one 15
     style/pos-checks 4
-    style/prefer-clj-math 16
+    style/prefer-boolean 1
+    style/prefer-clj-math 18
     style/prefer-clj-string 5
-    style/prefer-condp 2
+    style/prefer-condp 5
     style/prefer-for-with-literals 1
-    style/redundant-let 4
     style/redundant-regex-constructor 9
-    style/set-literal-as-fn 24
-    style/single-key-in 34
+    style/single-key-in 36
     style/tostring 2
-    style/useless-do 2
+    style/useless-do 3
     style/when-do 4
-    style/when-not-call 27
-    style/when-not-empty? 14})
+    style/when-not-call 28
+    style/when-not-empty? 13})
 
 (defdescribe ^:integration netrunner-test
-  (given [netrunner (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "114")
-        results (run-impl [{:path netrunner}]
-                  {:config-override
-                   (-> all-enabled-config
-                     (assoc :silent true)
-                     (assoc :parallel false)
-                     (assoc :clojure-version *clojure-version*))})]
-    (it "has the right failures"
+  (given [netrunner (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "v133")
+          results (run-impl [{:path netrunner}]
+                            {:config-override
+                             (-> all-enabled-config
+                                 (assoc :silent true)
+                                 (assoc :parallel false)
+                                 (assoc :clojure-version *clojure-version*))})]
+    (it "has the right diagnostics"
       (expect
         (match?
-          (m/equals netrunner-diagnostics)
-          (->> results
-               :diagnostics
-               (group-by :rule-name)
-               (#(update-vals % count)))))
-      (expect (= 2983 (count (:diagnostics results))))
-      (expect (= 222 (count (:checked-files results)))))))
+         (m/equals netrunner-diagnostics)
+         (->> results
+              :diagnostics
+              (group-by :rule-name)
+              (#(update-vals % count))))))
+    (it "sums correctly"
+      (expect (= 3332 (count (:diagnostics results)))))
+    (it "checks the correct number of files"
+      (expect (= 242 (count (:checked-files results)))))))

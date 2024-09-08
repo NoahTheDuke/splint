@@ -91,9 +91,10 @@
           diagnostics (->> results
                            :diagnostics
                            (group-by :rule-name))]
-    (it "matches expectations"
+    (it "has the right diagnostics"
       (expect
         (match?
-          (m/equals clj-kondo-diagnostics)
-          (update-vals diagnostics count)))
+         (m/equals clj-kondo-diagnostics)
+         (update-vals diagnostics count))))
+    (it "sums correctly"
       (expect (= 1254 (count (:diagnostics results)))))))

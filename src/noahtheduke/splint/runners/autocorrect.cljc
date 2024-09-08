@@ -250,21 +250,22 @@
 (defn walk
   "Check a given form and then map recur over each of the form's children."
   [ctx zloc]
-  (let [[ctx zloc] (update-rules ctx zloc)
-        form-type (simple-type-for-zloc zloc)
-        zloc (zip/next
-              (if-let [rules-for-type (-> ctx :rules-by-type form-type not-empty)]
-                (check-form ctx rules-for-type zloc)
-                zloc))]
-    (if (zip/end? zloc)
-      zloc
-      (let [form (node->sexpr ctx (zip/node zloc))
-            ctx (assoc ctx :parent-form form)]
-        (if (and (= :list (simple-type form))
-                 (#{'quote 'splint/quote} (first form)))
-          (recur ctx (or (zip/right zloc)
-                        (zip/next zloc)))
-          (recur ctx zloc))))))
+  (if (zip/end? zloc)
+    zloc
+    (let [[ctx zloc] (update-rules ctx zloc)
+          form-type (simple-type-for-zloc zloc)
+          form (node->sexpr ctx zloc)
+          parent-form (when-let [parent (zip/up zloc)]
+                        (node->sexpr ctx (zip/node parent)))
+          ctx (assoc ctx :parent-form parent-form)
+          zloc (if-let [rules-for-type (-> ctx :rules-by-type form-type not-empty)]
+                 (check-form ctx rules-for-type zloc)
+                 zloc)]
+      (if (and (= :list (simple-type form))
+               (#{'quote 'splint/quote} (first form)))
+        (recur ctx (zip/next (or (zip/right zloc)
+                                 (zip/next zloc))))
+        (recur ctx (zip/next zloc))))))
 
 (defn check-files
   [ctx files]
@@ -279,10 +280,8 @@
                     (assoc :file-str contents)
                     (run/pre-filter-rules))
             zloc (walk ctx zloc)]
-        (if (.exists file)
-          (spit file (zip/root-string zloc))
-          (do (println "\nFull file:")
-              (println (zip/root-string zloc))))
+        (when (.exists file)
+          (spit file (zip/root-string zloc)))
         nil)
       (catch Exception ex
         (let [data (ex-data ex)]

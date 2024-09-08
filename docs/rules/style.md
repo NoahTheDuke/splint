@@ -830,7 +830,7 @@ Use `boolean` if you must return `true` or `false` from an expression.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | true        | 0.1.69        | 0.1.69          |
+| true               | true | false       | 0.1.69        | 0.1.69          |
 
 **NOTE:** Requires Clojure version 1.11.0.
 

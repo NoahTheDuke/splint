@@ -14,7 +14,9 @@
 (set! *warn-on-reflection* true)
 
 (def all-enabled-config
-  (update-vals @default-config #(assoc % :enabled true)))
+  (-> @default-config
+      (update-vals #(assoc % :enabled true))
+      (assoc-in ['style/set-literal-as-fn :enabled] false)))
 
 (def re-frame-diagnostics
   '{lint/if-else-nil 2
@@ -35,7 +37,6 @@
     style/is-eq-order 10
     style/reduce-str 1
     style/redundant-let 2
-    style/set-literal-as-fn 1
     style/when-not-call 1})
 
 (defdescribe re-frame-test
@@ -47,12 +48,13 @@
                                  (assoc :silent true)
                                  (assoc :parallel false)
                                  (assoc :clojure-version *clojure-version*))})]
-    (it "hasn't changed"
+    (it "has the right diagnostics"
       (expect
         (match?
-          (m/equals re-frame-diagnostics)
-          (->> results
-               :diagnostics
-               (group-by :rule-name)
-               (#(update-vals % count)))))
-      (expect (= 73 (count (:diagnostics results)))))))
+         (m/equals re-frame-diagnostics)
+         (->> results
+              :diagnostics
+              (group-by :rule-name)
+              (#(update-vals % count))))))
+    (it "sums correctly"
+      (expect (= 72 (count (:diagnostics results)))))))

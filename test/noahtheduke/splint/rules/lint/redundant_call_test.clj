@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.rules.lint.redundant-call-test
   (:require
-   [lazytest.core :refer [defdescribe it]]
+   [lazytest.core :refer [defdescribe it describe]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
@@ -37,4 +37,9 @@
   (it "ignores case"
     (expect-match nil
       "(case elem (-> ->>) true false)"
-      (single-rule-config rule-name))))
+      (single-rule-config rule-name)))
+  (describe "autocorrect"
+    (it "handles max in thread"
+      (expect-match nil
+        "(->> [a b c] (reduce (fnil + 0 0)) (max 0))"
+        (assoc (single-rule-config rule-name) :autocorrect true)))))

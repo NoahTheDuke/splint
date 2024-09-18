@@ -32,6 +32,7 @@
     :update-fn (fnil conj #{})]
    [nil "--[no-]parallel" "Run splint in parallel. Defaults to true."]
    [nil "--autocorrect" "Automatically apply safe changes."]
+   [nil "--interactive" "Run autocorrect interactively."]
    ["-q" "--quiet" "Print no diagnostics, only summary."]
    ["-s" "--silent" "Don't print suggestions or summary."]
    [nil "--[no-]summary" "Don't print summary. Defaults to true."]
@@ -94,13 +95,16 @@
    :errors errors
    :ok false})
 
-(defn validate-paths
-  "Treat any path strings that begin with '--' as suspect and reject the whole call. No
-  doubt this fails for some paths, but if you're doing that, get outta here."
-  [options paths]
-  (if-let [errors (seq (filter #(str/starts-with? % "--") paths))]
-    (print-errors (mapv #(str (pr-str %) " must come before paths") errors))
-    {:options options :paths (vec paths)}))
+(defn set-autocorrect-additions
+  "If --interactive, set autocorrect, and filter all non-error diagnostics."
+  [options]
+  (let [options (if (:interactive options)
+                  (assoc options :autocorrect true)
+                  options)
+        options (if (:autocorrect options)
+                  (assoc options :errors true)
+                  options)]
+    options))
 
 (defn validate-opts
   "Parse and validate seq of strings.
@@ -117,4 +121,12 @@
       (:version options) {:exit-message (splint-version) :ok true}
       errors (print-errors errors)
       (or (:config options) (:print-config options)) (print-config options)
-      :else (validate-paths options arguments))))
+      ; Treat any path strings that begin with '--' as suspect and reject the
+      ; whole call. No doubt this fails for some paths, but if you're doing
+      ; that, get outta here.
+      :else (if-let [errors (seq (filter #(str/starts-with? % "--") arguments))]
+              (print-errors (mapv #(str (pr-str %) " must come before paths") errors))
+              (let [options (set-autocorrect-additions options)
+                    paths (vec arguments)]
+                {:options options
+                 :paths paths})))))

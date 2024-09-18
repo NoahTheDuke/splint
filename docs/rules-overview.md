@@ -4,7 +4,11 @@ Splint rules are responsible for checking code for their particular issues. Each
 
 If a rule is enabled by default, then it will check your code (when it has not been disabled by local configuration) during a normal run. If a rule is safe, then the rule should be free of false positives. Rules will be marked as unsafe when static analysis can't determine if a usage is correct or not, or the suggested alternative code might be incorrect. If a rule has "Autocorrect", then it can be used with `--autocorrect`, and any diagnostics arising from that rule will be applied to the originating form in the source file.
 
-**Note:** All rules capable of autocorrect are marked as safe. If a rule isn't safe for any reason, then it will not be enabled during an `--autocorrect` run. Some safe rules aren't capable of autocorrect, of course, but that's merely due to complexity or lack of implementation.
+All rules capable of autocorrect are marked as safe. If a rule isn't safe for any reason, then it will not be enabled during an `--autocorrect` run. Some safe rules aren't capable of autocorrect, of course, but that's merely due to complexity or lack of implementation.
+
+### WARNING: Autocorrect removes comments
+
+Due to the way it's currently implemented, autocorrect reformats each form it changes and removes all comments and uneval blocks.
 
 Any configuration or options for a given rule will be listed at the end. The "Name" is the key the chosen option should be put under in the local config. For example, given:
 

@@ -27,9 +27,7 @@
                           (check-all file (prep-dev-config {:autocorrect true})))]
         (expect
           (match?
-           [{:rule-name 'lint/underscore-in-namespace}
-            {:rule-name 'naming/single-segment-namespace}
-            {:rule-name 'style/useless-do}
+           [{:rule-name 'style/useless-do}
             {:rule-name 'style/plus-one}]
            diagnostics))
         (expect

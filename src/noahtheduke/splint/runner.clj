@@ -130,12 +130,13 @@
   [ctx form]
   (let [ctx (update ctx :rules update-rules form)
         form-type (simple-type form)]
-    (when-let [rules-for-type (-> ctx :rules-by-type form-type not-empty)]
-      (check-and-store! ctx rules-for-type form))
+    (when-not (and (= :list form-type) (= 'quote (first form)))
+      (when-let [rules-for-type (-> ctx :rules-by-type form-type not-empty)]
+        (check-and-store! ctx rules-for-type form)))
     (let [ctx (assoc ctx :parent-form form)]
       ;; Can't recur in non-seqable forms
       (case form-type
-        :list (when-not (#{'quote 'splint/quote} (first form))
+        :list (when-not (= 'quote (first form))
                 (run!* #(check-and-recur ctx %) form))
         ;; There is currently no need for checking MapEntry,
         ;; so check each individually.
@@ -173,7 +174,7 @@
   "Fully remove disabled rules or rules that don't apply to the current filetype."
   [ctx]
   (let [ext (:ext ctx)
-        #_#_autocorrect (-> ctx :config :autocorrect)]
+        autocorrect (-> ctx :config :autocorrect)]
     (update
       ctx
       :rules
@@ -183,7 +184,7 @@
           (some->> rule
             (right-ext? ext)
             (right-path? ctx)
-            #_(requires-autocorrect? autocorrect))
+            (requires-autocorrect? autocorrect))
           rule)))))
 
 (defn parse-and-check-file

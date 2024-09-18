@@ -112,13 +112,6 @@
           :vector (vec children)
           #_:else (throw (ex-info "oops" {:node node :tag tag})))))))
 
-(comment
-  (->> "#:ab{:b :c :d :e}"
-       (zip/of-string)
-       (zip/node)
-       ; (node/children)
-       (node->sexpr nil)))
-
 (defn prep-form [ctx zloc]
   (let [form (node->sexpr ctx (zip/node zloc))
         [[line column] [end-line end-column]] (zip/position-span zloc)]
@@ -126,13 +119,6 @@
                       :column column
                       :end-line end-line
                       :end-column end-column})))
-
-(comment
-  (->> "#'(+ 1 %)"
-       zip/of-string
-       (prep-form {:ext :clj})
-       second
-       ))
 
 (defn sexpr->node [alt]
   (postwalk*
@@ -254,18 +240,22 @@
     zloc
     (let [[ctx zloc] (update-rules ctx zloc)
           form-type (simple-type-for-zloc zloc)
-          form (node->sexpr ctx zloc)
+          form (node->sexpr ctx (zip/node zloc))
           parent-form (when-let [parent (zip/up zloc)]
                         (node->sexpr ctx (zip/node parent)))
-          ctx (assoc ctx :parent-form parent-form)
-          zloc (if-let [rules-for-type (-> ctx :rules-by-type form-type not-empty)]
-                 (check-form ctx rules-for-type zloc)
-                 zloc)]
-      (if (and (= :list (simple-type form))
-               (#{'quote 'splint/quote} (first form)))
-        (recur ctx (zip/next (or (zip/right zloc)
-                                 (zip/next zloc))))
-        (recur ctx (zip/next zloc))))))
+          ctx (assoc ctx :parent-form parent-form)]
+      (if (and (= :list form-type) (= 'quote (first form)))
+        (let [zloc (loop [p zloc]
+                     (if-let [loc (zip/up p)]
+                       (or (zip/right loc)
+                           (recur loc))
+                       (assoc p :end? true)))]
+          (recur ctx zloc))
+        (recur ctx
+               (zip/next
+                (if-let [rules-for-type (-> ctx :rules-by-type form-type not-empty)]
+                  (check-form ctx rules-for-type zloc)
+                  zloc)))))))
 
 (defn check-files
   [ctx files]
@@ -281,7 +271,8 @@
                     (run/pre-filter-rules))
             zloc (walk ctx zloc)]
         (when (.exists file)
-          (spit file (zip/root-string zloc)))
+          (when-let [new-contents (not-empty (zip/root-string zloc))]
+            (spit file new-contents)))
         nil)
       (catch Exception ex
         (let [data (ex-data ex)]
@@ -293,28 +284,18 @@
                                               :column (:column data)}))
                   diagnostic (run/runner-error->diagnostic ex data)]
               (update ctx :diagnostics swap! conj diagnostic))
-            (let [_ (prn ex)
-                  diagnostic (run/runner-error->diagnostic
+            (let [diagnostic (run/runner-error->diagnostic
                               ex {:error-name 'splint/unknown-error
                                   :filename file})]
               (update ctx :diagnostics swap! conj diagnostic))))))))
 
 (comment
-  (zip/root (zip/root (zip/of-string "a")))
-  (def zloc (zip/of-string* "(ns hello) (+ 1 x)"))
-  (-> (zip/of-string* "{:a :b}")
-      (zip/next*)
-      (zip/next*)
-      ; (zip/tag)
-      #_(zip/next*)
-      #_(zip/sexpr))
-  (let [
-        config {:clojure-version *clojure-version*
+  (let [config {:clojure-version *clojure-version*
                 :parallel false
                 :autocorrect true}
         ctx (run/prepare-context config)
-        paths ["(ns hello) (+ 1 x)"]
-        files (run/resolve-files-from-paths ctx paths)
-        results (check-files ctx files)]
-    (prn files results)
-    ))
+        paths ["'[{:form (assoc-in coll [:k] v)
+         :message \"Use `assoc` instead of recreating it.\"
+         :alt (assoc coll :k v)}]"]
+        files (run/resolve-files-from-paths ctx paths)]
+    (check-files ctx files)))

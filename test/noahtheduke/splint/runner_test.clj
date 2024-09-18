@@ -26,7 +26,10 @@
   (it "only disables the specific rule"
     (expect-match
       '[{:rule-name style/plus-one}]
-      "#_{:splint/disable [style/plus-zero]} (+ 1 x)")))
+      "#_{:splint/disable [style/plus-zero]} (+ 1 x)"))
+  (it "handles quote"
+    (expect-match nil
+      "'(+ 1 x)")))
 
 (defdescribe throws-in-rules-test
   (it "handles exceptions in rules"

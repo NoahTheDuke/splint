@@ -4,6 +4,14 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Fixed
+
+- Autocorrect skips quoted forms.
+- Autocorrect only saves non-empty files.
+- Autocorrect removes all rules that don't have `:autocorrect`.
+- `--interactive` has been added to the CLI options, making it usable. (oops)
+- `--interactive` now applies `:autocorrect` so it doesn't need to be specified.
+
 ## 1.17.0 - 2024-09-08
 
 **Big feature:** Safety and Autocorrection

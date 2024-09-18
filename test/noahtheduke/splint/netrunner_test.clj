@@ -48,7 +48,7 @@
     style/eq-false 3
     style/eq-nil 15
     style/eq-true 2
-    style/eq-zero 272
+    style/eq-zero 274
     style/filter-complement 25
     style/filter-vec-filterv 2
     style/first-first 2
@@ -78,7 +78,7 @@
     style/when-not-empty? 13})
 
 (defdescribe ^:integration netrunner-test
-  (given [netrunner (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "v133")
+  (given [netrunner (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "v134")
           results (run-impl [{:path netrunner}]
                             {:config-override
                              (-> all-enabled-config
@@ -94,6 +94,6 @@
               (group-by :rule-name)
               (#(update-vals % count))))))
     (it "sums correctly"
-      (expect (= 3332 (count (:diagnostics results)))))
+      (expect (= 3334 (count (:diagnostics results)))))
     (it "checks the correct number of files"
       (expect (= 242 (count (:checked-files results)))))))

@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## 1.17.1 - 2024-09-20
+
 ### Fixed
 
 - Autocorrect skips quoted forms.

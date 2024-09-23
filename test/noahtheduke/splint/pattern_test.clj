@@ -47,9 +47,9 @@
                     {1 2}
                     #{1 2 3}
                     [1 2 3]]]
-      (expect (nil? ((sut/pattern '(1 2 (? _ symbol?))) (list 1 2 input))))))
-  (expect '{?a a}
-    ((sut/pattern '(1 2 (? a symbol?))) '(1 2 a)))
+      (expect (nil? ((sut/pattern '(1 2 (? _ symbol?))) (list 1 2 input)))))
+    (expect (= '{?a a}
+               ((sut/pattern '(1 2 (? a symbol?))) '(1 2 a)))))
 
   (it "?*"
     (expect

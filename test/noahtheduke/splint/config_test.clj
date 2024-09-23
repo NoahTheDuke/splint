@@ -78,15 +78,16 @@
 
 (defdescribe read-project-file
   (describe "deps.edn"
-    (with-temp-files [deps-edn "deps.edn"]
-      (print-to-file!
-        deps-edn
-        "{:deps {org.clojure/clojure {:mvn/version \"1.8.0\"}}}")
-      (expect
-        (match? {:clojure-version {:major 1 :minor 8 :incremental 0
-                                   :qualifier nil :snapshot nil}
-                 :paths []}
-          (sut/read-project-file deps-edn nil))))
+    (it "with a single dependency"
+      (with-temp-files [deps-edn "deps.edn"]
+        (print-to-file!
+         deps-edn
+         "{:deps {org.clojure/clojure {:mvn/version \"1.8.0\"}}}")
+        (expect
+          (match? {:clojure-version {:major 1 :minor 8 :incremental 0
+                                     :qualifier nil :snapshot nil}
+                   :paths []}
+                  (sut/read-project-file deps-edn nil)))))
     (it "with multiple dependencies"
       (with-temp-files [deps-edn "deps.edn"]
         (print-to-file!

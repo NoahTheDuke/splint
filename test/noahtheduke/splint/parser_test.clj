@@ -52,10 +52,10 @@
                      :doc "docstring"
                      :arities (([] (+ 1 1)))
                      :arglists ([])}}
-                  (meta (parse-string "(defn example \"docstring\" [] (+ 1 1))")))))
-      (expect
-        (match? {:splint/defn-form absent}
-                (meta (parse-string "(defn-partial abc (+ 1 2 3))")))))
+                  (meta (parse-string "(defn example \"docstring\" [] (+ 1 1))"))))
+        (expect
+          (match? {:splint/defn-form absent}
+                  (meta (parse-string "(defn-partial abc (+ 1 2 3))"))))))
 
     (describe "Clojure 1.12 :param-tags"
       (given [ret (parse-string "(map ^[int] Integer/hash (range 10))")]

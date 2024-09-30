@@ -59,7 +59,7 @@
     style/eq-false 2
     style/eq-true 5
     style/eq-zero 2
-    style/is-eq-order 19
+    style/is-eq-order 27
     style/multiple-arity-order 1
     style/neg-checks 7
     style/new-object 5
@@ -97,4 +97,4 @@
          (m/equals clj-kondo-diagnostics)
          (update-vals diagnostics count))))
     (it "sums correctly"
-      (expect (= 1254 (count (:diagnostics results)))))))
+      (expect (= 1262 (count (:diagnostics results)))))))

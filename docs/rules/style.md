@@ -334,12 +334,12 @@ ffirst is succinct and meaningful.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | true        | 1.15.0        | 1.15.0          |
+| true               | true | true        | 1.15.0        | <<next>>        |
 
 `clojure.test/is` expects `=`-based assertions to put the expected value first.
 
 This rule uses two checks on the `=` call to determine if it should issue a diagnostic:
-* Is the first argument a symbol or a list with a symbol at the head? (A variable/local or a call.)
+* Is the first argument a symbol or an unquoted list? (A variable/local or a call.)
 * Is the second argument a nil, boolean, char, number, keyword, or string?
 
 ### Examples

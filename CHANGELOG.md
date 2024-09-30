@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Fixed
+
+- `style/is-eq-order` relaxed expected input to accept any non-quoted list. (See [#25](https://github.com/NoahTheDuke/splint/issues/25).)
+
 ## 1.17.1 - 2024-09-20
 
 ### Fixed

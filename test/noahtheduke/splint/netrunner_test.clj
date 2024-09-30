@@ -53,7 +53,7 @@
     style/filter-vec-filterv 2
     style/first-first 2
     style/first-next 1
-    style/is-eq-order 16
+    style/is-eq-order 127
     style/minus-one 8
     style/multiple-arity-order 2
     style/multiply-by-one 1
@@ -94,6 +94,6 @@
               (group-by :rule-name)
               (#(update-vals % count))))))
     (it "sums correctly"
-      (expect (= 3334 (count (:diagnostics results)))))
+      (expect (= 3445 (count (:diagnostics results)))))
     (it "checks the correct number of files"
       (expect (= 242 (count (:checked-files results)))))))

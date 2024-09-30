@@ -19,6 +19,13 @@
         :message "Expected value should go first"
         :alt '(is (= 200 status))}]
       "(is (= status 200))"
+      (single-rule-config rule-name))
+    (expect-match
+      [{:rule-name rule-name
+        :form '(is (= (:status result) "completed"))
+        :message "Expected value should go first"
+        :alt '(is (= "completed" (:status result)))}]
+      "(is (= (:status result) \"completed\"))"
       (single-rule-config rule-name)))
   (it "understands a message"
     (expect-match
@@ -36,4 +43,12 @@
     (expect-match
       nil
       "(is (= (hash-set :a 1) #{:a 1}))"
+      (single-rule-config rule-name))
+    (expect-match
+      nil
+      "(is (= '(:status result) \"completed\"))"
+      (single-rule-config rule-name))
+    (expect-match
+      nil
+      "(is (= `(:status ~result) \"completed\"))"
       (single-rule-config rule-name))))

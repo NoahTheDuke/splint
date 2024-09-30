@@ -454,7 +454,7 @@
  {:description "With `clojure.test/is`, expected value should be first."
   :enabled true
   :added "1.15.0"
-  :updated "1.15.0"}
+  :updated "<<next>>"}
 
  style/let-do
  {:description "`let` has an implicit `do`."

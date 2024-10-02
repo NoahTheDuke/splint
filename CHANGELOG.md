@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### New Rules
+
+- `lint/defmethod-names`: Require that `defmethod` calls define a name for the function body. This helps improve stack traces. Suggested names are built from the dispatch value and cannot be trusted to be unique or usable, so while the rule is safe, it does not support autocorrect. Disabled by default.
+
 ### Fixed
 
 - `style/is-eq-order` relaxed expected input to accept any non-quoted list. (See [#25](https://github.com/NoahTheDuke/splint/issues/25).)
@@ -46,7 +50,7 @@ The [Rules Overview](docs/rules-overview.md) has been expanded as well.
 
 ### New rules
 
-- `lint/redundant-call-str`: Don't call `str` on input that's guaranteed to be a string: Prefer `"foo"` to `(str "foo")`, `(str "foo" bar)` to `(str (str "foo" bar))`, and `(format "foo%s" bar)` to `(str (format "foo%s" bar))`. (See [clj-kondo#2323](https://github.com/clj-kondo/clj-kondo/issues/2323) for inspiration.)
+- `lint/redundant-str-call`: Don't call `str` on input that's guaranteed to be a string: Prefer `"foo"` to `(str "foo")`, `(str "foo" bar)` to `(str (str "foo" bar))`, and `(format "foo%s" bar)` to `(str (format "foo%s" bar))`. (See [clj-kondo#2323](https://github.com/clj-kondo/clj-kondo/issues/2323) for inspiration.)
 - `lint/duplicate-case-test`: Don't use the same case test constant more than once.
 - `lint/locking-object`: Prefer to lock on a symbol bound to `(Object.)`.
 

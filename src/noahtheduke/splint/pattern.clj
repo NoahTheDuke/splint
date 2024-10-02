@@ -65,42 +65,62 @@
 
 #_(remove-all-methods read-form)
 
-(defmethod read-form :default [ctx pattern form]
+(defmethod read-form :default
+  read-form--default
+  [ctx pattern form]
   `(throw (ex-info "default" {:type ~(read-dispatch ctx pattern form)
                               :pattern '~pattern})))
 
-(defmethod read-form :any [ctx _pattern _form]
+(defmethod read-form :any
+  read-form--any
+  [ctx _pattern _form]
   ctx)
 
-(defmethod read-form :nil [ctx _pattern form]
+(defmethod read-form :nil
+  read-form--nil
+  [ctx _pattern form]
   `(when (nil? ~form)
      ~ctx))
 
-(defmethod read-form :boolean [ctx pattern form]
+(defmethod read-form :boolean
+  read-form--boolean
+  [ctx pattern form]
   `(when (identical? ~pattern ~form)
      ~ctx))
 
-(defmethod read-form :char [ctx pattern form]
+(defmethod read-form :char
+  read-form--char
+  [ctx pattern form]
   `(when (identical? ~pattern ~form)
      ~ctx))
 
-(defmethod read-form :number [ctx pattern form]
+(defmethod read-form :number
+  read-form--number
+  [ctx pattern form]
   `(when (or (identical? ~pattern ~form) (= ~pattern ~form))
      ~ctx))
 
-(defmethod read-form :keyword [ctx pattern form]
+(defmethod read-form :keyword
+  read-form--keyword
+  [ctx pattern form]
   `(when (identical? ~pattern ~form)
      ~ctx))
 
-(defmethod read-form :string [ctx pattern form]
+(defmethod read-form :string
+  read-form--string
+  [ctx pattern form]
   `(when (.equals ^String ~pattern ~form)
      ~ctx))
 
-(defmethod read-form :symbol [ctx pattern form]
+(defmethod read-form :symbol
+  read-form--symbol
+  [ctx pattern form]
   `(when (= '~pattern ~form)
      ~ctx))
 
-(defmethod read-form :quote [ctx pattern form]
+(defmethod read-form :quote
+  read-form--quote
+  [ctx pattern form]
   (let [children-form (gensym "quote-form-")
         interior-pattern (second pattern)
         interior-pattern (vary-meta* interior-pattern assoc :splint/lit true)]
@@ -133,7 +153,9 @@
        (when (~pred ~children-form)
          ~(match-binding ctx bind children-form)))))
 
-(defmethod read-form :? [ctx pattern form]
+(defmethod read-form :?
+  read-form--?
+  [ctx pattern form]
   (let [[_?sym bind & [pred]] pattern]
     (cond
       (nil? pred)
@@ -349,10 +371,14 @@
      (variable-seq-match ~ctx ~pattern ~form)
      (simple-seq-match ~ctx ~pattern ~form)))
 
-(defmethod read-form :list [ctx pattern form]
+(defmethod read-form :list
+  read-form--list
+  [ctx pattern form]
   (seq-match ctx pattern form))
 
-(defmethod read-form :vector [ctx pattern form]
+(defmethod read-form :vector
+  read-form--vector
+  [ctx pattern form]
   (seq-match ctx pattern form))
 
 (defn non-coll?
@@ -362,7 +388,9 @@
     (:nil :boolean :char :number :keyword :string :symbol) true
     false))
 
-(defmethod read-form :map [ctx pattern form]
+(defmethod read-form :map
+  read-form--map
+  [ctx pattern form]
   {:pre [(every? (comp non-coll? simple-type) (keys pattern))]}
   (let [new-form (gensym "map-form-")
         binds (mapcat
@@ -377,7 +405,9 @@
          (let [~@binds]
            ~ctx)))))
 
-(defmethod read-form :set [ctx _pattern _form]
+(defmethod read-form :set
+  read-form--set
+  [ctx _pattern _form]
   `(when (set? ~ctx)
      ~ctx))
 

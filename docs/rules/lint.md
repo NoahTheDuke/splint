@@ -49,6 +49,29 @@ a `do` to force it into 'expression position'.
 
 ---
 
+## lint/defmethod-names
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| false              | true | false       | <<next>>      | <<next>>        |
+
+When defining methods for a multimethod, everything after the dispatch-val is given directly to `fn`. This allows for providing a name to the defmethod function, which will make stack traces easier to read.
+
+Examples:
+
+; avoid
+(defmethod some-multi :foo
+  [arg1 arg2]
+  (+ arg1 arg2))
+
+; prefer
+(defmethod some-multi :foo
+  some-multi--foo
+  [arg1 arg2]
+  (+ arg1 arg2))
+
+---
+
 ## lint/divide-by-one
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |

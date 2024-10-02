@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.clj-kondo-test
   (:require
    [clojure.tools.gitlibs :as gl]
-   [lazytest.core :refer [defdescribe expect given it]]
+   [lazytest.core :refer [defdescribe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.matchers :as m]
    [noahtheduke.splint.config :refer [default-config]]
@@ -21,6 +21,7 @@
 (def clj-kondo-diagnostics
   '{lint/assoc-fn 1
     lint/body-unquote-splicing 2
+    lint/defmethod-names 63
     lint/dot-class-method 2
     lint/dot-obj-method 1
     lint/fn-wrapper 1
@@ -80,21 +81,21 @@
     style/when-not-do 1})
 
 (defdescribe ^:integration clj-kondo-test
-  (given [clj-kondo (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2023.05.26")
-          results (run-impl [{:path clj-kondo}]
-                            {:config-override
-                             (-> all-enabled-config
-                                 (assoc :silent true)
-                                 (assoc :parallel false)
-                                 #_(assoc :autocorrect true)
-                                 (assoc :clojure-version *clojure-version*))})
-          diagnostics (->> results
-                           :diagnostics
-                           (group-by :rule-name))]
+  (let [clj-kondo (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2023.05.26")
+        results (run-impl [{:path clj-kondo}]
+                          {:config-override
+                           (-> all-enabled-config
+                               (assoc :silent true)
+                               (assoc :parallel false)
+                               #_(assoc :autocorrect true)
+                               (assoc :clojure-version *clojure-version*))})
+        diagnostics (->> results
+                         :diagnostics
+                         (group-by :rule-name))]
     (it "has the right diagnostics"
       (expect
         (match?
          (m/equals clj-kondo-diagnostics)
          (update-vals diagnostics count))))
     (it "sums correctly"
-      (expect (= 1262 (count (:diagnostics results)))))))
+      (expect (= 1325 (count (:diagnostics results)))))))

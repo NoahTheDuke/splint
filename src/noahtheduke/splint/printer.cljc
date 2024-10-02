@@ -84,7 +84,9 @@
   {:arglists '([output diagnostic])}
   #'print-find-dispatch)
 
-(defmethod print-find "full" [_ {:keys [filename rule-name form line column message alt]}]
+(defmethod print-find "full"
+  print-find--full
+  [_ {:keys [filename rule-name form line column message alt]}]
   (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)
   (newline)
   (when form
@@ -94,15 +96,21 @@
     (print-form alt))
   (newline))
 
-(defmethod print-find "simple" [_ {:keys [filename rule-name line column message]}]
+(defmethod print-find "simple"
+  print-find--simple
+  [_ {:keys [filename rule-name line column message]}]
   (printf "%s:%s:%s [%s] - %s" filename line column rule-name message)
   (newline))
 
-(defmethod print-find "clj-kondo" [_ {:keys [filename line column message]}]
+(defmethod print-find "clj-kondo"
+  print-find--clj-kondo
+  [_ {:keys [filename line column message]}]
   (printf "%s:%s:%s: warning: %s" filename line column message)
   (newline))
 
-(defmethod print-find "markdown" [_ {:keys [filename rule-name form line column message alt]}]
+(defmethod print-find "markdown"
+  print-find--markdown
+  [_ {:keys [filename rule-name form line column message alt]}]
   (println "----")
   (newline)
   (printf "#### %s:%s:%s [%s]" filename line column rule-name)
@@ -127,7 +135,9 @@
   (when (:trace ex)
     (update ex :trace st->str)))
 
-(defmethod print-find "json" [_ diagnostic]
+(defmethod print-find "json"
+  print-find--json
+  [_ diagnostic]
   (let [diagnostic (-> diagnostic
                      (update :rule-name pr-str)
                      (update :form pr-str)
@@ -139,7 +149,9 @@
        :clj (json/write diagnostic *out* {:escape-slash false}))
     (newline)))
 
-(defmethod print-find "json-pretty" [_ diagnostic]
+(defmethod print-find "json-pretty"
+  print-find--json-pretty
+  [_ diagnostic]
   (let [diagnostic (-> diagnostic
                      (update :rule-name pr-str)
                      (update :form pr-str)
@@ -151,13 +163,17 @@
        :clj (json/pprint diagnostic {:escape-slash false}))
     (newline)))
 
-(defmethod print-find "edn" [_ diagnostic]
+(defmethod print-find "edn"
+  print-find--edn
+  [_ diagnostic]
   (let [diagnostic (-> diagnostic
                      (update :filename str)
                      (update :exception update-trace))]
     (prn (into (sorted-map) diagnostic))))
 
-(defmethod print-find "edn-pretty" [_ diagnostic]
+(defmethod print-find "edn-pretty"
+  print-find--edn-pretty
+  [_ diagnostic]
   (let [diagnostic (-> diagnostic
                      (update :filename str)
                      (update :exception update-trace))]

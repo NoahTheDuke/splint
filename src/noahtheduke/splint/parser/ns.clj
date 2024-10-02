@@ -36,6 +36,7 @@
       args)))
 
 (defmethod derive-aliases 'import
+  derive-aliases--import
   [[_ & args]]
   {:imports (parse-imports args)})
 
@@ -99,14 +100,17 @@
     (into {} (map (fn [dep] [(:alias dep) (:ns dep)])))))
 
 (defmethod derive-aliases 'require
+  derive-aliases--require
   [deps]
   {:aliases (derive-aliases-from-deps (next deps))})
 
 (defmethod derive-aliases 'use
+  derive-aliases--use
   [deps]
   {:aliases (derive-aliases-from-deps (next deps))})
 
 (defmethod derive-aliases 'ns
+  derive-aliases--ns
   [[_ ns_ & references]]
   (let [libspecs (->> references
                    (filter sequential?)
@@ -122,19 +126,23 @@
                 (apply merge-with into))}))
 
 (defmethod derive-aliases 'in-ns
+  derive-aliases--in-ns
   [[_ ns_]]
   {:current (drop-quote ns_)})
 
 (defmethod derive-aliases 'alias
+  derive-aliases--alias
   [[_ alias namespace-sym]]
   (when (and (quoted? alias) (quoted? namespace-sym))
     {:aliases {(second alias) (second namespace-sym)}}))
 
 (defmethod derive-aliases 'refer
+  derive-aliases--refer
   [_args]
   nil)
 
 (defmethod derive-aliases 'refer-clojure
+  derive-aliases--refer-clojure
   [_args]
   nil)
 

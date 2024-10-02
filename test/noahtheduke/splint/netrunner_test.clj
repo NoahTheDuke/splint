@@ -20,6 +20,7 @@
 
 (def netrunner-diagnostics
   '{lint/assoc-fn 4
+    lint/defmethod-names 265
     lint/fn-wrapper 42
     lint/if-else-nil 13
     lint/if-let-else-nil 2
@@ -78,22 +79,22 @@
     style/when-not-empty? 13})
 
 (defdescribe ^:integration netrunner-test
-  (given [netrunner (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "v134")
+  (let [netrunner (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "v134")
           results (run-impl [{:path netrunner}]
                             {:config-override
                              (-> all-enabled-config
                                  (assoc :silent true)
                                  (assoc :parallel false)
-                                 (assoc :clojure-version *clojure-version*))})]
+                                 (assoc :clojure-version *clojure-version*))})
+        diagnostics (->> results
+                         :diagnostics
+                         (group-by :rule-name))]
     (it "has the right diagnostics"
       (expect
         (match?
          (m/equals netrunner-diagnostics)
-         (->> results
-              :diagnostics
-              (group-by :rule-name)
-              (#(update-vals % count))))))
+         (update-vals diagnostics count))))
     (it "sums correctly"
-      (expect (= 3445 (count (:diagnostics results)))))
+      (expect (= 3710 (count (:diagnostics results)))))
     (it "checks the correct number of files"
       (expect (= 242 (count (:checked-files results)))))))

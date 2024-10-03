@@ -34,7 +34,7 @@
                       "-f" "rebel-readline.main/-main"]}
   :test {:extra-paths ["test"]
          :extra-deps {nubank/matcher-combinators {:mvn/version "3.9.1"}
-                      io.github.noahtheduke/lazytest {:mvn/version "0.5.0"}}}
+                      io.github.noahtheduke/lazytest {:mvn/version "1.0.0"}}}
   :runner {:main-opts ["-m" "lazytest.main" "--output" "dots"]}
   :profile {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.2.2"}
                          com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.3.0"}}

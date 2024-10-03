@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.re-frame-test
   (:require
    [clojure.tools.gitlibs :as gl]
-   [lazytest.core :refer [defdescribe it expect given]]
+   [lazytest.core :refer [defdescribe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.matchers :as m]
    [noahtheduke.splint.config :refer [default-config]]
@@ -41,20 +41,21 @@
 
 (defdescribe re-frame-test
   {:integration true}
-  (given [re-frame (gl/procure "https://github.com/day8/re-frame.git" 'day8/re-frame "v1.3.0")
-          results (run-impl [{:path re-frame}]
+  (let [re-frame (delay (gl/procure "https://github.com/day8/re-frame.git" 'day8/re-frame "v1.3.0"))
+        results (delay
+                  (run-impl [{:path @re-frame}]
                             {:config-override
                              (-> all-enabled-config
                                  (assoc :silent true)
                                  (assoc :parallel false)
-                                 (assoc :clojure-version *clojure-version*))})]
+                                 (assoc :clojure-version *clojure-version*))}))
+        diagnostics (delay (->> @results
+                                :diagnostics
+                                (group-by :rule-name)))]
     (it "has the right diagnostics"
       (expect
         (match?
          (m/equals re-frame-diagnostics)
-         (->> results
-              :diagnostics
-              (group-by :rule-name)
-              (#(update-vals % count))))))
+         (update-vals @diagnostics count))))
     (it "sums correctly"
-      (expect (= 72 (count (:diagnostics results)))))))
+      (expect (= 72 (count (:diagnostics @results)))))))

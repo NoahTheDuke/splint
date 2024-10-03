@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.config-test
   (:require
-   [lazytest.core :refer [defdescribe it expect describe given]]
+   [lazytest.core :refer [defdescribe it expect describe]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [noahtheduke.splint.config :as sut]
    [noahtheduke.splint.path-matcher :refer [->matcher]]
@@ -40,7 +40,7 @@
 
 (defdescribe disable-genre-test
   (describe ":enable"
-    (given [config (update-vals @sut/default-config #(assoc % :enabled true))]
+    (let [config (update-vals @sut/default-config #(assoc % :enabled true))]
       (it "can disable a whole genre"
         (doseq [c (->> (sut/merge-config config {'style {:enabled false}})
                     (vals)

@@ -81,21 +81,22 @@
     style/when-not-do 1})
 
 (defdescribe ^:integration clj-kondo-test
-  (let [clj-kondo (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2023.05.26")
-        results (run-impl [{:path clj-kondo}]
-                          {:config-override
-                           (-> all-enabled-config
-                               (assoc :silent true)
-                               (assoc :parallel false)
-                               #_(assoc :autocorrect true)
-                               (assoc :clojure-version *clojure-version*))})
-        diagnostics (->> results
-                         :diagnostics
-                         (group-by :rule-name))]
+  (let [clj-kondo (delay (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2023.05.26"))
+        results (delay
+                  (run-impl [{:path @clj-kondo}]
+                            {:config-override
+                             (-> all-enabled-config
+                                 (assoc :silent true)
+                                 (assoc :parallel false)
+                                 #_(assoc :autocorrect true)
+                                 (assoc :clojure-version *clojure-version*))}))
+        diagnostics (delay (->> @results
+                                :diagnostics
+                                (group-by :rule-name)))]
     (it "has the right diagnostics"
       (expect
         (match?
          (m/equals clj-kondo-diagnostics)
-         (update-vals diagnostics count))))
+         (update-vals @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1325 (count (:diagnostics results)))))))
+      (expect (= 1325 (count (:diagnostics @results)))))))

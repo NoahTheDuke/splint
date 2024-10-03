@@ -8,7 +8,7 @@
    [clojure.edn :as edn]
    [clojure.java.io :as io]
    [clojure.string :as str]
-   [lazytest.core :refer [defdescribe expect it given]]
+   [lazytest.core :refer [defdescribe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [noahtheduke.splint.runner :as splint]
    [noahtheduke.splint.test-helpers :refer [with-out-str-data-map]])
@@ -25,15 +25,15 @@
         (with-out-str-data-map)))))
 
 (defdescribe config-test
-  (given [default-config (slurp (io/resource "config/default.edn"))
+  (it "has sorted default config"
+    (let [default-config (slurp (io/resource "config/default.edn"))
           config-as-vec (->> default-config
-                          (str/split-lines)
-                          (drop-while #(not= \{ (first %)))
-                          (str/join \newline))
+                             (str/split-lines)
+                             (drop-while #(not= \{ (first %)))
+                             (str/join \newline))
           config-as-vec (edn/read-string
-                          (str "[" (subs config-as-vec 1 (dec (count config-as-vec))) "]"))
+                         (str "[" (subs config-as-vec 1 (dec (count config-as-vec))) "]"))
           config-keys (take-nth 2 config-as-vec)]
-    (it "has sorted default config"
       (match? config-keys (sort config-keys)))))
 
 (def mpl-v2
@@ -48,12 +48,12 @@
     "test/noahtheduke/splint/utils/test_runner.clj"})
 
 (defdescribe license-test
-  (given [files (->> ["dev" "resources" "src" "test"]
-                  (mapcat #(file-seq (io/file %)))
-                  (filter #(and (.isFile ^File %)
-                             (some (fn [ft] (str/ends-with? % ft))
-                               [".clj" ".cljs" ".cljc" ".edn"]))))]
-    (it "all files have license headers"
+  (it "all files have license headers"
+    (let [files (->> ["dev" "resources" "src" "test"]
+                     (mapcat #(file-seq (io/file %)))
+                     (filter #(and (.isFile ^File %)
+                                   (some (fn [ft] (str/ends-with? % ft))
+                                         [".clj" ".cljs" ".cljc" ".edn"]))))]
       (doseq [file files
               :let [f-str (slurp file)]]
         (let [result (if (adapted-files (str file))

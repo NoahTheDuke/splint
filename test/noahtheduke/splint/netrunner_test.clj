@@ -79,22 +79,23 @@
     style/when-not-empty? 13})
 
 (defdescribe ^:integration netrunner-test
-  (let [netrunner (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "v134")
-          results (run-impl [{:path netrunner}]
+  (let [netrunner (delay (gl/procure "https://github.com/mtgred/netrunner.git" 'mtgred/netrunner "v134"))
+        results (delay
+                  (run-impl [{:path @netrunner}]
                             {:config-override
                              (-> all-enabled-config
                                  (assoc :silent true)
                                  (assoc :parallel false)
-                                 (assoc :clojure-version *clojure-version*))})
-        diagnostics (->> results
-                         :diagnostics
-                         (group-by :rule-name))]
+                                 (assoc :clojure-version *clojure-version*))}))
+        diagnostics (delay (->> @results
+                                :diagnostics
+                                (group-by :rule-name)))]
     (it "has the right diagnostics"
       (expect
         (match?
          (m/equals netrunner-diagnostics)
-         (update-vals diagnostics count))))
+         (update-vals @diagnostics count))))
     (it "sums correctly"
-      (expect (= 3710 (count (:diagnostics results)))))
+      (expect (= 3710 (count (:diagnostics @results)))))
     (it "checks the correct number of files"
-      (expect (= 242 (count (:checked-files results)))))))
+      (expect (= 242 (count (:checked-files @results)))))))

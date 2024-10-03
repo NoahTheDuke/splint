@@ -6,7 +6,7 @@
   (:require
    [clojure.java.io :as io]
    [clojure.string :as str]
-   [lazytest.core :refer [defdescribe expect given it describe]]
+   [lazytest.core :refer [defdescribe describe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [noahtheduke.splint.parser :as parser]
    [noahtheduke.splint.printer :as sut :refer [*fipp-width*]]
@@ -267,9 +267,9 @@
           (print-result-lines "edn-pretty"))))))
 
 (defdescribe print-form-test
-  (given [f (slurp (io/file "corpus" "special_characters.clj"))
+  (it "prints all special characters"
+    (let [f (slurp (io/file "corpus" "special_characters.clj"))
           parsed (parser/parse-file {:contents f :ext :clj})]
-    (it "prints all special characters"
       (expect (= (format "[%s]"
                          (->> ["@a"
                                "@(a)"

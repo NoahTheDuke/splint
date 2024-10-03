@@ -6,13 +6,14 @@
   (:require
    [clojure.java.io :as io]
    [clojure.string :as str]
-   [lazytest.core :refer [defdescribe expect it given]]
+   [lazytest.core :refer [defdescribe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [noahtheduke.splint.dev :as dev]
    [noahtheduke.splint.rules :refer [global-rules]]
    [noahtheduke.splint.runner :as sut]
    [noahtheduke.splint.test-helpers :refer [expect-match print-to-file!
-                                            with-temp-files with-out-str-data-map]]))
+                                            with-out-str-data-map
+                                            with-temp-files]]))
 
 (set! *warn-on-reflection* true)
 
@@ -131,7 +132,7 @@
           (sut/prepare-rules config rules))))))
 
 (defdescribe update-rules-test
-  (given [config (into {} (select-keys @dev/dev-config
+  (let [config (into {} (select-keys @dev/dev-config
                           ['lint/if-else-nil
                            'naming/lisp-case
                            'lint/warn-on-reflection]))
@@ -288,7 +289,7 @@
           (sut/auto-gen-config [(io/file "corpus" "printer_test.clj")] {:clojure-version {:major 1 :minor 11}}))))))
 
 (defdescribe only-flag-test
-  (given [only-test-file (io/file "corpus" "only_test.clj")]
+  (let [only-test-file (io/file "corpus" "only_test.clj")]
     (it "can select a single rule"
       (expect
         (match?

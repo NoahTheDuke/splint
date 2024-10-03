@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.rules.metrics.fn-length-test
   (:require
-   [lazytest.core :refer [defdescribe describe given it]]
+   [lazytest.core :refer [defdescribe describe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
@@ -16,7 +16,7 @@
 (defdescribe fn-length-defn-test
 
   (describe "chosen style"
-    (given [config (config {:chosen-style :defn})]
+    (let [config (config {:chosen-style :defn})]
       (it :defn
         (expect-match nil "(defn n\n[]\n1 2 3)" config)
         (expect-match
@@ -44,7 +44,7 @@
              :end-column 5}]
           "(defn n\n([] 1 2 3)\n([arg1]\na\nb\nc\nd\n5\n6\n7\n8\n9\n10\n11))"
           config)))
-    (given [config (config {:chosen-style :body})]
+    (let [config (config {:chosen-style :body})]
       (it :body
         (expect-match nil "(defn n\n[]\n1 2 3)" config)
         (expect-match
@@ -74,7 +74,7 @@
           config))))
 
   (describe "config length"
-    (given [config (config {:length 5})]
+    (let [config (config {:length 5})]
       (it "custom length"
         (expect-match nil "(defn n\n[]\n0\n1\n2\n3)" config)
         (expect-match

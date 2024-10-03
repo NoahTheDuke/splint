@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.parser-test
   (:require
-   [lazytest.core :refer [defdescribe describe expect given it]]
+   [lazytest.core :refer [defdescribe describe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.matchers :refer [absent]]
    [noahtheduke.splint.parser.defn :refer [parse-defn]]
@@ -58,7 +58,7 @@
                   (meta (parse-string "(defn-partial abc (+ 1 2 3))"))))))
 
     (describe "Clojure 1.12 :param-tags"
-      (given [ret (parse-string "(map ^[int] Integer/hash (range 10))")]
+      (let [ret (parse-string "(map ^[int] Integer/hash (range 10))")]
         (it "returns the list as data"
           (expect '(map Integer/hash (range 10)) ret))
         (it "attaches the :param-tags as metadata"

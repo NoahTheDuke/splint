@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.netrunner-test
   (:require
    [clojure.tools.gitlibs :as gl]
-   [lazytest.core :refer [defdescribe it given expect]]
+   [lazytest.core :refer [defdescribe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.matchers :as m]
    [noahtheduke.splint.config :refer [default-config]]

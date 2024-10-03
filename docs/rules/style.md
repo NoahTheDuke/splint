@@ -334,7 +334,7 @@ ffirst is succinct and meaningful.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | true        | 1.15.0        | <<next>>        |
+| true               | true | true        | 1.15.0        | 1.18.0          |
 
 `clojure.test/is` expects `=`-based assertions to put the expected value first.
 

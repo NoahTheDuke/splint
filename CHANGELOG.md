@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## 1.18.0 - 2024-10-03
+
 ### New Rules
 
 - `lint/defmethod-names`: Require that `defmethod` calls define a name for the function body. This helps improve stack traces. Suggested names are built from the dispatch value and cannot be trusted to be unique or usable, so while the rule is safe, it does not support autocorrect. Disabled by default.

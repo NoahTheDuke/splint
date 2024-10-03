@@ -53,7 +53,7 @@ a `do` to force it into 'expression position'.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| false              | true | false       | <<next>>      | <<next>>        |
+| false              | true | false       | 1.18.0        | 1.18.0          |
 
 When defining methods for a multimethod, everything after the dispatch-val is given directly to `fn`. This allows for providing a name to the defmethod function, which will make stack traces easier to read.
 

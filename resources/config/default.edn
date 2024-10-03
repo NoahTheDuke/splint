@@ -22,8 +22,8 @@
  lint/defmethod-names
  {:description "Specify a function name for defmethod bodies."
   :enabled false
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.18.0"
+  :updated "1.18.0"}
 
  lint/divide-by-one
  {:description "Dividing by 1 is a no-op."
@@ -460,7 +460,7 @@
  {:description "With `clojure.test/is`, expected value should be first."
   :enabled true
   :added "1.15.0"
-  :updated "<<next>>"}
+  :updated "1.18.0"}
 
  style/let-do
  {:description "`let` has an implicit `do`."

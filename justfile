@@ -30,11 +30,11 @@ clojure-lsp:
     clojure-lsp diagnostics
 
 [no-exit-message]
-test *args:
+test *args="--output dots":
     clojure -M:dev:test:runner -e :integration {{args}}
 
 [no-exit-message]
-test-all *args:
+test-all *args="--output dots":
     just clojure-lsp
     bb run splint
     clojure -M:dev:test:runner {{args}}

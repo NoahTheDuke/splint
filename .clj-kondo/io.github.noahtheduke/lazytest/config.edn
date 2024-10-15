@@ -1,2 +1,13 @@
 {:lint-as {lazytest.core/defdescribe clojure.core/def
-           lazytest.core/given clojure.core/let}}
+           lazytest.core/defcontext clojure.core/def
+           lazytest.core/defsuite clojure.core/def
+           lazytest.core/given clojure.core/let
+           lazytest.core/around clojure.core/fn
+           ;; clojure.test interface
+           lazytest.experimental.interfaces.clojure-test/deftest clojure.test/deftest
+           lazytest.experimental.interfaces.clojure-test/testing clojure.test/testing
+           lazytest.experimental.interfaces.clojure-test/is clojure.test/is
+           lazytest.experimental.interfaces.clojure-test/are clojure.test/are
+           ;; xunit interface
+           lazytest.experimental.interfaces.xunit/defsuite clojure.core/def
+           }}

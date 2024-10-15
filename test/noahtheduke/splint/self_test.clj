@@ -9,20 +9,11 @@
    [clojure.java.io :as io]
    [clojure.string :as str]
    [lazytest.core :refer [defdescribe expect it]]
-   [lazytest.extensions.matcher-combinators :refer [match?]]
-   [noahtheduke.splint.runner :as splint]
-   [noahtheduke.splint.test-helpers :refer [with-out-str-data-map]])
+   [lazytest.extensions.matcher-combinators :refer [match?]])
   (:import
    (java.io File)))
 
 (set! *warn-on-reflection* true)
-
-(defdescribe dogfooding-test
-  (it "no diagnostics in splint"
-    (match? {:result {:diagnostics []
-                      :exit 0}}
-      (-> (splint/run ["--quiet" "--no-parallel" "dev" "src" "test"])
-        (with-out-str-data-map)))))
 
 (defdescribe config-test
   (it "has sorted default config"

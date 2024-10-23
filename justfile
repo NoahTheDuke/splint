@@ -30,14 +30,18 @@ clojure-lsp:
     clojure-lsp diagnostics
 
 [no-exit-message]
+@test-raw *args:
+    clojure -M:dev:test:runner --md README.md {{args}}
+
+[no-exit-message]
 test *args="--output dots":
-    clojure -M:dev:test:runner -e :integration {{args}}
+    just test-raw -e :integration {{args}}
 
 [no-exit-message]
 test-all *args="--output dots":
     just clojure-lsp
     bb run splint
-    clojure -M:dev:test:runner {{args}}
+    just test-raw {{args}}
 
 @new-rule arg:
     clojure -M:new-rule -n {{arg}}

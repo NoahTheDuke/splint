@@ -9,11 +9,50 @@
    [clojure.java.io :as io]
    [clojure.string :as str]
    [lazytest.core :refer [defdescribe expect it]]
-   [lazytest.extensions.matcher-combinators :refer [match?]])
+   [lazytest.extensions.matcher-combinators :refer [match?]]
+   [noahtheduke.splint.runner :as splint :refer [prepare-rules]]
+   [noahtheduke.splint.test-helpers :refer [with-out-str-data-map]]
+   [noahtheduke.splint.config :as conf]
+   [noahtheduke.splint.rules :refer [global-rules]]
+   [noahtheduke.splint.parser :refer [parse-file]])
   (:import
    (java.io File)))
 
 (set! *warn-on-reflection* true)
+
+(defdescribe dogfooding-test
+  (it "no diagnostics in splint"
+    (match? {:result {:diagnostics []
+                      :exit 0}}
+      (-> (splint/run ["--quiet" "--no-parallel" "dev" "src" "test"])
+        (with-out-str-data-map)
+          ((fn [{results :result}]
+             {:result {:diagnostics (:diagnostics results)
+                       :exit (:exit results)}}))))))
+
+(defdescribe splint-clj-test
+  (let [requires (->> (parse-file {:contents (slurp "src/noahtheduke/splint.clj")})
+                      (first) ; ns form
+                      (last) ; rules :require
+                      (next) ; drop :require
+                      ,)]
+    (it "lists every rule"
+      (expect (= requires (sort requires))
+        "Rules in `noahtheduke.splint` must be in sorted order."))
+    (it "has all of the rules in the rules config"
+      (let [rule-names (->> requires
+                            (map str)
+                            (map #(take-last 2 (str/split % #"\.")))
+                            (map #(symbol (first %) (last %))))
+            config-rule-names (-> @conf/default-config
+                                  (assoc :clojure-version {:major 99})
+                                  (prepare-rules (:rules @global-rules))
+                                  :rules
+                                  (->> (remove #(.equals "dev" (:genre (val %))))
+                                       (map (comp str key))
+                                       (map #(str/replace % "?" ""))
+                                       (map symbol)))]
+        (expect (= (set rule-names) (set config-rule-names)))))))
 
 (defdescribe config-test
   (it "has sorted default config"

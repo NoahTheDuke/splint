@@ -40,7 +40,6 @@ test *args="--output dots":
 [no-exit-message]
 test-all *args="--output dots":
     just clojure-lsp
-    bb run splint
     just test-raw {{args}}
 
 @new-rule arg:

@@ -46,6 +46,7 @@
 - [style/prefer-vary-meta](#styleprefer-vary-meta)
 - [style/reduce-str](#stylereduce-str)
 - [style/redundant-let](#styleredundant-let)
+- [style/redundant-nested-call](#styleredundant-nested-call)
 - [style/redundant-regex-constructor](#styleredundant-regex-constructor)
 - [style/set-literal-as-fn](#styleset-literal-as-fn)
 - [style/single-key-in](#stylesingle-key-in)
@@ -1097,6 +1098,31 @@ Directly nested lets can be merged into a single let block.
 (let [a 1
       b 2]
   (println a b))
+```
+
+---
+
+## style/redundant-nested-call
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+Some clojure.core functions and macros take a variable number of args, so there's no need to nest calls.
+
+> [!NOTE]
+> This can have performance implications in certain hot-loops.
+
+### Examples
+
+```clojure
+; avoid
+(+ 1 2 (+ 3 4))
+(comp :foo :bar (comp :qux :ply))
+
+; prefer
+(+ 1 2 3 4)
+(comp :foo :bar :qux :ply)
 ```
 
 ---

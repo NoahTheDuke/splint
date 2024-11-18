@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### New Rules
+
+- `style/redundant-nested-call`: Prefer `(+ 1 2 3 4)` to `(+ 1 2 (+ 3 4))`.
+
 ### Added
 
 - Table of Contents to each of the rules pages.

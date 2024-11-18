@@ -70,6 +70,7 @@
     style/prefer-clj-string 5
     style/prefer-condp 5
     style/prefer-for-with-literals 1
+    style/redundant-nested-call 10
     style/redundant-regex-constructor 9
     style/single-key-in 36
     style/tostring 2
@@ -96,6 +97,6 @@
          (m/equals netrunner-diagnostics)
          (update-vals @diagnostics count))))
     (it "sums correctly"
-      (expect (= 3710 (count (:diagnostics @results)))))
+      (expect (= 3720 (count (:diagnostics @results)))))
     (it "checks the correct number of files"
       (expect (= 242 (count (:checked-files @results)))))))

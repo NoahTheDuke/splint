@@ -115,6 +115,7 @@
    noahtheduke.splint.rules.style.prefer-vary-meta
    noahtheduke.splint.rules.style.reduce-str
    noahtheduke.splint.rules.style.redundant-let
+   noahtheduke.splint.rules.style.redundant-nested-call
    noahtheduke.splint.rules.style.redundant-regex-constructor
    noahtheduke.splint.rules.style.set-literal-as-fn
    noahtheduke.splint.rules.style.single-key-in

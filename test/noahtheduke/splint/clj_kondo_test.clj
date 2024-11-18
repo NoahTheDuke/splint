@@ -73,6 +73,7 @@
     style/prefer-condp 3
     style/prefer-vary-meta 6
     style/redundant-let 6
+    style/redundant-nested-call 6
     style/single-key-in 2
     style/tostring 4
     style/useless-do 6
@@ -99,4 +100,4 @@
          (m/equals clj-kondo-diagnostics)
          (update-vals @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1325 (count (:diagnostics @results)))))))
+      (expect (= 1331 (count (:diagnostics @results)))))))

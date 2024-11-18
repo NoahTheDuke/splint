@@ -20,9 +20,7 @@
 (defn check-parent [ctx]
   (when-let [parent-form (:parent-form ctx)]
     (and (seq? parent-form)
-      (case (first parent-form)
-        (case -> ->> cond-> cond->> some-> some->>) true
-        false))))
+      (#{'case '-> '->> 'cond-> 'cond->> 'some-> 'some->>} (first parent-form)))))
 
 (defrule lint/redundant-call
   "A number of core functions take any number of arguments and return the arg

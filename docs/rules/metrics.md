@@ -1,5 +1,12 @@
 # Metrics
 
+<!-- toc -->
+
+- [metrics/fn-length](#metricsfn-length)
+- [metrics/parameter-count](#metricsparameter-count)
+
+<!-- tocstop -->
+
 ## metrics/fn-length
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |

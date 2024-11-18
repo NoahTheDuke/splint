@@ -185,6 +185,7 @@
 
 (defn genre-page [genre]
   (->> [(str "# " (str/capitalize genre))
+        "<!-- toc -->"
         (build-rules genre)]
     (str/join (str \newline \newline))))
 

@@ -48,6 +48,7 @@ test-all *args="--output dots":
 
 @gen-docs:
     clojure -M:gen-docs
+    bb scripts/gen_toc.clj
 
 today := `date +%F`
 current_version := `cat resources/SPLINT_VERSION | xargs`

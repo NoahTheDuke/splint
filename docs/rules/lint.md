@@ -1,5 +1,45 @@
 # Lint
 
+<!-- toc -->
+
+- [lint/assoc-fn](#lintassoc-fn)
+- [lint/body-unquote-splicing](#lintbody-unquote-splicing)
+- [lint/defmethod-names](#lintdefmethod-names)
+- [lint/divide-by-one](#lintdivide-by-one)
+- [lint/dorun-map](#lintdorun-map)
+- [lint/dot-class-method](#lintdot-class-method)
+- [lint/dot-obj-method](#lintdot-obj-method)
+- [lint/duplicate-case-test](#lintduplicate-case-test)
+- [lint/duplicate-field-name](#lintduplicate-field-name)
+- [lint/fn-wrapper](#lintfn-wrapper)
+- [lint/if-else-nil](#lintif-else-nil)
+- [lint/if-let-else-nil](#lintif-let-else-nil)
+- [lint/if-nil-else](#lintif-nil-else)
+- [lint/if-not-both](#lintif-not-both)
+- [lint/if-not-do](#lintif-not-do)
+- [lint/if-not-not](#lintif-not-not)
+- [lint/if-same-truthy](#lintif-same-truthy)
+- [lint/into-literal](#lintinto-literal)
+- [lint/let-if](#lintlet-if)
+- [lint/let-when](#lintlet-when)
+- [lint/locking-object](#lintlocking-object)
+- [lint/loop-do](#lintloop-do)
+- [lint/loop-empty-when](#lintloop-empty-when)
+- [lint/missing-body-in-when](#lintmissing-body-in-when)
+- [lint/not-empty?](#lintnot-empty)
+- [lint/prefer-method-values](#lintprefer-method-values)
+- [lint/prefer-require-over-use](#lintprefer-require-over-use)
+- [lint/redundant-call](#lintredundant-call)
+- [lint/redundant-str-call](#lintredundant-str-call)
+- [lint/require-explicit-param-tags](#lintrequire-explicit-param-tags)
+- [lint/take-repeatedly](#linttake-repeatedly)
+- [lint/thread-macro-one-arg](#lintthread-macro-one-arg)
+- [lint/try-splicing](#linttry-splicing)
+- [lint/underscore-in-namespace](#lintunderscore-in-namespace)
+- [lint/warn-on-reflection](#lintwarn-on-reflection)
+
+<!-- tocstop -->
+
 ## lint/assoc-fn
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |

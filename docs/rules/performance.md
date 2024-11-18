@@ -1,5 +1,17 @@
 # Performance
 
+<!-- toc -->
+
+- [performance/assoc-many](#performanceassoc-many)
+- [performance/avoid-satisfies](#performanceavoid-satisfies)
+- [performance/dot-equals](#performancedot-equals)
+- [performance/get-in-literals](#performanceget-in-literals)
+- [performance/get-keyword](#performanceget-keyword)
+- [performance/into-transducer](#performanceinto-transducer)
+- [performance/single-literal-merge](#performancesingle-literal-merge)
+
+<!-- tocstop -->
+
 ## performance/assoc-many
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |

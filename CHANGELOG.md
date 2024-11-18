@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Added
+
+- Table of Contents to each of the rules pages.
+
 ## 1.18.0 - 2024-10-03
 
 ### New Rules

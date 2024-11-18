@@ -1,5 +1,16 @@
 # Naming
 
+<!-- toc -->
+
+- [naming/conventional-aliases](#namingconventional-aliases)
+- [naming/conversion-functions](#namingconversion-functions)
+- [naming/lisp-case](#naminglisp-case)
+- [naming/predicate](#namingpredicate)
+- [naming/record-name](#namingrecord-name)
+- [naming/single-segment-namespace](#namingsingle-segment-namespace)
+
+<!-- tocstop -->
+
 ## naming/conventional-aliases
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |

@@ -25,10 +25,10 @@ jobs:
       - name: Setup clojure-lsp
         uses: clojure-lsp/setup-clojure-lsp@v1
         with:
-          clojure-lsp-version: 2024.08.05-18.16.00
+          clojure-lsp-version: 2024.11.08-17.49.29
 
       - name: Install clojure tools
-        uses: DeLaGuardo/setup-clojure@12.5
+        uses: DeLaGuardo/setup-clojure@13
         with:
           cli: 1.11.4.1474
           bb: 1.3.191
@@ -39,6 +39,7 @@ jobs:
           path: |
             ~/.m2/repository
             ~/.gitlibs
+            ~/.deps.clj
           key: cljdeps-${{ hashFiles('deps.edn', 'bb.edn') }}
           restore-keys: cljdeps-
 

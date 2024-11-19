@@ -7,8 +7,7 @@
    [nextjournal.beholder :as beholder]
    [noahtheduke.splint.config :as config]
    [noahtheduke.splint.rules :refer [global-rules]]
-   [noahtheduke.splint]
-   [taoensso.tufte :as tufte]))
+   [noahtheduke.splint]))
 
 (set! *warn-on-reflection* true)
 
@@ -29,8 +28,6 @@
       (when (#{:create :modify} (:type action))
         (reset! dev-config (build-default-config))))
     "resources"))
-
-(tufte/add-basic-println-handler! {})
 
 (comment
   (beholder/stop watcher))

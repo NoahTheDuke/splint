@@ -11,8 +11,7 @@
    [clojure.tools.namespace.repl :as tns]
    [criterium.core :as criterium]
    [noahtheduke.splint.dev]
-   [potemkin :refer [import-vars]]
-   [taoensso.tufte :as tufte]))
+   [potemkin :refer [import-vars]]))
 
 (set! *warn-on-reflection* true)
 
@@ -29,7 +28,4 @@
    decompile]
   [criterium.core
    quick-bench
-   bench]
-  [taoensso.tufte
-   p
-   profile])
+   bench])

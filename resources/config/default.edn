@@ -366,7 +366,7 @@
  ;; Style Rules
 
  style/apply-str
- {:description "Check for round-about `clojure.string/reverse`."
+ {:description "Check for round-about `clojure.string/join`."
   :enabled true
   :added "0.1"
   :updated "1.2.0"}

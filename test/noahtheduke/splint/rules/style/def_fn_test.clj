@@ -30,4 +30,9 @@
         :message "Prefer `defn` instead of `def` wrapping `fn`."
         :alt '(defn some-func [i] (+ i 100))}]
       "(def some-func (fn [i] (+ i 100)))"
+      (single-rule-config rule-name)))
+  (it "finds fn in def"
+    (expect-match
+      nil
+      "`(def some-func (fn [i] (+ i 100)))"
       (single-rule-config rule-name))))

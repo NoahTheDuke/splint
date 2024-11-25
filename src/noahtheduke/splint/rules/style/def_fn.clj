@@ -5,7 +5,8 @@
 (ns ^:no-doc noahtheduke.splint.rules.style.def-fn
   (:require
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-   [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.rules :refer [defrule]]
+   [noahtheduke.splint.rules.helpers :refer [syntax-quote??]]))
 
 (set! *warn-on-reflection* true)
 
@@ -36,11 +37,13 @@
               '(def ?name ?*args (let ?binds ((? fn fn??) ?*fn-body)))]
    :autocorrect true
    :on-match (fn [ctx rule form {:syms [?name ?args ?binds ?fn-body]}]
-               (let [new-form (if ?binds
-                                (list 'let ?binds (list* 'defn ?name (concat ?args ?fn-body)))
-                                (list* 'defn ?name (concat ?args ?fn-body)))
-                     message (if ?binds
-                               "Prefer `let` wrapping `defn`."
-                               "Prefer `defn` instead of `def` wrapping `fn`.")]
-                 (->diagnostic ctx rule form {:replace-form new-form
-                                              :message message})))})
+               (when-not (and (sequential? (:parent-form ctx))
+                              (syntax-quote?? (first (:parent-form ctx))))
+                 (let [new-form (if ?binds
+                                  (list 'let ?binds (list* 'defn ?name (concat ?args ?fn-body)))
+                                  (list* 'defn ?name (concat ?args ?fn-body)))
+                       message (if ?binds
+                                 "Prefer `let` wrapping `defn`."
+                                 "Prefer `defn` instead of `def` wrapping `fn`.")]
+                   (->diagnostic ctx rule form {:replace-form new-form
+                                                :message message}))))})

@@ -1,8 +1,6 @@
-{:lint-as {lazytest.core/defdescribe clojure.core/def
-           lazytest.core/defcontext clojure.core/def
-           lazytest.core/defsuite clojure.core/def
-           lazytest.core/given clojure.core/let
+{:lint-as {lazytest.core/given clojure.core/let
            lazytest.core/around clojure.core/fn
+           lazytest.core/defdescribe clojure.core/def
            ;; clojure.test interface
            lazytest.experimental.interfaces.clojure-test/deftest clojure.test/deftest
            lazytest.experimental.interfaces.clojure-test/testing clojure.test/testing
@@ -10,4 +8,16 @@
            lazytest.experimental.interfaces.clojure-test/are clojure.test/are
            ;; xunit interface
            lazytest.experimental.interfaces.xunit/defsuite clojure.core/def
-           }}
+           ;; Expectations v2
+           lazytest.extensions.expectations/defexpect clojure.core/def
+           lazytest.extensions.expectations/from-each clojure.core/for
+           lazytest.extensions.expectations/=? clojure.core/=
+           }
+ :hooks {:analyze-call {;; Expectations v2
+                        lazytest.extensions.expectations/more-> hooks.lazytest.expectations/more->
+                        lazytest.extensions.expectations/more-of hooks.lazytest.expectations/more-of
+                        }}
+ :linters {:clojure-lsp/unused-public-var
+           {:exclude-when-defined-by #{lazytest.core/defdescribe
+                                       lazytest.experimental.interfaces.xunit/defsuite
+                                       lazytest.experimental.interfaces.clojure-test/deftest}}}}

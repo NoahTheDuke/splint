@@ -29,7 +29,6 @@
     lint/if-let-else-nil 2
     lint/if-nil-else 2
     lint/if-not-both 3
-    lint/into-literal 1
     lint/let-if 8
     lint/let-when 2
     lint/missing-body-in-when 2
@@ -100,4 +99,4 @@
          (m/equals clj-kondo-diagnostics)
          (update-vals @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1331 (count (:diagnostics @results)))))))
+      (expect (= 1330 (count (:diagnostics @results)))))))

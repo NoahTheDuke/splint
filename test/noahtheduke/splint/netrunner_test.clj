@@ -27,7 +27,7 @@
     lint/if-nil-else 4
     lint/if-not-both 26
     lint/if-same-truthy 5
-    lint/into-literal 43
+    lint/into-literal 42
     lint/let-if 3
     lint/redundant-call 2
     lint/redundant-str-call 44
@@ -97,6 +97,6 @@
          (m/equals netrunner-diagnostics)
          (update-vals @diagnostics count))))
     (it "sums correctly"
-      (expect (= 3720 (count (:diagnostics @results)))))
+      (expect (= 3719 (count (:diagnostics @results)))))
     (it "checks the correct number of files"
       (expect (= 242 (count (:checked-files @results)))))))

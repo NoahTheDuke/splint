@@ -123,7 +123,7 @@
  {:description "Prefer `vec` or `set` to `(into [] ...)`."
   :enabled true
   :added "0.1"
-  :updated "<<next>>"}
+  :updated "1.19.0"}
 
  lint/let-if
  {:description "Prefer `if-let` to `(let [x (abc)] (if x y z))`."
@@ -406,7 +406,7 @@
  {:description "Prefer `(defn [])` to `(def (fn []))`."
   :enabled true
   :added "1.0"
-  :updated "<<next>>"}
+  :updated "1.19.0"}
 
  style/eq-false
  {:description "Prefer `false?` to `(= x false)`."
@@ -642,8 +642,8 @@
  style/redundant-nested-call
  {:description "Prefer `(+ 1 2 3 4)` to `(+ 1 2 (+ 3 4))`."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.19.0"
+  :updated "1.19.0"}
 
  style/redundant-regex-constructor
  {:description "Rely on regex literal."

@@ -21,7 +21,7 @@ More explicit instructions can be found in the [installation][installation], [us
 ### Clojure CLI
 
 ```clojure lazytest/skip=true
-:aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.18.0"}
+:aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.19.0"}
                                 org.clojure/clojure {:mvn/version "1.11.1"}}
                    :main-opts ["-m" "noahtheduke.splint"]}}
 ```
@@ -33,7 +33,7 @@ Run with `clojure -M:splint [args...]`.
 Add this to `project.clj`:
 
 ```clojure lazytest/skip=true
-:profiles {:dev {:dependencies [[io.github.noahtheduke/splint "1.18.0"]
+:profiles {:dev {:dependencies [[io.github.noahtheduke/splint "1.19.0"]
                                 [org.clojure/clojure "1.11.1"]]}}
 :aliases {"splint" ["run" "-m" "noahtheduke.splint"]})
 ```

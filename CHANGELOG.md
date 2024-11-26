@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## 1.19.0 - 2024-11-26
+
 ### New Rules
 
 - `style/redundant-nested-call`: Prefer `(+ 1 2 3 4)` to `(+ 1 2 (+ 3 4))`.

@@ -198,7 +198,7 @@ It's nice when the default branch is consistent.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | true        | 1.0           | 1.0             |
+| true               | true | true        | 1.0           | 1.19.0          |
 
 `(defn [])` is preferable over `(def (fn []))`. Extrapolate to closures too.
 
@@ -1106,7 +1106,7 @@ Directly nested lets can be merged into a single let block.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | <<next>>      | <<next>>        |
+| true               | true | false       | 1.19.0        | 1.19.0          |
 
 Some clojure.core functions and macros take a variable number of args, so there's no need to nest calls.
 

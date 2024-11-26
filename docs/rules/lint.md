@@ -439,7 +439,7 @@ Two `not`s cancel each other out.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | true        | 0.1           | 0.1             |
+| true               | true | true        | 0.1           | 1.19.0          |
 
 `vec` and `set` are succinct and meaningful.
 

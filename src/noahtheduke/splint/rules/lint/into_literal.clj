@@ -4,6 +4,7 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.into-literal
   (:require
+   [clojure.string :as str]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]))
 
@@ -13,6 +14,14 @@
   (and (or (set? form)
          (vector? form))
     (empty? form)))
+
+(defn check-parent [ctx]
+  (when-let [parent-form (:parent-form ctx)]
+    (and (list? parent-form)
+         (symbol? (first parent-form))
+         (let [s (name (first parent-form))]
+           (or (str/ends-with? s "->")
+               (str/ends-with? s "->>"))))))
 
 (defrule lint/into-literal
   "`vec` and `set` are succinct and meaningful.
@@ -34,8 +43,9 @@
   {:pattern '(into (? literal set-or-vec?) ?coll)
    :autocorrect true
    :on-match (fn [ctx rule form {:syms [?literal ?coll]}]
-               (let [replace-form (list (if (set? ?literal) 'set 'vec) ?coll)
-                     message (format "Use `%s` instead of recreating it."
-                               (if (set? ?literal) "set" "vec"))]
-                 (->diagnostic ctx rule form {:replace-form replace-form
-                                              :message message})))})
+               (when-not (check-parent ctx)
+                 (let [replace-form (list (if (set? ?literal) 'set 'vec) ?coll)
+                       message (format "Use `%s` instead of recreating it."
+                                       (if (set? ?literal) "set" "vec"))]
+                   (->diagnostic ctx rule form {:replace-form replace-form
+                                                :message message}))))})

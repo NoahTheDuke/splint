@@ -12,6 +12,11 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Table of Contents to each of the rules pages.
 
+### Fixed
+
+- `style/into-literal` ignores when in a threaded context.
+- `lint/def-fn` ignores when in a syntax-quoted context.
+
 ## 1.18.0 - 2024-10-03
 
 ### New Rules

@@ -63,4 +63,16 @@
       (expect-match
         nil
         "(into #{1 2} coll)"
+        (single-rule-config rule-name))))
+
+  (describe "ignores when threaded"
+    (it "checks for ->"
+      (expect-match
+        nil
+        "(-> (into [] coll))"
+        (single-rule-config rule-name)))
+    (it "checks for ->>"
+      (expect-match
+        nil
+        "(->> (into [] coll))"
         (single-rule-config rule-name)))))

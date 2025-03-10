@@ -8,6 +8,7 @@
    [clojure.string :as str]
    [lazytest.core :refer [defdescribe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
+   [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]
    [noahtheduke.splint.dev :as dev]
    [noahtheduke.splint.rules :refer [global-rules]]
    [noahtheduke.splint.runner :as sut]
@@ -136,7 +137,7 @@
                           ['lint/if-else-nil
                            'naming/lisp-case
                            'lint/warn-on-reflection]))
-        config (update-vals config #(assoc % :enabled true))
+        config (update-vals* config #(assoc % :enabled true))
         rules (into {} (select-keys (:rules @global-rules)
                          ['lint/if-else-nil
                           'naming/lisp-case

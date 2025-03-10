@@ -8,6 +8,7 @@
    [lazytest.core :refer [defdescribe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.matchers :as m]
+   [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]
    [noahtheduke.splint.config :refer [default-config]]
    [noahtheduke.splint.runner :refer [run-impl]]))
 
@@ -15,7 +16,7 @@
 
 (def all-enabled-config
   (-> @default-config
-      (update-vals #(assoc % :enabled true))
+      (update-vals* #(assoc % :enabled true))
       (assoc-in ['style/set-literal-as-fn :enabled] false)))
 
 (def netrunner-diagnostics
@@ -95,7 +96,7 @@
       (expect
         (match?
          (m/equals netrunner-diagnostics)
-         (update-vals @diagnostics count))))
+         (update-vals* @diagnostics count))))
     (it "sums correctly"
       (expect (= 3719 (count (:diagnostics @results)))))
     (it "checks the correct number of files"

@@ -287,7 +287,7 @@
        (reduce-kv
         (fn [m k v]
           (assoc! m (f k) v))
-        (transient m))
+        (transient {}))
        (persistent!)
        (#(with-meta % (meta m)))))
 
@@ -298,6 +298,6 @@
        (reduce-kv
         (fn [m k v]
           (assoc! m k (f v)))
-        (transient m))
+        (transient {}))
        (persistent!)
        (#(with-meta % (meta m)))))

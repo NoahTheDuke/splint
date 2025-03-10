@@ -7,6 +7,7 @@
    [clojure.tools.gitlibs :as gl]
    [lazytest.core :refer [defdescribe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
+   [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]
    [matcher-combinators.matchers :as m]
    [noahtheduke.splint.config :refer [default-config]]
    [noahtheduke.splint.runner :refer [run-impl]]))
@@ -15,7 +16,7 @@
 
 (def all-enabled-config
   (-> @default-config
-      (update-vals #(assoc % :enabled true))
+      (update-vals* #(assoc % :enabled true))
       (assoc-in ['style/set-literal-as-fn :enabled] false)))
 
 (def clj-kondo-diagnostics
@@ -97,6 +98,6 @@
       (expect
         (match?
          (m/equals clj-kondo-diagnostics)
-         (update-vals @diagnostics count))))
+         (update-vals* @diagnostics count))))
     (it "sums correctly"
       (expect (= 1330 (count (:diagnostics @results)))))))

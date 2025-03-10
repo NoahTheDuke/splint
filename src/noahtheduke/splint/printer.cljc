@@ -146,7 +146,7 @@
                      (update :exception update-trace)
                      (->> (into (sorted-map))))]
     #?(:bb (println (json/generate-string diagnostic))
-       :clj (json/write diagnostic *out* {:escape-slash false}))
+       :clj (json/write diagnostic *out* :escape-slash false))
     (newline)))
 
 (defmethod print-find "json-pretty"
@@ -160,7 +160,7 @@
                      (update :exception update-trace)
                      (->> (into (sorted-map))))]
     #?(:bb (println (json/generate-string diagnostic {:pretty true}))
-       :clj (json/pprint diagnostic {:escape-slash false}))
+       :clj (json/pprint diagnostic :escape-slash false))
     (newline)))
 
 (defmethod print-find "edn"

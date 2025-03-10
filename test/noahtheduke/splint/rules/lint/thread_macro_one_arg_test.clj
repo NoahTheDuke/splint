@@ -51,35 +51,35 @@
           :form '(-> arg form)
           :alt '(form arg)}]
         "(-> arg form)"
-        (single-rule-config rule-name :chosen-style :inline))
+        (single-rule-config rule-name {:chosen-style :inline}))
       (expect-match
         [{:alt '(form [arg])}]
         "(-> [arg] form)"
-        (single-rule-config rule-name :chosen-style :inline))
+        (single-rule-config rule-name {:chosen-style :inline}))
       (expect-match
         [{:alt '(form {:a arg})}]
         "(-> {:a arg} form)"
-        (single-rule-config rule-name :chosen-style :inline))
+        (single-rule-config rule-name {:chosen-style :inline}))
       (expect-match
         [{:alt '(form #{arg})}]
         "(-> #{arg} form)"
-        (single-rule-config rule-name :chosen-style :inline))
+        (single-rule-config rule-name {:chosen-style :inline}))
       (expect-match
         [{:alt '(form arg)}]
         "(->> arg form)"
-        (single-rule-config rule-name :chosen-style :inline))
+        (single-rule-config rule-name {:chosen-style :inline}))
       (expect-match
         [{:alt '(form [arg])}]
         "(->> [arg] form)"
-        (single-rule-config rule-name :chosen-style :inline))
+        (single-rule-config rule-name {:chosen-style :inline}))
       (expect-match
         [{:alt '(form {:a arg})}]
         "(->> {:a arg} form)"
-        (single-rule-config rule-name :chosen-style :inline))
+        (single-rule-config rule-name {:chosen-style :inline}))
       (expect-match
         [{:alt '(form #{arg})}]
         "(->> #{arg} form)"
-        (single-rule-config rule-name :chosen-style :inline)))
+        (single-rule-config rule-name {:chosen-style :inline})))
 
     (it :avoid-collections
       (expect-match
@@ -87,26 +87,26 @@
           :form '(-> arg form)
           :alt '(form arg)}]
         "(-> arg form)"
-        (single-rule-config rule-name :chosen-style :avoid-collections))
+        (single-rule-config rule-name {:chosen-style :avoid-collections}))
       (expect-match nil
         "(-> [arg] form)"
-        (single-rule-config rule-name :chosen-style :avoid-collections))
+        (single-rule-config rule-name {:chosen-style :avoid-collections}))
       (expect-match nil
         "(-> {:a arg} form)"
-        (single-rule-config rule-name :chosen-style :avoid-collections))
+        (single-rule-config rule-name {:chosen-style :avoid-collections}))
       (expect-match nil
         "(-> #{arg} form)"
-        (single-rule-config rule-name :chosen-style :avoid-collections))
+        (single-rule-config rule-name {:chosen-style :avoid-collections}))
       (expect-match
         [{:alt '(form arg)}]
         "(->> arg form)"
-        (single-rule-config rule-name :chosen-style :avoid-collections))
+        (single-rule-config rule-name {:chosen-style :avoid-collections}))
       (expect-match nil
         "(->> [arg] form)"
-        (single-rule-config rule-name :chosen-style :avoid-collections))
+        (single-rule-config rule-name {:chosen-style :avoid-collections}))
       (expect-match nil
         "(->> {:a arg} form)"
-        (single-rule-config rule-name :chosen-style :avoid-collections))
+        (single-rule-config rule-name {:chosen-style :avoid-collections}))
       (expect-match nil
         "(->> #{arg} form)"
-        (single-rule-config rule-name :chosen-style :avoid-collections)))))
+        (single-rule-config rule-name {:chosen-style :avoid-collections})))))

@@ -11,18 +11,22 @@
 
 (def rule-name 'style/prefer-clj-math)
 
+(defn config-with-version
+  [minor]
+  (assoc (single-rule-config rule-name) :clojure-version {:major 1 :minor minor}))
+
 (defdescribe prefer-clj-math-test
   (it "checks function calls"
     (expect-match
       '[{:alt clojure.math/atan}]
       "(Math/atan 45)"
-      (single-rule-config rule-name)))
+      (config-with-version 12)))
   (it "checks bare symbols"
     (expect-match
       '[{:alt clojure.math/PI}]
       "Math/PI"
-      (single-rule-config rule-name)))
+      (config-with-version 12)))
 
   (it "ignores if version is too low"
     (expect-match nil "(Math/atan 45)"
-      (assoc (single-rule-config rule-name) :clojure-version {:major 1 :minor 9}))))
+      (config-with-version 9))))

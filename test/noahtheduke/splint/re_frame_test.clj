@@ -9,13 +9,14 @@
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.matchers :as m]
    [noahtheduke.splint.config :refer [default-config]]
-   [noahtheduke.splint.runner :refer [run-impl]]))
+   [noahtheduke.splint.runner :refer [run-impl]]
+   [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]))
 
 (set! *warn-on-reflection* true)
 
 (def all-enabled-config
   (-> @default-config
-      (update-vals #(assoc % :enabled true))
+      (update-vals* #(assoc % :enabled true))
       (assoc-in ['style/set-literal-as-fn :enabled] false)))
 
 (def re-frame-diagnostics
@@ -56,6 +57,6 @@
       (expect
         (match?
          (m/equals re-frame-diagnostics)
-         (update-vals @diagnostics count))))
+         (update-vals* @diagnostics count))))
     (it "sums correctly"
       (expect (= 72 (count (:diagnostics @results)))))))

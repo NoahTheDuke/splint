@@ -7,9 +7,9 @@
   (:require
    [noahtheduke.splint.utils :as utils]))
 
-(alias 'p 'noahtheduke.splint.pattern)
-
 (set! *warn-on-reflection* true)
+
+(alias 'p 'noahtheduke.splint.pattern)
 
 (defn rest-arg?
   "There's no good way to tell the difference between the pattern

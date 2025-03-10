@@ -14,6 +14,7 @@
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.core :as mc]
    [matcher-combinators.model :refer [->Mismatch]]
+   [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]
    [noahtheduke.splint.config :refer [merge-config]]
    [noahtheduke.splint.dev :as dev]
    [noahtheduke.splint.parser :refer [parse-file]]
@@ -143,12 +144,14 @@
      (binding [*out* file#]
        ~@(map #(list `println %) body))))
 
-(defn single-rule-config [rule-name & {:as style}]
-  (-> @dev/dev-config
-    (update-vals #(assoc % :enabled false))
-    (update rule-name assoc :enabled true)
-    (cond->
-      style (update rule-name merge style))))
+(defn single-rule-config
+  ([rule-name] (single-rule-config rule-name nil))
+  ([rule-name style]
+   (-> @dev/dev-config
+       (update-vals* #(assoc % :enabled false))
+       (update rule-name assoc :enabled true)
+       (cond->
+         style (update rule-name merge style)))))
 
 (defn file-match [^File this actual]
   (cond

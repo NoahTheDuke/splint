@@ -8,7 +8,8 @@
    [noahtheduke.splint.rules.style.redundant-nested-call :as sut]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]
    [clojure.java.io :as io]
-   [noahtheduke.splint.dev :as dev]))
+   [noahtheduke.splint.dev :as dev]
+   [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]))
 
 (set! *warn-on-reflection* true)
 
@@ -58,4 +59,4 @@
         :alt '(str (another-call))
         :line 14}]
       (io/file "corpus" "nested_calls.clj")
-      (update-vals @dev/dev-config #(assoc % :enabled true)))))
+      (update-vals* @dev/dev-config #(assoc % :enabled true)))))

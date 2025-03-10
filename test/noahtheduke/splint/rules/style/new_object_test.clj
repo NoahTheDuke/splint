@@ -11,10 +11,12 @@
 
 (def rule-name 'style/new-object)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    true (assoc :clojure-version {:major 1 :minor 11})
-    style (update rule-name merge style)))
+(defn config
+  ([] (config nil))
+  ([style]
+   (cond-> (single-rule-config rule-name)
+     true (assoc :clojure-version {:major 1 :minor 11})
+     style (update rule-name merge style))))
 
 (defn method-config []
   (-> (config {:chosen-style :method-value})

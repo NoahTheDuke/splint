@@ -6,6 +6,7 @@
   (:require
    [clojure.java.io :as io]
    [clojure.tools.gitlibs :as gl]
+   [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]
    [noahtheduke.splint.config :refer [default-config]]
    [noahtheduke.splint.rules :refer [global-rules]]
    [noahtheduke.splint.runner :refer [run]]))
@@ -13,7 +14,7 @@
 (set! *warn-on-reflection* true)
 
 (def all-enabled-config
-  (update-vals @default-config #(assoc % :enabled true)))
+  (update-vals* @default-config #(assoc % :enabled true)))
 
 (defn clj-kondo-analyzer-perf-test []
   (let [clj-kondo (gl/procure "https://github.com/clj-kondo/clj-kondo.git" 'clj-kondo/clj-kondo "v2023.05.26")

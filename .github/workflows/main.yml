@@ -25,7 +25,7 @@ jobs:
       - name: Setup clojure-lsp
         uses: clojure-lsp/setup-clojure-lsp@v1
         with:
-          clojure-lsp-version: 2024.11.08-17.49.29
+          clojure-lsp-version: 2025.03.07-17.42.36
 
       - name: Install clojure tools
         uses: DeLaGuardo/setup-clojure@13.0

@@ -14,7 +14,6 @@
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.core :as mc]
    [matcher-combinators.model :refer [->Mismatch]]
-   [matcher-combinators.result :as-alias result]
    [noahtheduke.splint.config :refer [merge-config]]
    [noahtheduke.splint.dev :as dev]
    [noahtheduke.splint.parser :refer [parse-file]]
@@ -27,6 +26,8 @@
    (noahtheduke.splint.path_matcher MatchHolder)))
 
 (set! *warn-on-reflection* true)
+
+(alias 'result 'matcher-combinators.result)
 
 (defmacro with-out-str-data-map
   "Adapted from clojure.core/with-out-str.

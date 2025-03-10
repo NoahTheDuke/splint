@@ -8,7 +8,7 @@
    [clojure.pprint :as pp]
    [clojure.string :as str]
    [clojure.tools.cli :as cli]
-   [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]
+   [noahtheduke.splint.clojure-ext.core :refer [postwalk* update-keys*]]
    [noahtheduke.splint.config :refer [default-config find-local-config
                                       load-config splint-version]]
    [noahtheduke.splint.rules :refer [global-rules]]))
@@ -78,7 +78,7 @@
                  ; else
                  "Something has gone wrong")
         result (into (sorted-map)
-                 (update-keys (pick-visible result) symbol))]
+                 (update-keys* (pick-visible result) symbol))]
     {:exit-message
      (format "%s%s%s:\n%s"
        (if (:config options)

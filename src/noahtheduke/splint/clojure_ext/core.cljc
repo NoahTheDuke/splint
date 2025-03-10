@@ -126,7 +126,6 @@
                   (f (.next iter)))
                 nil)))))
 
-#_{:clj-kondo/ignore [:unused-value]}
 (comment
   (let [coll (range 1000)]
     (println "run!")
@@ -272,3 +271,33 @@
                 :line (:line loc)
                 :column (:column loc)})))
     the-set))
+
+(defn parse-long*
+  "Backport of 1.11's parse-long"
+  [s]
+  (if (string? s)
+    (try (Long/parseLong s)
+         (catch NumberFormatException _ nil))
+    (throw (IllegalArgumentException. (str "Expected string, got " (type s))))))
+
+(defn update-keys*
+  "Backport of 1.11's update-keys"
+  [m f]
+  (->> m
+       (reduce-kv
+        (fn [m k v]
+          (assoc! m (f k) v))
+        (transient m))
+       (persistent!)
+       (#(with-meta % (meta m)))))
+
+(defn update-vals*
+  "Backport of 1.11's update-vals"
+  [m f]
+  (->> m
+       (reduce-kv
+        (fn [m k v]
+          (assoc! m k (f v)))
+        (transient m))
+       (persistent!)
+       (#(with-meta % (meta m)))))

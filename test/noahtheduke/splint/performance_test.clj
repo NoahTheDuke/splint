@@ -25,7 +25,6 @@
       ; v1.9+
       ; (swap! global-rules update :rules update-vals #(assoc % :pattern (constantly nil)))
       (with-redefs [noahtheduke.splint.runner/check-pattern (constantly nil)]
-        #_:clj-kondo/ignore
         (user/quick-bench
           (with-out-str (run ["--quiet" "--no-parallel" (str analyzer)]))))
       (finally

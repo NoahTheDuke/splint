@@ -7,7 +7,7 @@
    [clojure.java.io :as io]
    [clojure.string :as str]
    [edamame.core :as e]
-   [noahtheduke.splint.clojure-ext.core :refer [mapv*]]
+   [noahtheduke.splint.clojure-ext.core :refer [mapv* parse-long*]]
    [noahtheduke.splint.path-matcher :refer [->matcher]]
    [noahtheduke.splint.rules :refer [global-rules]])
   (:import
@@ -156,7 +156,7 @@
                                   "\n ;; " (-> @default-config rule-name :description)
                                   (when-let [supported-styles (-> @default-config rule-name :supported-styles)]
                                     (str "\n ;; :supported-styles " (pr-str supported-styles)))
-                                  "\n " (str rule-name) " {:enabled false}")))
+                                  "\n " rule-name " {:enabled false}")))
                       []))
         new-config (str/join
                      "\n"
@@ -181,9 +181,9 @@
                    (.group m "snapshot"))
         qualifier (when-not (.equals "SNAPSHOT" qualifier)
                     qualifier)]
-    {:major (parse-long (.group m "major"))
-     :minor (parse-long (.group m "minor"))
-     :incremental (parse-long (.group m "incremental"))
+    {:major (parse-long* (.group m "major"))
+     :minor (parse-long* (.group m "minor"))
+     :incremental (parse-long* (.group m "incremental"))
      :qualifier qualifier
      :snapshot snapshot}))
 

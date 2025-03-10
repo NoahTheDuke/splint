@@ -7,7 +7,7 @@
   (:require
    [clojure.java.io :as io]
    [noahtheduke.splint.cli :refer [validate-opts]]
-   [noahtheduke.splint.clojure-ext.core :refer [mapv* pmap* run!*]]
+   [noahtheduke.splint.clojure-ext.core :refer [mapv* pmap* run!* update-vals*]]
    [noahtheduke.splint.config :as conf]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.parser :refer [parse-file]]
@@ -106,7 +106,7 @@
   (if-let [disabled-rules (some-> form meta :splint/disable)]
     (if (true? disabled-rules)
       ;; disable everything
-      (update-vals
+      (update-vals*
         rules-map
         (fn [rule]
           (assoc-in rule [:config :enabled] false)))
@@ -114,7 +114,7 @@
       (let [{genres true specific-rules false} (group-by simple-symbol? disabled-rules)
             genres (into #{} (map str) genres)
             specific-rules (set specific-rules)]
-        (update-vals
+        (update-vals*
           rules-map
           (fn [rule]
             (let [genre (:genre rule)
@@ -178,7 +178,7 @@
     (update
       ctx
       :rules
-      update-vals
+      update-vals*
       (fn [rule]
         (if (map? rule)
           (some->> rule
@@ -279,7 +279,7 @@
           {:rules {}
            :rules-by-type {}}
           rule-names)
-      (update :rules-by-type update-vals sort))))
+      (update :rules-by-type update-vals* sort))))
 
 (defn init-context [rules config]
   (-> rules
@@ -362,7 +362,7 @@
     (build-result-map ctx files)))
 
 (defn auto-gen-config [paths options]
-  (let [all-enabled (update-vals @conf/default-config #(assoc % :enabled true))]
+  (let [all-enabled (update-vals* @conf/default-config #(assoc % :enabled true))]
     (conf/spit-config (run-impl paths {:config-override (merge options all-enabled)}))))
 
 (defn run

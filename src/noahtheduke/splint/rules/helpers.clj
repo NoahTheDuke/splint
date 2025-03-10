@@ -5,8 +5,9 @@
 (ns noahtheduke.splint.rules.helpers
   "Functions available by default in patterns."
   (:require
-   [noahtheduke.splint.pattern :as-alias p]
    [noahtheduke.splint.utils :as utils]))
+
+(alias 'p 'noahtheduke.splint.pattern)
 
 (set! *warn-on-reflection* true)
 

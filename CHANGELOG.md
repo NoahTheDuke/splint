@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Changed
+
+- Support Clojure 1.10, don't force downstream users to update.
+
 ## 1.19.0 - 2024-11-26
 
 ### New Rules

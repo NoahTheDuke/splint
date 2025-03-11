@@ -159,6 +159,14 @@
   :added "0.1"
   :updated "0.1"}
 
+ lint/misplaced-type-hint
+ {:description "Put type hint on function's param vector, not function name."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"
+  :links ["https://clojure.org/reference/java_interop#typehints"
+          "https://clojure.org/guides/faq#return_type_hint"]}
+
  lint/missing-body-in-when
  {:description "`when` calls should have at least 1 expression after the condition."
   :enabled true

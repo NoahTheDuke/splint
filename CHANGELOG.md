@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### New Rules
+
+- `lint/misplaced-type-hint`: Prefer `(defn make-str ^String [] "abc")` over `(defn ^String make-str [] "abc")`. Only checks `defn` forms at the moment.
+
 ### Changed
 
 - Support Clojure 1.10, don't force downstream users to update.

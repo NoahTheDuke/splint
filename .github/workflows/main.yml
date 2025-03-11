@@ -51,4 +51,4 @@ jobs:
         run: bb run splint
 
       - name: tests
-        run: clojure -M:v1.${{cljv}}:dev:test:runner
+        run: clojure -M:v1.${{ matrix.cljv }}:dev:test:runner

@@ -41,7 +41,9 @@ test *args="--output dots":
 test-all *args="--output dots":
     just clojure-lsp
     bb run splint
-    just test-raw {{args}}
+    clojure -M:v1.10:dev:test:runner --md README.md {{args}}
+    clojure -M:v1.11:dev:test:runner --md README.md {{args}}
+    clojure -M:v1.12:dev:test:runner --md README.md {{args}}
 
 @new-rule arg:
     clojure -M:new-rule -n {{arg}}

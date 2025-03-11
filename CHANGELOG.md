@@ -7,6 +7,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Changed
 
 - Support Clojure 1.10, don't force downstream users to update.
+- Add matrix testing for each supported clojure version to GHA.
 
 ## 1.19.0 - 2024-11-26
 

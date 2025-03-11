@@ -9,7 +9,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, macOS-latest]
         java: [11, 17, 21]
-        cljv: [10, 11, 12]
 
     runs-on: ${{ matrix.os }}
 
@@ -50,5 +49,8 @@ jobs:
       - name: splint self
         run: bb run splint
 
-      - name: tests
-        run: clojure -M:v1.${{ matrix.cljv }}:dev:test:runner
+      - name: Tests
+        run: |
+          clojure -M:v1.10:dev:test:runner
+          clojure -M:v1.11:dev:test:runner
+          clojure -M:v1.12:dev:test:runner

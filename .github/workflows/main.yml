@@ -51,6 +51,6 @@ jobs:
 
       - name: Tests
         run: |
-          clojure -M:v1.10:dev:test:runner
-          clojure -M:v1.11:dev:test:runner
-          clojure -M:v1.12:dev:test:runner
+          clojure -M:v1.10:dev:test:runner --output dots
+          clojure -M:v1.11:dev:test:runner --output dots
+          clojure -M:v1.12:dev:test:runner --output dots

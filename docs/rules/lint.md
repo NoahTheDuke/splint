@@ -25,6 +25,7 @@
 - [lint/locking-object](#lintlocking-object)
 - [lint/loop-do](#lintloop-do)
 - [lint/loop-empty-when](#lintloop-empty-when)
+- [lint/misplaced-type-hint](#lintmisplaced-type-hint)
 - [lint/missing-body-in-when](#lintmissing-body-in-when)
 - [lint/not-empty?](#lintnot-empty)
 - [lint/prefer-method-values](#lintprefer-method-values)
@@ -573,6 +574,42 @@ Empty loops with nested `when` can be `while`. Doesn't apply if the final expr o
 ; prefer
 (while (some-func) (println 1) (println 2))
 ```
+
+---
+
+## lint/misplaced-type-hint
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | 1.20.0        | 1.20.0          |
+
+In interop scenarios, it can be necessary to add a type hint to mark a function's return type. This can be done by adding metadata to the function's name symbol or to the function's param vector. The former works but is prone to errors and is not recommended by the core team, whereas the latter is the official method. (See links below for further discussion.)
+
+**NOTE:** Only checks `defn` forms. (Compare with [eastwood's `:wrong-tag`](https://github.com/jonase/eastwood#wrong-tag) linter.)
+
+### Examples
+
+```clojure
+; avoid
+(defn ^String make-str
+  []
+  "abc")
+
+(defn ^String make-str
+  ([] "abc")
+  ([a] (str a "abc")))
+
+; prefer
+(defn make-str ^String [] "abc")
+(defn make-str
+  (^String [] "abc")
+  (^String [a] (str a "abc")))
+```
+
+### Reference
+
+* <https://clojure.org/reference/java_interop#typehints>
+* <https://clojure.org/guides/faq#return_type_hint>
 
 ---
 

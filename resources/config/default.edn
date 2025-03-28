@@ -162,8 +162,8 @@
  lint/misplaced-type-hint
  {:description "Put type hint on function's param vector, not function name."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.20.0"
+  :updated "1.20.0"
   :links ["https://clojure.org/reference/java_interop#typehints"
           "https://clojure.org/guides/faq#return_type_hint"]}
 

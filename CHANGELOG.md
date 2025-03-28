@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## 1.20.0 - 2025-03-28
+
+## 1.20.0 - 2025-03-28
+
 ### New Rules
 
 - `lint/misplaced-type-hint`: Prefer `(defn make-str ^String [] "abc")` over `(defn ^String make-str [] "abc")`. Only checks `defn` forms at the moment.

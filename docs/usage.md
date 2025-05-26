@@ -49,7 +49,7 @@ Linting took 241ms, checked 115 files, 5 style warnings
 Some of the above options can be set in the [configuration file][configuration]. See that page for further details.
 
 [configuration]: configuration.md
-[new rule]: docs/develop-new-rule.md#writing-a-new-rule
+[new rule]: develop-new-rule.md#writing-a-new-rule
 
 ### Output styles
 

@@ -228,7 +228,7 @@
 
  lint/thread-macro-one-arg
  {:description "Prefer `(y x)` to `(-> x y)`."
-  :enabled true
+  :enabled false
   :safe false
   :added "0.1"
   :updated "1.17.0"

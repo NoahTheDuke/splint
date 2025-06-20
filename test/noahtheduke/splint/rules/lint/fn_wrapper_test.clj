@@ -23,4 +23,4 @@
     (expect-match nil "#(.getPath %)" (single-rule-config rule-name)))
   (it "handles fns to skip"
     (expect-match nil "(ns foo (:require [dev.nu.morse :as morse])) (add-tap (fn [x] (morse/inspect x)))"
-      (single-rule-config rule-name {:fn-names-to-skip #{'inspect}}))))
+      (single-rule-config rule-name {:names-to-skip #{'inspect}}))))

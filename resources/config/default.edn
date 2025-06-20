@@ -73,7 +73,7 @@
   :safe false
   :added "0.1"
   :updated "0.1"
-  :fn-names-to-skip #{}
+  :names-to-skip #{}
   :guide-ref "#no-useless-anonymous-fns"}
 
  lint/if-else-nil
@@ -652,7 +652,8 @@
  {:description "Prefer `(+ 1 2 3 4)` to `(+ 1 2 (+ 3 4))`."
   :enabled true
   :added "1.19.0"
-  :updated "1.19.0"}
+  :updated "1.19.0"
+  :fn-names #{* *' + +' and comp concat every-pred lazy-cat max merge min or some-fn str}}
 
  style/redundant-regex-constructor
  {:description "Rely on regex literal."

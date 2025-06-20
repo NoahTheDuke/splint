@@ -5,7 +5,6 @@
 (ns noahtheduke.splint.rules.style.redundant-nested-call-test
   (:require
    [lazytest.core :refer [defdescribe it]]
-   [noahtheduke.splint.rules.style.redundant-nested-call :as sut]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]
    [clojure.java.io :as io]
    [noahtheduke.splint.dev :as dev]
@@ -15,30 +14,34 @@
 
 (def rule-name 'style/redundant-nested-call)
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe redundant-nested-call-test
   (it "handles specified vars"
-    (doseq [input sut/relevant-call?]
+    (doseq [input (get-in (single-rule-config rule-name) [rule-name :fn-names])]
       (expect-match
         [{:rule-name rule-name
           :form (list input 1 2 (list input 3 4))
           :message (format "Redundant nested call: `%s`." (str input))
           :alt (list input 1 2 3 4)}]
         (format "(%s 1 2 (%s 3 4))" input input)
-        (config))))
+        (single-rule-config rule-name))))
   (it "doesn't match when nested calls are separated"
     (expect-match
       nil
       "(+ 1 2 (foo 3 4 (+ 5 6)))"
-      (config)))
+      (single-rule-config rule-name)))
   (it "skips other vars"
     (expect-match
       nil
       "(foo 1 2 (foo 3 4))"
-      (config))))
+      (single-rule-config rule-name)))
+  (it "can check additional vars"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(foo 1 2 (foo 3 4))
+        :message "Redundant nested call: `foo`."
+        :alt '(foo 1 2 3 4)}]
+      "(foo 1 2 (foo 3 4))"
+      (single-rule-config rule-name {:fn-names ['foo]}))))
 
 (defdescribe corpus-test
   (it "handles complex interactions"

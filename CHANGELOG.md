@@ -4,7 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
-## 1.20.0 - 2025-03-28
+### Added
+
+- New config option for `lint/fn-wrapper`: `:names-to-skip`. Given that many macros require wrapping, skipping them (or any other calls) can be configured with `:names-to-skip`, which takes a vector of simple symbols to skip during analysis. For example, `lint/fn-wrapper {:names-to-skip [inspect]}` will not trigger on `(add-tap (fn [x] (morse/inspect)))`.
+- New config option for `style/redundant-nested-call`: `:fn-names`. By default, `style/redundant-nested-call` only checks a handful of `clojure.core` vars. To check against custom functions, add them to the config with `style/redundant-nested-call {:fn-names [foo bar]}`.
 
 ## 1.20.0 - 2025-03-28
 

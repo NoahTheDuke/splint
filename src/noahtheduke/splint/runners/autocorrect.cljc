@@ -126,10 +126,10 @@
      (if (and (sequential? obj) (not (vector? obj)))
        (case (first obj)
          splint/deref (node/deref-node (next obj))
-         splint/fn (do (prn :obj obj) (node/fn-node
-                                       (->> (repeat (node/whitespace-node " "))
-                                            (interleave (nth obj 2))
-                                            (butlast))))
+         splint/fn (node/fn-node
+                    (->> (repeat (node/whitespace-node " "))
+                         (interleave (nth obj 2))
+                         (butlast)))
          (quote splint/quote) (node/quote-node (next obj))
          splint/re-pattern (node/regex-node (next obj))
          splint/read-eval (node/eval-node (next obj))
@@ -262,9 +262,9 @@
   (doseq [file-obj files
           :let [{:keys [ext ^File file contents]} (run/slurp-file file-obj)]]
     (try
+      (swap! (:checked-files ctx) conj file)
       (let [zloc (zip/of-string* contents {:track-position? true})
             ctx (-> ctx
-                    (update :checked-files swap! conj file)
                     (assoc :ext ext)
                     (assoc :filename file)
                     (assoc :file-str contents)

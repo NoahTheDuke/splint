@@ -73,6 +73,7 @@
   :safe false
   :added "0.1"
   :updated "0.1"
+  :fn-names-to-skip #{}
   :guide-ref "#no-useless-anonymous-fns"}
 
  lint/if-else-nil

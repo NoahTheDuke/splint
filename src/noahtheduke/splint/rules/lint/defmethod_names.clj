@@ -48,7 +48,7 @@
 (defrule lint/defmethod-names
   "When defining methods for a multimethod, everything after the dispatch-val is given directly to `fn`. This allows for providing a name to the defmethod function, which will make stack traces easier to read.
 
-  Examples:
+  @examples
 
   ; avoid
   (defmethod some-multi :foo

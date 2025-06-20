@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.config-test
   (:require
-   [lazytest.core :refer [defdescribe describe expect it]]
+   [lazytest.core :refer [defdescribe describe expect it throws?]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]
    [noahtheduke.splint.config :as sut]
@@ -217,3 +217,20 @@
            :var #'abc)")
       (expect
         (sut/read-project-file nil project-clj)))))
+
+(defdescribe merge-rules-test
+  (it "overwrites simple types"
+    (expect (match? {:a "new"}
+            (sut/merge-rules {:a "old"} {:a "new"})))
+    (expect (match? {:a "new" :b "old" :c "new"}
+            (sut/merge-rules {:a "old" :b "old"} {:a "new" :c "new"}))))
+  (it "`into`s collections"
+    (expect (match? {:a [:b :c]}
+            (sut/merge-rules {:a [:b]} {:a [:c]})))
+    (expect (match? {:a #{:b :c}}
+            (sut/merge-rules {:a #{:b}} {:a [:c]})))
+    (expect (match? {:a [:b :c]}
+            (sut/merge-rules {:a [:b]} {:a #{:c}}))))
+  (it "throws if given the wrong type"
+    (expect (throws? clojure.lang.ExceptionInfo
+                     #(sut/merge-rules {:a "a"} {:a [:c]})))))

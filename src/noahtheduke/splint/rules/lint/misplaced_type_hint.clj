@@ -29,6 +29,7 @@
 
   ; prefer
   (defn make-str ^String [] \"abc\")
+
   (defn make-str
     (^String [] \"abc\")
     (^String [a] (str a \"abc\")))

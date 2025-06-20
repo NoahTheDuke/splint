@@ -192,8 +192,8 @@
   [ctx {:keys [ext ^File file contents] :as file-obj}]
   (try
     (when-let [parsed-file (parse-file file-obj)]
+      (swap! (:checked-files ctx) conj file)
       (let [ctx (-> ctx
-                  (update :checked-files swap! conj file)
                   (assoc :ext ext)
                   (assoc :filename file)
                   (assoc :file-str contents)
@@ -280,12 +280,6 @@
            :rules-by-type {}}
           rule-names)
       (update :rules-by-type update-vals* sort))))
-
-(defn init-context [rules config]
-  (-> rules
-    (assoc :diagnostics (atom []))
-    (assoc :checked-files (atom []))
-    (assoc :config config)))
 
 (defn get-extension [^File file]
   (let [filename (.getName file)

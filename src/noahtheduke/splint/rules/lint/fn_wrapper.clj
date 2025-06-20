@@ -20,8 +20,10 @@
 (defrule lint/fn-wrapper
   "Avoid wrapping functions in pass-through anonymous function defitions.
 
+  By default, all non-interop symbols in function position are checked. However, given that many macros require wrapping, skipping them can be configured with `:fn-names-to-skip`, which takes a vector of simple symbols to skip during analysis. For example, `{:fn-names-to-skip [inspect]}` will not trigger on `(add-tap (fn [x] (morse/inspect)))`.
+
   @safety
-  This rule is unsafe, as it can misunderstand when a function is or is not a method.
+  This rule is unsafe, as it can misunderstand when a function is or is not a method or a macro.
 
   @examples
 
@@ -40,6 +42,9 @@
   {:patterns ['((? _ fn??) [?arg] (?fun ?arg))
               '((? _ fn??) ([?arg] (?fun ?arg)))]
    :on-match (fn [ctx rule form {:syms [?fun ?args]}]
-               (when-not (interop? ?fun)
-                 (->diagnostic ctx rule form {:replace-form ?fun
-                                              :message "No need to wrap function. Clojure supports first-class functions."})))})
+               (let [config (:config rule)]
+                 (when-not (or (and (symbol? ?fun)
+                                    (contains? (:fn-names-to-skip config) (symbol (name ?fun))))
+                               (interop? ?fun))
+                   (->diagnostic ctx rule form {:replace-form ?fun
+                                                :message "No need to wrap function. Clojure supports first-class functions."}))))})

@@ -69,11 +69,30 @@
      :silent silent
      :autocorrect autocorrect}))
 
+(defn merge-rules
+  [base extra]
+  (->> extra
+       (reduce-kv
+        (fn [m k v]
+          (if (and (contains? m k)
+                   (or (list? v)
+                       (set? v)
+                       (vector? v)))
+            (let [new-v (try (into (get m k) v)
+                             (catch ClassCastException _
+                               (throw (ex-info (str "Expected a list, set or vector, given: " (type (get m k)))
+                                               {:base base
+                                                :extra extra}))))]
+              (assoc! m k new-v))
+            (assoc! m k v)))
+        (transient base))
+       (persistent!)))
+
 (defn make-rule-config [rule genre-config local-config]
   (let [combined-rule
         (cond-> rule
-          genre-config (conj genre-config)
-          local-config (conj local-config))
+          genre-config (merge-rules genre-config)
+          local-config (merge-rules local-config))
         combined-rule
         (cond-> combined-rule
           (seq (:includes combined-rule))

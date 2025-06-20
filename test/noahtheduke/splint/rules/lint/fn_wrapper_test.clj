@@ -20,4 +20,7 @@
   (it "ignores interop functions"
     (expect-match nil "#(Integer/parseInt %)" (single-rule-config rule-name))
     (expect-match nil "(do (import (java.util.regex Pattern)) #(Pattern/compile %))" (single-rule-config rule-name))
-    (expect-match nil "#(.getPath %)" (single-rule-config rule-name))))
+    (expect-match nil "#(.getPath %)" (single-rule-config rule-name)))
+  (it "handles fns to skip"
+    (expect-match nil "(ns foo (:require [dev.nu.morse :as morse])) (add-tap (fn [x] (morse/inspect x)))"
+      (single-rule-config rule-name {:fn-names-to-skip #{'inspect}}))))

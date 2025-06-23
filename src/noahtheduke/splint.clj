@@ -42,6 +42,7 @@
    noahtheduke.splint.rules.lint.loop-empty-when
    noahtheduke.splint.rules.lint.misplaced-type-hint
    noahtheduke.splint.rules.lint.missing-body-in-when
+   noahtheduke.splint.rules.lint.no-catch
    noahtheduke.splint.rules.lint.not-empty
    noahtheduke.splint.rules.lint.prefer-method-values
    noahtheduke.splint.rules.lint.prefer-require-over-use

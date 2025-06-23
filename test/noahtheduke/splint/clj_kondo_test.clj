@@ -34,6 +34,7 @@
     lint/let-when 2
     lint/misplaced-type-hint 10
     lint/missing-body-in-when 2
+    lint/no-catch 1
     lint/prefer-require-over-use 4
     lint/redundant-str-call 18
     lint/thread-macro-one-arg 85
@@ -102,4 +103,4 @@
          (m/equals clj-kondo-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1349 (count (:diagnostics @results)))))))
+      (expect (= 1350 (count (:diagnostics @results)))))))

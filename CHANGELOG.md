@@ -8,6 +8,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - `style/prefixed-libspecs`: Prefer flat `require` libspecs to prefixed/nested libspecs: `[clojure.string :as str] [clojure.set :as set]` over `[clojure [string :as str] [set :as set]]`. Currently does not support suggesting alternatives.
 - `lint/rand-int-one`: Calls to `(rand-int 1)` always return `0`, so this is likely an error.
+- `lint/no-catch`: Require `(try)` calls to have at least 1 `catch` (or `finally`) clause. Supports two styles: `:accept-finally` and `:only-catch`. `:accept-finally` will count a `finally` clause and not raise a warning, while `:only-catch` requires all `try` calls to have a `catch` clause.
 
 ### Added
 

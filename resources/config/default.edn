@@ -199,6 +199,12 @@
   :supported-styles [:as :refer :all]
   :guide-ref "#prefer-require-over-use"}
 
+ lint/rand-int-one
+ {:description "A call to `(rand-int 1)` will always return 0."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  lint/redundant-call
  {:description "Certain core functions return the arg when given a single arg."
   :enabled true

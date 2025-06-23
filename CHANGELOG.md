@@ -7,6 +7,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### New Rules
 
 - `style/prefixed-libspecs`: Prefer flat `require` libspecs to prefixed/nested libspecs: `[clojure.string :as str] [clojure.set :as set]` over `[clojure [string :as str] [set :as set]]`. Currently does not support suggesting alternatives.
+- `lint/rand-int-one`: Calls to `(rand-int 1)` always return `0`, so this is likely an error.
 
 ### Added
 

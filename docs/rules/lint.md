@@ -30,6 +30,7 @@
 - [lint/not-empty?](#lintnot-empty)
 - [lint/prefer-method-values](#lintprefer-method-values)
 - [lint/prefer-require-over-use](#lintprefer-require-over-use)
+- [lint/rand-int-one](#lintrand-int-one)
 - [lint/redundant-call](#lintredundant-call)
 - [lint/redundant-str-call](#lintredundant-str-call)
 - [lint/require-explicit-param-tags](#lintrequire-explicit-param-tags)
@@ -745,6 +746,30 @@ In the `ns` form prefer `:require :as` over `:require :refer` over `:require :re
 ### Reference
 
 * https://guide.clojure.style/#prefer-require-over-use
+
+---
+
+## lint/rand-int-one
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+`clojure.core/rand-int` returns an integer between `0` (inclusive) and `n` (exclusive), meaning that a call to `(rand-int 1)` will always return `0`.
+
+Checks the following numbers: `0`, `0.0`, `1`, `1.0`, `-1`, `-1.0`
+
+### Examples
+
+```clojure
+; avoid
+(rand-int 0)
+(rand-int -1)
+(rand-int 1)
+(rand-int 1.0)
+(rand-int -1.0)
+(rand-int 1.5)
+```
 
 ---
 

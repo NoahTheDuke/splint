@@ -45,6 +45,7 @@
    noahtheduke.splint.rules.lint.not-empty
    noahtheduke.splint.rules.lint.prefer-method-values
    noahtheduke.splint.rules.lint.prefer-require-over-use
+   noahtheduke.splint.rules.lint.rand-int-one
    noahtheduke.splint.rules.lint.redundant-call
    noahtheduke.splint.rules.lint.redundant-str-call
    noahtheduke.splint.rules.lint.require-explicit-param-tags

@@ -73,6 +73,7 @@
     style/prefer-clj-string 18
     style/prefer-condp 3
     style/prefer-vary-meta 6
+    style/prefixed-libspecs 9
     style/redundant-let 6
     style/redundant-nested-call 6
     style/single-key-in 2
@@ -101,4 +102,4 @@
          (m/equals clj-kondo-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1340 (count (:diagnostics @results)))))))
+      (expect (= 1349 (count (:diagnostics @results)))))))

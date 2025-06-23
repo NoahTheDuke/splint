@@ -11,10 +11,6 @@
 
 (def rule-name '{{genre}}/{{rule-name}})
 
-(defn config [& {:as style}]
-  (cond-> (single-rule-config rule-name)
-    style (update rule-name merge style)))
-
 (defdescribe {{rule-name}}-test
   (it "works"
     (expect-match
@@ -23,4 +19,4 @@
         :message ""
         :alt nil}]
       "()"
-      (config))))
+      (single-rule-config rule-name))))

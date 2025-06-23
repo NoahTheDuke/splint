@@ -98,8 +98,9 @@ a `do` to force it into 'expression position'.
 
 When defining methods for a multimethod, everything after the dispatch-val is given directly to `fn`. This allows for providing a name to the defmethod function, which will make stack traces easier to read.
 
-Examples:
+### Examples
 
+```clojure
 ; avoid
 (defmethod some-multi :foo
   [arg1 arg2]
@@ -110,6 +111,7 @@ Examples:
   some-multi--foo
   [arg1 arg2]
   (+ arg1 arg2))
+```
 
 ---
 
@@ -263,8 +265,10 @@ with the same name, but it's good to catch these things early too.
 
 Avoid wrapping functions in pass-through anonymous function defitions.
 
+By default, all non-interop symbols in function position are checked. However, given that many macros require wrapping, skipping them can be configured with `:names-to-skip`, which takes a vector of simple symbols to skip during analysis. For example, `lint/fn-wrapper {:names-to-skip [inspect]}` will not trigger on `(add-tap (fn [x] (morse/inspect)))`.
+
 ### Safety
-This rule is unsafe, as it can misunderstand when a function is or is not a method.
+This rule is unsafe, as it can misunderstand when a function is or is not a method or a macro.
 
 ### Examples
 
@@ -280,7 +284,17 @@ even?
 
 ; prefer
 (let [f even?] ...)
+
+; with `:names-to-skip [even?]`
+; no error
+(fn [num] (even? num))
 ```
+
+### Configurable Attributes
+
+| Name             | Default | Options |
+| ---------------- | ------- | ------- |
+| `:names-to-skip` | `#{}`   | Set     |
 
 ### Reference
 
@@ -601,6 +615,7 @@ In interop scenarios, it can be necessary to add a type hint to mark a function'
 
 ; prefer
 (defn make-str ^String [] "abc")
+
 (defn make-str
   (^String [] "abc")
   (^String [a] (str a "abc")))
@@ -868,7 +883,7 @@ The styles are named after what they're looking for:
 
 | Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
 | ------------------ | ----- | ----------- | ------------- | --------------- |
-| true               | false | false       | 0.1           | 1.17.0          |
+| false              | false | false       | 0.1           | 1.17.0          |
 
 Threading macros require more effort to understand so only use them with multiple
 args to help with readability.

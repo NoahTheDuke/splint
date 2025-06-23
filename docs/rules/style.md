@@ -44,6 +44,7 @@
 - [style/prefer-condp](#styleprefer-condp)
 - [style/prefer-for-with-literals](#styleprefer-for-with-literals)
 - [style/prefer-vary-meta](#styleprefer-vary-meta)
+- [style/prefixed-libspecs](#styleprefixed-libspecs)
 - [style/reduce-str](#stylereduce-str)
 - [style/redundant-let](#styleredundant-let)
 - [style/redundant-nested-call](#styleredundant-nested-call)
@@ -1051,6 +1052,38 @@ The core builder functions are helpful when creating an object from an opaque se
 
 ---
 
+## style/prefixed-libspecs
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+`require` supports prefixed libspecs, shared "parent" namespaces with subsections in separate vectors. This allows for 'DRY' libspecs but harms readability and discoverability while not actually providing a great reduction in characters.
+
+### Examples
+
+```clojure
+; avoid
+(ns foo.bar
+  (:require [clojure
+             [string :as str]
+             [set :as set]]))
+
+(require '[clojure
+           [string :as str]
+           [set :as set]])
+
+; prefer
+(ns foo.bar
+  (:require [clojure.string :as str]
+            [clojure.set :as set]))
+
+(require '[clojure.string :as str]
+  '[clojure.set :as set])
+```
+
+---
+
 ## style/reduce-str
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
@@ -1108,7 +1141,7 @@ Directly nested lets can be merged into a single let block.
 | ------------------ | ---- | ----------- | ------------- | --------------- |
 | true               | true | false       | 1.19.0        | 1.19.0          |
 
-Some clojure.core functions and macros take a variable number of args, so there's no need to nest calls.
+Some clojure.core functions and macros take a variable number of args, so there's no need to nest calls. To check non-clojure.core functions, they can be added to the config under key `:fn-names`: `style/redundant-nested-call {:fn-names [foo]}`.
 
 > [!NOTE]
 > This can have performance implications in certain hot-loops.
@@ -1123,7 +1156,20 @@ Some clojure.core functions and macros take a variable number of args, so there'
 ; prefer
 (+ 1 2 3 4)
 (comp :foo :bar :qux :ply)
+
+; with `:fn-names [foo]`
+; avoid
+(foo 1 2 (foo 3 4))
+
+; prefer
+(foo 1 2 3 4)
 ```
+
+### Configurable Attributes
+
+| Name        | Default                                                                         | Options |
+| ----------- | ------------------------------------------------------------------------------- | ------- |
+| `:fn-names` | `#{+' comp * min concat or *' merge every-pred + str some-fn max lazy-cat and}` | Set     |
 
 ---
 

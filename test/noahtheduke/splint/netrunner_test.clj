@@ -21,6 +21,7 @@
 
 (def netrunner-diagnostics
   '{lint/assoc-fn 4
+    lint/catch-throwable 1
     lint/defmethod-names 265
     lint/fn-wrapper 42
     lint/if-else-nil 13
@@ -98,6 +99,6 @@
          (m/equals netrunner-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 3719 (count (:diagnostics @results)))))
+      (expect (= 3720 (count (:diagnostics @results)))))
     (it "checks the correct number of files"
       (expect (= 242 (count (:checked-files @results)))))))

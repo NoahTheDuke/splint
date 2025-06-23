@@ -4,6 +4,7 @@
 
 - [lint/assoc-fn](#lintassoc-fn)
 - [lint/body-unquote-splicing](#lintbody-unquote-splicing)
+- [lint/catch-throwable](#lintcatch-throwable)
 - [lint/defmethod-names](#lintdefmethod-names)
 - [lint/divide-by-one](#lintdivide-by-one)
 - [lint/dorun-map](#lintdorun-map)
@@ -27,6 +28,7 @@
 - [lint/loop-empty-when](#lintloop-empty-when)
 - [lint/misplaced-type-hint](#lintmisplaced-type-hint)
 - [lint/missing-body-in-when](#lintmissing-body-in-when)
+- [lint/no-catch](#lintno-catch)
 - [lint/not-empty?](#lintnot-empty)
 - [lint/prefer-method-values](#lintprefer-method-values)
 - [lint/prefer-require-over-use](#lintprefer-require-over-use)
@@ -88,6 +90,33 @@ a `do` to force it into 'expression position'.
 ### Reference
 
 * <https://blog.ambrosebs.com/2022/09/08/break-your-macros.html>
+
+---
+
+## lint/catch-throwable
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+Throwable is a superclass of all Errors and Exceptions in Java. Catching Throwable will also catch Errors, which indicate a serious problem that most applications should not try to catch. If there is a single specific Error you need to catch, use it directly.
+
+### Examples
+
+```clojure
+; avoid
+(try (foo)
+  (catch Throwable t ...))
+
+; prefer
+(try (foo)
+  (catch ExceptionInfo ex ...)
+  (catch AssertionError t ...))
+```
+
+### Reference
+
+* <https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Error.html>
 
 ---
 
@@ -648,6 +677,48 @@ In interop scenarios, it can be necessary to add a type hint to mark a function'
 (when true (do-stuff))
 (when (some-func) (do-stuff))
 ```
+
+---
+
+## lint/no-catch
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+Try without a `catch` (or `finally`) clause is a no-op, and indicates something got changed or broken at some point.
+
+With the default style `:accept-finally`, both `catch` and `finally` clauses are counted to see if the `try` is a no-op. The style `:only-catch` can be used to raise a warning for `(try ... (finally ...))` forms with no `catch` clauses.
+
+### Examples
+
+```clojure
+; avoid
+(try (foo))
+
+; avoid (chosen style :only-catch)
+(try (foo)
+  (finally (bar)))
+
+; prefer (chosen style :only-catch)
+(try (foo)
+  (catch Exception ex
+    ...))
+
+; prefer (chosen style :accept-finally (default))
+(try (foo)
+  (finally (bar)))
+
+(try (foo)
+  (catch Exception ex
+    ...))
+```
+
+### Configurable Attributes
+
+| Name            | Default           | Options                          |
+| --------------- | ----------------- | -------------------------------- |
+| `:chosen-style` | `:accept-finally` | `:accept-finally`, `:only-catch` |
 
 ---
 

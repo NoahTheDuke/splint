@@ -19,6 +19,13 @@
   :updated "1.0"
   :links ["https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"]}
 
+ lint/catch-throwable
+ {:description "Don't `(catch Throwable ...)`, catch specific Errors or Exceptions."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"
+  :links ["https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Error.html"]}
+
  lint/defmethod-names
  {:description "Specify a function name for defmethod bodies."
   :enabled false

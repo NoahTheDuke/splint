@@ -22,6 +22,7 @@
 (def clj-kondo-diagnostics
   '{lint/assoc-fn 1
     lint/body-unquote-splicing 2
+    lint/catch-throwable 4
     lint/defmethod-names 63
     lint/dot-class-method 2
     lint/dot-obj-method 1
@@ -103,4 +104,4 @@
          (m/equals clj-kondo-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1350 (count (:diagnostics @results)))))))
+      (expect (= 1354 (count (:diagnostics @results)))))))

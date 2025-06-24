@@ -2,7 +2,7 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.splint.integrations.re-frame-test
+(ns noahtheduke.splint.integrations.clj-auth-test
   {:integration true}
   (:require
    [clojure.tools.gitlibs :as gl]
@@ -15,31 +15,22 @@
 
 (set! *warn-on-reflection* true)
 
-(def re-frame-diagnostics
-  '{lint/if-else-nil 2
-    lint/if-let-else-nil 2
-    lint/thread-macro-one-arg 15
-    lint/try-splicing 1
-    lint/warn-on-reflection 4
-    metrics/fn-length 20
-    naming/conventional-aliases 2
-    naming/predicate 1
-    naming/single-segment-namespace 1
-    performance/assoc-many 2
-    performance/avoid-satisfies 2
-    performance/single-literal-merge 1
-    style/eq-false 1
-    style/eq-nil 2
-    style/eq-true 2
-    style/is-eq-order 10
-    style/reduce-str 1
-    style/redundant-let 2
-    style/when-not-call 1})
+(def clj-auth-diagnostics
+  '{lint/defmethod-names 7
+    lint/fn-wrapper 1
+    lint/if-not-both 1
+    lint/redundant-str-call 3
+    lint/warn-on-reflection 19
+    metrics/fn-length 17
+    performance/dot-equals 27
+    performance/single-literal-merge 7
+    style/is-eq-order 6})
 
-(defdescribe re-frame-test
-  (let [re-frame (delay (gl/procure "https://github.com/day8/re-frame.git" 'day8/re-frame "v1.3.0"))
+(defdescribe clj-auth-test
+  (let [clj-auth (delay (gl/procure "https://github.com/theophilusx/clj-auth.git"
+                          'theophilusx/clj-auth "4fbbf8222d92227c821c3db34c75a45d6e540185"))
         results (delay
-                  (run-impl [{:path @re-frame}]
+                  (run-impl [{:path @clj-auth}]
                             {:config-override
                              (-> (usefully-enabled-config)
                                  (assoc :silent true)
@@ -47,11 +38,18 @@
                                  (assoc :clojure-version {:major 1 :minor 11}))}))
         diagnostics (delay (->> @results
                                 :diagnostics
-                                (group-by :rule-name)))]
+                                (group-by :rule-name)
+                                (into (sorted-map))))]
+    ; (user/pprint (dissoc @diagnostics 'lint/warn-on-reflection))
+    ; (user/pprint (into (sorted-map) (update-vals* @diagnostics count)))
     (it "has the right diagnostics"
       (expect
         (match?
-         (m/equals re-frame-diagnostics)
+         (m/equals clj-auth-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 72 (count (:diagnostics @results)))))))
+      (expect (= 88 (count (:diagnostics @results)))))
+    (it "raises no errors"
+      (expect (nil? (get diagnostics 'splint/error))))
+    (it "raises no unknown errors"
+      (expect (nil? (get diagnostics 'splint/unknown-error))))))

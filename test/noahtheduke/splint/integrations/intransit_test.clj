@@ -2,7 +2,7 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.splint.integrations.re-frame-test
+(ns noahtheduke.splint.integrations.intransit-test
   {:integration true}
   (:require
    [clojure.tools.gitlibs :as gl]
@@ -15,31 +15,15 @@
 
 (set! *warn-on-reflection* true)
 
-(def re-frame-diagnostics
-  '{lint/if-else-nil 2
-    lint/if-let-else-nil 2
-    lint/thread-macro-one-arg 15
-    lint/try-splicing 1
-    lint/warn-on-reflection 4
-    metrics/fn-length 20
-    naming/conventional-aliases 2
-    naming/predicate 1
-    naming/single-segment-namespace 1
-    performance/assoc-many 2
-    performance/avoid-satisfies 2
-    performance/single-literal-merge 1
-    style/eq-false 1
-    style/eq-nil 2
-    style/eq-true 2
-    style/is-eq-order 10
-    style/reduce-str 1
-    style/redundant-let 2
-    style/when-not-call 1})
+(def intransit-diagnostics
+  '{lint/warn-on-reflection 2
+    metrics/fn-length 2})
 
-(defdescribe re-frame-test
-  (let [re-frame (delay (gl/procure "https://github.com/day8/re-frame.git" 'day8/re-frame "v1.3.0"))
+(defdescribe intransit-test
+  (let [intransit (delay (gl/procure "https://github.com/dpassen/intransit.git"
+                          'terop/intransit "25c49ebdd15191bd9cc851cc18cf1013fd1ab49f"))
         results (delay
-                  (run-impl [{:path @re-frame}]
+                  (run-impl [{:path @intransit}]
                             {:config-override
                              (-> (usefully-enabled-config)
                                  (assoc :silent true)
@@ -47,11 +31,18 @@
                                  (assoc :clojure-version {:major 1 :minor 11}))}))
         diagnostics (delay (->> @results
                                 :diagnostics
-                                (group-by :rule-name)))]
+                                (group-by :rule-name)
+                                (into (sorted-map))))]
+    ; (user/pprint (dissoc @diagnostics 'lint/warn-on-reflection))
+    ; (user/pprint (into (sorted-map) (update-vals* @diagnostics count)))
     (it "has the right diagnostics"
       (expect
         (match?
-         (m/equals re-frame-diagnostics)
+         (m/equals intransit-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 72 (count (:diagnostics @results)))))))
+      (expect (= 4 (count (:diagnostics @results)))))
+    (it "raises no errors"
+      (expect (nil? (get diagnostics 'splint/error))))
+    (it "raises no unknown errors"
+      (expect (nil? (get diagnostics 'splint/unknown-error))))))

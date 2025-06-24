@@ -18,6 +18,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - New config option for `lint/fn-wrapper`: `:names-to-skip`. Given that many macros require wrapping, skipping them (or any other calls) can be configured with `:names-to-skip`, which takes a vector of simple symbols to skip during analysis. For example, `lint/fn-wrapper {:names-to-skip [inspect]}` will not trigger on `(add-tap (fn [x] (morse/inspect)))`.
 - New config option for `style/redundant-nested-call`: `:fn-names`. By default, `style/redundant-nested-call` only checks a handful of `clojure.core` vars. To check against custom functions, add them to the config with `style/redundant-nested-call {:fn-names [foo bar]}`.
 - Rules support `:config-coercer`, a one-arg function that takes the final result of a rules' processed config and should return it. Allows for rules to define custom ways of handling config data before it's used (such as unifying args). See `lint/catch-throwable` for an example.
+- DEV ONLY: add roughly 10 new integrations tests for github repos that already rely on Splint.
 
 ### Changed
 

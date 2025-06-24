@@ -2,7 +2,7 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.splint.integrations.re-frame-test
+(ns noahtheduke.splint.integrations.iort-test
   {:integration true}
   (:require
    [clojure.tools.gitlibs :as gl]
@@ -15,31 +15,21 @@
 
 (set! *warn-on-reflection* true)
 
-(def re-frame-diagnostics
-  '{lint/if-else-nil 2
-    lint/if-let-else-nil 2
-    lint/thread-macro-one-arg 15
-    lint/try-splicing 1
-    lint/warn-on-reflection 4
-    metrics/fn-length 20
-    naming/conventional-aliases 2
-    naming/predicate 1
-    naming/single-segment-namespace 1
-    performance/assoc-many 2
-    performance/avoid-satisfies 2
-    performance/single-literal-merge 1
-    style/eq-false 1
-    style/eq-nil 2
-    style/eq-true 2
-    style/is-eq-order 10
-    style/reduce-str 1
-    style/redundant-let 2
-    style/when-not-call 1})
+(def iort-diagnostics
+  '{lint/defmethod-names 10
+    lint/warn-on-reflection 8
+    metrics/fn-length 9
+    naming/lisp-case 1
+    performance/assoc-many 1
+    performance/dot-equals 3
+    style/first-first 1
+    style/not-some-pred 1})
 
-(defdescribe re-frame-test
-  (let [re-frame (delay (gl/procure "https://github.com/day8/re-frame.git" 'day8/re-frame "v1.3.0"))
+(defdescribe iort-test
+  (let [iort (delay (gl/procure "https://github.com/wardle/iort.git"
+                          'com.eldrix/iort "4b591d6d5f5f7fea5e76c0e7ab445aa0addcb421"))
         results (delay
-                  (run-impl [{:path @re-frame}]
+                  (run-impl [{:path @iort}]
                             {:config-override
                              (-> (usefully-enabled-config)
                                  (assoc :silent true)
@@ -47,11 +37,18 @@
                                  (assoc :clojure-version {:major 1 :minor 11}))}))
         diagnostics (delay (->> @results
                                 :diagnostics
-                                (group-by :rule-name)))]
+                                (group-by :rule-name)
+                                (into (sorted-map))))]
+    ; (user/pprint (dissoc @diagnostics 'lint/warn-on-reflection))
+    ; (user/pprint (into (sorted-map) (update-vals* @diagnostics count)))
     (it "has the right diagnostics"
       (expect
         (match?
-         (m/equals re-frame-diagnostics)
+         (m/equals iort-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 72 (count (:diagnostics @results)))))))
+      (expect (= 34 (count (:diagnostics @results)))))
+    (it "raises no errors"
+      (expect (nil? (get diagnostics 'splint/error))))
+    (it "raises no unknown errors"
+      (expect (nil? (get diagnostics 'splint/unknown-error))))))

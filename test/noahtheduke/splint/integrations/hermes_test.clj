@@ -2,7 +2,7 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.splint.integrations.re-frame-test
+(ns noahtheduke.splint.integrations.hermes-test
   {:integration true}
   (:require
    [clojure.tools.gitlibs :as gl]
@@ -15,31 +15,36 @@
 
 (set! *warn-on-reflection* true)
 
-(def re-frame-diagnostics
-  '{lint/if-else-nil 2
-    lint/if-let-else-nil 2
-    lint/thread-macro-one-arg 15
-    lint/try-splicing 1
-    lint/warn-on-reflection 4
-    metrics/fn-length 20
-    naming/conventional-aliases 2
-    naming/predicate 1
-    naming/single-segment-namespace 1
-    performance/assoc-many 2
-    performance/avoid-satisfies 2
-    performance/single-literal-merge 1
-    style/eq-false 1
-    style/eq-nil 2
-    style/eq-true 2
-    style/is-eq-order 10
-    style/reduce-str 1
-    style/redundant-let 2
-    style/when-not-call 1})
+(def hermes-diagnostics
+  '{lint/catch-throwable 2
+    lint/defmethod-names 60
+    lint/identical-branches 2
+    lint/thread-macro-one-arg 32
+    lint/warn-on-reflection 31
+    metrics/fn-length 89
+    metrics/parameter-count 13
+    naming/conventional-aliases 9
+    naming/conversion-functions 2
+    naming/lisp-case 224
+    naming/record-name 5
+    performance/assoc-many 17
+    performance/dot-equals 70
+    performance/get-keyword 4
+    performance/single-literal-merge 3
+    style/apply-str 2
+    style/is-eq-order 15
+    style/minus-one 1
+    style/multiple-arity-order 1
+    style/not-some-pred 2
+    style/prefer-clj-math 3
+    style/prefer-clj-string 4
+    style/prefer-for-with-literals 4
+    style/tostring 3})
 
-(defdescribe re-frame-test
-  (let [re-frame (delay (gl/procure "https://github.com/day8/re-frame.git" 'day8/re-frame "v1.3.0"))
+(defdescribe hermes-test
+  (let [hermes (delay (gl/procure "https://github.com/wardle/hermes.git" 'com.heldrix/hermes "77ede487fd3c7b7f438d227dbdd9334db334ef48"))
         results (delay
-                  (run-impl [{:path @re-frame}]
+                  (run-impl [{:path @hermes}]
                             {:config-override
                              (-> (usefully-enabled-config)
                                  (assoc :silent true)
@@ -51,7 +56,9 @@
     (it "has the right diagnostics"
       (expect
         (match?
-         (m/equals re-frame-diagnostics)
+         (m/equals hermes-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 72 (count (:diagnostics @results)))))))
+      (expect (= 598 (count (:diagnostics @results)))))
+    (it "raises no errors"
+      (expect (nil? (get diagnostics 'splint/error))))))

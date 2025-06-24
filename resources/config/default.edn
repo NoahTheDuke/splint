@@ -141,6 +141,12 @@
   :added "0.1"
   :updated "0.1"}
 
+ lint/incorrectly-swapped
+ {:description "Looks for `(let [a b b a] ...)` that probably should use destructuring."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  lint/into-literal
  {:description "Prefer `vec` or `set` to `(into [] ...)`."
   :enabled true

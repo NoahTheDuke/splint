@@ -37,6 +37,7 @@
    noahtheduke.splint.rules.lint.if-not-do
    noahtheduke.splint.rules.lint.if-not-not
    noahtheduke.splint.rules.lint.if-same-truthy
+   noahtheduke.splint.rules.lint.incorrectly-swapped
    noahtheduke.splint.rules.lint.into-literal
    noahtheduke.splint.rules.lint.let-if
    noahtheduke.splint.rules.lint.let-when

@@ -187,6 +187,12 @@
   :added "0.1"
   :updated "0.1"}
 
+ lint/min-max
+ {:description "Check for clamping where the min will override the max."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  lint/misplaced-type-hint
  {:description "Put type hint on function's param vector, not function name."
   :enabled true

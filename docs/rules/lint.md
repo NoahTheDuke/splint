@@ -29,6 +29,7 @@
 - [lint/locking-object](#lintlocking-object)
 - [lint/loop-do](#lintloop-do)
 - [lint/loop-empty-when](#lintloop-empty-when)
+- [lint/min-max](#lintmin-max)
 - [lint/misplaced-type-hint](#lintmisplaced-type-hint)
 - [lint/missing-body-in-when](#lintmissing-body-in-when)
 - [lint/no-catch](#lintno-catch)
@@ -711,6 +712,27 @@ Empty loops with nested `when` can be `while`. Doesn't apply if the final expr o
 
 ; prefer
 (while (some-func) (println 1) (println 2))
+```
+
+---
+
+## lint/min-max
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+Clamping a value between two numbers requires saying at max of the lower number and a min of the higher number. If the min is lower than the max, then the min
+
+### Examples
+
+```clojure
+; avoid
+(min 10 (max 100 foo))
+(max 100 (min 10 foo))
+
+; prefer
+(min 100 (max 10 foo))
 ```
 
 ---

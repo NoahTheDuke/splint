@@ -12,6 +12,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - `lint/catch-throwable`: Prefer specific Exceptions and Errors over `(catch Throwable t ...)`. Has `:throwables []` config, which can be used to specify any particular Throwables to disallow.
 - `lint/identical-branches`: Checks for identical branches of `if` and `cond` forms: `(if (pred) foo foo)`, `(cond (pred1) foo (pred2) foo)`. In `cond` branches, only checks consecutive branches as order of checks might be important otherwise.
 - `lint/no-op-assignment`: Avoid writing `(let [foo foo] ...)` or similar. No need to assign a variable to itself. Skips when the expr is in a reader conditional or has a type-hint.
+- `lint/min-max`: When clamping a number with `min` and `max`, enforce that `min` has the higher number.
 
 ### Added
 

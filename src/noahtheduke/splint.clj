@@ -44,6 +44,7 @@
    noahtheduke.splint.rules.lint.locking-object
    noahtheduke.splint.rules.lint.loop-do
    noahtheduke.splint.rules.lint.loop-empty-when
+   noahtheduke.splint.rules.lint.min-max
    noahtheduke.splint.rules.lint.misplaced-type-hint
    noahtheduke.splint.rules.lint.missing-body-in-when
    noahtheduke.splint.rules.lint.no-catch

@@ -2,7 +2,7 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-(ns noahtheduke.splint.netrunner-test
+(ns noahtheduke.splint.integrations.netrunner-test
   (:require
    [clojure.tools.gitlibs :as gl]
    [lazytest.core :refer [defdescribe expect it]]

@@ -74,6 +74,12 @@
   :added "0.1.119"
   :updated "0.1.119"}
 
+ lint/existing-constant
+ {:description "Use `clojure.math/PI` and `clojure.math/E` when appropriate instead of approximating."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  lint/fn-wrapper
  {:description "Avoid wrapping functions in pass-through anonymous function defitions."
   :enabled true

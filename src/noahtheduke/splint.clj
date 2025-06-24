@@ -27,6 +27,7 @@
    noahtheduke.splint.rules.lint.dot-obj-method
    noahtheduke.splint.rules.lint.duplicate-case-test
    noahtheduke.splint.rules.lint.duplicate-field-name
+   noahtheduke.splint.rules.lint.existing-constant
    noahtheduke.splint.rules.lint.fn-wrapper
    noahtheduke.splint.rules.lint.identical-branches
    noahtheduke.splint.rules.lint.if-else-nil

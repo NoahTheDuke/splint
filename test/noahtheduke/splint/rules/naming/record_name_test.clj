@@ -36,4 +36,10 @@
         :form '(defrecord Foo-bar [a b c])
         :alt '(defrecord FooBar [a b c])}]
       "(defrecord Foo-bar [a b c])"
+      (single-rule-config rule-name)))
+  (it "doesn't crash in a macro"
+    {:focus true}
+    (expect-match
+      nil
+      "`(defrecord ~@body)"
       (single-rule-config rule-name))))

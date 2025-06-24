@@ -41,8 +41,11 @@
      (when-let [defn-form (:splint/defn-form (meta form))]
        (when-let [tag (:tag defn-form)]
          (let [arities (:arities defn-form)
+               tag (symbol (str "^" tag))
                arities (if (= 1 (count (:arities defn-form)))
-                         (cons (symbol (str "^" tag)) (first arities))
-                         (map #(cons (symbol (str "^" tag)) %) arities))
-               replace-form (->list (list* ?defn (:splint/name defn-form) arities))]
-           (->diagnostic ctx rule form {:replace-form replace-form})))))})
+                         (cons tag (first arities))
+                         (map #(cons tag %) arities))
+               replace-form (->list (list* ?defn (:splint/name defn-form) arities))
+               original-form (with-meta (->list (list* ?defn tag (next form)))
+                               (meta form))]
+           (->diagnostic ctx rule original-form {:replace-form replace-form})))))})

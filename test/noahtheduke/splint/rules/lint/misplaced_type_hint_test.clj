@@ -19,14 +19,14 @@
   (it "handles single arities"
     (expect-match
     [{:rule-name rule-name
-      :form '(defn make-str [] "abc")
+      :form (list 'defn (symbol "^String") 'make-str [] "abc")
       :alt (list 'defn 'make-str (symbol "^String") [] "abc")}]
     "(defn ^String make-str [] \"abc\")"
     (config)))
   (it "handles multi-arities"
     (expect-match
       [{:rule-name rule-name
-        :form '(defn make-str ([] "abc") ([a] (str a "abc")))
+        :form (list 'defn (symbol "^String") 'make-str '([] "abc") '([a] (str a "abc")))
         :alt (list 'defn 'make-str (list (symbol "^String") [] "abc")
                    (list (symbol "^String") '[a] '(str a "abc")))}]
       "(defn ^String make-str ([] \"abc\") ([a] (str a \"abc\")))"

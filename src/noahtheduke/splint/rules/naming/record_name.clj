@@ -11,8 +11,9 @@
 (set! *warn-on-reflection* true)
 
 (defn bad-name? [sexp]
-  (let [record-name (str sexp)]
-    (not= record-name (csk/->PascalCase record-name))))
+  (when (symbol? sexp)
+    (let [record-name (str sexp)]
+      (not= record-name (csk/->PascalCase record-name)))))
 
 (defrule naming/record-name
   "Records should use PascalCase. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)

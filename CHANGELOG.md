@@ -23,11 +23,13 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Disable `lint/thread-macro-one-arg` by default. It harms readability in a lot of cases and has limited usefulness.
 - `:import` parsing now includes both the base class name as well as the fully qualified class name in the returned map, which improves all interop scenarios.
+- Include the misplaced type hint in the `Form` output of `lint/misplaced-type-hint`.
 
 ### Fixed
 
 - Correctly resolve auto-resolving keywords in the current namespace: `(ns foo) ::bar` will be parsed as `:foo/bar` instead of `:splint-auto-current/bar`.
 - `naming/lisp-case` now only looks at symbols.
+- `naming/record-name` doesn't crash when analyzing `` `(defrecord ~@body)``.
 
 ## 1.20.0 - 2025-03-28
 

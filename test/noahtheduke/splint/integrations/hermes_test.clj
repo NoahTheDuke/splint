@@ -25,7 +25,7 @@
     metrics/parameter-count 13
     naming/conventional-aliases 9
     naming/conversion-functions 2
-    naming/lisp-case 224
+    naming/lisp-case 123
     naming/record-name 5
     performance/assoc-many 17
     performance/dot-equals 70
@@ -59,6 +59,6 @@
          (m/equals hermes-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 598 (count (:diagnostics @results)))))
+      (expect (= 497 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))))

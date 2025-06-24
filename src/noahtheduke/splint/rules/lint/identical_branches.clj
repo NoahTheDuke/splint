@@ -10,7 +10,7 @@
 (set! *warn-on-reflection* true)
 
 (defrule lint/identical-branches
-  "Both branches of an `if` should not be identical, so there's a bug in one of them.
+  "Both branches of an `if` should not be identical. There's likely a bug in one of the branches.
 
   @examples
 

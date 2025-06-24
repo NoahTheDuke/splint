@@ -13,6 +13,7 @@
 - [lint/duplicate-case-test](#lintduplicate-case-test)
 - [lint/duplicate-field-name](#lintduplicate-field-name)
 - [lint/fn-wrapper](#lintfn-wrapper)
+- [lint/identical-branches](#lintidentical-branches)
 - [lint/if-else-nil](#lintif-else-nil)
 - [lint/if-let-else-nil](#lintif-let-else-nil)
 - [lint/if-nil-else](#lintif-nil-else)
@@ -329,6 +330,25 @@ even?
 ### Reference
 
 * https://guide.clojure.style/#no-useless-anonymous-fns
+
+---
+
+## lint/identical-branches
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+Both branches of an `if` should not be identical. There's likely a bug in one of the branches.
+
+### Examples
+
+```clojure
+; avoid
+(if (pred)
+  [1 2 3]
+  [1 2 3])
+```
 
 ---
 

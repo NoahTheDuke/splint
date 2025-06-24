@@ -17,7 +17,7 @@
 (defrule naming/conversion-functions
   "Use `->` instead of `to` in the names of conversion functions.
 
-  Will only warn when there is no `-` before the `-to-`.
+  Will only warn when there is no `-` before or after the `-to-`.
 
   @safety
   Uses simple string checking and can misunderstand English intention when `X-to-Y` isn't a conversion function.
@@ -35,7 +35,9 @@
    :message "Use `->` instead of `to` in the names of conversion functions."
    :on-match (fn [ctx rule form {:syms [?f-name]}]
                (let [[head tail] (str/split (name ?f-name) #"-to-")]
-                 (when (and tail (not (str/includes? head "-")))
+                 (when (and tail
+                         (not (str/includes? head "-"))
+                         (not (str/includes? tail "-")))
                    (let [form (list 'defn ?f-name '...)
                          new-form (list 'defn (symbol (str/replace (str ?f-name) "-to-" "->")) '...)]
                      (->diagnostic ctx rule form {:replace-form new-form

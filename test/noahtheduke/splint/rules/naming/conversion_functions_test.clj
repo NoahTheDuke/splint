@@ -23,4 +23,8 @@
     (expect-match
       nil
       "(defn expect-f-to-c [a] {:a a})"
+      (single-rule-config rule-name))
+    (expect-match
+      nil
+      "(defn expect-f-to-c-something [a] {:a a})"
       (single-rule-config rule-name))))

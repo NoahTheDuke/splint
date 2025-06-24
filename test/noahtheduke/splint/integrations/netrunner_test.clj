@@ -35,7 +35,7 @@
     metrics/fn-length 614
     metrics/parameter-count 249
     naming/conventional-aliases 34
-    naming/conversion-functions 15
+    naming/conversion-functions 12
     naming/predicate 27
     performance/assoc-many 297
     performance/dot-equals 1256
@@ -100,7 +100,7 @@
          (m/equals netrunner-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 4018 (count (:diagnostics @results)))))
+      (expect (= 4015 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))
     (it "raises no unknown errors"

@@ -25,6 +25,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Disable `lint/thread-macro-one-arg` by default. It harms readability in a lot of cases and has limited usefulness.
 - `:import` parsing now includes both the base class name as well as the fully qualified class name in the returned map, which improves all interop scenarios.
 - Include the misplaced type hint in the `Form` output of `lint/misplaced-type-hint`.
+- For `naming/conversion-functions`, skip functions that have multi-segment tails as well. For example, no longer triggers on `x-to-special-y`.
 
 ### Fixed
 

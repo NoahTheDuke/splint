@@ -94,6 +94,7 @@
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)))]
+    ; (user/pprint (get @diagnostics 'lint/no-op-assignment))
     (it "has the right diagnostics"
       (expect
         (match?

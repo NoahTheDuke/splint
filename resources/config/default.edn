@@ -201,6 +201,12 @@
   :chosen-style :accept-finally
   :supported-styles [:accept-finally :only-catch]}
 
+ lint/no-op-assignment
+ {:description "Don't bind a symbol to the same symbol."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  lint/not-empty?
  {:description "Looks for `(not (empty?))` which matters for nil-punning."
   :enabled true

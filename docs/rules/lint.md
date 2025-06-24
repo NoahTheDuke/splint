@@ -12,6 +12,7 @@
 - [lint/dot-obj-method](#lintdot-obj-method)
 - [lint/duplicate-case-test](#lintduplicate-case-test)
 - [lint/duplicate-field-name](#lintduplicate-field-name)
+- [lint/existing-constant](#lintexisting-constant)
 - [lint/fn-wrapper](#lintfn-wrapper)
 - [lint/identical-branches](#lintidentical-branches)
 - [lint/if-else-nil](#lintif-else-nil)
@@ -30,6 +31,7 @@
 - [lint/misplaced-type-hint](#lintmisplaced-type-hint)
 - [lint/missing-body-in-when](#lintmissing-body-in-when)
 - [lint/no-catch](#lintno-catch)
+- [lint/no-op-assignment](#lintno-op-assignment)
 - [lint/not-empty?](#lintnot-empty)
 - [lint/prefer-method-values](#lintprefer-method-values)
 - [lint/prefer-require-over-use](#lintprefer-require-over-use)
@@ -284,6 +286,30 @@ with the same name, but it's good to catch these things early too.
 
 ; prefer
 (defrecord Foo [a b c])
+```
+
+---
+
+## lint/existing-constant
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+**NOTE:** Requires Clojure version 1.11.0.
+
+Java has `PI` and `E` constants built-in, and `clojure.math` exposes them directly. Better to use them instead of poorly approximating them with vars.
+
+### Examples
+
+```clojure
+; avoid
+(def pi 3.14)
+(def e 2.718)
+
+; prefer
+clojure.math/PI
+clojure.math/E
 ```
 
 ---
@@ -754,6 +780,24 @@ With the default style `:accept-finally`, both `catch` and `finally` clauses are
 | Name            | Default           | Options                          |
 | --------------- | ----------------- | -------------------------------- |
 | `:chosen-style` | `:accept-finally` | `:accept-finally`, `:only-catch` |
+
+---
+
+## lint/no-op-assignment
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+If the bind is a symbol and the expr is the same symbol, just use the expr directly. (Otherwise, indicates a potential bug.)
+
+### Examples
+
+```clojure
+; avoid
+(let [foo foo]
+  ...)
+```
 
 ---
 

@@ -11,6 +11,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - `lint/no-catch`: Require `(try)` calls to have at least 1 `catch` (or `finally`) clause. Supports two styles: `:accept-finally` and `:only-catch`. `:accept-finally` will count a `finally` clause and not raise a warning, while `:only-catch` requires all `try` calls to have a `catch` clause.
 - `lint/catch-throwable`: Prefer specific Exceptions and Errors over `(catch Throwable t ...)`.
 - `lint/identical-branches`: Checks for identical branches of `if` and `cond` forms: `(if (pred) foo foo)`, `(cond (pred1) foo (pred2) foo)`. In `cond` branches, only checks consecutive branches as order of checks might be important otherwise.
+- `lint/no-op-assignment`: Avoid writing `(let [foo foo] ...)` or similar. No need to assign a variable to itself.
 
 ### Added
 

@@ -37,6 +37,7 @@
     lint/misplaced-type-hint 10
     lint/missing-body-in-when 2
     lint/no-catch 1
+    lint/no-op-assignment 2
     lint/prefer-require-over-use 4
     lint/redundant-str-call 18
     lint/thread-macro-one-arg 85
@@ -99,10 +100,11 @@
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)))]
+    ; (user/pprint (get @diagnostics 'lint/no-op-assignment))
     (it "has the right diagnostics"
       (expect
         (match?
          (m/equals clj-kondo-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1363 (count (:diagnostics @results)))))))
+      (expect (= 1365 (count (:diagnostics @results)))))))

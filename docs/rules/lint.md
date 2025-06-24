@@ -102,7 +102,7 @@ a `do` to force it into 'expression position'.
 
 | Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
 | ------------------ | ----- | ----------- | ------------- | --------------- |
-| true               | false | false       | <<next>>      | <<next>>        |
+| true               | false | false       | 1.21.0        | 1.21.0          |
 
 Throwable is a superclass of all Errors and Exceptions in Java. Catching Throwable will also catch Errors, which indicate a serious problem that most applications should not try to catch. If there is a single specific Error you need to catch, use it directly.
 
@@ -307,7 +307,7 @@ with the same name, but it's good to catch these things early too.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | <<next>>      | <<next>>        |
+| true               | true | false       | 1.21.0        | 1.21.0          |
 
 **NOTE:** Requires Clojure version 1.11.0.
 
@@ -376,7 +376,7 @@ even?
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | <<next>>      | <<next>>        |
+| true               | true | false       | 1.21.0        | 1.21.0          |
 
 Returning branches of an `if` or `cond` should not be identical. There's likely a bug in one of the branches. In `cond` branches, only checks consecutive branches as order of checks might be important otherwise.
 
@@ -558,7 +558,7 @@ Two `not`s cancel each other out.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | <<next>>      | <<next>>        |
+| true               | true | false       | 1.21.0        | 1.21.0          |
 
 It can be necessary to swap two variables. This usually requires an intermediate variable, but with destructuring, Clojure can perform this in a single line. However, without an intermediate variable or destructuring, manually swapping can result in both variables ending up with the same value.
 
@@ -720,7 +720,7 @@ Empty loops with nested `when` can be `while`. Doesn't apply if the final expr o
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | <<next>>      | <<next>>        |
+| true               | true | false       | 1.21.0        | 1.21.0          |
 
 Clamping a value between two numbers requires saying at max of the lower number and a min of the higher number. If the min is lower than the max, then the min
 
@@ -800,7 +800,7 @@ In interop scenarios, it can be necessary to add a type hint to mark a function'
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | <<next>>      | <<next>>        |
+| true               | true | false       | 1.21.0        | 1.21.0          |
 
 Try without a `catch` (or `finally`) clause is a no-op, and indicates something got changed or broken at some point.
 
@@ -842,7 +842,7 @@ With the default style `:accept-finally`, both `catch` and `finally` clauses are
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | <<next>>      | <<next>>        |
+| true               | true | false       | 1.21.0        | 1.21.0          |
 
 If the bind is a symbol and the expr is the same symbol, just use the expr directly. (Otherwise, indicates a potential bug.)
 
@@ -963,7 +963,7 @@ In the `ns` form prefer `:require :as` over `:require :refer` over `:require :re
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | <<next>>      | <<next>>        |
+| true               | true | false       | 1.21.0        | 1.21.0          |
 
 `clojure.core/rand-int` returns an integer between `0` (inclusive) and `n` (exclusive), meaning that a call to `(rand-int 1)` will always return `0`.
 

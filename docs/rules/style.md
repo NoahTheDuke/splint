@@ -1056,7 +1056,7 @@ The core builder functions are helpful when creating an object from an opaque se
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | <<next>>      | <<next>>        |
+| true               | true | false       | 1.21.0        | 1.21.0          |
 
 `require` supports prefixed libspecs, shared "parent" namespaces with subsections in separate vectors. This allows for 'DRY' libspecs but harms readability and discoverability while not actually providing a great reduction in characters.
 

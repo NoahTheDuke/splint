@@ -2,7 +2,7 @@
 
 ```text
 $ clojure -M:splint --help
-splint v1.20.0
+splint v1.21.0
 
 Usage:
   splint [options]

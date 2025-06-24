@@ -23,8 +23,8 @@
  {:description "Don't `(catch Throwable ...)`, catch specific Errors or Exceptions."
   :enabled true
   :safe false
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.21.0"
+  :updated "1.21.0"
   :throwables #{Throwable}
   :links ["https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Error.html"]}
 
@@ -79,8 +79,8 @@
  lint/existing-constant
  {:description "Use `clojure.math/PI` and `clojure.math/E` when appropriate instead of approximating."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.21.0"
+  :updated "1.21.0"}
 
  lint/fn-wrapper
  {:description "Avoid wrapping functions in pass-through anonymous function defitions."
@@ -94,8 +94,8 @@
  lint/identical-branches
  {:description "Both branches of an if shouldn't be identical."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.21.0"
+  :updated "1.21.0"}
 
  lint/if-else-nil
  {:description "Prefer `when` to `(if x y nil)`."
@@ -144,8 +144,8 @@
  lint/incorrectly-swapped
  {:description "Looks for `(let [a b b a] ...)` that probably should use destructuring."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.21.0"
+  :updated "1.21.0"}
 
  lint/into-literal
  {:description "Prefer `vec` or `set` to `(into [] ...)`."
@@ -190,8 +190,8 @@
  lint/min-max
  {:description "Check for clamping where the min will override the max."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.21.0"
+  :updated "1.21.0"}
 
  lint/misplaced-type-hint
  {:description "Put type hint on function's param vector, not function name."
@@ -210,16 +210,16 @@
  lint/no-catch
  {:description "`try` calls should have at least 1 `catch` or `finally` clause."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.21.0"
+  :updated "1.21.0"
   :chosen-style :accept-finally
   :supported-styles [:accept-finally :only-catch]}
 
  lint/no-op-assignment
  {:description "Don't bind a symbol to the same symbol."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.21.0"
+  :updated "1.21.0"}
 
  lint/not-empty?
  {:description "Looks for `(not (empty?))` which matters for nil-punning."
@@ -249,8 +249,8 @@
  lint/rand-int-one
  {:description "A call to `(rand-int 1)` will always return 0."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.21.0"
+  :updated "1.21.0"}
 
  lint/redundant-call
  {:description "Certain core functions return the arg when given a single arg."
@@ -692,8 +692,8 @@
  style/prefixed-libspecs
  {:description "Prefer flat require libspecs over nested/prefixed libspecs."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.21.0"
+  :updated "1.21.0"}
 
  style/reduce-str
  {:description "Use clojure.string for efficient string concatenation."

@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## 1.21.0 - 2025-06-24
+
 ### New Rules
 
 - `style/prefixed-libspecs`: Prefer flat `require` libspecs to prefixed/nested libspecs: `[clojure.string :as str] [clojure.set :as set]` over `[clojure [string :as str] [set :as set]]`. Currently does not support suggesting alternatives.

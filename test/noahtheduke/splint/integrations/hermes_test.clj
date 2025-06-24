@@ -53,6 +53,8 @@
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)))]
+    ; (user/pprint (dissoc @diagnostics 'lint/warn-on-reflection))
+    ; (user/pprint (into (sorted-map) (update-vals* @diagnostics count)))
     (it "has the right diagnostics"
       (expect
         (match?

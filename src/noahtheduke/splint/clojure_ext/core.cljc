@@ -13,6 +13,7 @@
    (java.util.concurrent Executors Future)
    #?@(:bb []
        :clj ([clojure.lang LazilyPersistentVector]))
+   (clojure.lang BigInt)
    (java.io File)
    (java.nio.file PathMatcher)))
 
@@ -224,9 +225,6 @@
     (apply vary-meta obj f args)
     obj))
 
-(deftype ParseMap [elements])
-(deftype ParseSet [elements])
-
 (defn throw-dup-keys
   [kind ks]
   (letfn [(duplicates [seq]
@@ -237,6 +235,8 @@
       (apply str (str/capitalize (name kind)) " literal contains duplicate key"
         (when (> (count dups) 1) "s")
         ": " (interpose ", " dups)))))
+
+(deftype ParseMap [elements])
 
 (defn parse-map
   [^ParseMap obj loc]
@@ -261,6 +261,8 @@
                     :column (:column loc)})))))
     (apply #?(:bb hash-map :clj om/ordered-map) elements)))
 
+(deftype ParseSet [elements])
+
 (defn parse-set
   [^ParseSet obj loc]
   (let [elements (.elements obj)
@@ -271,6 +273,17 @@
                 :line (:line loc)
                 :column (:column loc)})))
     the-set))
+
+(deftype SplintBigInt [^BigInt n]
+  Object
+  (equals [_ other]
+    (if (instance? SplintBigInt other)
+      (.equals n (.n ^SplintBigInt other))
+      false))
+  (toString [_]
+    (str n "N")))
+
+(defn parse-bigint ^SplintBigInt [n] (SplintBigInt. n))
 
 (defn parse-long*
   "Backport of 1.11's parse-long"

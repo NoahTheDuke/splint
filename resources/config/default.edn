@@ -83,6 +83,12 @@
   :names-to-skip #{}
   :guide-ref "#no-useless-anonymous-fns"}
 
+ lint/identical-branches
+ {:description "Both branches of an if shouldn't be identical."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  lint/if-else-nil
  {:description "Prefer `when` to `(if x y nil)`."
   :enabled true

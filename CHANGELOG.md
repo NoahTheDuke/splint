@@ -10,6 +10,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - `lint/rand-int-one`: Calls to `(rand-int 1)` always return `0`, so this is likely an error.
 - `lint/no-catch`: Require `(try)` calls to have at least 1 `catch` (or `finally`) clause. Supports two styles: `:accept-finally` and `:only-catch`. `:accept-finally` will count a `finally` clause and not raise a warning, while `:only-catch` requires all `try` calls to have a `catch` clause.
 - `lint/catch-throwable`: Prefer specific Exceptions and Errors over `(catch Throwable t ...)`.
+- `lint/identical-branches`: Checks for identical branches of `if` forms: `(if (pred) foo foo)`.
 
 ### Added
 

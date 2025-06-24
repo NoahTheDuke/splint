@@ -8,12 +8,14 @@
    clojure.tools.reader.reader-types
    [edamame.core :as e]
    [edamame.impl.read-fn :as read-fn]
-   [noahtheduke.splint.clojure-ext.core :refer [parse-map parse-set]]
+   [noahtheduke.splint.clojure-ext.core :refer [parse-bigint parse-map
+                                                parse-set]]
    [noahtheduke.splint.parser.defn :refer [parse-defn]]
    [noahtheduke.splint.parser.ns :refer [parse-ns]]
    [noahtheduke.splint.vendor :refer [default-imports]])
   (:import
-    (noahtheduke.splint.clojure_ext.core ParseMap ParseSet)))
+   (clojure.lang BigInt)
+   (noahtheduke.splint.clojure_ext.core ParseMap ParseSet)))
 
 (set! *warn-on-reflection* true)
 
@@ -78,7 +80,9 @@
                       (symbol? (first obj))
                       (symbol? (second obj))
                       (#{"defn" "defn-"} (name (first obj))))
-                    (attach-defn-meta)))
+                    (attach-defn-meta)
+                    ;; last because it will be rare
+                    (instance? BigInt obj) (parse-bigint)))
    ; Each of dispatch literals should either be processed (uneval), or wrap the
    ; expression in a splint-specific "function call".
    ; @x
@@ -119,4 +123,4 @@
   (e/parse-string-all (:contents file-obj) (make-edamame-opts file-obj)))
 
 (comment
-  (parse-file {:contents "#=(+ 1 1)"}))
+  (parse-file {:contents "0N"}))

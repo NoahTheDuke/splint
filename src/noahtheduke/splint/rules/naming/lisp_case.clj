@@ -15,9 +15,10 @@
     (#{"def" "defn"} (name sexp))))
 
 (defn incorrect-name? [sexp]
-  (let [def*-name (str sexp)]
-    (or (some? (re-find #"._." def*-name))
-      (some? (re-find #"[a-z][A-Z]" def*-name)))))
+  (when (symbol? sexp)
+    (let [def*-name (str sexp)]
+      (or (some? (re-find #"._." def*-name))
+        (some? (re-find #"[a-z][A-Z]" def*-name))))))
 
 (defrule naming/lisp-case
   "Use lisp-case for function and variable names. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)

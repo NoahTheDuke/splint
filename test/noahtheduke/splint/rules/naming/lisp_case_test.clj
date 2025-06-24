@@ -36,4 +36,10 @@
                    "(def Somevar 1)"
                    "(defn Somevar [args] 1)"
                    "(list (def someVar 1))"]]
-      (expect-match nil input (single-rule-config rule-name)))))
+      (expect-match nil input (single-rule-config rule-name))))
+  (it "ignores keywords in specs"
+    (expect-match
+      nil
+      "(ns foo (:require [clojure.spec.alpha :as s]))
+      (s/def ::someSpec any?)"
+      (single-rule-config rule-name))))

@@ -27,6 +27,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Fixed
 
 - Correctly resolve auto-resolving keywords in the current namespace: `(ns foo) ::bar` will be parsed as `:foo/bar` instead of `:splint-auto-current/bar`.
+- `naming/lisp-case` now only looks at symbols.
 
 ## 1.20.0 - 2025-03-28
 

@@ -22,8 +22,10 @@
  lint/catch-throwable
  {:description "Don't `(catch Throwable ...)`, catch specific Errors or Exceptions."
   :enabled true
+  :safe false
   :added "<<next>>"
   :updated "<<next>>"
+  :throwables #{Throwable}
   :links ["https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Error.html"]}
 
  lint/defmethod-names

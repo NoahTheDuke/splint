@@ -4,7 +4,8 @@
 
 (ns noahtheduke.splint.parser.ns
   (:require
-   [noahtheduke.splint.utils :refer [drop-quote]]))
+   [noahtheduke.splint.utils :refer [drop-quote]]
+   [clojure.string :as str]))
 
 (set! *warn-on-reflection* true)
 
@@ -20,7 +21,13 @@
       (fn [acc cur]
         (cond
           (symbol? cur)
-          (assoc! acc cur cur)
+          (let [klass (-> (str cur)
+                        (str/split #"\.")
+                        last
+                        symbol)]
+            (-> acc
+              (assoc! cur cur)
+              (assoc! klass cur)))
           (sequential? cur)
           (let [prefix (first cur)
                 aliases (rest cur)]
@@ -124,6 +131,11 @@
      :imports (->> (:import libspecs)
                 (map parse-imports)
                 (apply merge-with into))}))
+
+(comment
+  (derive-aliases
+    '(ns foo
+       (:import clojure.lang.RT (clojure.lang ExceptionInfo)))))
 
 (defmethod derive-aliases 'in-ns
   derive-aliases--in-ns

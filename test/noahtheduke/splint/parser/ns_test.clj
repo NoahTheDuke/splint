@@ -14,6 +14,7 @@
     (expect
       (= '{:imports
            {a a
+            c b.c
             b.c b.c
             i g.h.i
             g.h.i g.h.i
@@ -52,7 +53,8 @@
                      z clojure.zip
                      set clojure.set
                      edn clojure.edn}
-           :imports {java.lang.Byte java.lang.Byte
+           :imports {Byte java.lang.Byte
+                     java.lang.Byte java.lang.Byte
                      Character java.lang.Character
                      java.lang.Character java.lang.Character
                      ArrayList java.lang.ArrayList

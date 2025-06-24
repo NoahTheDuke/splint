@@ -253,6 +253,7 @@
             (if (symbol? rule-name)
               (let [rule (rules rule-name)
                     rule-config (config rule-name)
+                    coercer (or (:config-coercer rule) identity)
                     rule (if (and (map? rule-config)
                                (contains? rule-config :enabled))
                            (let [only-config (when (:only config)
@@ -268,8 +269,9 @@
                                                (assoc rule-config :enabled false))
                                  safety-config (:safe rule-config true)
                                  rule-config (-> rule-config
-                                                 (conj only-config)
-                                                 (assoc :safe safety-config))]
+                                               (conj only-config)
+                                               (assoc :safe safety-config)
+                                               (coercer))]
                              (assoc rule :config rule-config))
                            rule)]
                 (-> acc

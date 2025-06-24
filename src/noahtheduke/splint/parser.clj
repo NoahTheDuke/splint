@@ -19,17 +19,17 @@
 
 (set! *warn-on-reflection* true)
 
-(defn- get-fqns [ns-state ns_]
-  (or (get-in @ns-state [:imports ns_])
-    (get default-imports ns_)))
+(defn- get-fqns [ns-state klass]
+  (or (get-in @ns-state [:imports klass])
+    (get default-imports klass)))
 
 (defn- attach-import-meta [obj ns-state]
-  (if-let [ns_ (and (symbol? obj)
-                 (some-> (or (namespace obj) (name obj))
-                   (str/split #"\.")
-                   last
-                   symbol))]
-    (if-let [fqns (get-fqns ns-state ns_)]
+  (if-let [klass (and (symbol? obj)
+                   (some-> (or (namespace obj) (name obj))
+                     (str/split #"\.")
+                     last
+                     symbol))]
+    (if-let [fqns (get-fqns ns-state klass)]
       (vary-meta obj assoc :splint/import-ns fqns)
       obj)
     obj))

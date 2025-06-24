@@ -9,7 +9,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - `style/prefixed-libspecs`: Prefer flat `require` libspecs to prefixed/nested libspecs: `[clojure.string :as str] [clojure.set :as set]` over `[clojure [string :as str] [set :as set]]`. Currently does not support suggesting alternatives.
 - `lint/rand-int-one`: Calls to `(rand-int 1)` always return `0`, so this is likely an error.
 - `lint/no-catch`: Require `(try)` calls to have at least 1 `catch` (or `finally`) clause. Supports two styles: `:accept-finally` and `:only-catch`. `:accept-finally` will count a `finally` clause and not raise a warning, while `:only-catch` requires all `try` calls to have a `catch` clause.
-- `lint/catch-throwable`: Prefer specific Exceptions and Errors over `(catch Throwable t ...)`.
+- `lint/catch-throwable`: Prefer specific Exceptions and Errors over `(catch Throwable t ...)`. Has `:throwables []` config, which can be used to specify any particular Throwables to disallow.
 - `lint/identical-branches`: Checks for identical branches of `if` and `cond` forms: `(if (pred) foo foo)`, `(cond (pred1) foo (pred2) foo)`. In `cond` branches, only checks consecutive branches as order of checks might be important otherwise.
 - `lint/no-op-assignment`: Avoid writing `(let [foo foo] ...)` or similar. No need to assign a variable to itself.
 
@@ -17,10 +17,12 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - New config option for `lint/fn-wrapper`: `:names-to-skip`. Given that many macros require wrapping, skipping them (or any other calls) can be configured with `:names-to-skip`, which takes a vector of simple symbols to skip during analysis. For example, `lint/fn-wrapper {:names-to-skip [inspect]}` will not trigger on `(add-tap (fn [x] (morse/inspect)))`.
 - New config option for `style/redundant-nested-call`: `:fn-names`. By default, `style/redundant-nested-call` only checks a handful of `clojure.core` vars. To check against custom functions, add them to the config with `style/redundant-nested-call {:fn-names [foo bar]}`.
+- Rules support `:config-coercer`, a one-arg function that takes the final result of a rules' processed config and should return it. Allows for rules to define custom ways of handling config data before it's used (such as unifying args). See `lint/catch-throwable` for an example.
 
 ### Changed
 
 - Disable `lint/thread-macro-one-arg` by default. It harms readability in a lot of cases and has limited usefulness.
+- `:import` parsing now includes both the base class name as well as the fully qualified class name in the returned map, which improves all interop scenarios.
 
 ## 1.20.0 - 2025-03-28
 

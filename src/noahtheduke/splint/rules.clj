@@ -61,10 +61,10 @@
   Must include:
 
   * EITHER `:pattern` or `:patterns`,
-  * EITHER `:replace` or `:on-match`"
+  * (EITHER `:replace` or `:on-match`) and/or `:message`"
   {:arglists '([rule-name docs {:keys [pattern patterns replace on-match
                                        message init-type min-clojure-version
-                                       ext autocorrect] :as opts}])}
+                                       ext autocorrect config-coercer] :as opts}])}
   [rule-name docs opts]
   ;; Babashka-compatible instrumentation, cribbed from clojure.spec.alpha/macro-expand-check
   (let [invocation (list rule-name docs opts)]
@@ -73,7 +73,7 @@
                       (assoc (s/explain-data* ::defrule [] [::defrule] [] invocation)
                              ::s/args invocation)))))
   (let [{:keys [pattern patterns replace on-match message init-type
-                min-clojure-version ext autocorrect]} opts]
+                min-clojure-version ext autocorrect config-coercer]} opts]
     (assert (not (and pattern patterns))
       "defrule cannot define both :pattern and :patterns")
     (when patterns
@@ -107,7 +107,8 @@
                     :on-match (or ~on-match
                                 (replace->diagnostic ~replace)
                                 (message->diagnostic message#))
-                    :autocorrect ~autocorrect}]
+                    :autocorrect ~autocorrect
+                    :config-coercer ~config-coercer}]
          (swap! global-rules #(-> %
                                 (assoc-in [:rules '~full-name] rule#)
                                 (update :genres conj '~(symbol genre))))
@@ -127,9 +128,10 @@
 (s/def ::min-clojure-version (s/keys :opt-un [::major ::minor ::incremental]))
 (s/def ::ext (s/or :single keyword? :multiple (s/coll-of keyword? :kind vector?)))
 (s/def ::autocorrect boolean?)
+(s/def ::config-coercer any?)
 (s/def ::opts (s/keys :req-un [(or ::pattern ::patterns)
                                (or ::replace ::on-match ::message)]
-                :opt-un [::init-type ::min-clojure-version ::ext ::autocorrect]))
+                :opt-un [::init-type ::min-clojure-version ::ext ::autocorrect ::config-coercer]))
 
 (s/def ::defrule
   (s/cat :rule-name ::rule-name

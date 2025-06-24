@@ -25,11 +25,17 @@
 
     (describe "auto-resolving keywords"
       (it "can parse unknown aliases"
-        (expect '[:splint-auto-current/foo :splint-auto-alias-foo/bar :foo :foo/bar]
-          (parse-string-all "::foo ::foo/bar :foo :foo/bar")))
+        (expect
+          (match? '[:splint-auto-current/foo :splint-auto-alias-foo/bar :foo :foo/bar]
+            (parse-string-all "::foo ::foo/bar :foo :foo/bar"))))
       (it "can parse known aliases"
-        (expect '[(ns foo (:require [clojure.set :as set])) :clojure.set/foo]
-          (parse-string-all "(ns foo (:require [clojure.set :as set])) ::set/foo"))))
+        (expect
+          (match? '[(ns foo (:require [clojure.set :as set])) :clojure.set/foo]
+            (parse-string-all "(ns foo (:require [clojure.set :as set])) ::set/foo"))))
+      (it "can set the current namespace"
+        (expect
+          (match? '[(ns foo) :foo/bar]
+            (parse-string-all "(ns foo) ::bar")))))
 
     (describe "discard forms"
       (it "attaches keywords to metadata"

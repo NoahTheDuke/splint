@@ -4,7 +4,6 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.lint.identical-branches
   (:require
-   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
@@ -20,5 +19,4 @@
     [1 2 3])
   "
   {:pattern '(if ?_ ?branch ?branch)
-   :on-match (fn [ctx rule form _]
-               (->diagnostic ctx rule form {:message "Both branches are identical"}))})
+   :message "Both branches are identical"})

@@ -46,9 +46,14 @@
     replace-form))
 
 (defn replace->diagnostic [replace-form]
-  (fn [ctx rule form binds]
-    (let [replaced-form (postwalk-splicing-replace binds replace-form)]
-      (->diagnostic ctx rule form {:replace-form replaced-form}))))
+  (when replace-form
+    (fn [ctx rule form binds]
+      (let [replaced-form (postwalk-splicing-replace binds replace-form)]
+        (->diagnostic ctx rule form {:replace-form replaced-form})))))
+
+(defn message->diagnostic [message]
+  (fn [ctx rule form _binds]
+    (->diagnostic ctx rule form {:message message})))
 
 (defmacro defrule
   "Define a new rule.
@@ -83,14 +88,15 @@
                       (if pattern
                         (simple-type pattern)
                         (simple-type (first patterns))))]
-      `(let [rule# {:name ~rule-name
+      `(let [message# ~message
+             rule# {:name ~rule-name
                     :genre ~genre
                     :full-name '~full-name
                     :docstring ~docs
                     :init-type ~init-type
                     :pattern-raw ~(or pattern patterns)
                     :replace-raw ~replace
-                    :message ~message
+                    :message message#
                     :min-clojure-version ~min-clojure-version
                     :ext ~(cond
                             (set? ext) ext
@@ -98,7 +104,9 @@
                     :pattern (when ~(some? pattern) (p/pattern ~pattern))
                     :patterns (when ~(some? patterns)
                                 ~(mapv #(list `p/pattern %) patterns))
-                    :on-match (or ~on-match (replace->diagnostic ~replace))
+                    :on-match (or ~on-match
+                                (replace->diagnostic ~replace)
+                                (message->diagnostic message#))
                     :autocorrect ~autocorrect}]
          (swap! global-rules #(-> %
                                 (assoc-in [:rules '~full-name] rule#)
@@ -120,8 +128,8 @@
 (s/def ::ext (s/or :single keyword? :multiple (s/coll-of keyword? :kind vector?)))
 (s/def ::autocorrect boolean?)
 (s/def ::opts (s/keys :req-un [(or ::pattern ::patterns)
-                               (or ::replace ::on-match)]
-                :opt-un [::message ::init-type ::min-clojure-version ::ext ::autocorrect]))
+                               (or ::replace ::on-match ::message)]
+                :opt-un [::init-type ::min-clojure-version ::ext ::autocorrect]))
 
 (s/def ::defrule
   (s/cat :rule-name ::rule-name

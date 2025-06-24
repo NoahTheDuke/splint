@@ -97,3 +97,5 @@ If `:on-match` returns a [Diagnostic], then the diagnostic is stored in the cont
 [`->diagnostic`]: https://cljdoc.org/d/io.github.noahtheduke/splint/CURRENT/api/noahtheduke.splint.diagnostic#->diagnostic
 
 If `:on-match` does not return a [Diagnostic], then the rule is considered to have not made a match (even tho the pattern returned a logical value). This allows for further refinement when writing rules without having to extend the pattern language unduly.
+
+For simple [Diagnostic]s that don't have a good replacement, `:message` can be defined without `:replace` or `:on-match`.

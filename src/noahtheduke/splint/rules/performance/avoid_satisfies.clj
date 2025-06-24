@@ -4,7 +4,6 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.performance.avoid-satisfies
   (:require
-   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]))
 
 (set! *warn-on-reflection* true)
@@ -18,5 +17,4 @@
   (satisfies? Foo :bar)
   "
   {:pattern '(satisfies? ?protocol ?obj)
-   :on-match (fn [ctx rule form bindings]
-               (->diagnostic ctx rule form {:message "Avoid using `satisfies?`."}))})
+   :message "Avoid using `satisfies?`."})

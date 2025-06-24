@@ -22,6 +22,7 @@
 - [lint/if-not-do](#lintif-not-do)
 - [lint/if-not-not](#lintif-not-not)
 - [lint/if-same-truthy](#lintif-same-truthy)
+- [lint/incorrectly-swapped](#lintincorrectly-swapped)
 - [lint/into-literal](#lintinto-literal)
 - [lint/let-if](#lintlet-if)
 - [lint/let-when](#lintlet-when)
@@ -98,11 +99,16 @@ a `do` to force it into 'expression position'.
 
 ## lint/catch-throwable
 
-| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
-| ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | <<next>>      | <<next>>        |
+| Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
+| ------------------ | ----- | ----------- | ------------- | --------------- |
+| true               | false | false       | <<next>>      | <<next>>        |
 
 Throwable is a superclass of all Errors and Exceptions in Java. Catching Throwable will also catch Errors, which indicate a serious problem that most applications should not try to catch. If there is a single specific Error you need to catch, use it directly.
+
+By default, only `Throwable` will raise a diagnostic. If you wish to also warn against `Error` (or any specific Throwable for that matter), it can be added with the config `:throwables []`.
+
+### Safety
+Because there might be legitimate reasons to catch Throwable (mission-critical processes), any potential changes must be treated with care and consideration.
 
 ### Examples
 
@@ -116,6 +122,12 @@ Throwable is a superclass of all Errors and Exceptions in Java. Catching Throwab
   (catch ExceptionInfo ex ...)
   (catch AssertionError t ...))
 ```
+
+### Configurable Attributes
+
+| Name          | Default        | Options |
+| ------------- | -------------- | ------- |
+| `:throwables` | `#{Throwable}` | Set     |
 
 ### Reference
 
@@ -541,6 +553,27 @@ Two `not`s cancel each other out.
 
 ---
 
+## lint/incorrectly-swapped
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+It can be necessary to swap two variables. This usually requires an intermediate variable, but with destructuring, Clojure can perform this in a single line. However, without an intermediate variable or destructuring, manually swapping can result in both variables ending up with the same value.
+
+### Examples
+
+```clojure
+; avoid
+(let [a b
+      b a] ...)
+
+; prefer
+(let [[a b] [b a]] ...)
+```
+
+---
+
 ## lint/into-literal
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
@@ -791,12 +824,17 @@ With the default style `:accept-finally`, both `catch` and `finally` clauses are
 
 If the bind is a symbol and the expr is the same symbol, just use the expr directly. (Otherwise, indicates a potential bug.)
 
+Skips if the expr is a reader conditional or has a type-hint.
+
 ### Examples
 
 ```clojure
 ; avoid
-(let [foo foo]
-  ...)
+(let [foo foo] ...)
+
+; ignores
+(let [foo #?(:clj foo :cljs (js-foo-getter))] ...)
+(let [foo ^ArrayList foo] ...)
 ```
 
 ---

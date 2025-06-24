@@ -67,7 +67,7 @@ Current namespaces and aliases:
 
 Use `->` instead of `to` in the names of conversion functions.
 
-Will only warn when there is no `-` before the `-to-`.
+Will only warn when there is no `-` before or after the `-to-`.
 
 ### Safety
 Uses simple string checking and can misunderstand English intention when `X-to-Y` isn't a conversion function.
@@ -97,6 +97,8 @@ Uses simple string checking and can misunderstand English intention when `X-to-Y
 
 Use lisp-case for function and variable names. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)
 
+Skips names that contain `->` or end in `?`, which indicate conversion functions or type predicates, respectfully.
+
 ### Safety
 Interop, json, and other styles can make it necessary to use such forms.
 
@@ -110,6 +112,10 @@ Interop, json, and other styles can make it necessary to use such forms.
 ; prefer
 (def some-var ...)
 (defn some-fun ...)
+
+; ignores
+(defn StackTraceElement->vec [o] ...)
+(defn NaN? [n] ...)
 ```
 
 ### Reference

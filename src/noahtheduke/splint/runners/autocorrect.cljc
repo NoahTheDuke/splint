@@ -64,8 +64,7 @@
   [f]
   (cond
     (keyword? f) {f true}
-    (symbol? f)  {:tag f}
-    (string? f)  {:tag f}
+    (or (symbol? f) (string? f))  {:tag f}
     (vector? f)  {:param-tags f}
     :else        f))
 

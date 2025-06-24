@@ -27,6 +27,7 @@
     lint/dot-class-method 2
     lint/dot-obj-method 1
     lint/fn-wrapper 1
+    lint/identical-branches 9
     lint/if-else-nil 42
     lint/if-let-else-nil 2
     lint/if-nil-else 2
@@ -104,4 +105,4 @@
          (m/equals clj-kondo-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1354 (count (:diagnostics @results)))))))
+      (expect (= 1363 (count (:diagnostics @results)))))))

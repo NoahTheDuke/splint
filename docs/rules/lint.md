@@ -339,7 +339,7 @@ even?
 | ------------------ | ---- | ----------- | ------------- | --------------- |
 | true               | true | false       | <<next>>      | <<next>>        |
 
-Both branches of an `if` should not be identical. There's likely a bug in one of the branches.
+Returning branches of an `if` or `cond` should not be identical. There's likely a bug in one of the branches. In `cond` branches, only checks consecutive branches as order of checks might be important otherwise.
 
 ### Examples
 
@@ -348,6 +348,21 @@ Both branches of an `if` should not be identical. There's likely a bug in one of
 (if (pred)
   [1 2 3]
   [1 2 3])
+
+(cond
+  (pred1) [1 2 3]
+  (pred2) [1 2 3]
+  (other) [4 5 6])
+
+; prefers
+(cond
+  (or (pred1) (pred2)) [1 2 3]
+  (other) [4 5 6])
+
+(cond
+  (pred1) [1 2 3]
+  (other) [4 5 6]
+  (pred2) [1 2 3])
 ```
 
 ---

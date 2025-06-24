@@ -161,12 +161,10 @@
                (cond
                  (not diagnostic) zloc
                  (sequential? diagnostic)
-                 (do #_{:clj-kondo/ignore [:unused-value]}
-                     (update ctx :diagnostics swap! into diagnostic)
+                 (do (swap! (:diagnostics ctx) into diagnostic)
                      zloc)
                  :else
-                 (do #_{:clj-kondo/ignore [:unused-value]}
-                     (update ctx :diagnostics swap! conj diagnostic)
+                 (do (swap! (:diagnostics ctx) conj diagnostic)
                      (if (and (-> ctx :config :autocorrect)
                               (:autocorrect rule)
                               (report-or-prompt ctx diagnostic))

@@ -42,4 +42,9 @@
       nil
       "(ns foo (:require [clojure.spec.alpha :as s]))
       (s/def ::someSpec any?)"
+      (single-rule-config rule-name)))
+  (it "ignores conversion functions"
+    (expect-match
+      nil
+      "(defn StackTraceElement->vec [o] ...)"
       (single-rule-config rule-name))))

@@ -25,7 +25,6 @@
     lint/if-not-both 3
     lint/into-literal 2
     lint/let-when 1
-    lint/no-op-assignment 1
     lint/redundant-call 1
     lint/thread-macro-one-arg 116
     lint/warn-on-reflection 148
@@ -82,6 +81,6 @@
          (m/equals clojure-lsp-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1269 (count (:diagnostics @results)))))
+      (expect (= 1268 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))))

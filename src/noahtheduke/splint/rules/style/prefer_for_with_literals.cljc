@@ -40,7 +40,7 @@
   ; prefer
   (for [item (range 10)] {:a 1 :b item})
   "
-  {:pattern '(map ((? _ fn??) (?? _ symbol?) [?arg]
+  {:pattern '(map ((? _ fn??) (?? _ symbol?) [(? arg symbol?)]
                               ((? builder-fn builder) (?* builder-args)))
                (? coll))
    :message "Prefer `for` when creating a seq of data literals."

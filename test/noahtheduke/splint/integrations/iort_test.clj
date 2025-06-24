@@ -19,7 +19,6 @@
   '{lint/defmethod-names 10
     lint/warn-on-reflection 8
     metrics/fn-length 9
-    naming/lisp-case 1
     performance/assoc-many 1
     performance/dot-equals 3
     style/first-first 1
@@ -47,7 +46,7 @@
          (m/equals iort-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 34 (count (:diagnostics @results)))))
+      (expect (= 33 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))
     (it "raises no unknown errors"

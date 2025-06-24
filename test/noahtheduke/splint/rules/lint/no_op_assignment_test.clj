@@ -32,8 +32,13 @@
         :alt nil}]
       "(let [foo 1 foo foo bar foo bar bar] bar)"
       (single-rule-config rule-name)))
-  (it "doesn't raise when in a reader conditional"
+  (it "ignores when in a reader conditional"
     (expect-match
       nil
       "(let [remote #?(:clj remote :cljs (foo bar))])"
+      (single-rule-config rule-name)))
+  (it "ignores when the right side has a type-hint"
+    (expect-match
+      nil
+      "(let [remote ^ExceptionInfo remote] remote)"
       (single-rule-config rule-name))))

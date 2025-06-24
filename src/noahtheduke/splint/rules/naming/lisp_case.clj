@@ -5,6 +5,7 @@
 (ns ^:no-doc noahtheduke.splint.rules.naming.lisp-case
   (:require
    [camel-snake-kebab.core :as csk]
+   [clojure.string :as str]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]))
 
@@ -17,11 +18,14 @@
 (defn incorrect-name? [sexp]
   (when (symbol? sexp)
     (let [def*-name (str sexp)]
-      (or (some? (re-find #"._." def*-name))
-        (some? (re-find #"[a-z][A-Z]" def*-name))))))
+      (and (some? (re-find #"(._.|[a-z][A-Z])" def*-name))
+        (not (str/includes? def*-name "->"))
+        (not (str/ends-with? def*-name "?"))))))
 
 (defrule naming/lisp-case
   "Use lisp-case for function and variable names. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)
+
+  Skips names that contain `->` or end in `?`, which indicate conversion functions or type predicates, respectfully.
 
   @safety
   Interop, json, and other styles can make it necessary to use such forms.
@@ -35,6 +39,10 @@
   ; prefer
   (def some-var ...)
   (defn some-fun ...)
+
+  ; ignores
+  (defn StackTraceElement->vec [o] ...)
+  (defn NaN? [n] ...)
   "
   {:pattern '((? def def*??) (? name incorrect-name?) ?*args)
    :message "Prefer kebab-case over other cases for top-level definitions."

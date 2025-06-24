@@ -11,7 +11,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - `lint/no-catch`: Require `(try)` calls to have at least 1 `catch` (or `finally`) clause. Supports two styles: `:accept-finally` and `:only-catch`. `:accept-finally` will count a `finally` clause and not raise a warning, while `:only-catch` requires all `try` calls to have a `catch` clause.
 - `lint/catch-throwable`: Prefer specific Exceptions and Errors over `(catch Throwable t ...)`. Has `:throwables []` config, which can be used to specify any particular Throwables to disallow.
 - `lint/identical-branches`: Checks for identical branches of `if` and `cond` forms: `(if (pred) foo foo)`, `(cond (pred1) foo (pred2) foo)`. In `cond` branches, only checks consecutive branches as order of checks might be important otherwise.
-- `lint/no-op-assignment`: Avoid writing `(let [foo foo] ...)` or similar. No need to assign a variable to itself.
+- `lint/no-op-assignment`: Avoid writing `(let [foo foo] ...)` or similar. No need to assign a variable to itself. Skips when the expr is in a reader conditional or has a type-hint.
 
 ### Added
 
@@ -30,8 +30,9 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Fixed
 
 - Correctly resolve auto-resolving keywords in the current namespace: `(ns foo) ::bar` will be parsed as `:foo/bar` instead of `:splint-auto-current/bar`.
-- `naming/lisp-case` now only looks at symbols.
-- `naming/record-name` doesn't crash when analyzing `` `(defrecord ~@body)``.
+- `naming/lisp-case`: Requires name to be a symbol. Skips names that contain `->` or end in `?`, which indicate conversion functions or type predicates, respectfully..
+- `naming/record-name`: Doesn't crash when analyzing `` `(defrecord ~@body)``.
+- `style/prefer-for-with-literals`: Skips when the arg is a destructuring binding.
 
 ## 1.20.0 - 2025-03-28
 

@@ -70,4 +70,9 @@
     (expect-match
       nil
       "(->> [(range 10)] (map (fn [x] (apply hash-map :a 1 :b x))))"
+      (single-rule-config rule-name)))
+  (it "ignores destructuring"
+    (expect-match
+      nil
+      "(map (fn [[k v]] (vector k v)) c)"
       (single-rule-config rule-name))))

@@ -29,7 +29,7 @@
     lint/let-when 1
     lint/missing-body-in-when 1
     lint/no-catch 1
-    lint/no-op-assignment 3
+    lint/no-op-assignment 2
     lint/redundant-str-call 1
     lint/thread-macro-one-arg 70
     lint/try-splicing 3
@@ -82,7 +82,7 @@
          (m/equals clj-kondo-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 713 (count (:diagnostics @results)))))
+      (expect (= 712 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))
     (it "raises no unknown errors"

@@ -9,7 +9,7 @@
    [edamame.core :as e]
    [edamame.impl.read-fn :as read-fn]
    [noahtheduke.splint.clojure-ext.core :refer [parse-bigint parse-map
-                                                parse-set]]
+                                                parse-set vary-meta*]]
    [noahtheduke.splint.parser.defn :refer [parse-defn]]
    [noahtheduke.splint.parser.ns :refer [parse-ns]]
    [noahtheduke.splint.vendor :refer [default-imports]])
@@ -48,7 +48,18 @@
    :end-col-key :end-column
    :end-location true
    :features features
-   :read-cond :allow
+   :read-cond (fn read-cond [obj]
+                (let [pairs (partition 2 obj)]
+                  (loop [pairs pairs]
+                    (when (seq pairs)
+                      (let [[k v] (first pairs)]
+                        (if (or (contains? features k)
+                                (= k :default))
+                          (cond-> v
+                            true (vary-meta* assoc :splint/reader-cond true)
+                            (:edamame/read-cond-splicing (meta obj))
+                            (vary-meta* assoc :edamame.impl.parser/cond-splice true))
+                          (recur (next pairs))))))))
    :readers (fn reader [r]
               (fn reader-value [v]
                 (let [tag-meta {:ext ext}
@@ -123,4 +134,4 @@
   (e/parse-string-all (:contents file-obj) (make-edamame-opts file-obj)))
 
 (comment
-  (parse-file {:contents "0N"}))
+  (parse-file {:contents "#?(:clj foo :cljs bar)" :features #{:clj}}))

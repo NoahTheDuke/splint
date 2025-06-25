@@ -8,6 +8,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Narrow `lint/existing-constant` to only `clj`, and expand it to cover clojure 1.10 (by using `java.lang.Math/PI` and `java.lang.Math/E`).
 
+### Fixed
+
+- `lint/rand-int-one` only checks for numbers between `-1` and `1` (inclusive). (See [#31](https://github.com/NoahTheDuke/splint/issues/31).)
+
 ## 1.21.0 - 2025-06-24
 
 ### New Rules

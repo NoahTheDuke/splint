@@ -34,11 +34,9 @@
         :message "Always returns 0. Did you mean (rand 1.0) or (rand-int 2)?"
         :alt nil}]
       "(rand-int 1.0)"
-      (single-rule-config rule-name))
+      (single-rule-config rule-name)))
+  (it "doesn't run on larger numbers"
     (expect-match
-      [{:rule-name rule-name
-        :form '(rand-int 1.5)
-        :message "Always returns 0. Did you mean (rand 1.5) or (rand-int 2)?"
-        :alt nil}]
+      nil
       "(rand-int 1.5)"
       (single-rule-config rule-name))))

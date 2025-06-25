@@ -10,16 +10,11 @@
 (set! *warn-on-reflection* true)
 
 (defn low-num? [f]
-  (or (#{0 0.0 -1 -1.0 1 1.0} f)
-    (and (or (float? f)
-           (double? f))
-      (or (< (long f) 2)
-        (< -2 (long f))))))
+  (when (number? f)
+    (<= -1 f 1)))
 
 (defrule lint/rand-int-one
-  "`clojure.core/rand-int` returns an integer between `0` (inclusive) and `n` (exclusive), meaning that a call to `(rand-int 1)` will always return `0`.
-
-  Checks the following numbers: `0`, `0.0`, `1`, `1.0`, `-1`, `-1.0`
+  "`clojure.core/rand-int` generates a float between `0` and `n` (exclusive) and then casts it to an integer. When given `1` (or a number less than `1`), `rand-int` will always return `0`.
 
   @examples
 
@@ -29,7 +24,6 @@
   (rand-int 1)
   (rand-int 1.0)
   (rand-int -1.0)
-  (rand-int 1.5)
   "
   {:pattern '(rand-int (? f low-num?))
    :on-match (fn [ctx rule form {:syms [?f]}]

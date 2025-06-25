@@ -301,6 +301,13 @@
   :added "1.11"
   :updated "1.11"}
 
+ lint/update-with-swap
+ {:description "Don't use `swap!` in `update` or `update-in` calls."
+  :enabled true
+  :safe false
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  lint/warn-on-reflection
  {:description "Always set *warn-on-reflection* to avoid reflection in interop."
   :enabled false

@@ -100,7 +100,8 @@
   diagnostic and store it in `ctx`."
   [ctx rule-names form]
   (when-let [diagnostics (check-form ctx rule-names form)]
-    (update ctx :diagnostics swap! into diagnostics)))
+    (swap! (:diagnostics ctx) into diagnostics)
+    nil))
 
 (defn update-rules [rules-map form]
   (if-let [disabled-rules (some-> form meta :splint/disable)]
@@ -213,11 +214,13 @@
                        (assoc :form-meta {:line (:line data)
                                           :column (:column data)}))
                 diagnostic (runner-error->diagnostic ex data)]
-            (update ctx :diagnostics swap! conj diagnostic))
+            (swap! (:diagnostics ctx) conj diagnostic)
+            nil)
           (let [diagnostic (runner-error->diagnostic
                              ex {:error-name 'splint/unknown-error
                                  :filename file})]
-            (update ctx :diagnostics swap! conj diagnostic)))))))
+            (swap! (:diagnostics ctx) conj diagnostic)
+            nil))))))
 
 (defn slurp-file [file-obj]
   (if (:contents file-obj)

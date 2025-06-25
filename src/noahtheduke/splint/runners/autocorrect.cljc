@@ -185,12 +185,12 @@
                                        zloc))))
                        zloc))))
              (catch Exception ex
-               (update ctx :diagnostics swap! conj
-                       (run/runner-error->diagnostic
-                        ex {:error-name 'splint/error
-                            :form zloc
-                            :rule-name (:full-name rule)
-                            :filename (:filename ctx)}))
+               (swap! (:diagnostics ctx) conj
+                 (run/runner-error->diagnostic
+                   ex {:error-name 'splint/error
+                       :form zloc
+                       :rule-name (:full-name rule)
+                       :filename (:filename ctx)}))
                zloc))
            zloc)))
      zloc
@@ -280,11 +280,13 @@
                            (assoc :form-meta {:line (:line data)
                                               :column (:column data)}))
                   diagnostic (run/runner-error->diagnostic ex data)]
-              (update ctx :diagnostics swap! conj diagnostic))
+              (swap! (:diagnostics ctx) conj diagnostic)
+              nil)
             (let [diagnostic (run/runner-error->diagnostic
                               ex {:error-name 'splint/unknown-error
                                   :filename file})]
-              (update ctx :diagnostics swap! conj diagnostic))))))))
+              (swap! (:diagnostics ctx) conj diagnostic)
+              nil)))))))
 
 (comment
   (let [config {:clojure-version *clojure-version*

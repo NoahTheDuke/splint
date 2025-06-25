@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### New Rules
+
+- `lint/update-with-swap`: Prefer `(swap! (:counter state) + 5)` over `(update state :counter swap! + 5)`. (See [#30](https://github.com/NoahTheDuke/splint/issues/30).)
+
 ### Changed
 
 - Narrow `lint/existing-constant` to only `clj`, and expand it to cover clojure 1.10 (by using `java.lang.Math/PI` and `java.lang.Math/E`).

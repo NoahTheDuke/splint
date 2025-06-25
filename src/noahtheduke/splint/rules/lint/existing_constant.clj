@@ -6,7 +6,8 @@
   (:require
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [noahtheduke.splint.utils :refer [support-clojure-version?]]))
 
 (set! *warn-on-reflection* true)
 
@@ -15,15 +16,17 @@
     (double? n)))
 
 (def constants
-  [['clojure.math/PI "3.14"]
-   ['clojure.math/E "2.718"]])
+  [["3.14" 'java.lang.Math/PI 'clojure.math/PI]
+   ["2.718" 'java.lang.Math/E 'clojure.math/E]])
 
-(defn check-size [n]
-  (let [s (str n)]
+(defn check-size [?constant use-clojure-math?]
+  (let [s (str ?constant)]
     (first
-      (for [[const start] constants
+      (for [[start java const] constants
             :when (str/starts-with? s start)]
-        const))))
+        (if use-clojure-math?
+          const
+          java)))))
 
 (defrule lint/existing-constant
   "Java has `PI` and `E` constants built-in, and `clojure.math` exposes them directly. Better to use them instead of poorly approximating them with vars.
@@ -34,14 +37,21 @@
   (def pi 3.14)
   (def e 2.718)
 
-  ; prefer
+  ; prefer (Clojure 1.11+)
   clojure.math/PI
   clojure.math/E
+
+  ; prefer (Clojure 1.10)
+  java.lang.Math/PI
+  java.lang.Math/E
   "
   {:pattern '(def ?name (? constant fp?))
-   :min-clojure-version {:major 1 :minor 11}
+   :ext :clj
    :on-match (fn [ctx rule form {:syms [?name ?constant]}]
-               (when-let [existing (check-size ?constant)]
-                 (let [message (format "Use %s directly" (str existing))]
-                   (->diagnostic ctx rule form {:message message
-                                                :replace-form existing}))))})
+               (let [use-clojure-math? (support-clojure-version?
+                                         {:major 1 :minor 11}
+                                         (:clojure-version (:config ctx)))]
+                 (when-let [existing (check-size ?constant use-clojure-math?)]
+                   (let [message (format "Use %s directly" (str existing))]
+                     (->diagnostic ctx rule form {:message message
+                                                  :replace-form existing})))))})

@@ -32,10 +32,9 @@
   ; prefer
   (foo 1 2 3 4)
   "
-  {:pattern '(?fun ?+args (?fun ?+others))
+  {:pattern '((? fun symbol?) ?+args (?fun ?+others))
    :on-match (fn [ctx {{:keys [fn-names]} :config :as rule} form {:syms [?fun ?args ?others]}]
-               (when (and (symbol? ?fun)
-                       (contains? fn-names (symbol (name ?fun))))
+               (when (contains? fn-names (symbol (name ?fun)))
                  (let [new-form (list* ?fun (concat ?args ?others))]
                    (->diagnostic ctx rule form {:message (format "Redundant nested call: `%s`." ?fun)
                                                 :replace-form new-form}))))})

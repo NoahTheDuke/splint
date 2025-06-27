@@ -39,6 +39,7 @@
     performance/assoc-many 38
     performance/dot-equals 193
     performance/get-keyword 8
+    performance/into-transducer 1
     performance/single-literal-merge 5
     style/apply-str 3
     style/eq-false 26
@@ -81,6 +82,6 @@
          (m/equals clojure-lsp-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1268 (count (:diagnostics @results)))))
+      (expect (= 1269 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))))

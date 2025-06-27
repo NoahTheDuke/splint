@@ -36,12 +36,13 @@
     (catch Exception ex
       ...))
   "
-  {:pattern '(try ?*forms)
+  {:pattern '(try ?+forms)
    :on-match (fn [ctx rule form {:syms [?forms]}]
-               (let [pred (if (= :accept-finally (:chosen-style (:config rule)))
+               (let [chosen-style (:chosen-style (:config rule))
+                     pred (if (= :accept-finally chosen-style)
                             #{'catch 'finally}
                             #{'catch})
-                     msg (if (= :accept-finally (:chosen-style (:config rule)))
+                     msg (if (= :accept-finally chosen-style)
                            "Missing `catch` or `finally`."
                            "Missing `catch`.")]
                  (when-not (->> ?forms

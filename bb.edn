@@ -5,7 +5,7 @@
 {:paths ["src" "resources"]
  :deps {org.clojure/clojure {:mvn/version "1.11.4"}
         org.clojure/tools.cli {:mvn/version "1.1.230"}
-        borkdude/edamame {:mvn/version "1.4.27"}
+        borkdude/edamame {:mvn/version "1.4.31"}
         camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
         fipp/fipp {:mvn/version "0.6.26"}}
  :tasks {splint noahtheduke.splint/-main}

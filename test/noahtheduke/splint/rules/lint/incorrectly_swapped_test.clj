@@ -15,13 +15,13 @@
   (it "works"
     (expect-match
       [{:rule-name rule-name
-        :form '(a b b a)
+        :form '([a b] [a b])
         :message "Looks like an incorrect variable swap."
         :alt '([a b] [b a])}]
-      "(let [a 1 b 2 a b b a] ...)"
+      "(let [a 1 b 2 [a b] [a b]] ...)"
       (single-rule-config rule-name)))
-  (it "ignores if the lines aren't adjacent"
+  (it "works"
     (expect-match
       nil
-      "(let [a 1 b 2 a b c 10 b a] ...)"
+      "(let [a 1 b 2 [a b] [b a]] ...)"
       (single-rule-config rule-name))))

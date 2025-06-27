@@ -40,7 +40,7 @@
     performance/assoc-many 297
     performance/dot-equals 1256
     performance/get-keyword 4
-    performance/into-transducer 4
+    performance/into-transducer 9
     performance/single-literal-merge 17
     style/apply-str 1
     style/apply-str-interpose 2
@@ -100,7 +100,7 @@
          (m/equals netrunner-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 4015 (count (:diagnostics @results)))))
+      (expect (= 4020 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))
     (it "raises no unknown errors"

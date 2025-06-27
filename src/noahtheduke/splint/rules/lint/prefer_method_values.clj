@@ -18,24 +18,21 @@
     (str/starts-with? (name sym) ".")))
 
 (defrule lint/prefer-method-values
-  "Uniform qualified method values are a new syntax for calling into java code. They must resolve to a single static or instance method and to help with that, a new metadata syntax can be used: `^[]` aka `^{:param-tags []}`. Types are specified with classes, each corrosponding to an argument in the target method: `(^[long String] SomeClass/.someMethod 1 \"Hello world!\")`. It compiles to a direct call without any reflection, guaranteeing optimal performance.
-
-  Given that, it is preferable to exclusively use method values.
+  "Uniform qualified method values are a new syntax for calling into java code. Instead of type hints, methods are qualified with their class (and with the new `:param-tags` aka `^[]` metadata where ambiguous). This will be compiled into direct calls, making them both the most clear and the highest performing way to execute Java interop.
 
   @examples
 
   ; avoid
-  (.toUpperCase \"noah\")
-  (. \"noah\" toUpperCase)
+  (.toUpperCase name-string)
+  (. name-string toUpperCase)
 
   ; prefer
-  (^[] String/toUpperCase \"noah\")
+  (String/toUpperCase name-string)
   "
   {:pattern '((? fn interop?) ?obj ?*args)
    :ext :clj
    :min-clojure-version {:major 1 :minor 12}
    :message "Prefer uniform Class/member syntax instead of traditional interop."
-   :autocorrect true
    :on-match (fn [ctx rule form {:syms [?fn ?obj ?args]}]
                (let [[?method ?args]
                      (if (= '. ?fn)

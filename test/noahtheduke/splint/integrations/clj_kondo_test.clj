@@ -84,6 +84,6 @@
     (it "sums correctly"
       (expect (= 712 (count (:diagnostics @results)))))
     (it "raises no errors"
-      (expect (nil? (get diagnostics 'splint/error))))
+      (expect (nil? (get @diagnostics 'splint/error))))
     (it "raises no unknown errors"
-      (expect (nil? (get diagnostics 'splint/unknown-error))))))
+      (expect (nil? (get @diagnostics 'splint/unknown-error))))))

@@ -34,6 +34,11 @@
       nil
       "(foo 1 2 (foo 3 4))"
       (single-rule-config rule-name)))
+  (it "skips non-symbol calls"
+    (expect-match
+      nil
+      "(:foo 1 2 (:foo 3 4))"
+      (single-rule-config rule-name)))
   (it "can check additional vars"
     (expect-match
       [{:rule-name rule-name

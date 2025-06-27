@@ -51,7 +51,7 @@
    :read-cond (fn read-cond [obj]
                 (let [pairs (partition 2 obj)]
                   (loop [pairs pairs]
-                    (when (seq pairs)
+                    (if (seq pairs)
                       (let [[k v] (first pairs)]
                         (if (or (contains? features k)
                                 (= k :default))
@@ -59,7 +59,8 @@
                             true (vary-meta* assoc :splint/reader-cond true)
                             (:edamame/read-cond-splicing (meta obj))
                             (vary-meta* assoc :edamame.impl.parser/cond-splice true))
-                          (recur (next pairs))))))))
+                          (recur (next pairs))))
+                      e/continue))))
    :readers (fn reader [r]
               (fn reader-value [v]
                 (let [tag-meta {:ext ext}

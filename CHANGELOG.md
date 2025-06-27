@@ -10,7 +10,20 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ### Changed
 
-- Narrow `lint/existing-constant` to only `clj`, and expand it to cover clojure 1.10 (by using `java.lang.Math/PI` and `java.lang.Math/E`).
+Update rules:
+
+- `lint/existing-constant`: narrow to only `clj`, and expand it to cover clojure 1.10 (by using `java.lang.Math/PI` and `java.lang.Math/E`).
+- `lint/incorrectly-swapped`: look for destructuring with identical binding and exprs: `(let [[a b] [a b]] ...)`.
+- `lint/no-catch`: require at least one form in `try` call.
+- `lint/prefer-method-values`: simplify docs, examples, remove `:autocomplete` as it uses a dummy class.
+- `lint/redundant-call`: add configurable fn list with `:fn-names`.
+- `lint/require-explicit-param-tags`: clean up docs.
+- `performance/into-transducer`: remove `cat` as it can't be used in the incorrect form.
+- `performance/into-transducer`: add configurable fn list with `:fn-0-arg` and `:fn-1-arg` (depending on how many arguments the fn accepts).
+
+Others:
+
+- Bump `edamame` to `1.4.31` to support `#^` metadata and no-op reader conditionals.
 
 ### Fixed
 

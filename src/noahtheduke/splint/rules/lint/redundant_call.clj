@@ -23,9 +23,7 @@
       (#{'case '-> '->> 'cond-> 'cond->> 'some-> 'some->>} (first parent-form)))))
 
 (defrule lint/redundant-call
-  "A number of core functions take any number of arguments and return the arg
-  if given only one. These calls are effectively no-ops, redundant, so they
-  should be avoided.
+  "A number of core functions take any number of arguments and return the arg if given only one. These calls are effectively no-ops, redundant, so they should be avoided.
 
   Current list of clojure.core functions this linter checks:
 
@@ -34,6 +32,8 @@
   * `some->`, `some->>`
   * `comp`, `partial`, `merge`
   * `min`, `max`, `distinct?`
+
+  This list can be expanded with the configuration `:fn-names`.
 
   @examples
 
@@ -51,13 +51,18 @@
   (max x)
   (distinct? x)
 
+  ; avoid (with `:fn-names [cool-fn]`)
+  (cool-fn x)
+
   ; prefer
   x
   "
-  {:pattern '((? the-fn right-fn?) ?x)
+  {:pattern '((? fun symbol?) ?x)
    :autocorrect true
-   :on-match (fn [ctx rule form {:syms [?the-fn ?x]}]
-               (when-not (check-parent ctx)
-                 (let [message (format "Single-arg `%s` always returns the arg." ?the-fn)]
-                   (->diagnostic ctx rule form {:message message
-                                                :replace-form ?x}))))})
+   :on-match (fn [ctx rule form {:syms [?fun ?x]}]
+               (let [fn-names (:fn-names (:config rule))]
+                 (when (and (contains? fn-names (symbol (name ?fun)))
+                         (not (check-parent ctx)))
+                   (let [message (format "Single-arg `%s` always returns the arg." ?fun)]
+                     (->diagnostic ctx rule form {:message message
+                                                  :replace-form ?x})))))})

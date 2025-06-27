@@ -27,7 +27,6 @@
   (swap! (:counter state) + 5)
   "
   {:pattern '((?| update [update update-in]) ?map ?key swap! ?+args)
-   :autocorrect false
    :message "swap! in update derefs the value in the map."
    :on-match (fn [ctx rule form {:syms [?update ?map ?key ?args]}]
                (let [getter (if (= 'update ?update)

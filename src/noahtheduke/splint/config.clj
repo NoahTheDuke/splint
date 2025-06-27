@@ -15,7 +15,13 @@
 
 (set! *warn-on-reflection* true)
 
-(def version (delay (str/trim (slurp (io/resource "SPLINT_VERSION")))))
+(def version
+  (delay (-> (io/file "noahtheduke" "splint" "SPLINT_VERSION")
+           (str)
+           (io/resource)
+           (slurp)
+           (str/trim))))
+
 (defn splint-version [] (str "splint v" @version))
 
 (defn slurp-edn
@@ -35,8 +41,11 @@
        :else
        (first v)))))
 
+(def default-config-file
+  (io/resource (str (io/file "noahtheduke" "splint" "config" "default.edn"))))
+
 (defn read-default-config []
-  (slurp-edn (io/resource "config/default.edn")))
+  (slurp-edn default-config-file))
 
 (def default-config
   (delay (read-default-config)))

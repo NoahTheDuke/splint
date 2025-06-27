@@ -5,7 +5,7 @@ if [ -z "$GRAALVM_HOME" ]; then
     exit 1
 fi
 
-VERSION=$(cat resources/SPLINT_VERSION)
+VERSION=$(cat resources/noahtheduke/splint/SPLINT_VERSION)
 
 # Ensure Graal native-image program is installed
 "$GRAALVM_HOME/bin/gu" install native-image
@@ -18,8 +18,8 @@ clojure -M -e "(compile 'noahtheduke.splint)"
     -cp "$(clojure -Spath):classes" \
     -H:Name="splint-$VERSION" \
     -H:+ReportExceptionStackTraces \
-    -H:IncludeResources="SPLINT_VERSION" \
-    -H:IncludeResources="config/default.edn" \
+    -H:IncludeResources="noahtheduke/splint/SPLINT_VERSION" \
+    -H:IncludeResources="noahtheduke/splint/config/default.edn" \
     --verbose \
     --no-fallback \
     --no-server \

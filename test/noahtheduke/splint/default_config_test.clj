@@ -5,10 +5,10 @@
 (ns noahtheduke.splint.default-config-test
   (:require
    [clojure.edn :as edn]
-   [clojure.java.io :as io]
    [clojure.spec.alpha :as s]
    [clojure.string :as str]
-   [lazytest.core :refer [defdescribe expect it]]))
+   [lazytest.core :refer [defdescribe expect it]]
+   [noahtheduke.splint.config :refer [default-config-file]]))
 
 (set! *warn-on-reflection* true)
 
@@ -39,6 +39,6 @@
 
 (defdescribe default-config-spec-test
   (it "conforms to spec"
-    (expect (s/valid? ::default-config (->> (io/resource "config/default.edn")
+    (expect (s/valid? ::default-config (->> default-config-file
                                             (slurp)
                                             (edn/read-string))))))

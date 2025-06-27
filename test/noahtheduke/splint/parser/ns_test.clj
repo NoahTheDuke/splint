@@ -4,8 +4,8 @@
 
 (ns noahtheduke.splint.parser.ns-test
   (:require
-    [lazytest.core :refer [defdescribe expect it]]
-    [noahtheduke.splint.parser.ns :as sut]))
+   [lazytest.core :refer [defdescribe expect it]]
+   [noahtheduke.splint.parser.ns :as sut]))
 
 (set! *warn-on-reflection* true)
 

@@ -22,6 +22,6 @@ Once we've decided it's worth persuing, you'll need to follow these steps:
 
 1) Use `clojure -M:new-rule -n GENRE/RULE-NAME` to create a stub rule file and test file and insert stub into default config file.
 2) Fill out both appropriately, including doc strings.
-3) Open `resources/config/default.edn` and move the new rule config to the right location in the file. Add a short description of the rule to `:description` to help users when they auto-generate a `.splint.edn` file.
+3) Open `resources/noahtheduke/splint/config/default.edn` and move the new rule config to the right location in the file. Add a short description of the rule to `:description` to help users when they auto-generate a `.splint.edn` file.
 4) Add the rule's fully-qualified name to `src/noahtheduke/splint.clj` in the second `:require` block in the right place.
 5) Run the full test suite with `clojure -M:dev:test:runner`, updating the integration tests as necessary. Inspect their output if you wish to verify that the new rule works correctly.

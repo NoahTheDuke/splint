@@ -4,12 +4,13 @@
 
 (ns build
   (:require
+   [clojure.java.io :as io]
    [clojure.string :as str]
    [clojure.tools.build.api :as b]
    [deps-deploy.deps-deploy :as dd]))
 
 (def lib 'io.github.noahtheduke/splint)
-(def version (str/trim (slurp "./resources/SPLINT_VERSION")))
+(def version (str/trim (slurp (io/file "resources" "noahtheduke" "splint" "SPLINT_VERSION"))))
 (def class-dir "classes")
 
 (defn make-opts [opts]

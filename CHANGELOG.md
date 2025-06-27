@@ -24,6 +24,7 @@ Update rules:
 Others:
 
 - Bump `edamame` to `1.4.31` to support `#^` metadata and no-op reader conditionals.
+- Move `resources/SPLINT_VERSION` and `resources/config/default.edn` to `resources/noahtheduke/splint/SPLINT_VERSION` and `resources/noahtheduke/splint/config/default.edn`, respectively.
 
 ### Fixed
 

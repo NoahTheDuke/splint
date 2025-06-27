@@ -5,9 +5,9 @@
 (ns noahtheduke.splint.dev
   (:require
    [nextjournal.beholder :as beholder]
+   [noahtheduke.splint]
    [noahtheduke.splint.config :as config]
-   [noahtheduke.splint.rules :refer [global-rules]]
-   [noahtheduke.splint]))
+   [noahtheduke.splint.rules :refer [global-rules]]))
 
 (set! *warn-on-reflection* true)
 

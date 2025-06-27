@@ -2,7 +2,7 @@ default:
     @just --list
 
 today := `date +%F`
-current_version := `cat resources/SPLINT_VERSION | xargs`
+current_version := `cat resources/noahtheduke/splint/SPLINT_VERSION | xargs`
 project := 'io.github.noahtheduke/splint'
 
 flow-storm:
@@ -61,7 +61,7 @@ test-all *args="--output dots":
 
 # Set version, change all instances of <<next>> to version
 @set-version version:
-    echo '{{version}}' > resources/SPLINT_VERSION
+    echo '{{version}}' > resources/noahtheduke/splint/SPLINT_VERSION
     fd '.(clj|edn|md)' . -x sd '<<next>>' '{{version}}' {}
     sd '{{current_version}}' '{{version}}' README.md
     sd '{{current_version}}' '{{version}}' docs/installation.md

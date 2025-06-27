@@ -80,7 +80,7 @@
  {:description "Use `clojure.math/PI` and `clojure.math/E` when appropriate instead of approximating."
   :enabled true
   :added "1.21.0"
-  :updated "1.21.0"}
+  :updated "<<next>>"}
 
  lint/fn-wrapper
  {:description "Avoid wrapping functions in pass-through anonymous function defitions."
@@ -92,7 +92,7 @@
   :guide-ref "#no-useless-anonymous-fns"}
 
  lint/identical-branches
- {:description "Both branches of an if shouldn't be identical."
+ {:description "All branches of an `if` or `cond` shouldn't be identical."
   :enabled true
   :added "1.21.0"
   :updated "1.21.0"}
@@ -142,10 +142,10 @@
   :updated "0.1"}
 
  lint/incorrectly-swapped
- {:description "Looks for `(let [a b b a] ...)` that probably should use destructuring."
+ {:description "Looks for `(let [[a b] [a b]] ...)` that didn't actually swap the two variables."
   :enabled true
   :added "1.21.0"
-  :updated "1.21.0"}
+  :updated "<<next>>"}
 
  lint/into-literal
  {:description "Prefer `vec` or `set` to `(into [] ...)`."
@@ -234,7 +234,7 @@
  {:description "Use uniform Class/member syntax when writing interop."
   :enabled true
   :added "1.13"
-  :updated "1.13"
+  :updated "<<next>>"
   :links ["https://clojure.org/news/2024/04/28/clojure-1-12-alpha10#method_values"]}
 
  lint/prefer-require-over-use
@@ -255,8 +255,9 @@
  lint/redundant-call
  {:description "Certain core functions return the arg when given a single arg."
   :enabled true
+  :fn-names #{-> ->> cond-> cond->> some-> some->> comp partial merge min max distinct?}
   :added "0.1"
-  :updated "0.1"}
+  :updated "<<next>>"}
 
  lint/redundant-str-call
  {:description "Avoid calls to `str` on string literals or calls to `str` or `format`."
@@ -420,8 +421,13 @@
  performance/into-transducer
  {:description "Prefer `(into [] (map f) coll)` to `(into [] (map f coll))`."
   :enabled false
+  :fn-0-arg #{dedupe distinct}
+  :fn-1-arg #{drop drop-while filter halt-when
+              interpose keep keep-indexed map map-indexed mapcat
+              partition-all partition-by random-sample remove replace take
+              take-nth take-while}
   :added "1.11"
-  :updated "1.11"
+  :updated "<<next>>"
   :links ["https://bsless.github.io/code-smells"]}
 
  performance/single-literal-merge
@@ -717,9 +723,9 @@
  style/redundant-nested-call
  {:description "Prefer `(+ 1 2 3 4)` to `(+ 1 2 (+ 3 4))`."
   :enabled true
+  :fn-names #{* *' + +' and comp concat every-pred lazy-cat max merge min or some-fn str}
   :added "1.19.0"
-  :updated "1.19.0"
-  :fn-names #{* *' + +' and comp concat every-pred lazy-cat max merge min or some-fn str}}
+  :updated "1.19.0"}
 
  style/redundant-regex-constructor
  {:description "Rely on regex literal."

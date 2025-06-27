@@ -10,11 +10,11 @@
    [clojure.string :as str]
    [lazytest.core :refer [defdescribe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
-   [noahtheduke.splint.runner :as splint :refer [prepare-rules]]
-   [noahtheduke.splint.test-helpers :refer [with-out-str-data-map]]
-   [noahtheduke.splint.config :as conf]
+   [noahtheduke.splint.config :as conf :refer [default-config-file]]
+   [noahtheduke.splint.parser :refer [parse-file]]
    [noahtheduke.splint.rules :refer [global-rules]]
-   [noahtheduke.splint.parser :refer [parse-file]])
+   [noahtheduke.splint.runner :as splint :refer [prepare-rules]]
+   [noahtheduke.splint.test-helpers :refer [with-out-str-data-map]])
   (:import
    (java.io File)))
 
@@ -56,7 +56,7 @@
 
 (defdescribe config-test
   (it "has sorted default config"
-    (let [default-config (slurp (io/resource "config/default.edn"))
+    (let [default-config (slurp default-config-file)
           config-as-vec (->> default-config
                              (str/split-lines)
                              (drop-while #(not= \{ (first %)))

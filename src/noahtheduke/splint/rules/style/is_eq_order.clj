@@ -4,7 +4,8 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.is-eq-order
   (:require
-   [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.rules :refer [defrule]]
+   [noahtheduke.splint.rules.helpers :refer [simple-literal?]]))
 
 (set! *warn-on-reflection* true)
 

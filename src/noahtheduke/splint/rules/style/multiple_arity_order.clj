@@ -6,6 +6,7 @@
   (:require
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]
+   [noahtheduke.splint.rules.helpers :refer [defn??]]
    [noahtheduke.splint.utils :refer [drop-quote]]))
 
 (set! *warn-on-reflection* true)

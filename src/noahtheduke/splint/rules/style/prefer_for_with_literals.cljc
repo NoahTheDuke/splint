@@ -4,9 +4,10 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.prefer-for-with-literals
   (:require
+   [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]
-   [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]
+   [noahtheduke.splint.rules.helpers :refer [fn??]]
    #?@(:bb []
        :clj [[flatland.ordered.map :refer [ordered-map]]
              [flatland.ordered.set :refer [ordered-set]]])))

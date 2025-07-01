@@ -5,7 +5,8 @@
 (ns ^:no-doc noahtheduke.splint.rules.metrics.fn-length
   (:require
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-   [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.rules :refer [defrule]]
+   [noahtheduke.splint.rules.helpers :refer [defn??]]))
 
 (set! *warn-on-reflection* true)
 

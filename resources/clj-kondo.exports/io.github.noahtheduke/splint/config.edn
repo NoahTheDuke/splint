@@ -1,0 +1,13 @@
+; This Source Code Form is subject to the terms of the Mozilla Public
+; License, v. 2.0. If a copy of the MPL was not distributed with this
+; file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+{:hooks {:analyze-call {noahtheduke.splint.rules/defrule
+                        hooks.noahtheduke.splint.rules/defrule}}
+ :lint-as {noahtheduke.splint.test-helpers/with-temp-files clojure.core/let}
+ :linters {:splint/arg-count {:level :error}
+           :splint/binding-type {:level :error}
+           :splint/choice {:level :error}
+           :splint/choice-type {:level :error}
+           :splint/predicate {:level :error}
+           :splint/spec {:level :error}}}

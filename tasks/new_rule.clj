@@ -22,7 +22,7 @@
                           genre (namespace-munge (str rule-name ".clj")))
           test-filename (io/file "test" "noahtheduke" "splint" "rules"
                           genre (namespace-munge (str rule-name "_test.clj")))
-          config-file (io/file "resources" "config" "default.edn")]
+          config-file (io/file "resources" "noahtheduke" "splint" "config" "default.edn")]
       (io/make-parents rule-filename)
       (io/make-parents test-filename)
       (spit rule-filename (render rule-template {:genre genre :rule-name rule-name}))

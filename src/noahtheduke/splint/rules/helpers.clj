@@ -5,7 +5,8 @@
 (ns noahtheduke.splint.rules.helpers
   "Functions available by default in patterns."
   (:require
-   [noahtheduke.splint.utils :as utils]))
+   [noahtheduke.splint.utils :as utils]
+   [clojure.string :as str]))
 
 (set! *warn-on-reflection* true)
 
@@ -281,3 +282,9 @@
   (and (simple-symbol? sym)
     (or (default-import? sym)
       (:splint/import-ns (meta sym)))))
+
+(defn interop? [sexp]
+  (and (symbol? sexp)
+    (or (some->> sexp namespace symbol default-import?)
+      (some->> sexp meta :splint/import-ns)
+      (str/starts-with? (name sexp) "."))))

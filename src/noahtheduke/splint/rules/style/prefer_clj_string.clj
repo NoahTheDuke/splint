@@ -6,7 +6,8 @@
   (:require
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]
-   [noahtheduke.splint.rules.helpers :refer [interop->clj-string]]))
+   [noahtheduke.splint.rules.helpers :refer [interop->clj-string
+                                             string-interop-method?]]))
 
 (set! *warn-on-reflection* true)
 

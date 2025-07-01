@@ -13,7 +13,7 @@
 
 (set! *warn-on-reflection* true)
 
-(defn interop? [sym]
+(defn classic-interop? [sym]
   (and (simple-symbol? sym)
     (str/starts-with? (name sym) ".")))
 
@@ -29,7 +29,7 @@
   ; prefer
   (String/toUpperCase name-string)
   "
-  {:pattern '((? fn interop?) ?obj ?*args)
+  {:pattern '((? fn classic-interop?) ?obj ?*args)
    :ext :clj
    :min-clojure-version {:major 1 :minor 12}
    :message "Prefer uniform Class/member syntax instead of traditional interop."

@@ -221,6 +221,12 @@
   :added "1.21.0"
   :updated "1.21.0"}
 
+ lint/no-target-for-method
+ {:description "Instance methods require a target instance."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  lint/not-empty?
  {:description "Looks for `(not (empty?))` which matters for nil-punning."
   :enabled true

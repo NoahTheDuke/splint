@@ -76,6 +76,7 @@
                                 (group-by :rule-name)))]
     ; (user/pprint (into (sorted-map) (dissoc @diagnostics 'lint/warn-on-reflection 'lint/defmethod-names)))
     ; (user/pprint (into (sorted-map) (update-vals* @diagnostics count)))
+    ; (user/pprint (get @diagnostics 'lint/no-target-for-method))
     (it "has the right diagnostics"
       (expect
         (match?

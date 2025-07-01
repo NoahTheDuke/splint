@@ -6,7 +6,8 @@
   (:require
    [noahtheduke.splint.clojure-ext.core :refer [->list]]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-   [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.rules :refer [defrule]]
+   [noahtheduke.splint.rules.helpers :refer [defn??]]))
 
 (set! *warn-on-reflection* true)
 

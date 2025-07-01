@@ -1,0 +1,192 @@
+(ns hooks.noahtheduke.splint.rules
+  (:require
+   [clj-kondo.hooks-api :as api]))
+
+(defn walk
+  [inner outer form]
+  (cond
+    (:children form) (outer (assoc form :children (mapv inner (:children form))))
+    :else (outer form)))
+
+(defn postwalk
+  [f form]
+  (walk #(postwalk f %) f form))
+
+(defn check-pattern
+  [finds children]
+  (postwalk
+   (fn [obj]
+     (when (and (api/list-node? obj)
+                (first (:children obj))
+                (symbol? (api/sexpr (first (:children obj)))))
+       (let [[c bind pred & args] (:children obj)]
+         (when-let [kind (#{'? '?+ '?* '?? '?|} (api/sexpr c))]
+           (when-not bind
+             (let [{:keys [row col end-row end-col]} (meta obj)]
+               (api/reg-finding!
+                {:message "must having binding"
+                 :type :splint/arg-count
+                 :row row
+                 :col col
+                 :end-row end-row
+                 :end-col end-col})))
+           (when (seq args)
+             (let [{:keys [row col]} (meta (first args))
+                   {:keys [end-row end-col]} (meta (last args))]
+               (api/reg-finding!
+                {:message "too many args"
+                 :type :splint/arg-count
+                 :row row
+                 :col col
+                 :end-row end-row
+                 :end-col end-col})))
+           (when-not (symbol? (api/sexpr bind))
+             (let [{:keys [row col end-row end-col]} (meta bind)]
+               (api/reg-finding!
+                {:message "binding must be a symbol"
+                 :type :lazytest/binding-type
+                 :row row
+                 :col col
+                 :end-row end-row
+                 :end-col end-col})))
+           (case kind
+             (? ?* ?+ ??)
+             (when pred
+               (let [pred-sym (api/sexpr pred)]
+                 (if (symbol? pred-sym)
+                   (let [v (api/resolve {:name pred-sym
+                                         :call true})]
+                     (if v
+                       (swap! finds conj (with-meta (api/token-node
+                                                     (symbol (str (:ns v)) (str (:name v))))
+                                           (meta pred)))
+                       (let [{:keys [row col end-row end-col]} (meta pred)]
+                         (api/reg-finding!
+                          {:message (str "Unresolved symbol: " pred-sym)
+                           :type :unresolved-symbol
+                           :row row
+                           :col col
+                           :end-row end-row
+                           :end-col end-col}))))
+                   (let [{:keys [row col end-row end-col]} (meta pred)]
+                     (api/reg-finding!
+                      {:message "predicate must be a symbol"
+                       :type :lazytest/predicate
+                       :row row
+                       :col col
+                       :end-row end-row
+                       :end-col end-col})))))
+             ?| (cond
+                  (api/vector-node? pred)
+                  (if (seq (:children pred))
+                    (doseq [invalid (remove #(api/token-node? %) (:children pred))
+                            :let [{:keys [row col end-row end-col]} (meta invalid)]]
+                      (api/reg-finding!
+                       {:message "incorrect type for ?| vector"
+                        :type :lazytest/choice-type
+                        :row row
+                        :col col
+                        :end-row end-row
+                        :end-col end-col}))
+                    (let [{:keys [row col end-row end-col]} (meta pred)]
+                      (api/reg-finding!
+                       {:message "?| requires a non-empty vector predicate"
+                        :type :lazytest/choice
+                        :row row
+                        :col col
+                        :end-row end-row
+                        :end-col end-col})))
+                  pred
+                  (let [{:keys [row col end-row end-col]} (meta pred)]
+                    (api/reg-finding!
+                     {:message "?| requires a vector predicate"
+                      :type :lazytest/choice
+                      :row row
+                      :col col
+                      :end-row end-row
+                      :end-col end-col}))
+                  :else
+                  (let [{:keys [row col end-row end-col]} (meta obj)]
+                    (api/reg-finding!
+                     {:message "?| choice vector must exist"
+                      :type :lazytest/choice
+                      :row row
+                      :col col
+                      :end-row end-row
+                      :end-col end-col})))
+             #_:else nil))))
+     obj)
+   children)
+  @finds)
+
+(defn validate-type
+  [m k pred t]
+  (when-let [v (k m)]
+    (when-not (pred v)
+      (let [{:keys [row col end-row end-col]} (meta pred)]
+        {:message (format "Expected: %s, received: %s" t (name (api/tag v)))
+         :type :splint/spec
+         :row row
+         :col col
+         :end-row end-row
+         :end-col end-col}))))
+
+(defn validate-rule
+  [node]
+  (let [m (api/sexpr node)]
+    (validate-type m :patterns vector? "vector")
+    (validate-type m :message string? "string")
+    (validate-type m :init-type keyword? "keyword")
+    (validate-type m :min-clojure-version map? "map")
+    (when-let [version (:min-clojure-version m)]
+      (validate-type version :major int? "int")
+      (validate-type version :minor int? "int")
+      (validate-type version :incremental int? "int"))
+    (validate-type m :autocorrect boolean? "boolean")
+    (validate-type m :ext #(or (keyword? %)
+                               (and (sequential? %)
+                                    (every? keyword? %)))
+                   "keyword or seq of keywords")
+    (cond
+      (and (:pattern m) (:patterns m))
+      (let [{:keys [row col end-row end-col]} (meta node)]
+        (api/reg-finding!
+         {:message "Must define only one of :pattern OR :patterns"
+          :type :splint/spec
+          :row row
+          :col col
+          :end-row end-row
+          :end-col end-col}))
+      (< 1 (count (select-keys m [:replace :on-match])))
+      (let [{:keys [row col end-row end-col]} (meta node)]
+        (api/reg-finding!
+         {:message "Must define only one of :replace OR :on-match"
+          :type :splint/spec
+          :row row
+          :col col
+          :end-row end-row
+          :end-col end-col})))))
+
+(defn defrule
+  [{:keys [node]}]
+  (let [[defrule rule-name docs m] (:children node)
+        used-preds (let [entries (->> (:children m)
+                                      (partition 2)
+                                      (group-by #(:k (first %)))
+                                      (#(select-keys % [:pattern :patterns]))
+                                      (not-empty))
+                         pattern (second (first (:pattern entries)))
+                         patterns (mapcat (comp :children second) (:patterns entries))
+                         finds (atom [])]
+                     (doseq [pattern (cons pattern patterns)]
+                       (check-pattern finds pattern))
+                     @finds)
+        new-node (api/list-node
+                  [(with-meta (api/token-node 'def) (meta defrule))
+                   (with-meta (api/token-node (symbol (name (api/sexpr rule-name))))
+                     (meta rule-name))
+                   docs
+                   (update m :children into [(api/token-node :used-predicates)
+                                             (api/vector-node used-preds)])])]
+    (validate-rule m)
+    {:node (with-meta new-node (meta node))}))

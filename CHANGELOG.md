@@ -8,6 +8,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - `lint/update-with-swap`: Prefer `(swap! (:counter state) + 5)` over `(update state :counter swap! + 5)`. (See [#30](https://github.com/NoahTheDuke/splint/issues/30).)
 
+### Added
+
+- Exported comprehensive clj-kondo hook for `defrule`.
+
 ### Changed
 
 Update rules:

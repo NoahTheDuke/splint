@@ -4,9 +4,10 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.naming.predicate
   (:require
+   [clojure.string :as str]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]
-   [clojure.string :as str]))
+   [noahtheduke.splint.rules.helpers :refer [defn??]]))
 
 (set! *warn-on-reflection* true)
 

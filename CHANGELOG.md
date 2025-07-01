@@ -4,6 +4,11 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+BREAKING CHANGES:
+
+* The pattern parser is less forgiving of mistakes, so custom patterns might break.
+* The pattern parser no longer resolves predicates, so `noahtheduke.splint.rules.helpers` functions must be referred in namespaces where they're used.
+
 ### New Rules
 
 - `lint/update-with-swap`: Prefer `(swap! (:counter state) + 5)` over `(update state :counter swap! + 5)`. (See [#30](https://github.com/NoahTheDuke/splint/issues/30).)
@@ -24,6 +29,12 @@ Update rules:
 - `lint/require-explicit-param-tags`: clean up docs.
 - `performance/into-transducer`: remove `cat` as it can't be used in the incorrect form.
 - `performance/into-transducer`: add configurable fn list with `:fn-0-arg` and `:fn-1-arg` (depending on how many arguments the fn accepts).
+
+Patterns:
+
+- Binds can be written with a prepended question mark inside of special patterns: `(? ?foo)` is now equivalent to `(? foo)`.
+- Add additional checks to macroexpansion of patterns (incorrect number of args, invalid places to use a special pattern, etc).
+- No longer resolve predicates before usage when matching with a predicate. Now all predicates must be referred in a `:use` or `:require` call, matching normal Clojure behavior. This is done to simplify implementation and to make references work with clj-kondo/clojure-lsp.
 
 Others:
 

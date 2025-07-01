@@ -180,13 +180,15 @@
                          finds (atom [])]
                      (doseq [pattern (cons pattern patterns)]
                        (check-pattern finds pattern))
-                     @finds)
+                     (seq @finds))
         new-node (api/list-node
                   [(with-meta (api/token-node 'def) (meta defrule))
                    (with-meta (api/token-node (symbol (name (api/sexpr rule-name))))
                      (meta rule-name))
                    docs
-                   (update m :children into [(api/token-node :used-predicates)
-                                             (api/vector-node used-preds)])])]
+                   (if used-preds
+                     (update m :children into [(api/token-node :used-predicates)
+                                               (api/vector-node used-preds)])
+                     m)])]
     (validate-rule m)
     {:node (with-meta new-node (meta node))}))

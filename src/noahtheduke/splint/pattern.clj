@@ -25,7 +25,8 @@
     (case [char0
            (when (< 1 (count sym-name))
              (.charAt sym-name 1))]
-      [\_ nil] :any
+      ([\_ nil] [\? \_]) :any
+      [\? nil] :?
       [\? \+] :?+
       [\? \*] :?*
       [\? \?] :??
@@ -510,28 +511,15 @@
       (if (symbol? obj)
         (let [special-type (read-dispatch-symbol obj)]
           (case special-type
-            (:symbol :any) obj
-            :? (let [sym-name (str obj)]
-                 ;; If given `?_`, short-circuit to just _
-                 (if (.equals "?_" sym-name)
-                   '_
-                   obj))
-            :?+ (let [sym-name (str obj)]
-                  (if (= 2 (count sym-name))
-                    obj
-                    (list '?+ (symbol (subs sym-name 2)))))
-            :?* (let [sym-name (str obj)]
-                  (if (= 2 (count sym-name))
-                    obj
-                    (list '?* (symbol (subs sym-name 2)))))
-            :?? (let [sym-name (str obj)]
-                  (if (= 2 (count sym-name))
-                    obj
-                    (list '?? (symbol (subs sym-name 2)))))
-            :?| (let [sym-name (str obj)]
-                  (if (= 2 (count sym-name))
-                    obj
-                    (throw (IllegalArgumentException. "Can't use ?| on a symbol"))))
+            :any '_
+            (:symbol :?) obj
+            (:?+ :?* :??) (let [sym (symbol special-type)]
+                            (if (= sym obj)
+                              obj
+                              (list sym (symbol (subs (name obj) 2)))))
+            :?| (if (= '?| obj)
+                  obj
+                  (throw (IllegalArgumentException. "Can't use ?| on a symbol")))
             ; else
             (throw (IllegalArgumentException. (str "Unreachable, found with " obj)))))
         obj))

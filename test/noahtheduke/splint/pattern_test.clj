@@ -260,6 +260,16 @@
           (bad-compile? '?|exprs
             (parse-string "(1 2 3)"))))))
 
+  (it "unifies across types"
+    (expect
+      (= '{?list [:x]}
+        ((sut/pattern '[?list [??list 3]])
+          (parse-string "[[:x] [:x 3]]"))))
+    (expect
+      (= '{?list [:x]}
+        ((sut/pattern '[?list [?*list 3]])
+          (parse-string "[[:x] [:x 3]]")))))
+
   (it "quote"
     (expect
       (= '{}

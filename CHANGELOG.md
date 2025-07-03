@@ -36,6 +36,7 @@ Patterns:
 - Binds can be written with a prepended question mark inside of special patterns: `(? ?foo)` is now equivalent to `(? foo)`.
 - Add additional checks to macroexpansion of patterns (incorrect number of args, invalid places to use a special pattern, etc).
 - No longer resolve predicates before usage when matching with a predicate. Now all predicates must be referred in a `:use` or `:require` call, matching normal Clojure behavior. This is done to simplify implementation and to make references work with clj-kondo/clojure-lsp.
+- Simplify pattern parsing, maybe micro-optimized? I didn't test and don't tell me if I'm wrong lol.
 
 Others:
 

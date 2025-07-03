@@ -48,14 +48,17 @@ Some forms are treated differently as part of the Pattern DSL. These are useful 
 Special patterns are in the shape of `(sym binding opts)`. Some have shorted forms. Any time there is a binding, if the given binding symbol doesn't start with a question mark, it is changed to have one: `(? x)` puts `?x` in the returned map from `pattern`.
 
 * `?` is for single-value binding: `(? x pred?)` (short form `?x`). Matches anything and binds it to `?x`. If a predicate is given, it is called on the matched value and only binds when truthy.
-* `?*` is for binding zero or more values in a sequence: `(?* x pred?)` (short form `?*x`). Matches any number of items and binds them to `?x`. If a predicate is given, it is called on each matched value with `(every? pred? items)` and only binds when that returns true.
-* `?+` is the same as `?*` (short form `?+x`) but matches one or more items in the sequence.
-* `??` is the same as `?*` (short form `??x`) but matches only zero or one items.
+* `?*` is for binding zero or more values in a sequence (greedy): `(?* x pred?)` (short form `?*x`). Matches any number of items and binds them to `?x`. If a predicate is given, it is called on each matched value with `(every? pred? items)` and only binds when that returns true.
+* `?*?` is for binding zero or more values in a sequence (lazy). Same as `?*` above except it matches the fewest values possible.
+* `?+` is the same as `?*` (short form `?+x`) but matches one or more items in the sequence (greedy).
+* `?+?` is the same as `?*?` (short form `?+?x`) but matches one or more items in the sequence (lazy).
+* `??` is the same as `?*` (short form `??x`) but matches only zero or one items (greedy).
+* `???` is the same as `?*?` (short form `???x`) but matches only zero or one items (lazy).
 * `?|` binds a single value as `?`, but requires the third arg to be a vector of simple types, which it will try to match left-to-right: `(?| x [a b c])` will only match `a`, `b`, or `c`, but not `d`. Due to the required vector, there is no short form.
 
-The binding `_` is special: it matches anything like a regular binding but doesn't create bindings in the map returned by `pattern`. It also doesn't unify with itself, so `[_ 1 _]` matches both `[0 1 0]` and `[0 1 2]`.
+Bindings unify across patterns, which means that if the same binding is used multiple times, then the entire pattern will only match if the bindings match. For example, `[?x :foo ?x]` will match `[2 :foo 2]` but not `[2 :foo 100]`. This applies to special patterns as well: `[(?+ nums number?) :middle (?+ nums)]` will match `[1 2 3 :middle 1 2 3]` but not `[1 2 3 :middle 4 5 6]`. Because only the binding itself must unify, they can be used in and out of special patterns and will unify or reject as expected: `[[(?+ nums number?)] :middle ?nums]` will match `[[1 2 3] :middle [1 2 3]]`.
 
-All predicates are resolved using `clojure.core/requiring-resolve`. It first tries to resolve with `clojure.core`, then with `noahtheduke.splint.rules.helpers`, then with the current namespace. If it can't resolve to a function, an `ExceptionInfo` is thrown.
+The binding `_` (or `?_`) is special: it matches anything like a regular binding but doesn't create bindings in the map returned by `pattern`. It also doesn't unify with itself, so `[_ 1 _]` matches both `[0 1 0]` and `[0 1 2]`.
 
 **Note:** Any of the above can be treated as literals instead of DSL symbols by using the metadata `:splint/lit`: `(quote _)` -> `:any`, `(quote ^:splint/lit _)` -> `:symbol`.
 

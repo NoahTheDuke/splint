@@ -17,6 +17,7 @@ BREAKING CHANGES:
 ### Added
 
 - Exported comprehensive clj-kondo hook for `defrule`.
+- New special patterns `?*?`, `?+?`, and `???`, lazy/non-greedy versions of `?*`, `?+`, and `??`.
 
 ### Changed
 
@@ -37,6 +38,7 @@ Patterns:
 - Add additional checks to macroexpansion of patterns (incorrect number of args, invalid places to use a special pattern, etc).
 - No longer resolve predicates before usage when matching with a predicate. Now all predicates must be referred in a `:use` or `:require` call, matching normal Clojure behavior. This is done to simplify implementation and to make references work with clj-kondo/clojure-lsp.
 - Simplify pattern parsing, maybe micro-optimized? I didn't test and don't tell me if I'm wrong lol.
+- The special patterns `?*`, `?+`, `??` are now greedy.
 
 Others:
 

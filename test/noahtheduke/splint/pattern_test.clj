@@ -115,6 +115,49 @@
       (expect (causes? IllegalArgumentException
                 (bad-compile? '?*foo (parse-string "1"))))))
 
+  (describe '?*?
+    (it "behaves correctly"
+      (expect
+        (= '{?exprs []}
+          ((sut/pattern '[(?*? exprs)])
+            (parse-string "[]"))))
+      (expect
+        (= '{?exprs []}
+          ((sut/pattern '(1 2 (?*? exprs) 3 4))
+            (parse-string "(1 2 3 4)"))))
+      (expect
+        (= '{?exprs [1 2 3]}
+          ((sut/pattern '((?*? exprs)))
+            (parse-string "(1 2 3)"))))
+      (expect
+        (= '{?exprs [1 2 3]}
+          ((sut/pattern '((?*? exprs) (?*? exprs)))
+            (parse-string "(1 2 3 1 2 3)"))))
+      (expect
+        (= '{?exprs [1 2 3]}
+          ((sut/pattern '((?*? exprs) 1 (?*? exprs)))
+            (parse-string "(1 2 3 1 1 2 3)"))))
+      (expect
+        (nil?
+          ((sut/pattern '((?*? exprs) 1 (?*? exprs)))
+            (parse-string "(1 2 3 1 2 3)")))))
+    (it "can be a simple symbol"
+      (expect (= '{?foo [1]}
+                ((sut/pattern '[?*?foo])
+                  (parse-string "[1]")))))
+    (it "can use a predicate"
+      (expect (= '{?foo [1]}
+                ((sut/pattern '[(?*? foo number?)])
+                  (parse-string "[1]"))))
+      (expect (nil?
+                ((sut/pattern '[(?*? foo symbol?)])
+                  (parse-string "[1]")))))
+    (it "can't be used alone"
+      (expect (causes? IllegalArgumentException
+                      (bad-compile? '[?*?] (parse-string "1"))))
+      (expect (causes? IllegalArgumentException
+                (bad-compile? '?*?foo (parse-string "1"))))))
+
   (describe '?+
     (it "behaves correctly"
       (expect
@@ -159,6 +202,50 @@
       (expect (causes? IllegalArgumentException
                 (bad-compile? '?+foo (parse-string "1"))))))
 
+  (describe '?+?
+    (it "behaves correctly"
+      (expect
+        (nil?
+          ((sut/pattern '[(?+? exprs)])
+            (parse-string "[]"))))
+      (expect
+        (nil?
+          ((sut/pattern '[1 2 (?+? exprs) 3 4])
+            (parse-string "[1 2 3 4]"))))
+      (expect
+        (= '{?exprs [100]}
+          ((sut/pattern '[1 2 (?+? exprs) 3 4])
+            (parse-string "[1 2 100 3 4]"))))
+      (expect
+        (= '{?exprs [1 2 3]}
+          ((sut/pattern '((?+? exprs)))
+            (parse-string "(1 2 3)"))))
+      (expect
+        (= '{?exprs [1 2 3]}
+          ((sut/pattern '((?+? exprs) (?+? exprs)))
+            (parse-string "(1 2 3 1 2 3)"))))
+      (expect
+        (nil?
+          ((sut/pattern '((?+? exprs) 1 (?+? exprs)))
+            (parse-string "(1 2 3 1 2 3)")))))
+    (it "can be a simple symbol"
+      (expect (= '{?foo [1]}
+                ((sut/pattern '[?+foo])
+                  (parse-string "[1]")))))
+    (it "can use a predicate"
+      (expect (= '{?foo [1]}
+                ((sut/pattern '[(?+? foo number?) (?* _)])
+                  (parse-string "[1 2 3 4 5 :a]"))))
+      (expect (= '{?foo [1]}
+                ((sut/pattern '[(?+? foo number?) (?* _)])
+                  (parse-string "[1 :a :b]"))))
+      (expect (nil?
+                ((sut/pattern '[(?+? foo symbol?)])
+                  (parse-string "[1]")))))
+    (it "can't be used alone"
+      (expect (causes? IllegalArgumentException
+                (bad-compile? '?+?foo (parse-string "1"))))))
+
   (describe '??
     (it "behaves correctly"
       (expect
@@ -186,10 +273,15 @@
           ((sut/pattern '[(?? exprs) (?? exprs)])
             (parse-string "[1 1]"))))
       (expect
-        (= '{?a []
-             ?b [1]}
+        (= '{?a [1]
+             ?b []}
           ((sut/pattern '[(?? a) (?? b)])
             (parse-string "[1]"))))
+      (expect
+        (= '{?a [1]
+             ?b [2]}
+          ((sut/pattern '[(?? a) (?? b)])
+            (parse-string "[1 2]"))))
       (expect
         (nil?
           ((sut/pattern '[(?? exprs) (?? exprs)])
@@ -212,6 +304,65 @@
     (it "can't be used alone"
       (expect (causes? IllegalArgumentException
                 (bad-compile? '??foo (parse-string "1"))))))
+
+  (describe '???
+    (it "behaves correctly"
+      (expect
+        (= '{?exprs []}
+          ((sut/pattern '[(??? exprs)])
+            (parse-string "[]"))))
+      (expect
+        (= '{?exprs []}
+          ((sut/pattern '(if x y (??? exprs nil?)))
+            (parse-string "(if x y)"))))
+      (expect
+        (= '{?exprs [nil]}
+          ((sut/pattern '(if x y (??? exprs nil?)))
+            (parse-string "(if x y nil)"))))
+      (expect
+        (= '{?exprs []}
+          ((sut/pattern '[1 2 (??? exprs) 3 4])
+            (parse-string "[1 2 3 4]"))))
+      (expect
+        (= '{?exprs [100]}
+          ((sut/pattern '[1 2 (??? exprs) 3 4])
+            (parse-string "[1 2 100 3 4]"))))
+      (expect
+        (= '{?exprs [1]}
+          ((sut/pattern '[(??? exprs) (??? exprs)])
+            (parse-string "[1 1]"))))
+      (expect
+        (= '{?a []
+             ?b [1]}
+          ((sut/pattern '[(??? a) (??? b)])
+            (parse-string "[1]"))))
+      (expect
+        (= '{?a [1]
+             ?b [2]}
+          ((sut/pattern '[(??? a) (??? b)])
+            (parse-string "[1 2]"))))
+      (expect
+        (nil?
+          ((sut/pattern '[(??? exprs) (??? exprs)])
+            (parse-string "[1 2]"))))
+      (expect
+        (nil?
+          ((sut/pattern '((??? exprs)))
+            (parse-string "(1 2 3)")))))
+    (it "can be a simple symbol"
+      (expect (= '{?foo [1]}
+                ((sut/pattern '[???foo])
+                  (parse-string "[1]")))))
+    (it "can use a predicate"
+      (expect (= '{?foo [1]}
+                ((sut/pattern '[(??? foo number?)])
+                  (parse-string "[1]"))))
+      (expect (nil?
+                ((sut/pattern '[(??? foo symbol?)])
+                  (parse-string "[1]")))))
+    (it "can't be used alone"
+      (expect (causes? IllegalArgumentException
+                (bad-compile? '???foo (parse-string "1"))))))
 
   (describe '?|
     (it "behaves correctly"
@@ -272,6 +423,59 @@
       (= '{?list [:x]}
         ((sut/pattern '[?list [?*list 3]])
           (parse-string "[[:x] [:x 3]]")))))
+
+  (describe "combinations of specials"
+    (describe "?* and ?*?"
+      (it "greed - greedy"
+        (expect
+          (= '{?head [1 2 3 4 5 6]
+               ?tail []}
+            ((sut/pattern '[(?* head) (?* tail)])
+              (parse-string "[1 2 3 4 5 6]")))))
+      (it "greed - lazy"
+        (expect
+          (= '{?head [1 2 3 4 5 6]
+               ?tail []}
+            ((sut/pattern '[(?* head) (?*? tail)])
+              (parse-string "[1 2 3 4 5 6]")))))
+      (it "lazy - greedy"
+        (expect
+          (= '{?head []
+               ?tail [1 2 3 4 5 6]}
+            ((sut/pattern '[(?*? head) (?* tail)])
+              (parse-string "[1 2 3 4 5 6]")))))
+      (it "lazy - lazy"
+        (expect
+          (= '{?head []
+               ?tail [1 2 3 4 5 6]}
+            ((sut/pattern '[(?*? head) (?*? tail)])
+              (parse-string "[1 2 3 4 5 6]"))))))
+
+    (describe "?+ and ?+?"
+      (it "greedy - greedy"
+        (expect
+          (= '{?head [1 2 3 4 5]
+               ?tail [6]}
+            ((sut/pattern '[(?+ head) (?+ tail)])
+              (parse-string "[1 2 3 4 5 6]")))))
+      (it "greedy - lazy"
+        (expect
+          (= '{?head [1 2 3 4 5]
+               ?tail [6]}
+            ((sut/pattern '[(?+ head) (?+? tail)])
+              (parse-string "[1 2 3 4 5 6]")))))
+      (it "lazy - greedy"
+        (expect
+          (= '{?head [1]
+               ?tail [2 3 4 5 6]}
+            ((sut/pattern '[(?+? head) (?+ tail)])
+              (parse-string "[1 2 3 4 5 6]")))))
+      (it "lazy - lazy"
+        (expect
+          (= '{?head [1]
+               ?tail [2 3 4 5 6]}
+            ((sut/pattern '[(?+? head) (?+? tail)])
+              (parse-string "[1 2 3 4 5 6]")))))))
 
   (it "quote"
     (expect

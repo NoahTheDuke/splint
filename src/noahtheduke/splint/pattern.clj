@@ -10,7 +10,7 @@
 
 (set! *warn-on-reflection* true)
 
-(def special? #{:?+ :?* :?? :?|})
+(def special? #{:?+ :?+? :?* :?*? :?? :??? :?|})
 
 (defn literal?
   "Is a given simple-type a literal/non-special?"
@@ -24,15 +24,21 @@
     (_ ?_) :any
     ? :?
     ?? :??
+    ??? :???
     ?* :?*
+    ?*? :?*?
     ?+ :?+
+    ?+? :?+?
     ?| :?|
     #_:else
     (let [sym-name (name sym)]
       (cond
         (not (str/starts-with? sym-name "?")) :symbol
+        (str/starts-with? sym-name "???") :???
         (str/starts-with? sym-name "??") :??
+        (str/starts-with? sym-name "?*?") :?*?
         (str/starts-with? sym-name "?*") :?*
+        (str/starts-with? sym-name "?+?") :?+?
         (str/starts-with? sym-name "?+") :?+
         (str/starts-with? sym-name "?|") :?|
         (str/starts-with? sym-name "?") :?
@@ -53,8 +59,11 @@
                  quote :quote
                  ? :?
                  ?* :?*
+                 ?*? :?*?
                  ?+ :?+
+                 ?+? :?+?
                  ?? :??
+                 ??? :???
                  ?| :?|
                  ; else
                  :list)
@@ -75,25 +84,21 @@
   `(throw (ex-info "default" {:type ~(read-dispatch ctx pattern form)
                               :pattern '~pattern})))
 
-(defmethod read-form :?*
-  read-form--?*
-  [_ctx _pattern _form]
-  (throw (IllegalArgumentException. "`:?*` must be used in a surrounding sequence")))
+(defmacro needs-sequence
+  [dispatch-vals]
+  (let [methods
+        (map (fn [v]
+               #_:splint/disable
+               `(defmethod read-form ~v
+                  ~(symbol (str "read-form--" (name v)))
+                  [ctx# pattern# form#]
+                  (throw (IllegalArgumentException.
+                           ~(format "`%s` must be used in a surrounding sequence"
+                              (str v))))))
+          dispatch-vals)]
+    (list* 'do (concat methods [nil]))))
 
-(defmethod read-form :?+
-  read-form--?*
-  [_ctx _pattern _form]
-  (throw (IllegalArgumentException. "`:?+` must be used in a surrounding sequence")))
-
-(defmethod read-form :??
-  read-form--?*
-  [_ctx _pattern _form]
-  (throw (IllegalArgumentException. "`:??` must be used in a surrounding sequence")))
-
-(defmethod read-form :?|
-  read-form--?*
-  [_ctx _pattern _form]
-  (throw (IllegalArgumentException. "`:?|` must be used in a surrounding sequence")))
+(needs-sequence [:?* :?*? :?+ :?+? :?? :??? :?|])
 
 (defmethod read-form :any
   read-form--any
@@ -199,14 +204,15 @@
 
 (defn match-star-rest
   [ctx pattern]
-  (let [[_?sym bind pred] pattern
+  (let [pattern (if (symbol? pattern) [pattern] pattern)
+        [?sym bind pred] pattern
         body-form (gensym "star-rest-form-")
         pred-check (if pred `(every? ~pred ~body-form) true)
         fn-name (gensym "star-rest-fn-")]
     (when-not (#{2 3} (count pattern))
-      (throw (IllegalArgumentException. "?* only accepts 1 or 2 arguments")))
+      (throw (IllegalArgumentException. (str ?sym " only accepts 1 or 2 arguments"))))
     (when (and (= 3 (count pattern)) (not (symbol? pred)))
-      (throw (IllegalArgumentException. "?* pred must be a symbol")))
+      (throw (IllegalArgumentException. (str ?sym " pred must be a symbol"))))
     [fn-name
      `(fn ~fn-name [~ctx form# cont#]
         (let [~body-form (vary-meta (vec form#) assoc ::rest true)]
@@ -216,7 +222,8 @@
 
 (defn match-star
   [ctx pattern]
-  (let [[_?sym bind pred] pattern
+  (let [pattern (if (symbol? pattern) [pattern] pattern)
+        [_?sym bind pred] pattern
         body-form (gensym "star-form-")
         pred-check (if pred `(every? ~pred ~body-form) true)
         fn-name (gensym "star-fn-")]
@@ -238,16 +245,42 @@
                     (with-meta (subvec ~body-form 0 (dec i#)) (meta ~body-form))
                     ~body-form)))))))]))
 
+(defn match-star-lazy
+  [ctx pattern]
+  (let [pattern (if (symbol? pattern) [pattern] pattern)
+        [_?sym bind pred] pattern
+        body-form (gensym "star-lazy-form-")
+        pred-check (if pred `(every? ~pred ~body-form) true)
+        fn-name (gensym "star-lazy-fn-")]
+    (when-not (#{2 3} (count pattern))
+      (throw (IllegalArgumentException. "?*? only accepts 1 or 2 arguments")))
+    (when (and (= 3 (count pattern)) (not (symbol? pred)))
+      (throw (IllegalArgumentException. "?*? pred must be a symbol")))
+    [fn-name
+     `(fn ~fn-name [~ctx form# cont#]
+        (let [max-len# (count form#)]
+          (loop [i# 0
+                 ~body-form (vary-meta (vec (take i# form#)) assoc ::rest true)]
+            (when (<= i# max-len#)
+              (or (and ~pred-check
+                    (let [~ctx ~(match-binding ctx (coerce-bind bind) body-form)]
+                      (cont# ~ctx (drop i# form#))))
+                (recur (inc i#)
+                  (if (< (count ~body-form) max-len#)
+                    (conj ~body-form (nth form# (count ~body-form)))
+                    ~body-form)))))))]))
+
 (defn match-plus-rest
   [ctx pattern]
-  (let [[_?sym bind pred] pattern
+  (let [pattern (if (symbol? pattern) [pattern] pattern)
+        [?sym bind pred] pattern
         body-form (gensym "plus-rest-form-")
         pred-check (if pred `(every? ~pred ~body-form) true)
         fn-name (gensym "plus-rest-fn-")]
     (when-not (#{2 3} (count pattern))
-      (throw (IllegalArgumentException. "?* only accepts 1 or 2 arguments")))
+      (throw (IllegalArgumentException. (str ?sym "only accepts 1 or 2 arguments"))))
     (when (and (= 3 (count pattern)) (not (symbol? pred)))
-      (throw (IllegalArgumentException. "?* pred must be a symbol")))
+      (throw (IllegalArgumentException. (str ?sym " pred must be a symbol"))))
     [fn-name
      `(fn ~fn-name [~ctx form# cont#]
         (when (seq form#)
@@ -258,14 +291,15 @@
 
 (defn match-plus
   [ctx pattern]
-  (let [[_?sym bind pred] pattern
+  (let [pattern (if (symbol? pattern) [pattern] pattern)
+        [_?sym bind pred] pattern
         body-form (gensym "plus-form-")
         pred-check (if pred `(every? ~pred ~body-form) true)
         fn-name (gensym "plus-fn-")]
     (when-not (#{2 3} (count pattern))
-      (throw (IllegalArgumentException. "?* only accepts 1 or 2 arguments")))
+      (throw (IllegalArgumentException. "?+ only accepts 1 or 2 arguments")))
     (when (and (= 3 (count pattern)) (not (symbol? pred)))
-      (throw (IllegalArgumentException. "?* pred must be a symbol")))
+      (throw (IllegalArgumentException. "?+ pred must be a symbol")))
     [fn-name
      `(fn ~fn-name [~ctx form# cont#]
         (let [max-len# (count form#)]
@@ -280,9 +314,35 @@
                     ~body-form
                     (with-meta (subvec ~body-form 0 (dec i#)) (meta ~body-form)))))))))]))
 
+(defn match-plus-lazy
+  [ctx pattern]
+  (let [pattern (if (symbol? pattern) [pattern] pattern)
+        [_?sym bind pred] pattern
+        body-form (gensym "plus-form-")
+        pred-check (if pred `(every? ~pred ~body-form) true)
+        fn-name (gensym "plus-lazy-fn-")]
+    (when-not (#{2 3} (count pattern))
+      (throw (IllegalArgumentException. "?+? only accepts 1 or 2 arguments")))
+    (when (and (= 3 (count pattern)) (not (symbol? pred)))
+      (throw (IllegalArgumentException. "?+? pred must be a symbol")))
+    [fn-name
+     `(fn ~fn-name [~ctx form# cont#]
+        (let [max-len# (count form#)]
+          (loop [i# 1
+                 ~body-form (vary-meta (vec (take i# form#)) assoc ::rest true)]
+            (when (<= i# max-len#)
+              (or (and ~pred-check
+                    (let [~ctx ~(match-binding ctx (coerce-bind bind) body-form)]
+                      (cont# ~ctx (drop i# form#))))
+                (recur (inc i#)
+                  (if (< (count ~body-form) max-len#)
+                    (conj ~body-form (nth form# (count ~body-form)))
+                    ~body-form)))))))]))
+
 (defn match-optional
   [ctx pattern]
-  (let [[_?sym bind pred] pattern
+  (let [pattern (if (symbol? pattern) [pattern] pattern)
+        [_?sym bind pred] pattern
         body-form (gensym "optional-form-")
         pred-check (if (= 3 (count pattern))
                      `(every? ~pred ~body-form)
@@ -292,6 +352,31 @@
       (throw (IllegalArgumentException. "?? only accepts 1 or 2 arguments")))
     (when (and (= 3 (count pattern)) (not (symbol? pred)))
       (throw (IllegalArgumentException. "?? pred must be a symbol")))
+    [fn-name
+     `(fn ~fn-name [~ctx form# cont#]
+        (let [~body-form ^::rest []]
+          (or (when (seq form#)
+                (let [~body-form (vary-meta (vec (take 1 form#)) assoc ::rest true)]
+                  (when ~pred-check
+                    (let [ctx# ~(match-binding ctx (coerce-bind bind) body-form)]
+                      (cont# ctx# (drop 1 form#))))))
+            (and ~pred-check
+              (let [ctx# ~(match-binding ctx (coerce-bind bind) body-form)]
+                (cont# ctx# form#))))))]))
+
+(defn match-optional-lazy
+  [ctx pattern]
+  (let [pattern (if (symbol? pattern) [pattern] pattern)
+        [_?sym bind pred] pattern
+        body-form (gensym "optional-lazy-form-")
+        pred-check (if (= 3 (count pattern))
+                     `(every? ~pred ~body-form)
+                     true)
+        fn-name (gensym "optional-lazy-fn-")]
+    (when-not (#{2 3} (count pattern))
+      (throw (IllegalArgumentException. "??? only accepts 1 or 2 arguments")))
+    (when (and (= 3 (count pattern)) (not (symbol? pred)))
+      (throw (IllegalArgumentException. "??? pred must be a symbol")))
     [fn-name
      `(fn ~fn-name [~ctx form# cont#]
         (let [~body-form ^::rest []]
@@ -393,14 +478,28 @@
                                     (match-plus-rest ctx (second pair))
                                     (match-plus ctx (second pair))))
                           pattern-pairs)
+                        :?+?
+                        (mapcat (fn [pair]
+                                  (if (::last (meta pair))
+                                    (match-plus-rest ctx (second pair))
+                                    (match-plus-lazy ctx (second pair))))
+                          pattern-pairs)
                         :?*
                         (mapcat (fn [pair]
                                   (if (::last (meta pair))
                                     (match-star-rest ctx (second pair))
                                     (match-star ctx (second pair))))
                           pattern-pairs)
+                        :?*?
+                        (mapcat (fn [pair]
+                                  (if (::last (meta pair))
+                                    (match-star-rest ctx (second pair))
+                                    (match-star-lazy ctx (second pair))))
+                          pattern-pairs)
                         :??
                         (mapcat (fn [[_ pattern]] (match-optional ctx pattern)) pattern-pairs)
+                        :???
+                        (mapcat (fn [[_ pattern]] (match-optional-lazy ctx pattern)) pattern-pairs)
                         :?|
                         (mapcat (fn [[_ pattern]] (match-alt ctx pattern)) pattern-pairs)
                         ; else
@@ -485,13 +584,20 @@
           (case special-type
             :any '_
             (:symbol :?) obj
-            (:?+ :?* :??) (let [sym (symbol special-type)]
-                            (if (= sym obj)
-                              obj
-                              (list sym (symbol (subs (name obj) 2)))))
-            :?| (if (= '?| obj)
-                  obj
-                  (throw (IllegalArgumentException. "Can't use ?| on a symbol")))
+            (:?+ :?* :??)
+            (let [sym (symbol special-type)]
+              (if (= sym obj)
+                obj
+                (list sym (symbol (subs (name obj) 2)))))
+            (:?+? :?*? :???)
+            (let [sym (symbol special-type)]
+              (if (= sym obj)
+                obj
+                (list sym (symbol (subs (name obj) 3)))))
+            :?|
+            (if (= '?| obj)
+              obj
+              (throw (IllegalArgumentException. "Can't use ?| on a symbol")))
             ; else
             (throw (IllegalArgumentException. (str "Unreachable, found with " obj)))))
         obj))

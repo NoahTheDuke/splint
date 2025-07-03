@@ -12,6 +12,7 @@ BREAKING CHANGES:
 ### New Rules
 
 - `lint/update-with-swap`: Prefer `(swap! (:counter state) + 5)` over `(update state :counter swap! + 5)`. (See [#30](https://github.com/NoahTheDuke/splint/issues/30).)
+- `lint/no-target-for-method`: Avoid `(.length)` and `(String/.length)` style method calls that lack a target instance.
 
 ### Added
 

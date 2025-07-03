@@ -49,6 +49,7 @@
    noahtheduke.splint.rules.lint.missing-body-in-when
    noahtheduke.splint.rules.lint.no-catch
    noahtheduke.splint.rules.lint.no-op-assignment
+   noahtheduke.splint.rules.lint.no-target-for-method
    noahtheduke.splint.rules.lint.not-empty
    noahtheduke.splint.rules.lint.prefer-method-values
    noahtheduke.splint.rules.lint.prefer-require-over-use

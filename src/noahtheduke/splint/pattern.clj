@@ -20,21 +20,23 @@
 (defn read-dispatch-symbol
   "Return the special type of a special symbol, or :symbol if normal."
   [sym]
-  (let [sym-name (name sym)
-        char0 (.charAt sym-name 0)]
-    (case [char0
-           (when (< 1 (count sym-name))
-             (.charAt sym-name 1))]
-      ([\_ nil] [\? \_]) :any
-      [\? nil] :?
-      [\? \+] :?+
-      [\? \*] :?*
-      [\? \?] :??
-      [\? \|] :?|
-      ; else
-      (if (identical? \? char0)
-        :?
-        :symbol))))
+  (case sym
+    (_ ?_) :any
+    ? :?
+    ?? :??
+    ?* :?*
+    ?+ :?+
+    ?| :?|
+    #_:else
+    (let [sym-name (name sym)]
+      (cond
+        (not (str/starts-with? sym-name "?")) :symbol
+        (str/starts-with? sym-name "??") :??
+        (str/starts-with? sym-name "?*") :?*
+        (str/starts-with? sym-name "?+") :?+
+        (str/starts-with? sym-name "?|") :?|
+        (str/starts-with? sym-name "?") :?
+        :else :symbol))))
 
 (defn read-dispatch
   "Same as [[simple-type]] except that :symbol and :list provide hints about
@@ -199,13 +201,14 @@
   [ctx pattern]
   (let [[_?sym bind pred] pattern
         body-form (gensym "star-rest-form-")
-        pred-check (if pred `(every? ~pred ~body-form) true)]
+        pred-check (if pred `(every? ~pred ~body-form) true)
+        fn-name (gensym "star-rest-fn-")]
     (when-not (#{2 3} (count pattern))
       (throw (IllegalArgumentException. "?* only accepts 1 or 2 arguments")))
     (when (and (= 3 (count pattern)) (not (symbol? pred)))
       (throw (IllegalArgumentException. "?* pred must be a symbol")))
-    [(gensym "star-rest-fn-")
-     `(fn [~ctx form# cont#]
+    [fn-name
+     `(fn ~fn-name [~ctx form# cont#]
         (let [~body-form (vary-meta (vec form#) assoc ::rest true)]
           (when ~pred-check
             (let [~ctx ~(match-binding ctx (coerce-bind bind) body-form)]
@@ -215,36 +218,38 @@
   [ctx pattern]
   (let [[_?sym bind pred] pattern
         body-form (gensym "star-form-")
-        pred-check (if pred `(every? ~pred ~body-form) true)]
+        pred-check (if pred `(every? ~pred ~body-form) true)
+        fn-name (gensym "star-fn-")]
     (when-not (#{2 3} (count pattern))
       (throw (IllegalArgumentException. "?* only accepts 1 or 2 arguments")))
     (when (and (= 3 (count pattern)) (not (symbol? pred)))
       (throw (IllegalArgumentException. "?* pred must be a symbol")))
-    [(gensym "star-fn-")
-     `(fn [~ctx form# cont#]
+    [fn-name
+     `(fn ~fn-name [~ctx form# cont#]
         (let [max-len# (count form#)]
-          (loop [i# 0
+          (loop [i# max-len#
                  ~body-form (vary-meta (vec (take i# form#)) assoc ::rest true)]
-            (when (<= i# max-len#)
+            (when (< -1 i#)
               (or (and ~pred-check
                     (let [~ctx ~(match-binding ctx (coerce-bind bind) body-form)]
                       (cont# ~ctx (drop i# form#))))
-                (recur (inc i#)
-                  (if (< (count ~body-form) max-len#)
-                    (conj ~body-form (nth form# (count ~body-form)))
+                (recur (dec i#)
+                  (if (pos? (count ~body-form))
+                    (with-meta (subvec ~body-form 0 (dec i#)) (meta ~body-form))
                     ~body-form)))))))]))
 
 (defn match-plus-rest
   [ctx pattern]
   (let [[_?sym bind pred] pattern
         body-form (gensym "plus-rest-form-")
-        pred-check (if pred `(every? ~pred ~body-form) true)]
+        pred-check (if pred `(every? ~pred ~body-form) true)
+        fn-name (gensym "plus-rest-fn-")]
     (when-not (#{2 3} (count pattern))
-      (throw (IllegalArgumentException. "?+ only accepts 1 or 2 arguments")))
+      (throw (IllegalArgumentException. "?* only accepts 1 or 2 arguments")))
     (when (and (= 3 (count pattern)) (not (symbol? pred)))
-      (throw (IllegalArgumentException. "?+ pred must be a symbol")))
-    [(gensym "plus-rest-fn-")
-     `(fn [~ctx form# cont#]
+      (throw (IllegalArgumentException. "?* pred must be a symbol")))
+    [fn-name
+     `(fn ~fn-name [~ctx form# cont#]
         (when (seq form#)
           (let [~body-form (vary-meta (vec form#) assoc ::rest true)]
             (when ~pred-check
@@ -255,24 +260,25 @@
   [ctx pattern]
   (let [[_?sym bind pred] pattern
         body-form (gensym "plus-form-")
-        pred-check (if pred `(every? ~pred ~body-form) true)]
+        pred-check (if pred `(every? ~pred ~body-form) true)
+        fn-name (gensym "plus-fn-")]
     (when-not (#{2 3} (count pattern))
-      (throw (IllegalArgumentException. "?+ only accepts 1 or 2 arguments")))
+      (throw (IllegalArgumentException. "?* only accepts 1 or 2 arguments")))
     (when (and (= 3 (count pattern)) (not (symbol? pred)))
-      (throw (IllegalArgumentException. "?+ pred must be a symbol")))
-    [(gensym "plus-fn-")
-     `(fn [~ctx form# cont#]
+      (throw (IllegalArgumentException. "?* pred must be a symbol")))
+    [fn-name
+     `(fn ~fn-name [~ctx form# cont#]
         (let [max-len# (count form#)]
-          (loop [i# 1
+          (loop [i# max-len#
                  ~body-form (vary-meta (vec (take i# form#)) assoc ::rest true)]
-            (when (<= i# max-len#)
+            (when (pos? i#)
               (or (and ~pred-check
                     (let [~ctx ~(match-binding ctx (coerce-bind bind) body-form)]
                       (cont# ~ctx (drop i# form#))))
-                (recur (inc i#)
-                  (if (< (count ~body-form) max-len#)
-                    (conj ~body-form (nth form# (count ~body-form)))
-                    ~body-form)))))))]))
+                (recur (dec i#)
+                  (if (= 1 (count ~body-form))
+                    ~body-form
+                    (with-meta (subvec ~body-form 0 (dec i#)) (meta ~body-form)))))))))]))
 
 (defn match-optional
   [ctx pattern]
@@ -280,14 +286,15 @@
         body-form (gensym "optional-form-")
         pred-check (if (= 3 (count pattern))
                      `(every? ~pred ~body-form)
-                     true)]
+                     true)
+        fn-name (gensym "optional-fn-")]
     (when-not (#{2 3} (count pattern))
       (throw (IllegalArgumentException. "?? only accepts 1 or 2 arguments")))
     (when (and (= 3 (count pattern)) (not (symbol? pred)))
       (throw (IllegalArgumentException. "?? pred must be a symbol")))
-    [(gensym "optional-fn-")
-     `(fn [~ctx form# cont#]
-        (let [~body-form (vary-meta () assoc ::rest true)]
+    [fn-name
+     `(fn ~fn-name [~ctx form# cont#]
+        (let [~body-form ^::rest []]
           (or (and ~pred-check
                 (let [ctx# ~(match-binding ctx (coerce-bind bind) body-form)]
                   (cont# ctx# form#)))
@@ -315,9 +322,10 @@
                  body-form
                  `(if ~temp-ctx
                     (next ~body-form)
-                    ~body-form)]]
-      [(gensym "alt-fn-")
-       `(fn [~ctx ~body-form cont#]
+                    ~body-form)]
+          fn-name (gensym "alt-fn-")]
+      [fn-name
+       `(fn ~fn-name [~ctx ~body-form cont#]
           (let [~temp-ctx nil
                 ~@binds
                 ~ctx ~temp-ctx]
@@ -345,9 +353,10 @@
   to return the ctx object iff there's a match."
   [ctx items]
   (let [children-form (gensym "many-normal-form-")
-        binds (match-single-binds ctx children-form items)]
-    [(gensym "single-fn-")
-     `(fn [~ctx ~children-form cont#]
+        binds (match-single-binds ctx children-form items)
+        fn-name (gensym "single-fn-")]
+    [fn-name
+     `(fn ~fn-name [~ctx ~children-form cont#]
         (let [~@binds]
           (when ~ctx
             (cont# ~ctx ~children-form))))]))
@@ -372,30 +381,31 @@
                      (remove #(special? (first %)))
                      count)
         children-form (gensym "variable-seq-form-")
-        fns (->> pattern-pairs
-              (partition-by #(special? (first %)))
-              (mapv
-                (fn [pattern-pairs]
-                  (let [t (ffirst pattern-pairs)
-                        patterns (mapv second pattern-pairs)]
-                    (case t
-                      :?+
-                      (mapcat #(if (::last (meta %))
-                                 (match-plus-rest ctx %)
-                                 (match-plus ctx %))
-                        patterns)
-                      :?*
-                      (mapcat #(if (::last (meta %))
-                                 (match-star-rest ctx %)
-                                 (match-star ctx %))
-                        patterns)
-                      :??
-                      (mapcat #(match-optional ctx %) patterns)
-                      :?|
-                      (mapcat #(match-alt ctx %) patterns)
-                      ; else
-                      (match-single ctx patterns)))))
-              (mapcat identity))
+        fns (into []
+              (comp (partition-by #(special? (first %)))
+                (mapcat
+                  (fn [pattern-pairs]
+                    (let [t (ffirst pattern-pairs)]
+                      (case t
+                        :?+
+                        (mapcat (fn [pair]
+                                  (if (::last (meta pair))
+                                    (match-plus-rest ctx (second pair))
+                                    (match-plus ctx (second pair))))
+                          pattern-pairs)
+                        :?*
+                        (mapcat (fn [pair]
+                                  (if (::last (meta pair))
+                                    (match-star-rest ctx (second pair))
+                                    (match-star ctx (second pair))))
+                          pattern-pairs)
+                        :??
+                        (mapcat (fn [[_ pattern]] (match-optional ctx pattern)) pattern-pairs)
+                        :?|
+                        (mapcat (fn [[_ pattern]] (match-alt ctx pattern)) pattern-pairs)
+                        ; else
+                        (match-single ctx (mapv second pattern-pairs)))))))
+              pattern-pairs)
         fn-names (take-nth 2 fns)
         type? (if (list? pattern) `list? `vector?)]
     `(let [~children-form ~form]
@@ -471,7 +481,7 @@
   (postwalk*
     (fn [obj]
       (if (symbol? obj)
-        (let [special-type (read-dispatch-symbol obj)]
+        (let [special-type (read-dispatch obj)]
           (case special-type
             :any '_
             (:symbol :?) obj

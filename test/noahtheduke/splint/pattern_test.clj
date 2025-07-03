@@ -115,7 +115,7 @@
       (expect (causes? IllegalArgumentException
                 (bad-compile? '?*foo (parse-string "1"))))))
 
-  (describe '?*
+  (describe '?+
     (it "behaves correctly"
       (expect
         (nil?
@@ -146,9 +146,12 @@
                 ((sut/pattern '[?+foo])
                   (parse-string "[1]")))))
     (it "can use a predicate"
+      (expect (= '{?foo [1 2 3 4 5]}
+                ((sut/pattern '[(?+ foo number?) (?* _)])
+                  (parse-string "[1 2 3 4 5 :a]"))))
       (expect (= '{?foo [1]}
-                ((sut/pattern '[(?+ foo number?)])
-                  (parse-string "[1]"))))
+                ((sut/pattern '[(?+ foo number?) (?* _)])
+                  (parse-string "[1 :a :b]"))))
       (expect (nil?
                 ((sut/pattern '[(?+ foo symbol?)])
                   (parse-string "[1]")))))
@@ -315,12 +318,16 @@
 (defdescribe expand-specials-test
   (it "expands correctly"
     (expect (= 'a (sut/expand-specials 'a)))
+    (expect (= '_ (sut/expand-specials '_)))
+    (expect (= '_ (sut/expand-specials '?_)))
+    (expect (= '?_ (sut/expand-specials (quote ^:splint/lit ?_))))
     (expect (= '(a b c) (sut/expand-specials '(a b c))))
     (expect (= '(a _ c) (sut/expand-specials '(a _ c))))
     (expect (= '(a (b) c) (sut/expand-specials '(a (b) c))))
     (expect (= '(a ?b c) (sut/expand-specials '(a ?b c))))
     (expect (= '(a (?b) c) (sut/expand-specials '(a (?b) c))))
     (expect (= '(a (?+ b) c) (sut/expand-specials '(a ?+b c))))
+    (expect (= '(a ?+b c) (sut/expand-specials '(a ^:splint/lit ?+b c))))
     (expect (= '(a (?+ ?b) c) (sut/expand-specials '(a (?+ ?b) c))))
     (expect (= '(a (?* b) c) (sut/expand-specials '(a ?*b c))))
     (expect (= '(a (?* ?b) c) (sut/expand-specials '(a (?* ?b) c))))

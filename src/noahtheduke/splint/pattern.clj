@@ -453,57 +453,19 @@
 
 (defmethod read-form :set
   read-form--set
-  [ctx _pattern _form]
-  `(when (set? ~ctx)
-     ~ctx))
-
-; (defn vec-remove
-;   "remove elem in coll
-;   from: https://stackoverflow.com/a/18319708/3023252"
-;   [pos coll]
-;   (vec (concat (subvec coll 0 pos) (subvec coll (inc pos)))))
-
-;; TODO: implement this with ctx-passing style
-#_(defmethod read-form :set [sexp form retval]
-    (let [new-form (gensym "set-new-form-")
-          [simple-vals complex-vals] (reduce (fn [acc cur]
-                                               (if (non-coll? (simple-type cur))
-                                                 (update acc 0 conj cur)
-                                                 (update acc 1 conj cur)))
-                                       [[] []]
-                                       sexp)
-          simple-keys-preds (map (fn [k] `(contains? ~new-form ~k)) simple-vals)
-          current-child (gensym "set-current-child-")
-          complex-keys-preds (mapv (fn [k]
-                                     `(fn [~current-child]
-                                        ~(read-form k current-child retval)))
-                               complex-vals)]
-      `(when-let [~new-form ~form]
-         (and (set? ~new-form)
-           (<= ~(count sexp) (count ~new-form))
-           (or ~(empty? simple-keys-preds)
-             (and ~@simple-keys-preds))
-           (or ~(empty? complex-keys-preds)
-                ;; loop over both the predicates and the children.
-                ;; for each predicate, compare it against each child
-                ;; until it finds a match, and then remove the child
-                ;; from the list of children and recur.
-             (loop [complex-keys-preds# (seq ~complex-keys-preds)
-                    complex-children#
-                    (vec (for [child# ~new-form
-                               :when (not (contains? ~(set simple-vals) child#))]
-                           child#))]
-               (or (empty? complex-keys-preds#)
-                 (when-let [cur-pred# (first complex-keys-preds#)]
-                   (when-let [idx#
-                              (loop [idx# 0]
-                                (when-let [cur-child# (nth complex-children# idx# nil)]
-                                  (if (cur-pred# cur-child#)
-                                    idx#
-                                    (recur (inc idx#)))))]
-
-                     (recur (next complex-keys-preds#)
-                       (vec-remove idx# complex-children#)))))))))))
+  [ctx pattern form]
+  {:pre [(every? (comp non-coll? simple-type) pattern)]}
+  (let [new-form (gensym "set-form-")
+        binds (mapcat
+                (fn [v]
+                  [ctx `(when (contains? ~new-form ~v)
+                          ~ctx)])
+                pattern)]
+    `(let [~new-form ~form]
+       (and (set? ~new-form)
+         (<= ~(count (keys pattern)) (count ~new-form))
+         (let [~@binds]
+           ~ctx)))))
 
 (defn expand-specials [pattern]
   (postwalk*

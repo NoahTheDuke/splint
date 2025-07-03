@@ -4,9 +4,9 @@
 
 (ns noahtheduke.splint.pattern-test
   (:require
-   [lazytest.core :refer [defdescribe expect it throws? causes? describe]]
-   [noahtheduke.splint.pattern :as sut]
-   [noahtheduke.splint.test-helpers :refer [parse-string]]))
+    [lazytest.core :refer [defdescribe expect it throws? causes? describe]]
+    [noahtheduke.splint.pattern :as sut]
+    [noahtheduke.splint.test-helpers :refer [parse-string]]))
 
 (set! *warn-on-reflection* true)
 
@@ -273,7 +273,7 @@
   (it "quote"
     (expect
       (= '{}
-         ((sut/pattern '(a b 'c))
+        ((sut/pattern '(a b 'c))
           (parse-string "(a b 'c)")))))
 
   (it "literals"
@@ -297,19 +297,20 @@
     (let [pat (sut/pattern '[:a 1 :b [2] :c {:d 3}])]
       (expect (not (pat (parse-string "[:a 1 :b [2] :c {:e 4}]"))))
       (expect (pat (parse-string "[:a 1 :b [2] :c {:d 3}]")))
-      (expect (not (pat (parse-string "[:a 1 :b [2] :c {:d 3} :e 4]")))))))
+      (expect (not (pat (parse-string "[:a 1 :b [2] :c {:d 3} :e 4]"))))))
 
-#_(defdescribe map-test
+  (it "maps"
     (let [pat (sut/pattern '{:a 1 :b [2] :c {:d 3}})]
-      (expect not (pat (parse-string "{:a 1 :b [2] :c {:e 4}}")))
+      (expect (not (pat (parse-string "{:a 1 :b [2] :c {:e 4}}"))))
       (expect (pat (parse-string "{:a 1 :b [2] :c {:d 3}}")))
       (expect (pat (parse-string "{:a 1 :b [2] :c {:d 3} :e 4}")))))
 
-#_(defdescribe set-test
-    (let [pat (sut/pattern '#{:a 1 :b [2] :c {:d 3}})]
-      (expect not (pat (parse-string "#{:a 1 :b [2] :c}")))
-      (expect (pat (parse-string "#{:a 1 :b [2] :c {:d 3}}")))
-      (expect (pat (parse-string "#{:a 1 :b [2] :c {:d 3} :e [4]}")))))
+  (it "sets"
+    (let [pat (sut/pattern '#{:a 1 :b 2 :c})]
+      (expect (not (pat (parse-string "#{:a 1 :b 2}"))))
+      (expect (pat (parse-string "#{:a 1 :b 2 :c}")))
+      (expect (pat (parse-string "#{:a 1 :b 2 :c {:d 3}}")))
+      (expect (not (pat (parse-string "#{:a 1 :b [2] :c {:d 3}}")))))))
 
 (defdescribe expand-specials-test
   (it "expands correctly"

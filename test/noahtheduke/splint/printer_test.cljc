@@ -137,6 +137,7 @@
            "```"]
           (print-result-lines "markdown"))))
     (it "json"
+      {:clj-only true}
       (expect
         (match?
           ["{\"alt\":\"(when-not (= 1 1) (do (prn 2) (prn 3)))\",\"column\":1,\"end-column\":14,\"end-line\":12,\"exception\":null,\"filename\":\"corpus/printer_test.clj\",\"form\":\"(when (not (= 1 1)) (do (prn 2) (prn 3)))\",\"line\":7,\"message\":\"Use `when-not` instead of recreating it.\",\"rule-name\":\"style/when-not-call\"}"
@@ -145,6 +146,7 @@
            "{\"alt\":\"nil\",\"column\":1,\"end-column\":36,\"end-line\":14,\"exception\":{\"via\":[{\"type\":\"clojure.lang.ExceptionInfo\",\"message\":\"matched\",\"data\":{\"extra\":\"data\"},\"at\":[\"noahtheduke.splint.rules.dev.throws_on_match$eval$or__auto__\",\"invoke\",\"throws_on_match.clj\",16]}],\"trace\":[\"noahtheduke.splint.class1.method1 (file1:1)\",\"noahtheduke.splint.class2.method2 (file2:2)\",\"noahtheduke.splint.class3.method3 (file3:3)\"],\"cause\":\"matched\",\"data\":{\"extra\":\"data\"}},\"filename\":\"corpus/printer_test.clj\",\"form\":\"(very-special-symbol :do-not-match)\",\"line\":14,\"message\":\"Splint encountered an error during 'dev/throws-on-match: matched\",\"rule-name\":\"splint/error\"}"]
           (print-result-lines "json"))))
     (it "json-pretty"
+      {:clj-only true}
       (expect
         (match?
           ["{\"alt\":\"(when-not (= 1 1) (do (prn 2) (prn 3)))\","

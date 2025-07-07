@@ -4,13 +4,12 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.prefer-for-with-literals
   (:require
-   [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]
-   [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-   [noahtheduke.splint.rules :refer [defrule]]
-   [noahtheduke.splint.rules.helpers :refer [fn??]]
-   #?@(:bb []
-       :clj [[flatland.ordered.map :refer [ordered-map]]
-             [flatland.ordered.set :refer [ordered-set]]])))
+    [noahtheduke.splint.clojure-ext.core :refer [postwalk*]]
+    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
+    [noahtheduke.splint.rules :refer [defrule]]
+    [noahtheduke.splint.rules.helpers :refer [fn??]]
+    [flatland.ordered.map :refer [ordered-map]]
+    [flatland.ordered.set :refer [ordered-set]]))
 
 (set! *warn-on-reflection* true)
 
@@ -26,8 +25,8 @@
 
 (defn builder->literal [builder-fn args]
   (case (name builder-fn)
-    ("array-map" "hash-map") (apply #?(:bb hash-map :clj ordered-map) args)
-    "hash-set" (apply #?(:bb hash-map :clj ordered-set) args)
+    ("array-map" "hash-map") (apply ordered-map args)
+    "hash-set" (apply ordered-set args)
     "vector" (apply vector args)))
 
 (defrule style/prefer-for-with-literals

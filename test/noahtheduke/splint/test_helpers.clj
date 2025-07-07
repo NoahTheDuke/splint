@@ -4,9 +4,7 @@
 
 (ns noahtheduke.splint.test-helpers
   (:require
-   matcher-combinators.test
-   noahtheduke.splint
-   noahtheduke.splint.rules.helpers
+   [babashka.fs :as fs]
    [clojure.java.io :as io]
    [clojure.spec.alpha :as s]
    [clojure.string :as str]
@@ -14,17 +12,18 @@
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.core :as mc]
    [matcher-combinators.model :refer [->Mismatch]]
+   matcher-combinators.test
+   noahtheduke.splint
    [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]
    [noahtheduke.splint.config :refer [merge-config]]
    [noahtheduke.splint.dev :as dev]
    [noahtheduke.splint.parser :refer [parse-file]]
+   noahtheduke.splint.rules.helpers
    [noahtheduke.splint.runner :refer [run-impl]]
-   [noahtheduke.splint.utils :refer [drop-quote]])
+   [noahtheduke.splint.utils :refer [drop-quote]]) 
   (:import
-   (java.io File)
-   (java.nio.file Files FileVisitor FileVisitResult)
-   (java.nio.file.attribute FileAttribute)
-   (noahtheduke.splint.path_matcher MatchHolder)))
+   [java.io File]
+   [noahtheduke.splint.path_matcher MatchHolder]))
 
 (set! *warn-on-reflection* true)
 
@@ -98,37 +97,27 @@
         temp-files (map
                      (fn [path]
                        [(gensym)
-                        `(let [f# (io/file (str ~temp-dir) ~path)]
-                           (Files/createDirectories (.toPath (io/file (.getParent f#)))
-                             (into-array FileAttribute []))
-                           (Files/createFile (.toPath f#)
-                             (into-array FileAttribute [])))])
+                        `(let [f# (fs/file (str ~temp-dir) ~path)]
+                           (fs/create-dirs (fs/path (fs/file (fs/parent f#))))
+                           (fs/create-file (fs/path f#)))])
                      paths)
         binds (mapcat vector
                 (take-nth 2 file-binds)
-                (map (fn [[path _]] `(io/file (str ~path)))
+                (map (fn [[path _]] `(fs/file (str ~path)))
                   temp-files))]
-    `(let [~temp-dir (Files/createTempDirectory
-                       "splint" (into-array FileAttribute []))
+    `(let [~temp-dir (fs/create-temp-dir {:prefix "splint"})
            ~@(mapcat identity temp-files)
            ~@binds]
        (try (let [res# (do ~@body)] res#)
          (finally
-           (Files/walkFileTree
+           (fs/walk-file-tree
              ~temp-dir
-             #{}
-             Integer/MAX_VALUE
-             (reify FileVisitor
-               (preVisitDirectory [_ dir# attrs#]
-                 FileVisitResult/CONTINUE)
-               (postVisitDirectory [_ dir# attrs#]
-                 (Files/deleteIfExists dir#)
-                 FileVisitResult/CONTINUE)
-               (visitFile [_ path# attrs#]
-                 (Files/deleteIfExists path#)
-                 FileVisitResult/CONTINUE)
-               (visitFileFailed [_ path# ex#]
-                 FileVisitResult/CONTINUE))))))))
+             {:post-visib-directory (fn [dir# attrs#]
+                                      (fs/delete-if-exists dir#)
+                                      :continue)
+              :visit-file (fn [path# attrs#]
+                            (fs/delete-if-exists path#)
+                            :continue)}))))))
 
 (s/def ::binding (s/cat :file-name simple-symbol? :path string?))
 (s/def ::bindings (s/and vector? #(even? (count %)) (s/* ::binding)))
@@ -164,7 +153,7 @@
        ::result/value (->Mismatch this actual)
        ::result/weight 1})
     (string? actual)
-    (let [this-path (str/split (.getAbsolutePath this) (re-pattern File/separator))
+    (let [this-path (str/split (.getAbsolutePath this) (re-pattern fs/file-separator))
           actual-path (str/split (.getAbsolutePath (io/file actual)) #"/")]
       (if (= this-path actual-path)
         {::result/type :match

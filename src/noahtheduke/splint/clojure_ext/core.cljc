@@ -4,18 +4,17 @@
 
 (ns noahtheduke.splint.clojure-ext.core
   (:require
-   #?@(:bb []
-       :clj [[flatland.ordered.map :as om]
-             [flatland.ordered.set :as os]])
-   [noahtheduke.splint.utils :refer [simple-type]]
-   [clojure.string :as str])
+    [flatland.ordered.map :as om]
+    [flatland.ordered.set :as os]
+    [noahtheduke.splint.utils :refer [simple-type]]
+    [clojure.string :as str])
   (:import
-   (java.util.concurrent Executors Future)
-   #?@(:bb []
-       :clj ([clojure.lang LazilyPersistentVector]))
-   (clojure.lang BigInt)
-   (java.io File)
-   (java.nio.file PathMatcher)))
+    (java.util.concurrent Executors Future)
+    #?@(:bb []
+         :clj ([clojure.lang LazilyPersistentVector]))
+    (clojure.lang BigInt)
+    (java.io File)
+    (java.nio.file PathMatcher)))
 
 (set! *warn-on-reflection* true)
 
@@ -259,14 +258,14 @@
                    {:type :edamame/error
                     :line (:line loc)
                     :column (:column loc)})))))
-    (apply #?(:bb hash-map :clj om/ordered-map) elements)))
+    (apply om/ordered-map elements)))
 
 (deftype ParseSet [elements])
 
 (defn parse-set
   [^ParseSet obj loc]
   (let [elements (.elements obj)
-        the-set (apply #?(:bb hash-set :clj os/ordered-set) elements)]
+        the-set (apply os/ordered-set elements)]
     (when-not (= (count elements) (count the-set))
       (throw (ex-info (throw-dup-keys :set elements)
                {:type :edamame/error

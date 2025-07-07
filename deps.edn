@@ -22,7 +22,8 @@
                      org.slf4j/slf4j-simple {:mvn/version "2.0.16"}
                      potemkin/potemkin {:mvn/version "0.4.7"}
                      org.clojure/tools.gitlibs {:mvn/version "2.5.197"}
-                     io.github.tonsky/clj-reload {:mvn/version "0.7.1"}}}
+                     io.github.tonsky/clj-reload {:mvn/version "0.7.1"}
+                     babashka/fs {:mvn/version "0.5.26"}}}
   :repl {:extra-deps {nrepl/nrepl {:mvn/version "1.3.0"}
                       com.bhauman/rebel-readline {:mvn/version "0.1.4"}
                       cider/cider-nrepl {:mvn/version "0.50.1"}}
@@ -32,7 +33,7 @@
                       "-f" "rebel-readline.main/-main"]}
   :test {:extra-paths ["test"]
          :extra-deps {nubank/matcher-combinators {:mvn/version "3.9.1"}
-                      io.github.noahtheduke/lazytest {:mvn/version "1.6.1"}}}
+                      io.github.noahtheduke/lazytest {:mvn/version "1.8.0"}}}
 
   :v1.10 {:override-deps {org.clojure/clojure {:mvn/version "1.10.3"}}}
   :v1.11 {:override-deps {org.clojure/clojure {:mvn/version "1.11.4"}}}

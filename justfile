@@ -38,13 +38,14 @@ clojure-lsp:
     clojure -M:dev:test:runner --md README.md {{args}}
 
 [no-exit-message]
-test *args="--output dots":
+test *args="--output summary":
     just test-raw -e :integration {{args}}
 
 [no-exit-message]
-test-all *args="--output dots":
+test-all *args="--output summary":
     just clojure-lsp
     bb run splint
+    bb run lazytest -e:integration -e :clj-only {{args}}
     clojure -M:v1.10:dev:test:runner --md README.md {{args}}
     clojure -M:v1.11:dev:test:runner --md README.md {{args}}
     clojure -M:v1.12:dev:test:runner --md README.md {{args}}

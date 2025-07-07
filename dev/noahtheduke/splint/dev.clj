@@ -4,7 +4,6 @@
 
 (ns noahtheduke.splint.dev
   (:require
-   [nextjournal.beholder :as beholder]
    [noahtheduke.splint]
    [noahtheduke.splint.config :as config]
    [noahtheduke.splint.rules :refer [global-rules]]))
@@ -22,12 +21,14 @@
 
 (def dev-config (atom (build-default-config)))
 
-(def watcher
-  (beholder/watch
-    (fn [action]
-      (when (#{:create :modify} (:type action))
-        (reset! dev-config (build-default-config))))
-    "resources"))
-
 (comment
-  (beholder/stop watcher))
+  (do
+    (require '[nextjournal.beholder :as beholder])
+    (def watcher
+      (beholder/watch
+        (fn [action]
+          (when (#{:create :modify} (:type action))
+            (reset! dev-config (build-default-config))))
+        "resources"))
+
+    (beholder/stop watcher)))

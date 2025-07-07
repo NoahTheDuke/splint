@@ -2,11 +2,17 @@
 ; License, v. 2.0. If a copy of the MPL was not distributed with this
 ; file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-{:paths ["src" "resources"]
- :deps {org.clojure/clojure {:mvn/version "1.11.4"}
-        org.clojure/tools.cli {:mvn/version "1.1.230"}
+{:min-bb-version "1.12.205"
+ :paths ["src" "resources"]
+ :deps {org.clojure/tools.cli {:mvn/version "1.1.230"}
         borkdude/edamame {:mvn/version "1.4.31"}
         camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
-        fipp/fipp {:mvn/version "0.6.26"}}
- :tasks {splint noahtheduke.splint/-main}
+        fipp/fipp {:mvn/version "0.6.26"}
+        org.flatland/ordered {:mvn/version "1.15.12"}}
+ :tasks {splint noahtheduke.splint/-main
+         lazytest {:extra-deps {io.github.noahtheduke/lazytest {:mvn/version "1.8.0"}
+                                nubank/matcher-combinators {:mvn/version "3.9.1"}
+                                org.clojure/tools.gitlibs {:mvn/version "2.5.197"}}
+                   :extra-paths ["dev" "test"]
+                   :task lazytest.main/-main}}
  :bbin/bin {splint {:main-opts ["-m" "noahtheduke.splint"]}}}

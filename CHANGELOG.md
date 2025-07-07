@@ -8,6 +8,7 @@ BREAKING CHANGES:
 
 * The pattern parser is less forgiving of mistakes, so custom patterns might break.
 * The pattern parser no longer resolves predicates, so `noahtheduke.splint.rules.helpers` functions must be referred in namespaces where they're used.
+* Requires babashka version 1.12.205 or later.
 
 ### New Rules
 
@@ -42,7 +43,7 @@ Patterns:
 
 Others:
 
-- Bump `edamame` to `1.4.31` to support `#^` metadata and no-op reader conditionals.
+- Bump `edamame` to `1.4.31` to support `#^` metadata and no-op reader conditionals. (Requires babashka version 1.12.205 or later.)
 - Move `resources/SPLINT_VERSION` and `resources/config/default.edn` to `resources/noahtheduke/splint/SPLINT_VERSION` and `resources/noahtheduke/splint/config/default.edn`, respectively.
 
 ### Fixed

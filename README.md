@@ -21,8 +21,7 @@ More explicit instructions can be found in the [installation][installation], [us
 ### Clojure CLI
 
 ```clojure lazytest/skip=true
-:aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.21.0"}
-                                org.clojure/clojure {:mvn/version "1.11.1"}}
+:aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.21.0"}}
                    :main-opts ["-m" "noahtheduke.splint"]}}
 ```
 
@@ -33,12 +32,22 @@ Run with `clojure -M:splint [args...]`.
 Add this to `project.clj`:
 
 ```clojure lazytest/skip=true
-:profiles {:dev {:dependencies [[io.github.noahtheduke/splint "1.21.0"]
-                                [org.clojure/clojure "1.11.1"]]}}
+:profiles {:dev {:dependencies [[io.github.noahtheduke/splint "1.21.0"]]}}
 :aliases {"splint" ["run" "-m" "noahtheduke.splint"]})
 ```
 
 Run with `lein splint [args...]`.
+
+### Babashka
+
+Requires version 1.12.205 or later. If using `bb.edn`, add this to `bb.edn`:
+
+```clojure lazytest/skip=true
+:tasks {splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.21.0"}}
+                :task noahtheduke.splint/-main}}
+```
+
+Run with `bb splint [args...]`.
 
 ## Rationale
 

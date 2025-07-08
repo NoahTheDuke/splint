@@ -49,8 +49,14 @@ jobs:
       - name: splint self
         run: bb run splint
 
-      - name: Tests
-        run: |
-          clojure -M:v1.10:dev:test:runner --output dots
-          clojure -M:v1.11:dev:test:runner --output dots
-          clojure -M:v1.12:dev:test:runner --output dots
+      - name: bb lazytest
+        run: bb run lazytest --output summary
+
+      - name: "1.10 Tests"
+        run: clojure -M:v1.10:dev:test:runner --output summary
+
+      - name: "1.11 Tests"
+        run: clojure -M:v1.11:dev:test:runner --output summary
+
+      - name: "1.12 Tests"
+        run: clojure -M:v1.12:dev:test:runner --output summary

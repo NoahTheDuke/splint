@@ -23,13 +23,13 @@
   ; avoid
   (into [] (map inc (range 100)))
 
-  ; avoid (with `:fn-names [cool-fn]`)
+  ; avoid (with `:fn-1-arg [cool-fn]`)
   (into [] (cool-fn inc (range 100)))
 
   ; prefer
   (into [] (map inc) (range 100))
 
-  ; prefer (with `:fn-names [cool-fn]`)
+  ; prefer (with `:fn-1-arg [cool-fn]`)
   (into [] (cool-fn inc) (range 100))
   "
   {:pattern '(into [?*args] (?trans ??f ?coll))

@@ -26,6 +26,8 @@
 (defrule performance/single-literal-merge
   "`clojure.core/merge` is inherently slow. Its major benefit is handling nil values. If there is only a single object to merge in and it's a map literal, that benefit is doubly unused. Better to directly assoc the values in.
 
+  By default, this rule suggests alternatives based on how many elements are in the map literal: 4 or less will suggest as `:single`, more than 4 will suggest as `:multiple`. Either can be set in the config to enforce one or the other.
+
   @note
   If the chosen style is `:single` and `performance/assoc-many` is enabled, the style will be treated as `:multiple` to make the warnings consistent.
 
@@ -34,7 +36,7 @@
   ; avoid
   (merge m {:a 1 :b 2 :c 3})
 
-  ; prefer (chosen style :single (default))
+  ; prefer (chosen style :single)
   (assoc m :a 1 :b 2 :c 3)
 
   ; prefer (chosen style :multiple)
@@ -48,7 +50,11 @@
    :autocorrect true
    :on-match (fn [ctx rule form {:syms [?given ?literal]}]
                (when-let [?literal (not-empty ?literal)]
-                 (let [new-form (condp = (select-style ctx rule)
+                 (let [new-form (case (select-style ctx rule)
                                   :single (single-assoc ?given ?literal)
-                                  :multiple (multi-assoc ?given ?literal))]
+                                  :multiple (multi-assoc ?given ?literal)
+                                  ;; default to dynamic
+                                  #_:dynamic (if (< 4 (count ?literal))
+                                               (multi-assoc ?given ?literal)
+                                               (single-assoc ?given ?literal)))]
                    (->diagnostic ctx rule form {:replace-form new-form}))))})

@@ -32,6 +32,7 @@ Update rules:
 - `lint/require-explicit-param-tags`: clean up docs.
 - `performance/into-transducer`: remove `cat` as it can't be used in the incorrect form.
 - `performance/into-transducer`: add configurable fn list with `:fn-0-arg` and `:fn-1-arg` (depending on how many arguments the fn accepts).
+- `performance/single-literal-merge`: adds and defaults to `:dynamic`, which acts as `:single` or `:multiple` depending on the number of elements in the map literal. (See [#35](https://github.com/NoahTheDuke/splint/issues/35).)
 
 Patterns:
 

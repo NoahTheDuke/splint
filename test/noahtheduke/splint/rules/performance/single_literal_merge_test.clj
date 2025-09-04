@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.rules.performance.single-literal-merge-test
   (:require
-   [lazytest.core :refer [defdescribe it]]
+   [lazytest.core :refer [defdescribe it describe]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
@@ -12,34 +12,59 @@
 (def rule-name 'performance/single-literal-merge)
 
 (defdescribe single-literal-merge-test
-  (it "flattens given map"
-    (expect-match
-      [{:rule-name 'performance/single-literal-merge
-        :form '(merge m {:a 1 :b 2})
-        :message "Prefer assoc for merging literal maps"
-        :alt '(assoc m :a 1 :b 2)}]
-      "(merge m {:a 1 :b 2})"
-      (single-rule-config rule-name)))
+  (describe ":chosen-style :single"
+    (it "flattens given map"
+      (expect-match
+        [{:rule-name 'performance/single-literal-merge
+          :form '(merge m {:a 1 :b 2})
+          :message "Prefer assoc for merging literal maps"
+          :alt '(assoc m :a 1 :b 2)}]
+        "(merge m {:a 1 :b 2})"
+        (single-rule-config rule-name  {:chosen-style :single})))
 
-  (it "works on nil"
-    (expect-match
-      [{:rule-name 'performance/single-literal-merge
-        :form '(merge nil {:a 1 :b 2})
-        :message "Prefer assoc for merging literal maps"
-        :alt '(assoc nil :a 1 :b 2)}]
-      "(merge nil {:a 1 :b 2})"
-      (single-rule-config rule-name)))
+    (it "works on nil"
+      (expect-match
+        [{:rule-name 'performance/single-literal-merge
+          :form '(merge nil {:a 1 :b 2})
+          :message "Prefer assoc for merging literal maps"
+          :alt '(assoc nil :a 1 :b 2)}]
+        "(merge nil {:a 1 :b 2})"
+        (single-rule-config rule-name {:chosen-style :single}))))
 
-  (it "respects :chosen-style :multiple"
-    (expect-match
-      [{:rule-name 'performance/single-literal-merge
-        :form '(merge m {:a 1 :b 2})
-        :message "Prefer assoc for merging literal maps"
-        :alt '(-> m
-                  (assoc :a 1)
-                  (assoc :b 2))}]
-      "(merge m {:a 1 :b 2})"
-      (single-rule-config rule-name {:chosen-style :multiple})))
+  (describe ":chosen-style :multiple"
+    (it "works as expected"
+      (expect-match
+        [{:rule-name 'performance/single-literal-merge
+          :form '(merge m {:a 1 :b 2})
+          :message "Prefer assoc for merging literal maps"
+          :alt '(-> m
+                    (assoc :a 1)
+                    (assoc :b 2))}]
+        "(merge m {:a 1 :b 2})"
+        (single-rule-config rule-name {:chosen-style :multiple}))))
+
+  (describe ":chosen-style :dynamic"
+    (it "acts as :single if map literal is small"
+      (expect-match
+        [{:rule-name 'performance/single-literal-merge
+          :form '(merge m {:a 1 :b 2})
+          :message "Prefer assoc for merging literal maps"
+          :alt '(assoc m :a 1 :b 2)}]
+        "(merge m {:a 1 :b 2})"
+        (single-rule-config rule-name {:chosen-style :dynamic})))
+    (it "acts as :multiple if map literal is large"
+      (expect-match
+        [{:rule-name 'performance/single-literal-merge
+          :form '(merge m {:a :b :c :d :e :f :g :h :i :j})
+          :message "Prefer assoc for merging literal maps"
+          :alt '(-> m
+                    (assoc :a :b)
+                    (assoc :c :d)
+                    (assoc :e :f)
+                    (assoc :g :h)
+                    (assoc :i :j))}]
+        "(merge m {:a :b :c :d :e :f :g :h :i :j})"
+        (single-rule-config rule-name {:chosen-style :dynamic}))))
 
   (it "it respects performance/assoc-many"
     (expect-match
@@ -50,7 +75,31 @@
                   (assoc :a 1)
                   (assoc :b 2))}]
       "(merge m {:a 1 :b 2})"
-      (update (single-rule-config rule-name) 'performance/assoc-many assoc :enabled true)))
+      (update (single-rule-config rule-name {:chosen-style :single})
+              'performance/assoc-many assoc :enabled true)))
+
+  (describe ":chosen-style defaults to :dynamic"
+    (it "acts as :single if map literal is small"
+      (expect-match
+        [{:rule-name 'performance/single-literal-merge
+          :form '(merge m {:a 1 :b 2})
+          :message "Prefer assoc for merging literal maps"
+          :alt '(assoc m :a 1 :b 2)}]
+        "(merge m {:a 1 :b 2})"
+        (single-rule-config rule-name {:chosen-style nil})))
+    (it "acts as :multiple if map literal is large"
+      (expect-match
+        [{:rule-name 'performance/single-literal-merge
+          :form '(merge m {:a :b :c :d :e :f :g :h :i :j})
+          :message "Prefer assoc for merging literal maps"
+          :alt '(-> m
+                    (assoc :a :b)
+                    (assoc :c :d)
+                    (assoc :e :f)
+                    (assoc :g :h)
+                    (assoc :i :j))}]
+        "(merge m {:a :b :c :d :e :f :g :h :i :j})"
+        (single-rule-config rule-name {:chosen-style nil}))))
 
   (it "keeps the order in the alt"
     (expect-match
@@ -67,7 +116,7 @@
         :message "Prefer assoc for merging literal maps"
         :alt '(assoc a :a :b :c :d :e :f :g :h :i :j :k :l :m :n :o :p :q :r :s :t :u :v :w :x :y :z)}]
       "(merge a {:a :b :c :d :e :f :g :h :i :j :k :l :m :n :o :p :q :r :s :t :u :v :w :x :y :z})"
-      (single-rule-config rule-name)))
+      (single-rule-config rule-name {:chosen-style :single})))
 
   (it "ignores multiple maps"
     (expect-match

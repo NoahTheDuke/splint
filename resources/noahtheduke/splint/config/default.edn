@@ -439,10 +439,11 @@
  performance/single-literal-merge
  {:description "Prefer assoc over merge when merging a literal."
   :enabled false
-  :chosen-style :single
-  :supported-styles [:single :multiple]
+  :chosen-style :dynamic
+  :supported-styles [:single :multiple :dynamic]
   :added "1.11"
-  :updated "1.11"}
+  :updated "<<next>>"
+  :links ["https://bsless.github.io/code-smells"]}
 
  ;; Style Rules
 

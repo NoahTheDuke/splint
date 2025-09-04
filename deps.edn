@@ -5,7 +5,7 @@
 {:paths ["src" "resources"]
  :deps {org.clojure/tools.cli {:mvn/version "1.1.230"}
         org.clojure/spec.alpha {:mvn/version "0.5.238"}
-        borkdude/edamame {:mvn/version "1.4.31"}
+        borkdude/edamame {:mvn/version "1.4.32"}
         camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
         org.clojure/data.json {:mvn/version "2.5.0"}
         org.flatland/ordered {:mvn/version "1.15.12"}
@@ -37,7 +37,7 @@
 
   :v1.10 {:override-deps {org.clojure/clojure {:mvn/version "1.10.3"}}}
   :v1.11 {:override-deps {org.clojure/clojure {:mvn/version "1.11.4"}}}
-  :v1.12 {:override-deps {org.clojure/clojure {:mvn/version "1.12.0"}}}
+  :v1.12 {:override-deps {org.clojure/clojure {:mvn/version "1.12.2"}}}
 
   :runner {:main-opts ["-m" "lazytest.main"]}
   :profile {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.2.2"}

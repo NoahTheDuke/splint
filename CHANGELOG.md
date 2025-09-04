@@ -27,7 +27,7 @@ Update rules:
 - `lint/existing-constant`: narrow to only `clj`, and expand it to cover clojure 1.10 (by using `java.lang.Math/PI` and `java.lang.Math/E`).
 - `lint/incorrectly-swapped`: look for destructuring with identical binding and exprs: `(let [[a b] [a b]] ...)`.
 - `lint/no-catch`: require at least one form in `try` call.
-- `lint/prefer-method-values`: simplify docs, examples, remove `:autocomplete` as it uses a dummy class.
+- `lint/prefer-method-values`: simplify docs, examples, remove `:autocomplete` as it uses a dummy class. (See [#33](https://github.com/NoahTheDuke/splint/issues/33).)
 - `lint/redundant-call`: add configurable fn list with `:fn-names`.
 - `lint/require-explicit-param-tags`: clean up docs.
 - `performance/into-transducer`: remove `cat` as it can't be used in the incorrect form.

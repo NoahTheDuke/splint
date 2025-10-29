@@ -17,5 +17,5 @@
   ["Custom Rules"
    ["Developing a new rule" {:file "docs/develop-new-rule.md"}]
    ["Patterns" {:file "docs/patterns.md"}]]
-  ["Contributing" {:file "docs/contributing.md"}]
+  ["Contributing" {:file "CONTRIBUTING.md"}]
   ["Changelog" {:file "CHANGELOG.md"}]]}

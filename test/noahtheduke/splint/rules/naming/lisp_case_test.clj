@@ -47,4 +47,12 @@
     (expect-match
       nil
       "(defn StackTraceElement->vec [o] ...)"
-      (single-rule-config rule-name))))
+      (single-rule-config rule-name)))
+  (it "ignores gen-class methods"
+    (doseq [input ["(defn -handleRequest [_] :ok)"
+                   "(defn -onCreate [_] nil)"
+                   "(defn -someMethod [this arg] arg)"]]
+      (expect-match
+        nil
+        input
+        (single-rule-config rule-name)))))

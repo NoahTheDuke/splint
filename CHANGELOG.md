@@ -22,7 +22,7 @@ BREAKING CHANGES:
 
 ### Changed
 
-Update rules:
+Rules:
 
 - `lint/existing-constant`: narrow to only `clj`, and expand it to cover clojure 1.10 (by using `java.lang.Math/PI` and `java.lang.Math/E`).
 - `lint/incorrectly-swapped`: look for destructuring with identical binding and exprs: `(let [[a b] [a b]] ...)`.
@@ -33,6 +33,8 @@ Update rules:
 - `performance/into-transducer`: remove `cat` as it can't be used in the incorrect form.
 - `performance/into-transducer`: add configurable fn list with `:fn-0-arg` and `:fn-1-arg` (depending on how many arguments the fn accepts).
 - `performance/single-literal-merge`: adds and defaults to `:dynamic`, which acts as `:single` or `:multiple` depending on the number of elements in the map literal. (See [#35](https://github.com/NoahTheDuke/splint/issues/35).)
+- `lint/rand-int-one` only checks for numbers between `-1` and `1` (inclusive). (See [#31](https://github.com/NoahTheDuke/splint/issues/31).)
+- `naming/lisp-case`: ignore `:gen-class` methods (aka `-objHandler`).
 
 Patterns:
 
@@ -46,10 +48,6 @@ Others:
 
 - Bump `edamame` to `1.4.32` to support `#^` metadata and no-op reader conditionals. (Requires babashka version 1.12.205 or later.)
 - Move `resources/SPLINT_VERSION` and `resources/config/default.edn` to `resources/noahtheduke/splint/SPLINT_VERSION` and `resources/noahtheduke/splint/config/default.edn`, respectively.
-
-### Fixed
-
-- `lint/rand-int-one` only checks for numbers between `-1` and `1` (inclusive). (See [#31](https://github.com/NoahTheDuke/splint/issues/31).)
 
 ## 1.21.0 - 2025-06-24
 

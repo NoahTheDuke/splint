@@ -47,4 +47,9 @@
     (expect-match
       nil
       "(defn StackTraceElement->vec [o] ...)"
+      (single-rule-config rule-name)))
+  (it "ignores gen-class style methods"
+    (expect-match
+      nil
+      "(defn -objHandler [o] ...)"
       (single-rule-config rule-name))))

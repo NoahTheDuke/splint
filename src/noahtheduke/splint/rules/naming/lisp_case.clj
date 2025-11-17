@@ -20,7 +20,8 @@
     (let [def*-name (str sexp)]
       (and (some? (re-find #"(._.|[a-z][A-Z])" def*-name))
         (not (str/includes? def*-name "->"))
-        (not (str/ends-with? def*-name "?"))))))
+        (not (str/ends-with? def*-name "?"))
+        (not (str/starts-with? def*-name "-"))))))
 
 (defrule naming/lisp-case
   "Use lisp-case for function and variable names. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)
@@ -43,6 +44,7 @@
   ; ignores
   (defn StackTraceElement->vec [o] ...)
   (defn NaN? [n] ...)
+  (defn -objHandler ...)
   "
   {:pattern '((? def def*??) (? name incorrect-name?) ?*args)
    :message "Prefer kebab-case over other cases for top-level definitions."

@@ -5,7 +5,7 @@
 {:min-bb-version "1.12.205"
  :paths ["src" "resources"]
  :deps {org.clojure/tools.cli {:mvn/version "1.1.230"}
-        borkdude/edamame {:mvn/version "1.4.31"}
+        borkdude/edamame {:mvn/version "1.5.35"}
         camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
         fipp/fipp {:mvn/version "0.6.26"}
         org.flatland/ordered {:mvn/version "1.15.12"}}

@@ -46,7 +46,7 @@ Patterns:
 
 Others:
 
-- Bump `edamame` to `1.4.32` to support `#^` metadata and no-op reader conditionals. (Requires babashka version 1.12.205 or later.)
+- Bump `edamame` to `1.5.35` to support `#^` metadata and no-op reader conditionals. (Requires babashka version 1.12.205 or later.)
 - Move `resources/SPLINT_VERSION` and `resources/config/default.edn` to `resources/noahtheduke/splint/SPLINT_VERSION` and `resources/noahtheduke/splint/config/default.edn`, respectively.
 
 ## 1.21.0 - 2025-06-24

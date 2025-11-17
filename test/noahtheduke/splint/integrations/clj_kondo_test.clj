@@ -17,7 +17,7 @@
 
 (def clj-kondo-diagnostics
   '{lint/assoc-fn 1
-    lint/catch-throwable 6
+    lint/catch-throwable 5
     lint/defmethod-names 6
     lint/dot-class-method 2
     lint/fn-wrapper 1
@@ -31,24 +31,24 @@
     lint/no-catch 1
     lint/no-op-assignment 2
     lint/redundant-str-call 1
-    lint/thread-macro-one-arg 70
+    lint/thread-macro-one-arg 72
     lint/try-splicing 3
-    lint/warn-on-reflection 112
-    metrics/fn-length 227
-    metrics/parameter-count 32
+    lint/warn-on-reflection 115
+    metrics/fn-length 235
+    metrics/parameter-count 33
     naming/conventional-aliases 5
     naming/record-name 1
-    performance/assoc-many 91
-    performance/dot-equals 83
-    performance/get-keyword 12
-    performance/single-literal-merge 2
+    performance/assoc-many 97
+    performance/dot-equals 99
+    performance/get-keyword 11
+    performance/single-literal-merge 1
     style/apply-str 1
     style/apply-str-interpose 1
     style/eq-true 3
     style/multiple-arity-order 1
     style/neg-checks 1
     style/new-object 4
-    style/not-eq 3
+    style/not-eq 4
     style/not-some-pred 2
     style/pos-checks 1
     style/prefer-clj-string 5
@@ -57,11 +57,11 @@
     style/single-key-in 1
     style/tostring 2
     style/useless-do 2
-    style/when-not-call 12})
+    style/when-not-call 13})
 
 (defdescribe clj-kondo-test
   (let [clj-kondo (delay (gl/procure "https://github.com/clj-kondo/clj-kondo.git"
-                           'clj-kondo/clj-kondo "v2025.06.05"))
+                           'clj-kondo/clj-kondo "v2025.10.23"))
         results (delay
                   (run-impl [{:path (str @clj-kondo "/src")}
                              {:path (str @clj-kondo "/test")}]
@@ -83,7 +83,7 @@
          (m/equals clj-kondo-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 712 (count (:diagnostics @results)))))
+      (expect (= 747 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get @diagnostics 'splint/error))))
     (it "raises no unknown errors"

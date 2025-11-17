@@ -27,8 +27,8 @@
     lint/let-when 1
     lint/redundant-call 1
     lint/thread-macro-one-arg 116
-    lint/warn-on-reflection 148
-    metrics/fn-length 293
+    lint/warn-on-reflection 147
+    metrics/fn-length 296
     metrics/parameter-count 47
     naming/conventional-aliases 56
     naming/conversion-functions 6
@@ -63,7 +63,7 @@
 
 (defdescribe clojure-lsp-test
   (let [clojure-lsp (delay (gl/procure "https://github.com/clojure-lsp/clojure-lsp.git"
-                             'com.github.clojure-lsp/clojure-lsp "2025.06.13-20.45.44"))
+                             'com.github.clojure-lsp/clojure-lsp "2025.08.25-14.21.46"))
         results (delay
                   (run-impl [{:path @clojure-lsp}]
                             {:config-override
@@ -82,6 +82,6 @@
          (m/equals clojure-lsp-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1269 (count (:diagnostics @results)))))
+      (expect (= 1271 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))))

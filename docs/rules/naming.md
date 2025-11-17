@@ -93,7 +93,7 @@ Uses simple string checking and can misunderstand English intention when `X-to-Y
 
 | Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
 | ------------------ | ----- | ----------- | ------------- | --------------- |
-| true               | false | false       | 1.3.0         | 1.3.0           |
+| true               | false | false       | 1.3.0         | 1.22.0          |
 
 Use lisp-case for function and variable names. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)
 
@@ -116,6 +116,7 @@ Interop, json, and other styles can make it necessary to use such forms.
 ; ignores
 (defn StackTraceElement->vec [o] ...)
 (defn NaN? [n] ...)
+(defn -objHandler ...)
 ```
 
 ### Reference

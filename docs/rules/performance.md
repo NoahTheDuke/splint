@@ -126,11 +126,14 @@ If `lint/prefer-method-values` is enabled, then the suggestion will use that syn
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| false              | true | true        | 1.11          | 1.11            |
+| false              | true | true        | 1.11          | 1.22.0          |
 
-`into` has a 3-arity and a 4-arity form. Both pour the given coll into the
-new coll but when given a transducer in the 4-arity form, the transducer is
-efficiently applied in between.
+`into` has a 3-arity and a 4-arity form. Both pour the given coll into the new coll but when given a transducer in the 4-arity form, the transducer is efficiently applied in between.
+
+Current list of transducers this rule checks:
+> `dedupe`, `distinct`, `drop`, `drop-while`, `filter`, `halt-when`, `interpose`, `keep`, `keep-indexed`, `map`, `map-indexed`, `mapcat`, `partition-all`, `partition-by`, `random-sample`, `remove`, `replace`, `take`, `take-nth`, `take-while`
+
+This list can be expanded with the configurations `:fn-0-arg` or `:fn-1-arg`, depending on how many arguments the targeted transducer takes
 
 ### Examples
 
@@ -138,9 +141,22 @@ efficiently applied in between.
 ; avoid
 (into [] (map inc (range 100)))
 
+; avoid (with `:fn-1-arg [cool-fn]`)
+(into [] (cool-fn inc (range 100)))
+
 ; prefer
 (into [] (map inc) (range 100))
+
+; prefer (with `:fn-1-arg [cool-fn]`)
+(into [] (cool-fn inc) (range 100))
 ```
+
+### Configurable Attributes
+
+| Name        | Default                                                                                                                                                                   | Options |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `:fn-1-arg` | `#{keep-indexed take-nth take map keep mapcat map-indexed take-while remove replace drop random-sample partition-all partition-by halt-when filter interpose drop-while}` | Set     |
+| `:fn-0-arg` | `#{dedupe distinct}`                                                                                                                                                      | Set     |
 
 ### Reference
 
@@ -152,9 +168,11 @@ efficiently applied in between.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| false              | true | true        | 1.11          | 1.11            |
+| false              | true | true        | 1.11          | 1.22.0          |
 
 `clojure.core/merge` is inherently slow. Its major benefit is handling nil values. If there is only a single object to merge in and it's a map literal, that benefit is doubly unused. Better to directly assoc the values in.
+
+By default, this rule suggests alternatives based on how many elements are in the map literal: 4 or less will suggest as `:single`, more than 4 will suggest as `:multiple`. Either can be set in the config to enforce one or the other.
 
 **NOTE:** If the chosen style is `:single` and `performance/assoc-many` is enabled, the style will be treated as `:multiple` to make the warnings consistent.
 
@@ -164,7 +182,7 @@ efficiently applied in between.
 ; avoid
 (merge m {:a 1 :b 2 :c 3})
 
-; prefer (chosen style :single (default))
+; prefer (chosen style :single)
 (assoc m :a 1 :b 2 :c 3)
 
 ; prefer (chosen style :multiple)
@@ -176,6 +194,10 @@ efficiently applied in between.
 
 ### Configurable Attributes
 
-| Name            | Default   | Options                |
-| --------------- | --------- | ---------------------- |
-| `:chosen-style` | `:single` | `:single`, `:multiple` |
+| Name            | Default    | Options                            |
+| --------------- | ---------- | ---------------------------------- |
+| `:chosen-style` | `:dynamic` | `:single`, `:multiple`, `:dynamic` |
+
+### Reference
+
+* <https://bsless.github.io/code-smells>

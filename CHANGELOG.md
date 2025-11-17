@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## 1.22.0 - 2025-11-17
+
 BREAKING CHANGES:
 
 * The pattern parser is less forgiving of mistakes, so custom patterns might break.

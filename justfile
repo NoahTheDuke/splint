@@ -84,7 +84,7 @@ inform-cljdoc version=current_version:
 # Builds the uberjar, builds the jar, sends the jar to clojars
 @release version:
     echo 'Running tests'
-    just test-all --output quiet
+    just test-all-versions --output quiet
     echo 'Setting new version {{version}}'
     just set-version {{version}}
     echo 'Rendering docs'

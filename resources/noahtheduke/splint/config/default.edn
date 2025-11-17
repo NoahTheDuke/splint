@@ -80,7 +80,7 @@
  {:description "Use `clojure.math/PI` and `clojure.math/E` when appropriate instead of approximating."
   :enabled true
   :added "1.21.0"
-  :updated "<<next>>"}
+  :updated "1.22.0"}
 
  lint/fn-wrapper
  {:description "Avoid wrapping functions in pass-through anonymous function defitions."
@@ -145,7 +145,7 @@
  {:description "Looks for `(let [[a b] [a b]] ...)` that didn't actually swap the two variables."
   :enabled true
   :added "1.21.0"
-  :updated "<<next>>"}
+  :updated "1.22.0"}
 
  lint/into-literal
  {:description "Prefer `vec` or `set` to `(into [] ...)`."
@@ -211,7 +211,7 @@
  {:description "`try` calls should have at least 1 `catch` or `finally` clause."
   :enabled true
   :added "1.21.0"
-  :updated "1.21.0"
+  :updated "1.22.0"
   :chosen-style :accept-finally
   :supported-styles [:accept-finally :only-catch]}
 
@@ -224,8 +224,8 @@
  lint/no-target-for-method
  {:description "Instance methods require a target instance."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.22.0"
+  :updated "1.22.0"}
 
  lint/not-empty?
  {:description "Looks for `(not (empty?))` which matters for nil-punning."
@@ -240,7 +240,7 @@
  {:description "Use uniform Class/member syntax when writing interop."
   :enabled true
   :added "1.13"
-  :updated "<<next>>"
+  :updated "1.22.0"
   :links ["https://clojure.org/news/2024/04/28/clojure-1-12-alpha10#method_values"]}
 
  lint/prefer-require-over-use
@@ -256,14 +256,14 @@
  {:description "A call to `(rand-int 1)` will always return 0."
   :enabled true
   :added "1.21.0"
-  :updated "1.21.0"}
+  :updated "1.22.0"}
 
  lint/redundant-call
  {:description "Certain core functions return the arg when given a single arg."
   :enabled true
   :fn-names #{-> ->> cond-> cond->> some-> some->> comp partial merge min max distinct?}
   :added "0.1"
-  :updated "<<next>>"}
+  :updated "1.22.0"}
 
  lint/redundant-str-call
  {:description "Avoid calls to `str` on string literals or calls to `str` or `format`."
@@ -312,8 +312,8 @@
  {:description "Don't use `swap!` in `update` or `update-in` calls."
   :enabled true
   :safe false
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.22.0"
+  :updated "1.22.0"}
 
  lint/warn-on-reflection
  {:description "Always set *warn-on-reflection* to avoid reflection in interop."
@@ -366,7 +366,7 @@
   :enabled true
   :safe false
   :added "1.3.0"
-  :updated "1.3.0"
+  :updated "1.22.0"
   :guide-ref "#naming-functions-and-variables"}
 
  naming/predicate
@@ -433,7 +433,7 @@
               partition-all partition-by random-sample remove replace take
               take-nth take-while}
   :added "1.11"
-  :updated "<<next>>"
+  :updated "1.22.0"
   :links ["https://bsless.github.io/code-smells"]}
 
  performance/single-literal-merge
@@ -442,7 +442,7 @@
   :chosen-style :dynamic
   :supported-styles [:single :multiple :dynamic]
   :added "1.11"
-  :updated "<<next>>"
+  :updated "1.22.0"
   :links ["https://bsless.github.io/code-smells"]}
 
  ;; Style Rules

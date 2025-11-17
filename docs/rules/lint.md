@@ -34,6 +34,7 @@
 - [lint/missing-body-in-when](#lintmissing-body-in-when)
 - [lint/no-catch](#lintno-catch)
 - [lint/no-op-assignment](#lintno-op-assignment)
+- [lint/no-target-for-method](#lintno-target-for-method)
 - [lint/not-empty?](#lintnot-empty)
 - [lint/prefer-method-values](#lintprefer-method-values)
 - [lint/prefer-require-over-use](#lintprefer-require-over-use)
@@ -45,6 +46,7 @@
 - [lint/thread-macro-one-arg](#lintthread-macro-one-arg)
 - [lint/try-splicing](#linttry-splicing)
 - [lint/underscore-in-namespace](#lintunderscore-in-namespace)
+- [lint/update-with-swap](#lintupdate-with-swap)
 - [lint/warn-on-reflection](#lintwarn-on-reflection)
 
 <!-- tocstop -->
@@ -307,9 +309,7 @@ with the same name, but it's good to catch these things early too.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | 1.21.0        | 1.21.0          |
-
-**NOTE:** Requires Clojure version 1.11.0.
+| true               | true | false       | 1.21.0        | 1.22.0          |
 
 Java has `PI` and `E` constants built-in, and `clojure.math` exposes them directly. Better to use them instead of poorly approximating them with vars.
 
@@ -320,9 +320,13 @@ Java has `PI` and `E` constants built-in, and `clojure.math` exposes them direct
 (def pi 3.14)
 (def e 2.718)
 
-; prefer
+; prefer (Clojure 1.11+)
 clojure.math/PI
 clojure.math/E
+
+; prefer (Clojure 1.10)
+java.lang.Math/PI
+java.lang.Math/E
 ```
 
 ---
@@ -558,16 +562,15 @@ Two `not`s cancel each other out.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | 1.21.0        | 1.21.0          |
+| true               | true | false       | 1.21.0        | 1.22.0          |
 
-It can be necessary to swap two variables. This usually requires an intermediate variable, but with destructuring, Clojure can perform this in a single line. However, without an intermediate variable or destructuring, manually swapping can result in both variables ending up with the same value.
+It can be necessary to swap two variables. This usually requires an intermediate variable, but with destructuring, Clojure can perform this in a single line. If the destructuring is done incorrectly, then the assignment is a no-op, indicating a bug.
 
 ### Examples
 
 ```clojure
 ; avoid
-(let [a b
-      b a] ...)
+(let [[a b] [a b]] ...)
 
 ; prefer
 (let [[a b] [b a]] ...)
@@ -800,7 +803,7 @@ In interop scenarios, it can be necessary to add a type hint to mark a function'
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | 1.21.0        | 1.21.0          |
+| true               | true | false       | 1.21.0        | 1.22.0          |
 
 Try without a `catch` (or `finally`) clause is a no-op, and indicates something got changed or broken at some point.
 
@@ -861,6 +864,32 @@ Skips if the expr is a reader conditional or has a type-hint.
 
 ---
 
+## lint/no-target-for-method
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | 1.22.0        | 1.22.0          |
+
+Instance methods require a target instance. If there's none or it's nil, highly likely there's a bug.
+
+This rule ignores when a find is nested in a `doto` or similar form: `(doto (new java.util.HashMap) (.put "a" 1) (.put "b" 2))` will not raise a diagnostic.
+
+### Examples
+
+```clojure
+; avoid
+(.length)
+(.length nil)
+(String/.length)
+(String/.length nil)
+
+; prefer
+(.length foo)
+(String/.length foo)
+```
+
+---
+
 ## lint/not-empty?
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
@@ -898,23 +927,21 @@ Skips if the expr is a reader conditional or has a type-hint.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | true        | 1.13          | 1.13            |
+| true               | true | false       | 1.13          | 1.22.0          |
 
 **NOTE:** Requires Clojure version 1.12.0.
 
-Uniform qualified method values are a new syntax for calling into java code. They must resolve to a single static or instance method and to help with that, a new metadata syntax can be used: `^[]` aka `^{:param-tags []}`. Types are specified with classes, each corrosponding to an argument in the target method: `(^[long String] SomeClass/.someMethod 1 "Hello world!")`. It compiles to a direct call without any reflection, guaranteeing optimal performance.
-
-Given that, it is preferable to exclusively use method values.
+Uniform qualified method values are a new syntax for calling into java code. Instead of type hints, methods are qualified with their class (and with the new `:param-tags` aka `^[]` metadata where ambiguous). This will be compiled into direct calls, making them both the most clear and the highest performing way to execute Java interop.
 
 ### Examples
 
 ```clojure
 ; avoid
-(.toUpperCase "noah")
-(. "noah" toUpperCase)
+(.toUpperCase name-string)
+(. name-string toUpperCase)
 
 ; prefer
-(^[] String/toUpperCase "noah")
+(String/toUpperCase name-string)
 ```
 
 ### Reference
@@ -963,11 +990,9 @@ In the `ns` form prefer `:require :as` over `:require :refer` over `:require :re
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | 1.21.0        | 1.21.0          |
+| true               | true | false       | 1.21.0        | 1.22.0          |
 
-`clojure.core/rand-int` returns an integer between `0` (inclusive) and `n` (exclusive), meaning that a call to `(rand-int 1)` will always return `0`.
-
-Checks the following numbers: `0`, `0.0`, `1`, `1.0`, `-1`, `-1.0`
+`clojure.core/rand-int` generates a float between `0` and `n` (exclusive) and then casts it to an integer. When given `1` (or a number less than `1`), `rand-int` will always return `0`.
 
 ### Examples
 
@@ -978,7 +1003,6 @@ Checks the following numbers: `0`, `0.0`, `1`, `1.0`, `-1`, `-1.0`
 (rand-int 1)
 (rand-int 1.0)
 (rand-int -1.0)
-(rand-int 1.5)
 ```
 
 ---
@@ -987,11 +1011,9 @@ Checks the following numbers: `0`, `0.0`, `1`, `1.0`, `-1`, `-1.0`
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | true        | 0.1           | 0.1             |
+| true               | true | true        | 0.1           | 1.22.0          |
 
-A number of core functions take any number of arguments and return the arg
-if given only one. These calls are effectively no-ops, redundant, so they
-should be avoided.
+A number of core functions take any number of arguments and return the arg if given only one. These calls are effectively no-ops, redundant, so they should be avoided.
 
 Current list of clojure.core functions this linter checks:
 
@@ -1000,6 +1022,8 @@ Current list of clojure.core functions this linter checks:
 * `some->`, `some->>`
 * `comp`, `partial`, `merge`
 * `min`, `max`, `distinct?`
+
+This list can be expanded with the configuration `:fn-names`.
 
 ### Examples
 
@@ -1018,9 +1042,18 @@ Current list of clojure.core functions this linter checks:
 (max x)
 (distinct? x)
 
+; avoid (with `:fn-names [cool-fn]`)
+(cool-fn x)
+
 ; prefer
 x
 ```
+
+### Configurable Attributes
+
+| Name        | Default                                                                        | Options |
+| ----------- | ------------------------------------------------------------------------------ | ------- |
+| `:fn-names` | `#{cond->> comp min -> some->> cond-> merge some-> partial distinct? max ->>}` | Set     |
 
 ---
 
@@ -1056,9 +1089,7 @@ x
 
 Uniform qualified method values are a new syntax for calling into java code. They must resolve to a single static or instance method and to help with that, a new metadata syntax can be used: `^[]` aka `^{:param-tags []}`. Types are specified with classes, each corrosponding to an argument in the target method: `(^[long String] SomeClass/someMethod 1 "Hello world!")`
 
-If `:param-tags` is left off of a method value, then the compiler treats it as taking no arguments (a 0-arity static method or a 1-arity instance method with the instance being the first argument). And an `_` can be used as a wild-card in the cases where there is only a single applicable method (no overloads).
-
-These last two features are where there can be trouble. If, for whatever reason, the Java library adds an overload on type, then both the lack of `:param-tags` and a wild-card can lead to ambiguity. This is a rare occurence but risky/annoying enough that it's better to be explicit overall.
+An `_` can be used as a wild-card in the cases where there is only a single applicable method (no overloads). If, for whatever reason, the Java library adds an overload on type, then both the lack of `:param-tags` and a wild-card can lead to ambiguity. This is a rare occurence but risky/annoying enough that it's better to be explicit overall.
 
 The styles are named after what they're looking for:
 
@@ -1204,6 +1235,31 @@ Due to munging rules, underscores in namespaces can confuse tools and libraries 
 
 ; prefer
 (ns foo-bar.baz-qux)
+```
+
+---
+
+## lint/update-with-swap
+
+| Enabled by default | Safe  | Autocorrect | Version Added | Version Updated |
+| ------------------ | ----- | ----------- | ------------- | --------------- |
+| true               | false | false       | 1.22.0        | 1.22.0          |
+
+If an atom is stored inside if a map, the atom can be changed using `swap!` within an `update` or `update-in` call. However, `swap!` returns the new value, not the atom itself, so the container map will hold the deref'ed value of the atom, not the original atom. If the result of the `update` call is stored/used, this can lead to bugs.
+
+Additionally, if the return value of the `update` call is ignored, then the `update` form will work as expected (because the return value won't overwrite the existing map and the atom will be updated in place). This should be avoided as it breaks expectations about the value of values and normal behavior.
+
+### Safety
+If the `update` call's return value isn't ignored (it's used in an assignment or passed to another call), switching to `swap!` will break the expected return value. Care must be exercised when switching.
+
+### Examples
+
+```clojure
+; avoid
+(update state :counter swap! + 5)
+
+; prefer
+(swap! (:counter state) + 5)
 ```
 
 ---

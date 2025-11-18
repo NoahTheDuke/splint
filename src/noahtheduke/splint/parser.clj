@@ -19,19 +19,23 @@
 
 (set! *warn-on-reflection* true)
 
-(defn- get-fqns [ns-state klass]
-  (or (get-in @ns-state [:imports klass])
-    (get default-imports klass)))
+(defn- get-imported-klass [ns-state klass]
+  (when klass
+    (or (get-in @ns-state [:imports klass])
+      (get default-imports klass))))
 
-(defn- attach-import-meta [obj ns-state]
-  (if-let [klass (and (symbol? obj)
-                   (some-> (or (namespace obj) (name obj))
-                     (str/split #"\.")
-                     last
-                     symbol))]
-    (if-let [fqns (get-fqns ns-state klass)]
-      (vary-meta obj assoc :splint/import-ns fqns)
-      obj)
+(defn- attach-ns-meta [obj ns-state]
+  (if (symbol? obj)
+    (let [obj-ns (namespace obj)
+          klass (some-> (or obj-ns (name obj))
+                  (str/split #"\.")
+                  last
+                  symbol)
+          imported-klass (get-imported-klass ns-state klass)
+          require-ns (when obj-ns (get-in @ns-state [:aliases (symbol obj-ns)]))]
+      (cond-> obj
+        imported-klass (vary-meta assoc :splint/import-ns imported-klass)
+        require-ns (vary-meta assoc :splint/origin-ns require-ns)))
     obj))
 
 (defn- attach-defn-meta [obj]
@@ -87,7 +91,7 @@
                     (instance? ParseSet obj) (parse-set loc)
                     (instance? clojure.lang.IObj obj)
                     (-> (vary-meta merge loc)
-                      (attach-import-meta ns-state))
+                      (attach-ns-meta ns-state))
                     (and (list? obj)
                       (symbol? (first obj))
                       (symbol? (second obj))

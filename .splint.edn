@@ -10,12 +10,8 @@
  performance {:enabled true}
  style {:enabled true}
 
- lint/prefer-method-values {:enabled false} ; gotta wait for babashka
  lint/thread-macro-one-arg {:enabled false}
  metrics/fn-length {:enabled false}
  metrics/parameter-count {:count 5}
  style/set-literal-as-fn {:enabled false}
-
- ; performance/assoc-many {:excludes ["glob:**/path_matcher.clj"]}
- ; global {:excludes ["glob:src/noahtheduke/splint/path_matcher.clj"]}
 }

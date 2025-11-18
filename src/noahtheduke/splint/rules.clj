@@ -119,7 +119,7 @@
 (s/def ::pattern any?)
 (s/def ::patterns (s/and vector? (s/+ any?)))
 (s/def ::replace any?)
-(s/def ::on-match (s/and seq? #(.equals "fn" (name (first %)))))
+(s/def ::on-match (s/and seq? #(String/.equals "fn" (name (first %)))))
 (s/def ::message string?)
 (s/def ::init-type keyword?)
 (s/def ::major int?)

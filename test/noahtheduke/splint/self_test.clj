@@ -48,7 +48,7 @@
                                   (assoc :clojure-version {:major 99})
                                   (prepare-rules (:rules @global-rules))
                                   :rules
-                                  (->> (remove #(.equals "dev" (:genre (val %))))
+                                  (->> (remove #(String/.equals "dev" (:genre (val %))))
                                        (map (comp str key))
                                        (map #(str/replace % "?" ""))
                                        (map symbol)))]
@@ -81,7 +81,7 @@
   (it "all files have license headers"
     (let [files (->> ["dev" "resources" "src" "test"]
                      (mapcat #(file-seq (io/file %)))
-                     (filter #(and (.isFile ^File %)
+                     (filter #(and (File/.isFile ^File %)
                                    (some (fn [ft] (str/ends-with? % ft))
                                          [".clj" ".cljs" ".cljc" ".edn"]))))]
       (doseq [file files

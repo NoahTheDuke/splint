@@ -20,7 +20,7 @@
   (let [?name (str ?name)]
     (cond
       (str/starts-with? ?name "is-") (str (subs ?name 3) (when-not (str/ends-with? ?name "?") "?"))
-      (str/ends-with? ?name "-p") (str (subs ?name 0 (- (.length ?name) 2)) "?"))))
+      (str/ends-with? ?name "-p") (str (subs ?name 0 (- (String/.length ?name) 2)) "?"))))
 
 (defrule naming/predicate
   "Functions that return a boolean should end in a question mark.

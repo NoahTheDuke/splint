@@ -14,7 +14,9 @@
    [noahtheduke.splint.runner :as sut]
    [noahtheduke.splint.test-helpers :refer [expect-match print-to-file!
                                             with-out-str-data-map
-                                            with-temp-files]]))
+                                            with-temp-files]]) 
+  (:import
+    [java.text SimpleDateFormat]))
 
 (set! *warn-on-reflection* true)
 
@@ -262,8 +264,9 @@
            (str/join
              "\n"
              [(format ";; Splint configuration auto-generated on %s."
-                      (.format (java.text.SimpleDateFormat. "yyyy-MM-dd")
-                               (java.util.Date.)))
+                (SimpleDateFormat/.format
+                  (java.text.SimpleDateFormat. "yyyy-MM-dd")
+                  (java.util.Date.)))
               ";; All failing rules have been disabled and can be enabled as time allows."
               ""
               "{"

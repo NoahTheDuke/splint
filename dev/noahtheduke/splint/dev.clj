@@ -13,7 +13,7 @@
 (defn build-default-config []
   (load-file "dev/noahtheduke/splint/rules/dev/throws_on_match.clj")
   (let [dev-rules (->> (keys (:rules @global-rules))
-                    (filter #(.equals "dev" (namespace %)))
+                    (filter #(String/.equals "dev" (namespace %)))
                     (map (fn [r] (clojure.lang.MapEntry. r {:enabled true})))
                     (into {}))
         default-rules (config/read-default-config)]

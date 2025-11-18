@@ -13,7 +13,7 @@
 (defn symbol-not-class? [sym]
   (and (symbol? sym)
     (let [sym (pr-str sym)
-          idx (.lastIndexOf sym ".")]
+          idx (String/.lastIndexOf sym ".")]
       (not (if (neg? idx)
              (Character/isUpperCase ^char (first sym))
              (Character/isUpperCase ^char (nth sym (inc idx))))))))

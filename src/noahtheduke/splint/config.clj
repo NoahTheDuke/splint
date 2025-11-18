@@ -11,7 +11,9 @@
    [noahtheduke.splint.path-matcher :refer [->matcher]]
    [noahtheduke.splint.rules :refer [global-rules]])
   (:import
-   (java.io File)))
+   (java.io File)
+   [java.text SimpleDateFormat]
+   [java.util.regex Matcher]))
 
 (set! *warn-on-reflection* true)
 
@@ -51,13 +53,13 @@
   (delay (read-default-config)))
 
 (defn find-local-config []
-  (loop [dir (.getParentFile (.getAbsoluteFile (io/file ".")))]
+  (loop [dir (File/.getParentFile (File/.getAbsoluteFile (io/file ".")))]
     (let [config (io/file dir ".splint.edn")]
-      (if (.exists config)
+      (if (File/.exists config)
         {:dir dir
-         :file (.getAbsoluteFile config)
+         :file (File/.getAbsoluteFile config)
          :local (slurp-edn config)}
-        (when-let [parent (.getParentFile dir)]
+        (when-let [parent (File/.getParentFile dir)]
           (recur parent))))))
 
 (defn get-opts-from-config
@@ -189,7 +191,8 @@
         new-config (str/join
                      "\n"
                      [(str ";; Splint configuration auto-generated on "
-                        (.format (java.text.SimpleDateFormat. "yyyy-MM-dd")
+                        (SimpleDateFormat/.format
+                          (java.text.SimpleDateFormat. "yyyy-MM-dd")
                           (java.util.Date.)) ".")
                       ";; All failing rules have been disabled and can be enabled as time allows."
                       ""
@@ -202,16 +205,16 @@
   [version]
   (let [pat #"(?<major>\d+)\.(?<minor>\d+)\.(?<incremental>\d+)(?:-(?<qualifier>[a-zA-Z0-9_]+))?(?:-(?<snapshot>SNAPSHOT))?"
         m (re-matcher pat version)
-        _ (.matches m)
-        qualifier (.group m "qualifier")
-        snapshot (if (.equals "SNAPSHOT" qualifier)
+        _ (Matcher/.matches m)
+        qualifier (Matcher/.group m "qualifier")
+        snapshot (if (Matcher/.equals "SNAPSHOT" qualifier)
                    qualifier
-                   (.group m "snapshot"))
-        qualifier (when-not (.equals "SNAPSHOT" qualifier)
+                   (Matcher/.group m "snapshot"))
+        qualifier (when-not (Matcher/.equals "SNAPSHOT" qualifier)
                     qualifier)]
-    {:major (parse-long* (.group m "major"))
-     :minor (parse-long* (.group m "minor"))
-     :incremental (parse-long* (.group m "incremental"))
+    {:major (parse-long* (Matcher/.group m "major"))
+     :minor (parse-long* (Matcher/.group m "minor"))
+     :incremental (parse-long* (Matcher/.group m "incremental"))
      :qualifier qualifier
      :snapshot snapshot}))
 
@@ -269,9 +272,9 @@
   [^File deps-edn ^File project-clj]
   (let [project-file
         (cond
-          (and deps-edn (.exists deps-edn))
+          (and deps-edn (File/.exists deps-edn))
           (assoc (slurp-edn deps-edn) ::type :deps-edn)
-          (and project-clj (.exists project-clj))
+          (and project-clj (File/.exists project-clj))
           (let [v (->> (slurp-edn project-clj {:multiple true})
                     (filter #(and (seq? %) (= 'defproject (first %))))
                     first

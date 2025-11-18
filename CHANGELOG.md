@@ -4,6 +4,11 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Changed
+
+- Update parser to add `:splint/origin-ns` if a symbol's namespace is an alias.
+- `lint/redundant-call`: Make sure the function isn't aliased from another namespace.
+
 ## 1.22.0 - 2025-11-17
 
 BREAKING CHANGES:

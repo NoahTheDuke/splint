@@ -24,6 +24,11 @@
           :alt 'x}]
         (str given)
         (single-rule-config rule-name))))
+  (it "ignores aliased functions"
+    (expect-match
+      nil
+      "(require '[clojure.core.async :as async]) (async/merge foo)"
+      (single-rule-config rule-name)))
   (it "ignores multiple arg"
     (expect-match nil
       "(-> a b (merge c))"

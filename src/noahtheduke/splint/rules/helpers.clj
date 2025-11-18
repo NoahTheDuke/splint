@@ -22,27 +22,27 @@
 
 (defn deref?? [sexp]
   (and (symbol? sexp)
-    (.equals "deref" (name sexp))))
+    (String/.equals "deref" (name sexp))))
 
 (defn syntax-quote?? [sexp]
   (and (symbol? sexp)
-    (.equals "splint/syntax-quote" (str sexp))))
+    (String/.equals "splint/syntax-quote" (str sexp))))
 
 (defn unquote?? [sexp]
   (and (symbol? sexp)
-    (.equals "unquote" (name sexp))))
+    (String/.equals "unquote" (name sexp))))
 
 (defn unquote-splicing?? [sexp]
   (and (symbol? sexp)
-    (.equals "unquote-splicing" (name sexp))))
+    (String/.equals "unquote-splicing" (name sexp))))
 
 (defn var?? [sexp]
   (and (symbol? sexp)
-    (.equals "var" (name sexp))))
+    (String/.equals "var" (name sexp))))
 
 (defn read-eval?? [sexp]
   (and (symbol? sexp)
-    (.equals "splint/read-eval" (str sexp))))
+    (String/.equals "splint/read-eval" (str sexp))))
 
 (defn fn?? [sexp]
   (and (symbol? sexp)
@@ -58,7 +58,7 @@
 
 (defn re-pattern?? [sexp]
   (and (symbol? sexp)
-    (.equals "re-pattern" (name sexp))))
+    (String/.equals "re-pattern" (name sexp))))
 
 (defn simple-literal? [sexp]
   (utils/simple-literal? sexp))

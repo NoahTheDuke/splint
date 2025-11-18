@@ -24,7 +24,7 @@
 (defn runner-error->diagnostic [ex data]
   (let [rule-name (cond-> ""
                     (:rule-name data) (str " during '" (:rule-name data))
-                    true (format " (%s)" (.getName (class ex))))
+                    true (format " (%s)" (Class/.getName (class ex))))
         message (or (ex-message ex) "")
         error-msg (format "Splint encountered an error%s: %s"
                     rule-name
@@ -287,8 +287,8 @@
       (update :rules-by-type update-vals* sort))))
 
 (defn get-extension [^File file]
-  (let [filename (.getName file)
-        i (.lastIndexOf filename ".")]
+  (let [filename (File/.getName file)
+        i (String/.lastIndexOf filename ".")]
     (when (< i (dec (count filename)))
       (subs filename (inc i)))))
 
@@ -296,7 +296,7 @@
   (cond
     (map? path)
     (mapcat (fn [^File file]
-              (when (.isFile file)
+              (when (File/.isFile file)
                 (case (get-extension file)
                   "cljc"
                   [{:features #{:clj} :ext :cljc :file file}

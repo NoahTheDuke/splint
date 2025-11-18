@@ -9,7 +9,7 @@
 (set! *warn-on-reflection* true)
 
 (defn str-empty? [form]
-  (.equals "" form))
+  (String/.equals "" form))
 
 (defrule style/reduce-str
   "`reduce` calls the provided function on every element in the provided

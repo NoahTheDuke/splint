@@ -11,7 +11,7 @@
 
 (defn str?? [sexp]
   (and (symbol? sexp)
-    (.equals "str" (name sexp))))
+    (String/.equals "str" (name sexp))))
 
 (defn nested?? [sexp]
   (and (symbol? sexp)

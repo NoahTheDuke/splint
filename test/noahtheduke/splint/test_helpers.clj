@@ -145,7 +145,7 @@
 (defn file-match [^File this actual]
   (cond
     (instance? File actual)
-    (if (.equals (.getName this) (.getName ^File actual))
+    (if (String/.equals (File/.getName this) (File/.getName ^File actual))
       {::result/type :match
        ::result/value actual
        ::result/weight 0}
@@ -153,8 +153,8 @@
        ::result/value (->Mismatch this actual)
        ::result/weight 1})
     (string? actual)
-    (let [this-path (str/split (.getAbsolutePath this) (re-pattern fs/file-separator))
-          actual-path (str/split (.getAbsolutePath (io/file actual)) #"/")]
+    (let [this-path (str/split (File/.getAbsolutePath this) (re-pattern fs/file-separator))
+          actual-path (str/split (File/.getAbsolutePath (io/file actual)) #"/")]
       (if (= this-path actual-path)
         {::result/type :match
          ::result/value actual

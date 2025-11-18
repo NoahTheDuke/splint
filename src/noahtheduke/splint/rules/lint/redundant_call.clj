@@ -9,14 +9,6 @@
 
 (set! *warn-on-reflection* true)
 
-(defn right-fn? [sexp]
-  (#{'-> '->>
-     'cond-> 'cond->>
-     'some-> 'some->>
-     'comp 'partial 'merge
-     'min 'max 'distinct?}
-   sexp))
-
 (defn check-parent [ctx]
   (when-let [parent-form (:parent-form ctx)]
     (and (seq? parent-form)
@@ -61,7 +53,8 @@
    :autocorrect true
    :on-match (fn [ctx rule form {:syms [?fun ?x]}]
                (let [fn-names (:fn-names (:config rule))]
-                 (when (and (contains? fn-names (symbol (name ?fun)))
+                 (when (and (not (:splint/origin-ns (meta ?fun)))
+                         (contains? fn-names (symbol (name ?fun)))
                          (not (check-parent ctx)))
                    (let [message (format "Single-arg `%s` always returns the arg." ?fun)]
                      (->diagnostic ctx rule form {:message message

@@ -45,7 +45,7 @@
       (it "can disable a whole genre"
         (doseq [c (->> (sut/merge-config config {'style {:enabled false}})
                     (vals)
-                    (filter #(.equals "style" (namespace (:rule-name % :a)))))]
+                    (filter #(String/.equals "style" (namespace (:rule-name % :a)))))]
           (expect (match? {:enabled false} c))))
       (it "chooses the more specific config"
         (expect

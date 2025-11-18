@@ -48,7 +48,7 @@
                                        (= :method-value chosen-style))
                          ?class (str ?class)
                          ?class (if dot-call?
-                                  (subs ?class 0 (unchecked-dec (.length ?class)))
+                                  (subs ?class 0 (unchecked-dec (String/.length ?class)))
                                   ?class)
                          new-class (symbol (if use-method?
                                              (str ?class "/new")

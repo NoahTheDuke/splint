@@ -7,7 +7,8 @@
    [clojure.string :as str])
   (:import
    (java.io File)
-   (java.nio.file FileSystem FileSystems PathMatcher)))
+   (java.nio.file FileSystem FileSystems PathMatcher)
+   [java.util.regex Matcher]))
 
 (set! *warn-on-reflection* true)
 
@@ -21,11 +22,11 @@
 (extend-protocol Match
   PathMatcher
   (-matches [m file]
-    (.matches m (.toPath ^File file)))
+    (PathMatcher/.matches m (File/.toPath ^File file)))
   java.util.regex.Pattern
   (-matches [m file]
     (let [m (re-matcher m (str file))]
-      (.find m)))
+      (Matcher/.find m)))
   String
   (-matches [m file]
     (str/includes? (str file) m)))
@@ -40,7 +41,7 @@
   (cond
     (or (str/starts-with? input "glob:")
       (str/starts-with? input "regex:"))
-    (->MatchHolder (.getPathMatcher fs input) input)
+    (->MatchHolder (FileSystem/.getPathMatcher fs input) input)
     (str/starts-with? input "re-find:")
     (->MatchHolder (re-find-matcher input) input)
     (str/starts-with? input "string:")

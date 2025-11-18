@@ -138,7 +138,7 @@
 (defmethod read-form :string
   read-form--string
   [ctx pattern form]
-  `(when (.equals ^String ~pattern ~form)
+  `(when (String/.equals ^String ~pattern ~form)
      ~ctx))
 
 (defmethod read-form :symbol

@@ -263,7 +263,7 @@
   :enabled true
   :fn-names #{-> ->> cond-> cond->> some-> some->> comp partial merge min max distinct?}
   :added "0.1"
-  :updated "1.22.0"}
+  :updated "<<next>>"}
 
  lint/redundant-str-call
  {:description "Avoid calls to `str` on string literals or calls to `str` or `format`."

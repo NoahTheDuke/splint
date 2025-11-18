@@ -10,7 +10,7 @@
 
 (defn assoc? [sym]
   (and (symbol? sym)
-    (.equals "assoc" (name sym))))
+    (String/.equals "assoc" (name sym))))
 
 (defn not-assoc? [sym]
   (if (symbol? sym)

@@ -18,7 +18,7 @@
 (def netrunner-diagnostics
   '{lint/assoc-fn 6
     lint/catch-throwable 1
-    lint/defmethod-names 295
+    lint/defmethod-names 294
     lint/fn-wrapper 44
     lint/identical-branches 11
     lint/if-else-nil 12
@@ -102,7 +102,7 @@
          (m/equals netrunner-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 4036 (count (:diagnostics @results)))))
+      (expect (= 4035 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))
     (it "raises no unknown errors"

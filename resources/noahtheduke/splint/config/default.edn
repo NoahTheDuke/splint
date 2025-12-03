@@ -32,7 +32,7 @@
  {:description "Specify a function name for defmethod bodies."
   :enabled false
   :added "1.18.0"
-  :updated "1.18.0"}
+  :updated "<<next>>"}
 
  lint/divide-by-one
  {:description "Dividing by 1 is a no-op."

@@ -7,7 +7,8 @@
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]
    [noahtheduke.splint.utils :refer [simple-type]]
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [noahtheduke.splint.rules.helpers :refer [unquote??]]))
 
 (set! *warn-on-reflection* true)
 
@@ -64,7 +65,9 @@
   {:pattern '(defmethod ?multi ?dispatch (?* args))
    :message "Include a name for the method."
    :on-match (fn [ctx rule form {:syms [?multi ?dispatch ?args]}]
-               (when-not (symbol? (first ?args))
+               (when-not (or (symbol? (first ?args))
+                             (and (list? ?multi) (unquote?? (first ?multi)))
+                             (and (list? ?dispatch) (unquote?? (first ?dispatch))))
                  (let [ending (build-method-ending ?dispatch)
                        method-name (symbol (str ?multi "--" ending))
                        new-form (list* 'defmethod ?multi ?dispatch method-name ?args)]

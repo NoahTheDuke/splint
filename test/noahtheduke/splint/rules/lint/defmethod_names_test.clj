@@ -113,4 +113,13 @@
       (expect-match
         nil
         "(defmethod some-multi #uuid \"abc\" [arg1 arg2] (+ arg1 arg2))"
+        (config)))
+    (it "unquote"
+      (expect-match
+        nil
+        "`(defmethod ~some-multi :foo [arg1 arg2] (+ arg1 arg2))"
+        (config))
+      (expect-match
+        nil
+        "`(defmethod some-multi ~foo [arg1 arg2] (+ arg1 arg2))"
         (config)))))

@@ -86,7 +86,7 @@
 
 (defmacro needs-sequence
   [dispatch-vals]
-  (let [methods
+  (let [methods'
         (map (fn [v]
                #_:splint/disable
                `(defmethod read-form ~v
@@ -96,7 +96,7 @@
                            ~(format "`%s` must be used in a surrounding sequence"
                               (str v))))))
           dispatch-vals)]
-    (list* 'do (concat methods [nil]))))
+    (list* 'do (concat methods' [nil]))))
 
 (needs-sequence [:?* :?*? :?+ :?+? :?? :??? :?|])
 

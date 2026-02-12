@@ -33,6 +33,8 @@ clj-kondo:
 clojure-lsp:
     clojure-lsp diagnostics
 
+alias lint := clj-kondo
+
 [no-exit-message]
 @test-raw *args:
     clojure -M:dev:test:runner --md README.md {{args}}

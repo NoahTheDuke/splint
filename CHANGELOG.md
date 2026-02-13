@@ -9,6 +9,9 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 - Update parser to add `:splint/origin-ns` if a symbol's namespace is an alias.
 - `lint/redundant-call`: Make sure the function isn't aliased from another namespace.
 - `lint/defmethod-names`: Skip methods with unquoted dispatch vals. (For example, `(defmethod foo ~some-val ...)`.)
+- Fix some bugs in the `clj-kondo` hook for `noahtheduke.splint.rules/defrule`.
+- Add hook for `noahtheduke.splint.pattern/pattern` to ease usage in other libraries.
+- Deprecate `lint/try-splicing`, extend `lint/body-unquote-splicing` to cover `try`.
 
 ## 1.22.0 - 2025-11-17
 

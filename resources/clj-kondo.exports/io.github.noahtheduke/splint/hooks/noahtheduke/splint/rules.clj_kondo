@@ -140,6 +140,18 @@
                                {:message "Must define only one of :replace OR :on-match"
                                 :type :splint/spec}))))))
 
+(defn pattern
+  [{:keys [node]}]
+  (let [[_ pat] (:children node)
+        finds (atom [])]
+    (check-pattern finds pat)
+    (let [new-node (api/list-node
+                    [(api/token-node 'fn) (api/vector-node [(api/token-node 'form)])
+                     (when-let [used-preds (seq @finds)]
+                       (api/vector-node used-preds))
+                     (api/token-node 'form)])]
+      {:node (with-meta new-node (meta node))})))
+
 (defn defrule
   [{:keys [node]}]
   (let [[defrule rule-name docs m] (:children node)

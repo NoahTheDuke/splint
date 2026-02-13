@@ -18,8 +18,7 @@
 | ------------------ | ---- | ----------- | ------------- | --------------- |
 | false              | true | true        | 1.10.0        | 1.10.0          |
 
-Assoc takes multiple pairs but relies on `seq` stepping. This is slower than
-relying on multiple `assoc` invocations.
+Assoc takes multiple pairs but relies on `seq` stepping. This is slower than relying on multiple `assoc` invocations.
 
 ### Examples
 

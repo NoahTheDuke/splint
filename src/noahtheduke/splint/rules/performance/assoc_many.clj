@@ -39,8 +39,7 @@
     (->diagnostic ctx rule form {:replace-form new-form})))
 
 (defrule performance/assoc-many
-  "Assoc takes multiple pairs but relies on `seq` stepping. This is slower than
-  relying on multiple `assoc` invocations.
+  "Assoc takes multiple pairs but relies on `seq` stepping. This is slower than relying on multiple `assoc` invocations.
 
   @examples
 

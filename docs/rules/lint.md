@@ -78,11 +78,9 @@ idiomatic.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | true        | 1.0           | 1.0             |
+| true               | true | true        | 1.0           | <<next>>        |
 
-A macro that nests an `unquote-splicing` in a macro with a `& body` can lead
-to subtle hard to debug errors. Better to wrap the `unquote-splicing` in
-a `do` to force it into 'expression position'.
+A macro that nests an `unquote-splicing` in a macro with a `& body` can lead to subtle hard to debug errors. Better to wrap the `unquote-splicing` in a `do` to force it into 'expression position'.
 
 ### Examples
 
@@ -142,7 +140,7 @@ Because there might be legitimate reasons to catch Throwable (mission-critical p
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| false              | true | false       | 1.18.0        | 1.18.0          |
+| false              | true | false       | 1.18.0        | <<next>>        |
 
 When defining methods for a multimethod, everything after the dispatch-val is given directly to `fn`. This allows for providing a name to the defmethod function, which will make stack traces easier to read.
 
@@ -1011,7 +1009,7 @@ In the `ns` form prefer `:require :as` over `:require :refer` over `:require :re
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | true        | 0.1           | 1.22.0          |
+| true               | true | true        | 0.1           | <<next>>        |
 
 A number of core functions take any number of arguments and return the arg if given only one. These calls are effectively no-ops, redundant, so they should be avoided.
 
@@ -1197,11 +1195,11 @@ Macros can be misinterpreted, leading to correct code being flagged:
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | true        | 1.0           | 1.0             |
+| false              | true | true        | 1.0           | <<next>>        |
 
-A macro that wraps a splicing unquote in a try-catch or try-finally can lead
-to subtle hard to debug errors. Better to wrap the splicing unquote in a `do`
-to force it into 'expression position'.
+A macro that wraps a splicing unquote in a try-catch or try-finally can lead to subtle hard to debug errors. Better to wrap the splicing unquote in a `do` to force it into 'expression position'.
+
+**Deprecated** (since <<next>>): Please use `lint.body-unquote-splicing`.
 
 ### Examples
 

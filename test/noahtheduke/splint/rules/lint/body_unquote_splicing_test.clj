@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.rules.lint.body-unquote-splicing-test
   (:require
-   [lazytest.core :refer [defdescribe it]]
+   [lazytest.core :refer [defdescribe describe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
@@ -15,7 +15,7 @@
 
   (it "respects bare ~@"
     (doseq [input '[delay dosync future lazy-cat lazy-seq pvalues
-                    with-loading-context]]
+                    try with-loading-context]]
       (expect-match
         [{:form (list input '(splint/unquote-splicing body))
           :message "Wrap ~@/unquote-splicing in `(let [res# (do ...)] res#)` to avoid unhygenic macro expansion."
@@ -31,6 +31,22 @@
           :message "Wrap ~@/unquote-splicing in `(let [res# (do ...)] res#)` to avoid unhygenic macro expansion."
           :alt (list input 'arg '(let [res# (do (splint/unquote-splicing body))] res#))}]
         (format "(%s arg ~@body)" input)
+        (single-rule-config rule-name))))
+
+  (describe "respects try"
+    (it "handles no (finally)"
+      (expect-match
+        [{:rule-name 'lint/body-unquote-splicing
+          :form '(try (splint/unquote-splicing body))
+          :alt '(try (let [res# (do (splint/unquote-splicing body))] res#))}]
+        "(try ~@body)"
+        (single-rule-config rule-name)))
+    (it "handles (finally)"
+      (expect-match
+        [{:rule-name 'lint/body-unquote-splicing
+          :form '(try (splint/unquote-splicing body) (finally :true))
+          :alt '(try (let [res# (do (splint/unquote-splicing body))] res#) (finally :true))}]
+        "(try ~@body (finally :true))"
         (single-rule-config rule-name))))
 
   (it "doesn't touch non-symbols"

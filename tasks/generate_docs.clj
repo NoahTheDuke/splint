@@ -8,18 +8,21 @@
    [clojure.string :as str]
    [doric.core :refer [table]]
    [noahtheduke.splint]
+   [noahtheduke.splint.clojure-ext.core :refer [re-compile]]
    [noahtheduke.splint.config :refer [default-config]]
    [noahtheduke.splint.rules :refer [global-rules]]
    [noahtheduke.splint.runner :refer [prepare-rules]]
-   [noahtheduke.splint.utils :refer [simple-type]])
+   [noahtheduke.splint.utils :refer [simple-type]]) 
   (:import
-   (java.util.regex Pattern)))
+   [java.util.regex Matcher]))
+
+(set! *warn-on-reflection* true)
 
 (def rules
   (-> @default-config
-      (assoc :clojure-version {:major 99})
-      (prepare-rules (:rules @global-rules))
-      :rules))
+    (assoc :clojure-version {:major 99})
+    (prepare-rules (:rules @global-rules))
+    :rules))
 
 (defn rule-config [rule]
   (:config (rules (:full-name rule))))
@@ -44,7 +47,7 @@
                  {:name :added :title "Version Added" :align :left}
                  {:name :updated :title "Version Updated" :align :left}]]
     (when (and (not (:safe (rule-config rule)))
-               (:autocorrect rule))
+            (:autocorrect rule))
       (println (:name rule) "isn't safe but can autocorrect???"))
     (print-table headers [(assoc (rule-config rule) :autocorrect (or (:autocorrect rule) false))])))
 
@@ -57,9 +60,9 @@
           (clojure-version))))))
 
 (def docs-re
-  (Pattern/compile
-   "^(?<docs>.*?)(?<note>@note.*?)?(?<safety>@safety.*?)?(?<examples>@examples.*?)?$"
-   Pattern/DOTALL))
+  (re-compile
+    "^(?<docs>.*?)(?<note>@note.*?)?(?<safety>@safety.*?)?(?<examples>@examples.*?)?$"
+    :dotall))
 
 (defn render-docstring [rule]
   (when-let [docstring (:docstring rule)]
@@ -72,25 +75,25 @@
           dedented-lines (map #(if (str/blank? %) % (subs % min-indent)) (next lines))
           lines (str/join \newline (cons (first lines) dedented-lines))
           matcher (re-matcher docs-re lines)
-          _ (.matches matcher)
-          docs (.group matcher "docs")
-          note (.group matcher "note")
-          safety (.group matcher "safety")
-          examples (.group matcher "examples")]
+          _ (Matcher/.matches matcher)
+          docs (Matcher/.group matcher "docs")
+          note (Matcher/.group matcher "note")
+          safety (Matcher/.group matcher "safety")
+          examples (Matcher/.group matcher "examples")]
       (str (str/trim docs)
         (when note
           (str \newline \newline
             "**NOTE:** "
             (-> note
-                (subs 5)
-                (str/trim))))
+              (subs 5)
+              (str/trim))))
         (when safety
           (str \newline \newline
             "### Safety"
             \newline
             (-> safety
-                (subs 7)
-                (str/trim))))
+              (subs 7)
+              (str/trim))))
         (when examples
           (str \newline \newline
             "### Examples"
@@ -98,8 +101,8 @@
             "```clojure"
             \newline
             (-> examples
-                (subs 9)
-                (str/trim))
+              (subs 9)
+              (str/trim))
             \newline
             "```"))))))
 
@@ -160,7 +163,7 @@
         (when outside-links
           (->> (for [link outside-links]
                  (format "* <%s>" link))
-               (str/join \newline)))))))
+            (str/join \newline)))))))
 
 (defn build-rule [rule]
   (->> [(str "## " (:full-name rule))
@@ -189,7 +192,6 @@
         (build-rules genre)]
     (str/join (str \newline \newline))))
 
-#_{:splint/disable [naming/conversion-functions]}
 (defn print-genre-to-file [genre]
   (let [page (genre-page genre)
         filename (io/file "docs" "rules" (str genre ".md"))]

@@ -17,7 +17,7 @@
 
 (def clojure-diagnostics
   '{lint/assoc-fn 8
-    lint/body-unquote-splicing 11
+    lint/body-unquote-splicing 21
     lint/catch-throwable 21
     lint/defmethod-names 141
     lint/dot-class-method 8
@@ -109,7 +109,7 @@
          (m/equals clojure-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1321 (count (:diagnostics @results)))))
+      (expect (= 1331 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))
     (it "raises no unknown errors"

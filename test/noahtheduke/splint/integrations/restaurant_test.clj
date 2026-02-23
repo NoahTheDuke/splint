@@ -16,7 +16,8 @@
 (set! *warn-on-reflection* true)
 
 (def restaurant-diagnostics
-  '{lint/thread-macro-one-arg 9
+  '{lint/body-unquote-splicing 2
+    lint/thread-macro-one-arg 9
     lint/try-splicing 2
     lint/warn-on-reflection 15
     metrics/fn-length 14
@@ -45,7 +46,7 @@
          (m/equals restaurant-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 47 (count (:diagnostics @results)))))
+      (expect (= 49 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))
     (it "raises no unknown errors"

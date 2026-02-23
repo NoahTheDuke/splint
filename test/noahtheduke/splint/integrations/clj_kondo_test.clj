@@ -17,6 +17,7 @@
 
 (def clj-kondo-diagnostics
   '{lint/assoc-fn 1
+    lint/body-unquote-splicing 3
     lint/catch-throwable 5
     lint/defmethod-names 6
     lint/dot-class-method 2
@@ -83,7 +84,7 @@
          (m/equals clj-kondo-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 747 (count (:diagnostics @results)))))
+      (expect (= 750 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get @diagnostics 'splint/error))))
     (it "raises no unknown errors"

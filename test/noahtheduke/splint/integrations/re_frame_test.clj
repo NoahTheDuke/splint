@@ -16,7 +16,8 @@
 (set! *warn-on-reflection* true)
 
 (def re-frame-diagnostics
-  '{lint/if-else-nil 2
+  '{lint/body-unquote-splicing 1
+    lint/if-else-nil 2
     lint/if-let-else-nil 2
     lint/thread-macro-one-arg 15
     lint/try-splicing 1
@@ -54,4 +55,4 @@
          (m/equals re-frame-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 72 (count (:diagnostics @results)))))))
+      (expect (= 73 (count (:diagnostics @results)))))))

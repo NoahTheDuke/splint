@@ -19,6 +19,7 @@
   '{lint/body-unquote-splicing 2
     lint/catch-throwable 12
     lint/defmethod-names 137
+    lint/empty-loop-in-fn 1
     lint/fn-wrapper 2
     lint/identical-branches 8
     lint/if-nil-else 3
@@ -76,12 +77,13 @@
                                 (group-by :rule-name)))]
     ; (user/pprint (into (sorted-map) (dissoc @diagnostics 'lint/warn-on-reflection)))
     ; (user/pprint (into (sorted-map) (update-vals* @diagnostics count)))
+    ; (user/pprint (get @diagnostics 'lint/empty-loop-in-fn))
     (it "has the right diagnostics"
       (expect
         (match?
          (m/equals clojure-lsp-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1271 (count (:diagnostics @results)))))
+      (expect (= 1272 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))))

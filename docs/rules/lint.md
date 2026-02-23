@@ -12,6 +12,7 @@
 - [lint/dot-obj-method](#lintdot-obj-method)
 - [lint/duplicate-case-test](#lintduplicate-case-test)
 - [lint/duplicate-field-name](#lintduplicate-field-name)
+- [lint/empty-loop-in-fn](#lintempty-loop-in-fn)
 - [lint/existing-constant](#lintexisting-constant)
 - [lint/fn-wrapper](#lintfn-wrapper)
 - [lint/identical-branches](#lintidentical-branches)
@@ -299,6 +300,33 @@ with the same name, but it's good to catch these things early too.
 
 ; prefer
 (defrecord Foo [a b c])
+```
+
+---
+
+## lint/empty-loop-in-fn
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+A function is a valid `recur` target, allowing for writing recursive functions directly. No need to nest within a `loop` if both function and loop have no parameters.
+
+**NOTE:** Autocorrect isn't enabled because of formatting and comment changes.
+
+### Examples
+
+```clojure
+; avoid
+(defn example []
+  (loop []
+    (when (= 2 (+ 1 1))
+      (recur))))
+
+; prefer
+(defn example []
+  (when (= 2 (+ 1 1))
+    (recur)))
 ```
 
 ---

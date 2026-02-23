@@ -21,6 +21,7 @@
     lint/catch-throwable 5
     lint/defmethod-names 6
     lint/dot-class-method 2
+    lint/empty-loop-in-fn 1
     lint/fn-wrapper 1
     lint/identical-branches 2
     lint/if-else-nil 1
@@ -77,14 +78,14 @@
                                 (group-by :rule-name)))]
     ; (user/pprint (into (sorted-map) (dissoc @diagnostics 'lint/warn-on-reflection 'lint/defmethod-names)))
     ; (user/pprint (into (sorted-map) (update-vals* @diagnostics count)))
-    ; (user/pprint (get @diagnostics 'lint/no-target-for-method))
+    ; (user/pprint (get @diagnostics 'lint/empty-loop-in-fn))
     (it "has the right diagnostics"
       (expect
         (match?
          (m/equals clj-kondo-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 750 (count (:diagnostics @results)))))
+      (expect (= 751 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get @diagnostics 'splint/error))))
     (it "raises no unknown errors"

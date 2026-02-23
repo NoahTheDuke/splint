@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### New Rules
+
+- `lint/empty-loop-in-fn`: Prefer `(defn foo [] (... (recur)))` over `(defn foo [] (loop [] (... (recur))))`.
+
 ### Changed
 
 - Update parser to add `:splint/origin-ns` if a symbol's namespace is an alias.

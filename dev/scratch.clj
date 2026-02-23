@@ -15,7 +15,15 @@
 
 (defrule dev/find-specific-shape
   "Rules in `noahtheduke.splint` must be in sorted order."
-  {:pattern '(swap! ((? keyword keyword?) ?map) ?*args)
+  {:patterns ['(defn ?name ?*args
+                 [] (?? ?prepost-map? map?)
+                 (loop []
+                   ?*body))
+              '(defn ?name2 ?*args
+                 ([] (?? ?prepost-map? map?)
+                   (loop []
+                     ?*body))
+                 (?? ?attr-map map?))]
    :message "Deliberate throws if matched"
    :on-match (fn [ctx rule form _bindings]
                (->diagnostic ctx rule form {:replace-form nil}))})
@@ -69,5 +77,5 @@
 (comment
   (sort-by val @diagnostic-counts)
   (get @diagnostics 'style/minus-zero)
-  (get @diagnostics-2 'dev/find-specific-shape)
+  (count (get @diagnostics-2 'dev/find-specific-shape))
   (:diagnostics @results-2))

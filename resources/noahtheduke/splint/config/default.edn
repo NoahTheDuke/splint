@@ -76,6 +76,12 @@
   :added "0.1.119"
   :updated "0.1.119"}
 
+ lint/empty-loop-in-fn
+ {:description "No need for `loop` directly within `defn`/`fn` if neither binds."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  lint/existing-constant
  {:description "Use `clojure.math/PI` and `clojure.math/E` when appropriate instead of approximating."
   :enabled true

@@ -77,6 +77,7 @@
     style/prefer-clj-string 54
     style/prefer-condp 4
     style/prefer-for-with-literals 1
+    style/prefer-var-dispatch 18
     style/prefer-vary-meta 1
     style/redundant-let 5
     style/redundant-nested-call 1
@@ -109,7 +110,7 @@
          (m/equals clojure-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1331 (count (:diagnostics @results)))))
+      (expect (= 1349 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))
     (it "raises no unknown errors"

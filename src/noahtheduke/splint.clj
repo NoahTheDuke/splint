@@ -124,6 +124,7 @@
    noahtheduke.splint.rules.style.prefer-clj-string
    noahtheduke.splint.rules.style.prefer-condp
    noahtheduke.splint.rules.style.prefer-for-with-literals
+   noahtheduke.splint.rules.style.prefer-var-dispatch
    noahtheduke.splint.rules.style.prefer-vary-meta
    noahtheduke.splint.rules.style.prefixed-libspecs
    noahtheduke.splint.rules.style.reduce-str

@@ -39,6 +39,7 @@
     style/prefer-clj-math 3
     style/prefer-clj-string 4
     style/prefer-for-with-literals 4
+    style/prefer-var-dispatch 9
     style/tostring 3})
 
 (defdescribe hermes-test
@@ -61,6 +62,6 @@
          (m/equals hermes-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 497 (count (:diagnostics @results)))))
+      (expect (= 506 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))))

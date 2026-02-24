@@ -57,6 +57,7 @@
     style/prefer-clj-string 4
     style/prefer-condp 3
     style/prefer-for-with-literals 2
+    style/prefer-var-dispatch 7
     style/redundant-regex-constructor 1
     style/single-key-in 4
     style/tostring 20
@@ -77,13 +78,13 @@
                                 (group-by :rule-name)))]
     ; (user/pprint (into (sorted-map) (dissoc @diagnostics 'lint/warn-on-reflection)))
     ; (user/pprint (into (sorted-map) (update-vals* @diagnostics count)))
-    ; (user/pprint (get @diagnostics 'lint/empty-loop-in-fn))
+    ; (user/pprint (get @diagnostics 'style/prefer-var-dispatch))
     (it "has the right diagnostics"
       (expect
         (match?
          (m/equals clojure-lsp-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1272 (count (:diagnostics @results)))))
+      (expect (= 1279 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))))

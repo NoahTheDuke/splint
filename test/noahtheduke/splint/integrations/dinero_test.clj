@@ -22,7 +22,8 @@
     metrics/fn-length 8
     metrics/parameter-count 5
     performance/assoc-many 1
-    performance/dot-equals 29})
+    performance/dot-equals 29
+    style/prefer-var-dispatch 8})
 
 (defdescribe dinero-test
   (let [dinero (delay (gl/procure "https://github.com/sernamar/dinero.git" 'com.sernamar/dinero "v0.3.0"))
@@ -45,7 +46,7 @@
          (m/equals dinero-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 84 (count (:diagnostics @results)))))
+      (expect (= 92 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))
     (it "raises no unknown errors"

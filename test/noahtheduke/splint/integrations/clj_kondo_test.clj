@@ -55,6 +55,7 @@
     style/pos-checks 1
     style/prefer-clj-string 5
     style/prefer-condp 2
+    style/prefer-var-dispatch 1
     style/prefer-vary-meta 2
     style/single-key-in 1
     style/tostring 2
@@ -78,14 +79,14 @@
                                 (group-by :rule-name)))]
     ; (user/pprint (into (sorted-map) (dissoc @diagnostics 'lint/warn-on-reflection 'lint/defmethod-names)))
     ; (user/pprint (into (sorted-map) (update-vals* @diagnostics count)))
-    ; (user/pprint (get @diagnostics 'lint/empty-loop-in-fn))
+    ; (user/pprint (get @diagnostics 'style/prefer-var-dispatch))
     (it "has the right diagnostics"
       (expect
         (match?
          (m/equals clj-kondo-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 751 (count (:diagnostics @results)))))
+      (expect (= 752 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get @diagnostics 'splint/error))))
     (it "raises no unknown errors"

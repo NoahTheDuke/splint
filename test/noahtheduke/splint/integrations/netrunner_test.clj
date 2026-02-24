@@ -71,6 +71,7 @@
     style/prefer-clj-string 5
     style/prefer-condp 4
     style/prefer-for-with-literals 1
+    style/prefer-var-dispatch 15
     style/redundant-let 4
     style/redundant-nested-call 8
     style/redundant-regex-constructor 9
@@ -102,7 +103,7 @@
          (m/equals netrunner-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 4035 (count (:diagnostics @results)))))
+      (expect (= 4050 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))
     (it "raises no unknown errors"

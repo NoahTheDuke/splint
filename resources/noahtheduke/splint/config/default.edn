@@ -709,6 +709,12 @@
   :added "1.15.0"
   :updated "1.17.0"}
 
+ style/prefer-var-dispatch
+ {:description "Prefer a var for a multimethod's dispatch function."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  style/prefer-vary-meta
  {:description "Prefer `vary-meta` to `(with-meta x (assoc (meta x) ...))`."
   :enabled true
@@ -722,7 +728,7 @@
   :updated "1.21.0"}
 
  style/reduce-str
- {:description "Use clojure.string for efficient string concatenation."
+ {:description "Prefer clojure.string/join for efficient string concatenation."
   :enabled true
   :added "1.11"
   :updated "1.11"}

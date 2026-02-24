@@ -9,7 +9,9 @@
 
 (set! *warn-on-reflection* true)
 
-(defmulti derive-aliases first :default 'ns)
+(def derive-dispatch first)
+
+(defmulti derive-aliases #'derive-dispatch :default 'ns)
 
 (defn quoted? [form]
   (and (seq? form)

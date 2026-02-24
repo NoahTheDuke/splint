@@ -9,6 +9,7 @@
 - [style/cond-else](#stylecond-else)
 - [style/conj-vector](#styleconj-vector)
 - [style/def-fn](#styledef-fn)
+- [style/defmulti-arglists](#styledefmulti-arglists)
 - [style/eq-false](#styleeq-false)
 - [style/eq-nil](#styleeq-nil)
 - [style/eq-true](#styleeq-true)
@@ -43,6 +44,7 @@
 - [style/prefer-clj-string](#styleprefer-clj-string)
 - [style/prefer-condp](#styleprefer-condp)
 - [style/prefer-for-with-literals](#styleprefer-for-with-literals)
+- [style/prefer-var-dispatch](#styleprefer-var-dispatch)
 - [style/prefer-vary-meta](#styleprefer-vary-meta)
 - [style/prefixed-libspecs](#styleprefixed-libspecs)
 - [style/reduce-str](#stylereduce-str)
@@ -223,6 +225,26 @@ It's nice when the default branch is consistent.
 ; prefer
 (defn some-func [i]
   (+ i 100))
+```
+
+---
+
+## style/defmulti-arglists
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+Due to the way multimethods can use any IFn for dispatch, it is rare for a multimethod to have the proper `:arglists` metadata. It is a small thing but adding that can improve instrospection in repl-driven development (`clojure.repl/doc`) as well as external tooling (`clj-kondo`, `clojure-lsp`).
+
+### Examples
+
+```clojure
+; avoid
+(defmulti example #'dispatch-fn)
+
+; prefer
+(defmulti example {:arglists '([obj])} #'dispatch-fn)
 ```
 
 ---
@@ -1028,6 +1050,29 @@ The core builder functions are helpful when creating an object from an opaque se
 
 ; prefer
 (for [item (range 10)] {:a 1 :b item})
+```
+
+---
+
+## style/prefer-var-dispatch
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+During repl-driven development, one might wish to change the dispatch function of a multimethod. However, once set, the dispatch function cannot be changed without first unmapping the entire multimethod, which requires reloading all methods again.
+
+To avoid that, define a dispatch function and use it as a var for the dispatch function of the multimethod.
+
+### Examples
+
+```clojure
+; avoid
+(defmulti example :type)
+
+; prefer
+(def example-dispatch :type)
+(defmulti example #'example-dispatch)
 ```
 
 ---

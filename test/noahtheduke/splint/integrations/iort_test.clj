@@ -21,6 +21,7 @@
     metrics/fn-length 9
     performance/assoc-many 1
     performance/dot-equals 3
+    style/defmulti-arglists 7
     style/first-first 1
     style/not-some-pred 1
     style/prefer-var-dispatch 7})
@@ -47,7 +48,7 @@
          (m/equals iort-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 40 (count (:diagnostics @results)))))
+      (expect (= 47 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))
     (it "raises no unknown errors"

@@ -8,6 +8,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - `lint/empty-loop-in-fn`: Prefer `(defn foo [] (... (recur)))` over `(defn foo [] (loop [] (... (recur))))`.
 - `style/prefer-var-dispatch`: Use a var for a multimethod's dispatch function: `(defmulti example #'dispatch-fn)`.
+- `style/defmulti-arglists`: Always include `:arglists` in the metadata of a `defmulti`: `(defmulti example {:arglists '([obj])} #'dispatch-fn)`.
 
 ### Changed
 

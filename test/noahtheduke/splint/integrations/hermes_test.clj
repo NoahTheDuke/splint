@@ -32,6 +32,7 @@
     performance/get-keyword 4
     performance/single-literal-merge 3
     style/apply-str 2
+    style/defmulti-arglists 9
     style/is-eq-order 15
     style/minus-one 1
     style/multiple-arity-order 1
@@ -62,6 +63,6 @@
          (m/equals hermes-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 506 (count (:diagnostics @results)))))
+      (expect (= 515 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))))

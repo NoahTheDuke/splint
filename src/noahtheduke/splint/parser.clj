@@ -10,6 +10,7 @@
    [edamame.impl.read-fn :as read-fn]
    [noahtheduke.splint.clojure-ext.core :refer [parse-bigint parse-map
                                                 parse-set vary-meta*]]
+   [noahtheduke.splint.parser.defmulti :refer [parse-defmulti]]
    [noahtheduke.splint.parser.defn :refer [parse-defn]]
    [noahtheduke.splint.parser.ns :refer [parse-ns]]
    [noahtheduke.splint.vendor :refer [default-imports]])
@@ -41,6 +42,11 @@
 (defn- attach-defn-meta [obj]
   (if-let [defn-form (parse-defn obj)]
     (vary-meta obj assoc :splint/defn-form defn-form)
+    obj))
+
+(defn- attach-defmulti-meta [obj]
+  (if-let [defmulti-form (parse-defmulti obj)]
+    (vary-meta obj assoc :splint/defmulti-form defmulti-form)
     obj))
 
 (defn- make-edamame-opts [{:keys [features ext ns-state]
@@ -97,6 +103,11 @@
                       (symbol? (second obj))
                       (#{"defn" "defn-"} (name (first obj))))
                     (attach-defn-meta)
+                    (and (list? obj)
+                      (symbol? (first obj))
+                      (symbol? (second obj))
+                      (String/.equals "defmulti" (name (first obj))))
+                    (attach-defmulti-meta)
                     ;; last because it will be rare
                     (instance? BigInt obj) (parse-bigint)))
    ; Each of dispatch literals should either be processed (uneval), or wrap the

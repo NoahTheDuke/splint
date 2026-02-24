@@ -496,6 +496,12 @@
   :added "1.0"
   :updated "1.19.0"}
 
+ style/defmulti-arglists
+ {:description "Specify `:arglists` in multimethod metadata."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  style/eq-false
  {:description "Prefer `false?` to `(= x false)`."
   :enabled true

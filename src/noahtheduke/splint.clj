@@ -90,6 +90,7 @@
    noahtheduke.splint.rules.style.cond-else
    noahtheduke.splint.rules.style.conj-vector
    noahtheduke.splint.rules.style.def-fn
+   noahtheduke.splint.rules.style.defmulti-arglists
    noahtheduke.splint.rules.style.eq-false
    noahtheduke.splint.rules.style.eq-nil
    noahtheduke.splint.rules.style.eq-true

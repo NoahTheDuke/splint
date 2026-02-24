@@ -80,6 +80,7 @@
     style/prefer-var-dispatch 18
     style/prefer-vary-meta 1
     style/redundant-let 5
+    style/defmulti-arglists 16
     style/redundant-nested-call 1
     style/single-key-in 1
     style/tostring 32
@@ -110,7 +111,7 @@
          (m/equals clojure-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1349 (count (:diagnostics @results)))))
+      (expect (= 1365 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))
     (it "raises no unknown errors"

@@ -48,6 +48,7 @@
     style/apply-str-interpose 2
     style/assoc-assoc 2
     style/def-fn 3
+    style/defmulti-arglists 17
     style/eq-false 3
     style/eq-nil 17
     style/eq-true 2
@@ -103,7 +104,7 @@
          (m/equals netrunner-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 4050 (count (:diagnostics @results)))))
+      (expect (= 4067 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))
     (it "raises no unknown errors"

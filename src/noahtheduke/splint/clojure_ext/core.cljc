@@ -337,3 +337,12 @@
 
 (comment
   (re-find (re-compile ".*#comment\n" :dotall :comments) "a\nb"))
+
+(defn ^:no-doc get-arg
+  "For internal use only.
+  Pops first argument from args if (pred arg) is true.
+  Returns a vector [first-arg remaining-args] or [nil args]."
+  [args pred]
+  (if (pred (first args))
+    [(first args) (next args)]
+    [nil args]))

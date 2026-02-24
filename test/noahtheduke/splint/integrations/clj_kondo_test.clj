@@ -46,6 +46,7 @@
     performance/single-literal-merge 1
     style/apply-str 1
     style/apply-str-interpose 1
+    style/defmulti-arglists 1
     style/eq-true 3
     style/multiple-arity-order 1
     style/neg-checks 1
@@ -79,14 +80,14 @@
                                 (group-by :rule-name)))]
     ; (user/pprint (into (sorted-map) (dissoc @diagnostics 'lint/warn-on-reflection 'lint/defmethod-names)))
     ; (user/pprint (into (sorted-map) (update-vals* @diagnostics count)))
-    ; (user/pprint (get @diagnostics 'style/prefer-var-dispatch))
+    ; (user/pprint (get @diagnostics 'style/defmulti-arglists))
     (it "has the right diagnostics"
       (expect
         (match?
          (m/equals clj-kondo-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 752 (count (:diagnostics @results)))))
+      (expect (= 753 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get @diagnostics 'splint/error))))
     (it "raises no unknown errors"

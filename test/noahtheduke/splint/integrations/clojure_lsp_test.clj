@@ -43,6 +43,7 @@
     performance/into-transducer 1
     performance/single-literal-merge 5
     style/apply-str 3
+    style/defmulti-arglists 7
     style/eq-false 26
     style/eq-nil 36
     style/eq-true 14
@@ -85,6 +86,6 @@
          (m/equals clojure-lsp-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1279 (count (:diagnostics @results)))))
+      (expect (= 1286 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))))

@@ -11,7 +11,7 @@
 
 (def derive-dispatch first)
 
-(defmulti derive-aliases #'derive-dispatch :default 'ns)
+(defmulti derive-aliases {:arglists '([form])} #'derive-dispatch :default 'ns)
 
 (defn quoted? [form]
   (and (seq? form)

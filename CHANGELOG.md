@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## 1.23.0 - 2026-02-24
+
 ### New Rules
 
 - `lint/empty-loop-in-fn`: Prefer `(defn foo [] (... (recur)))` over `(defn foo [] (loop [] (... (recur))))`.

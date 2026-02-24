@@ -11,7 +11,7 @@
 (defrule lint/try-splicing
   "A macro that wraps a splicing unquote in a try-catch or try-finally can lead to subtle hard to debug errors. Better to wrap the splicing unquote in a `do` to force it into 'expression position'.
 
-  **Deprecated** (since <<next>>): Please use `lint.body-unquote-splicing`.
+  **Deprecated** (since 1.23.0): Please use `lint.body-unquote-splicing`.
 
   @examples
 

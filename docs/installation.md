@@ -5,7 +5,7 @@ When used in a project as a library, put it in an alias to make it easier to inv
 ## Clojure CLI
 
 ```clojure
-:aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.22.0"}}
+:aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.23.0"}}
                    :main-opts ["-m" "noahtheduke.splint"]}}
 ```
 
@@ -16,7 +16,7 @@ Run with `clojure -M:splint [args...]`.
 Add this to `project.clj`:
 
 ```clojure
-:profiles {:dev {:dependencies [[io.github.noahtheduke/splint "1.22.0"]]}}
+:profiles {:dev {:dependencies [[io.github.noahtheduke/splint "1.23.0"]]}}
 :aliases {"splint" ["run" "-m" "noahtheduke.splint"]}
 ```
 
@@ -27,7 +27,7 @@ Run with `lein splint [args...]`.
 Requires version 1.12.205 or later. If using `bb.edn`, add this to `bb.edn`:
 
 ```clojure
-:tasks {splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.22.0"}}
+:tasks {splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.23.0"}}
                 :task noahtheduke.splint/-main}}
 ```
 
@@ -39,7 +39,7 @@ It can also be installed using `bbin`:
 $ bbin install io.github.noahtheduke/splint
 {:coords
  #:git{:url "https://github.com/noahtheduke/splint",
-       :tag "v1.22.0",
+       :tag "v1.23.0",
        :sha "..."},
  :lib io.github.noahtheduke/splint}
 ```

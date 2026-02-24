@@ -16,7 +16,7 @@
  {:description "Using unquote-splicing on a body in a macro can lead to subtly broken code that's hard to debug."
   :enabled true
   :added "1.0"
-  :updated "<<next>>"
+  :updated "1.23.0"
   :links ["https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"]}
 
  lint/catch-throwable
@@ -32,7 +32,7 @@
  {:description "Specify a function name for defmethod bodies."
   :enabled false
   :added "1.18.0"
-  :updated "<<next>>"}
+  :updated "1.23.0"}
 
  lint/divide-by-one
  {:description "Dividing by 1 is a no-op."
@@ -79,8 +79,8 @@
  lint/empty-loop-in-fn
  {:description "No need for `loop` directly within `defn`/`fn` if neither binds."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.23.0"
+  :updated "1.23.0"}
 
  lint/existing-constant
  {:description "Use `clojure.math/PI` and `clojure.math/E` when appropriate instead of approximating."
@@ -269,7 +269,7 @@
   :enabled true
   :fn-names #{-> ->> cond-> cond->> some-> some->> comp partial merge min max distinct?}
   :added "0.1"
-  :updated "<<next>>"}
+  :updated "1.23.0"}
 
  lint/redundant-str-call
  {:description "Avoid calls to `str` on string literals or calls to `str` or `format`."
@@ -305,7 +305,7 @@
  {:description "Using unquote-splicing in a try in a macro can lead to subtly broken code that's hard to debug."
   :enabled false
   :added "1.0"
-  :updated "<<next>>"
+  :updated "1.23.0"
   :links ["https://blog.ambrosebs.com/2022/09/08/break-your-macros.html"]}
 
  lint/underscore-in-namespace
@@ -499,8 +499,8 @@
  style/defmulti-arglists
  {:description "Specify `:arglists` in multimethod metadata."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.23.0"
+  :updated "1.23.0"}
 
  style/eq-false
  {:description "Prefer `false?` to `(= x false)`."
@@ -718,8 +718,8 @@
  style/prefer-var-dispatch
  {:description "Prefer a var for a multimethod's dispatch function."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.23.0"
+  :updated "1.23.0"}
 
  style/prefer-vary-meta
  {:description "Prefer `vary-meta` to `(with-meta x (assoc (meta x) ...))`."

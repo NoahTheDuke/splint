@@ -233,7 +233,7 @@ It's nice when the default branch is consistent.
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | <<next>>      | <<next>>        |
+| true               | true | false       | 1.23.0        | 1.23.0          |
 
 Due to the way multimethods can use any IFn for dispatch, it is rare for a multimethod to have the proper `:arglists` metadata. It is a small thing but adding that can improve instrospection in repl-driven development (`clojure.repl/doc`) as well as external tooling (`clj-kondo`, `clojure-lsp`).
 
@@ -1058,7 +1058,7 @@ The core builder functions are helpful when creating an object from an opaque se
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | <<next>>      | <<next>>        |
+| true               | true | false       | 1.23.0        | 1.23.0          |
 
 During repl-driven development, one might wish to change the dispatch function of a multimethod. However, once set, the dispatch function cannot be changed without first unmapping the entire multimethod, which requires reloading all methods again.
 

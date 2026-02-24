@@ -1058,7 +1058,7 @@ The core builder functions are helpful when creating an object from an opaque se
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | 1.23.0        | 1.23.0          |
+| false              | true | false       | 1.23.0        | 1.23.1          |
 
 During repl-driven development, one might wish to change the dispatch function of a multimethod. However, once set, the dispatch function cannot be changed without first unmapping the entire multimethod, which requires reloading all methods again.
 

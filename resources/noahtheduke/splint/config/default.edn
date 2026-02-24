@@ -717,9 +717,9 @@
 
  style/prefer-var-dispatch
  {:description "Prefer a var for a multimethod's dispatch function."
-  :enabled true
+  :enabled false
   :added "1.23.0"
-  :updated "1.23.0"}
+  :updated "1.23.1"}
 
  style/prefer-vary-meta
  {:description "Prefer `vary-meta` to `(with-meta x (assoc (meta x) ...))`."

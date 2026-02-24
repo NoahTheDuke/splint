@@ -6,7 +6,7 @@
   {:integration true}
   (:require
    [clojure.tools.gitlibs :as gl]
-   [lazytest.core :refer [defdescribe expect it]]
+   [lazytest.core :refer [defdescribe expect-it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.matchers :as m]
    [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]
@@ -72,7 +72,7 @@
     style/prefer-clj-string 5
     style/prefer-condp 4
     style/prefer-for-with-literals 1
-    style/prefer-var-dispatch 15
+    style/prefer-var-dispatch 13
     style/redundant-let 4
     style/redundant-nested-call 8
     style/redundant-regex-constructor 9
@@ -98,14 +98,13 @@
                                 (group-by :rule-name)))]
     ; (user/pprint (dissoc @diagnostics 'lint/warn-on-reflection))
     ; (user/pprint (into (sorted-map) (update-vals* @diagnostics count)))
-    (it "has the right diagnostics"
-      (expect
-        (match?
-         (m/equals netrunner-diagnostics)
-         (update-vals* @diagnostics count))))
-    (it "sums correctly"
-      (expect (= 4067 (count (:diagnostics @results)))))
-    (it "raises no errors"
-      (expect (nil? (get diagnostics 'splint/error))))
-    (it "raises no unknown errors"
-      (expect (nil? (get diagnostics 'splint/unknown-error))))))
+    (expect-it "has the right diagnostics"
+      (match?
+        (m/equals netrunner-diagnostics)
+        (update-vals* @diagnostics count)))
+    (expect-it "sums correctly"
+      (= 4065 (count (:diagnostics @results))))
+    (expect-it "raises no errors"
+      (nil? (get diagnostics 'splint/error)))
+    (expect-it "raises no unknown errors"
+      (nil? (get diagnostics 'splint/unknown-error)))))

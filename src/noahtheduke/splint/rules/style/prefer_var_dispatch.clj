@@ -25,6 +25,7 @@
   (defmulti example #'example-dispatch)
   "
   {:pattern '(defmulti ?name ?*options)
+   :ext :clj
    :on-match (fn [ctx rule form {:syms [?name ?options]}]
                (when-let [defmulti-form (:splint/defmulti-form (meta form))]
                  (when-not (and (list? (:dispatch-fn defmulti-form))

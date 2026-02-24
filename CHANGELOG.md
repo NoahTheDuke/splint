@@ -6,6 +6,11 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## 1.23.1 - 2026-02-24
 
+### Changed
+
+- Disabled `style/prefer-var-dispatch` by default.
+- Narrow `style/prefer-var-dispatch` to `:clj` only.
+
 ## 1.23.0 - 2026-02-24
 
 ### New Rules

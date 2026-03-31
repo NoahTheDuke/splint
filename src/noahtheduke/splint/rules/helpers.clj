@@ -288,3 +288,8 @@
     (or (some->> sexp namespace symbol default-import?)
       (some->> sexp meta :splint/import-ns)
       (str/starts-with? (name sexp) "."))))
+
+(defn threaded-context [ctx]
+  (when-let [parent-form (:parent-form ctx)]
+    (and (list? parent-form)
+      (#{'-> '->> 'cond-> 'cond->> 'some-> 'some->>} (first parent-form)))))

@@ -12,7 +12,6 @@
 (def rule-name 'lint/into-literal)
 
 (defdescribe into-literal-test
-
   (describe "vectors"
     (it "respects symbols"
       (expect-match

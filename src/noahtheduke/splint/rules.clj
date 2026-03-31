@@ -55,6 +55,11 @@
   (fn [ctx rule form _binds]
     (->diagnostic ctx rule form {:message message})))
 
+(defn ^:private var-ref?
+  [obj]
+  (and (seq? obj)
+       (= 'var (first obj))))
+
 (defmacro defrule
   "Define a new rule.
 
@@ -101,7 +106,10 @@
                     :ext ~(cond
                             (set? ext) ext
                             (keyword? ext) #{ext})
-                    :pattern (when ~(some? pattern) (p/pattern ~pattern))
+                    :pattern (when ~(some? pattern)
+                               ~(if (var-ref? pattern)
+                                  pattern
+                                  `(p/pattern ~pattern)))
                     :patterns (when ~(some? patterns)
                                 ~(mapv #(list `p/pattern %) patterns))
                     :on-match (or ~on-match

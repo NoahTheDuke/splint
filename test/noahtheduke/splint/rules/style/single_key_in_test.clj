@@ -18,6 +18,17 @@
          :message "Use `assoc` instead of recreating it."
          :alt (assoc coll :k v)}]
       "(assoc-in coll [:k] v)"
+      (single-rule-config rule-name))
+    (expect-match
+      '[{:form (assoc-in [:user] [:fake-id])
+         :message "Use `assoc` instead of recreating it."
+         :alt (assoc :user [:fake-id])}]
+      "(-> m (assoc-in [:user] [:fake-id]))"
+      (single-rule-config rule-name)))
+  (it "recognizes threaded contexts, #39"
+    (expect-match
+      nil
+      "(let [m {}] (-> m (assoc-in [:user :existing-ids] [:fake-id])))"
       (single-rule-config rule-name)))
   (it get-in
     (expect-match

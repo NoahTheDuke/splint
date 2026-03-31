@@ -4,6 +4,14 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Changed
+
+- Allow vars to be used as patterns in `:pattern`. Helps with extracting patterns for general use.
+
+### Fixed
+
+- `style/single-key-in` respects threaded contexts in both finding and alternate form suggestions. (See [#39](https://github.com/NoahTheDuke/splint/issues/39).)
+
 ## 1.23.1 - 2026-02-24
 
 ### Changed

@@ -4,8 +4,11 @@
 
 (ns ^:no-doc noahtheduke.splint.rules.style.single-key-in
   (:require
+   [noahtheduke.splint.clojure-ext.core :refer [->list]]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
-   [noahtheduke.splint.rules :refer [defrule]]))
+   [noahtheduke.splint.pattern :refer [pattern]]
+   [noahtheduke.splint.rules :refer [defrule]]
+   [noahtheduke.splint.rules.helpers :refer [threaded-context]]))
 
 (set! *warn-on-reflection* true)
 
@@ -13,6 +16,9 @@
   '{assoc-in assoc
     get-in get
     update-in update})
+
+(def single-key-in-pattern
+  (pattern '((? f multi->single) ?coll [?key] ?*vals)))
 
 (defrule style/single-key-in
   "`assoc-in` loops over the args, calling `assoc` for each key. If given a single key,
@@ -26,11 +32,19 @@
   ; prefer
   (assoc coll :k 10)
   "
-  {:pattern '((? f multi->single) ?coll [?key] ?*vals)
+  {:pattern #'single-key-in-pattern
    :autocorrect true
    :on-match (fn [ctx rule form {:syms [?f ?coll ?key ?vals]}]
-               (let [f (multi->single ?f)
-                     new-form (list* f ?coll ?key ?vals)
-                     message (format "Use `%s` instead of recreating it." f)]
-                 (->diagnostic ctx rule form {:replace-form new-form
-                                              :message message})))})
+               (if (threaded-context ctx)
+                 (let [fake-form (->list (list* ?f (second (:parent-form ctx)) ?coll [?key] ?vals))]
+                   (when-let [{:syms [?f ?coll ?key ?vals]} (single-key-in-pattern fake-form)]
+                     (let [f (multi->single ?f)
+                           new-form (list* f ?key ?vals)
+                           message (format "Use `%s` instead of recreating it." f)]
+                       (->diagnostic ctx rule form {:replace-form new-form
+                                                    :message message}))))
+                 (let [f (multi->single ?f)
+                       new-form (list* f ?coll ?key ?vals)
+                       message (format "Use `%s` instead of recreating it." f)]
+                   (->diagnostic ctx rule form {:replace-form new-form
+                                                :message message}))))})

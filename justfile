@@ -40,14 +40,14 @@ alias lint := clj-kondo
     clojure -M:dev:test:runner --md README.md {{args}}
 
 [no-exit-message]
-test *args="--output summary":
+test *args="--output result --output summary":
     just clojure-lsp
     bb run splint
     bb run lazytest -e :integration {{args}}
     just test-raw -e :integration {{args}}
 
 [no-exit-message]
-test-all-versions *args="--output summary":
+test-all-versions *args="--output result --output summary":
     just clojure-lsp
     bb run splint
     bb run lazytest {{args}}

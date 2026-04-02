@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## 1.24.0 - 2026-04-02
+
 ### Changed
 
 - Allow vars to be used as patterns in `:pattern`. Helps with extracting patterns for general use.

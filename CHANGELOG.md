@@ -13,6 +13,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Fixed
 
 - `style/single-key-in` respects threaded contexts in both finding and alternate form suggestions. (See [#39](https://github.com/NoahTheDuke/splint/issues/39).)
+- Update `edamame` to 1.5.39 to fix bug with parsing splicing reader conditionals. (See [#40](https://github.com/NoahTheDuke/splint/issues/40).)
 
 ## 1.23.1 - 2026-02-24
 

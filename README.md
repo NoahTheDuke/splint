@@ -10,6 +10,10 @@
 
 [style guide]: https://guide.clojure.style
 
+If you wish to contribute, please check [CONTRIBUTING.md][contributing.md]
+
+[contributing.md]: CONTRIBUTING.md
+
 ## Installation and Usage
 
 More explicit instructions can be found in the [installation][installation], [usage][usage], and [configuration][configuration] pages, but here's a quick rundown:

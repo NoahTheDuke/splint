@@ -1,6 +1,6 @@
 # Contributing
 
-I'm putting this at the top because it's real important to me: Do not use any generative AI when contributing to this project in any form. This is on the honor system but I'm trusting you here. Don't fuckin do it.
+I'm putting this at the top because it's real important to me: Do not use any generative AI when contributing to this project in any form. Not when writing code, not when writing an issue, not when writing a comment. Nothing. This is on the honor system but I'm trusting you here. Don't fuckin do it.
 
 If you want to contribute to Splint, you have my gratitude. Let's make sure we set you up for success.
 

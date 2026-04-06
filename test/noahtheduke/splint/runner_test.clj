@@ -12,7 +12,7 @@
    [noahtheduke.splint.dev :as dev]
    [noahtheduke.splint.rules :refer [global-rules]]
    [noahtheduke.splint.runner :as sut]
-   [noahtheduke.splint.test-helpers :refer [expect-match print-to-file!
+   [noahtheduke.splint.test-helpers :refer [expect-match println-to-file!
                                             with-out-str-data-map
                                             with-temp-files]]) 
   (:import
@@ -224,7 +224,7 @@
   (it "reads in the given files"
     (with-temp-files [test-rule "test_rule.clj"
                       test-file "test_file.clj"]
-      (print-to-file!
+      (println-to-file!
         test-rule
         "(ns test-rule
            (:require
@@ -235,7 +235,7 @@
           {:pattern '(= 1 1)
            :message \"matched\"
            :replace '(= 2 2)})")
-      (print-to-file! test-file "(= 1 1)")
+      (println-to-file! test-file "(= 1 1)")
       (let [existing-rules @global-rules
             options {:required-files [(str test-rule)]
                      :clojure-version *clojure-version*}

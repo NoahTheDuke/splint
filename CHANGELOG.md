@@ -4,6 +4,12 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### Changed
+
+- Bump `babashka/fs` to 0.5.33.
+- `noahtheduke.splint.test-helpers/with-temp-files` relies on built-in `fs` functions.
+- `noahtheduke.splint.test-helpers/print-to-file!` is now `println-to-file!`.
+
 ## 1.24.0 - 2026-04-02
 
 ### Changed

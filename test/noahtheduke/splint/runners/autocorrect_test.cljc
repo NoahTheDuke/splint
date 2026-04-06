@@ -6,7 +6,7 @@
   (:require
    [lazytest.core :refer [defdescribe expect it]]
    [noahtheduke.splint.test-helpers :refer [check-all prep-dev-config
-                                            print-to-file!
+                                            println-to-file!
                                             with-out-str-data-map
                                             with-temp-files]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
@@ -17,7 +17,7 @@
 (defdescribe autocorrect-test
   (it "checks the same form multiple times"
     (with-temp-files [file "some_file.clj"]
-      (print-to-file!
+      (println-to-file!
        file
        "(ns some_file)"
        "(do (+ 1 foo))"
@@ -40,7 +40,7 @@
            (str/trim (slurp file))))))
   (it "outputs reader macros correctly"
     (with-temp-files [file "some_file.clj"]
-      (print-to-file!
+      (println-to-file!
        file
        "(let [foo (atom {:a :b})]"
        "  (assoc a :x :y :z @foo))")
@@ -60,7 +60,7 @@
            (str/trim (slurp file))))))
   (it "outputs indentation correctly"
     (with-temp-files [file "some_file.clj"]
-      (print-to-file!
+      (println-to-file!
        file
        "(let [foo (atom {:a :b})]"
        "  (assoc a :xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx :yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy :z @foo))")

@@ -160,7 +160,7 @@
 
 (defn require-files! [local options]
   (->> (:required-files options)
-       (concat (:require local ('require local)))
+       (into (vec (:require local ('require local))))
        (mapv* require-file!)
        (not-empty)))
 

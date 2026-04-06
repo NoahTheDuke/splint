@@ -4,12 +4,12 @@
 
 (ns noahtheduke.splint.config-test
   (:require
-   [lazytest.core :refer [defdescribe describe expect it throws?]]
+   [lazytest.core :refer [defdescribe describe expect it specify throws?]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]
    [noahtheduke.splint.config :as sut]
    [noahtheduke.splint.path-matcher :refer [->matcher]]
-   [noahtheduke.splint.test-helpers :refer [print-to-file! with-temp-files]]))
+   [noahtheduke.splint.test-helpers :refer [println-to-file! with-temp-files]]))
 
 (set! *warn-on-reflection* true)
 
@@ -81,7 +81,7 @@
   (describe "deps.edn"
     (it "with a single dependency"
       (with-temp-files [deps-edn "deps.edn"]
-        (print-to-file!
+        (println-to-file!
          deps-edn
          "{:deps {org.clojure/clojure {:mvn/version \"1.8.0\"}}}")
         (expect
@@ -89,9 +89,9 @@
                                      :qualifier nil :snapshot nil}
                    :paths []}
                   (sut/read-project-file deps-edn nil)))))
-    (it "with multiple dependencies"
+    (specify "with multiple dependencies"
       (with-temp-files [deps-edn "deps.edn"]
-        (print-to-file!
+        (println-to-file!
           deps-edn
           "{:deps {org.clojure/clojure {:mvn/version \"1.8.0\"}
                  org.clojure/core.async {:mvn/version \"1.5.644\"}}}")
@@ -100,9 +100,9 @@
                                      :qualifier nil :snapshot nil}
                    :paths []}
             (sut/read-project-file deps-edn nil)))))
-    (it "with paths"
+    (specify "with paths"
       (with-temp-files [deps-edn "deps.edn"]
-        (print-to-file!
+        (println-to-file!
           deps-edn
           "{:paths [\"src\" \"test\"]
           :deps {org.clojure/clojure {:mvn/version \"1.8.0\"}}}")
@@ -110,9 +110,9 @@
           (match? {:clojure-version {:major 1 :minor 8 :incremental 0}
                    :paths ["src" "test"]}
             (sut/read-project-file deps-edn nil)))))
-    (it "with paths in aliases"
+    (specify "with paths in aliases"
       (with-temp-files [deps-edn "deps.edn"]
-        (print-to-file!
+        (println-to-file!
           deps-edn
           "{:paths [\"src\"]
           :deps {org.clojure/clojure {:mvn/version \"1.8.0\"}}
@@ -126,7 +126,7 @@
   (describe "project.clj"
     (it "can be read"
       (with-temp-files [project-clj "project.clj"]
-        (print-to-file!
+        (println-to-file!
           project-clj
           "(defproject foo \"1\"
              :dependencies [[org.clojure/clojure \"1.8.0\"]])")
@@ -135,18 +135,18 @@
                                      :qualifier nil :snapshot nil}
                    :paths ["src" "test"]}
             (sut/read-project-file nil project-clj)))))
-    (it "dependencies with exclusions"
+    (specify "dependencies with exclusions"
       (with-temp-files [project-clj "project.clj"]
-        (print-to-file!
+        (println-to-file!
           project-clj
           "(defproject foo \"1\"
              :dependencies [[org.clojure/clojure \"1.8.0\" :exclusions []]])")
         (expect
           (match? {:clojure-version {:major 1 :minor 8 :incremental 0}}
             (sut/read-project-file nil project-clj)))))
-    (it "multiple dependencies"
+    (specify "multiple dependencies"
       (with-temp-files [project-clj "project.clj"]
-        (print-to-file!
+        (println-to-file!
           project-clj
           "(defproject foo \"1\"
              :dependencies [[org.clojure/core.async \"1.5.644\"]
@@ -154,9 +154,9 @@
         (expect
           (match? {:clojure-version {:major 1 :minor 8 :incremental 0}}
             (sut/read-project-file nil project-clj)))))
-    (it "paths"
+    (specify "paths"
       (with-temp-files [project-clj "project.clj"]
-        (print-to-file!
+        (println-to-file!
           project-clj
           "(defproject foo \"1\"
              :dependencies [[org.clojure/clojure \"1.8.0\"]]
@@ -167,9 +167,9 @@
                                      :qualifier nil :snapshot nil}
                    :paths ["source" "testing"]}
             (sut/read-project-file nil project-clj)))))
-    (it "paths with alises"
+    (specify "paths with alises"
       (with-temp-files [project-clj "project.clj"]
-        (print-to-file!
+        (println-to-file!
           project-clj
           "(defproject foo \"1\"
              :dependencies [[org.clojure/clojure \"1.8.0\"]]
@@ -188,8 +188,8 @@
     (it "prefers deps.edn"
       (with-temp-files [deps-edn "deps.edn"
                         project-clj "project.clj"]
-        (print-to-file! deps-edn "{:deps {org.clojure/clojure {:mvn/version \"1.8.0\"}}}")
-        (print-to-file!
+        (println-to-file! deps-edn "{:deps {org.clojure/clojure {:mvn/version \"1.8.0\"}}}")
+        (println-to-file!
           project-clj
           "(defproject foo \"1\"
          :dependencies [[org.clojure/clojure \"1.10.0\"]])")
@@ -205,7 +205,7 @@
 (defdescribe parse-project-file-features-test
   (it "correctly reads project.clj with fancy symbols"
     (with-temp-files [project-clj "project.clj"]
-      (print-to-file!
+      (println-to-file!
         project-clj
         "(defproject foo nil
            :dependencies [[org.clojure/clojure \"1.10.0\"]]

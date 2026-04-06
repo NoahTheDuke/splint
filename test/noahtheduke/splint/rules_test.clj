@@ -29,6 +29,7 @@
       (sut/postwalk-splicing-replace {'?a 'b} '(splint/var ?a)))
     (expect '(splint/var (b c))
       (sut/postwalk-splicing-replace {'?a 'b} '(splint/var (?a c)))))
+  #_{:clj-kondo/ignore [:unquote-not-syntax-quoted]}
   (it "syntax-quote"
     (expect '(splint/syntax-quote b)
       (sut/postwalk-splicing-replace {'?a 'b} '(splint/syntax-quote ?a)))

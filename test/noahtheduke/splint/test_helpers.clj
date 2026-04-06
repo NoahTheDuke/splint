@@ -98,26 +98,18 @@
                      (fn [path]
                        [(gensym)
                         `(let [f# (fs/file (str ~temp-dir) ~path)]
-                           (fs/create-dirs (fs/path (fs/file (fs/parent f#))))
+                           (fs/create-dirs (fs/parent f#))
                            (fs/create-file (fs/path f#)))])
                      paths)
         binds (mapcat vector
                 (take-nth 2 file-binds)
                 (map (fn [[path _]] `(fs/file (str ~path)))
                   temp-files))]
-    `(let [~temp-dir (fs/create-temp-dir {:prefix "splint"})
-           ~@(mapcat identity temp-files)
-           ~@binds]
-       (try (let [res# (do ~@body)] res#)
-         (finally
-           (fs/walk-file-tree
-             ~temp-dir
-             {:post-visib-directory (fn [dir# attrs#]
-                                      (fs/delete-if-exists dir#)
-                                      :continue)
-              :visit-file (fn [path# attrs#]
-                            (fs/delete-if-exists path#)
-                            :continue)}))))))
+    `(fs/with-temp-dir [~temp-dir {:prefix "splint"}]
+       (let [~@(apply concat temp-files)
+               ~@binds
+               res# (do ~@body)]
+           res#))))
 
 (s/def ::binding (s/cat :file-name simple-symbol? :path string?))
 (s/def ::bindings (s/and vector? #(even? (count %)) (s/* ::binding)))
@@ -126,7 +118,7 @@
           :body (s/* any?))
   :ret any?)
 
-(defmacro print-to-file!
+(defmacro println-to-file!
   "Print the result from each form in body, write them to the file."
   [file & body]
   `(with-open [file# (io/writer ~file)]

@@ -31,6 +31,9 @@
                "Not a valid rule."]
     :update-fn (fnil conj #{})]
    [nil "--[no-]parallel" "Run splint in parallel. Defaults to true."]
+   [nil "--lang LANG" "Which dialect to check? Used to get branches in reader conditionals as well. If \"cljc\", will check both \"clj\" and \"cljs\" files/branches. Defaults to \"cljc\"."
+    :validate [#{"clj" "cljs" "cljc"}
+               "Not a valid dialect (clj, cljs, cljc)."]]
    [nil "--autocorrect" "Automatically apply safe changes."]
    [nil "--interactive" "Run autocorrect interactively."]
    ["-q" "--quiet" "Print no diagnostics, only summary."]

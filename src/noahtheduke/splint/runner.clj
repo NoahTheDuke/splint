@@ -292,21 +292,27 @@
     (when (< i (dec (count filename)))
       (subs filename (inc i)))))
 
-(defn- make-path-obj [path]
+(defn- file->path-objs [ctx ^File file]
+  (when (File/.isFile file)
+    (let [lang (-> ctx :config :lang)
+          ext (get-extension file)]
+      (case (when (or (String/.equals "cljc" lang)
+                      (= ext lang))
+              ext)
+        "cljc"
+        [{:features #{:clj} :ext :cljc :file file}
+         {:features #{:cljs} :ext :cljc :file file}]
+        "clj"
+        [{:features #{:clj} :ext :clj :file file}]
+        "cljs"
+        [{:features #{:cljs} :ext :cljs :file file}]
+        ; else
+        nil))))
+
+(defn- make-path-obj [ctx path]
   (cond
     (map? path)
-    (mapcat (fn [^File file]
-              (when (File/.isFile file)
-                (case (get-extension file)
-                  "cljc"
-                  [{:features #{:clj} :ext :cljc :file file}
-                   {:features #{:cljs} :ext :cljc :file file}]
-                  "clj"
-                  [{:features #{:clj} :ext :clj :file file}]
-                  "cljs"
-                  [{:features #{:cljs} :ext :cljs :file file}]
-                  ; else
-                  nil)))
+    (mapcat #(file->path-objs ctx %)
       (file-seq (io/file (:path path))))
     (string? path)
     [{:file (io/file "example.clj")
@@ -314,14 +320,11 @@
       :features #{:clj}
       :ext :clj}]
     (instance? java.io.File path)
-    [{:file path
-      :contents (slurp path)
-      :features #{:clj}
-      :ext :clj}]))
+    (file->path-objs ctx path)))
 
 (defn resolve-files-from-paths [ctx paths]
   (let [excludes (-> ctx :config :global :excludes)
-        xf (comp (mapcat make-path-obj)
+        xf (comp (mapcat #(make-path-obj ctx %))
              (distinct)
              (filter (fn [file-obj]
                        (if excludes
@@ -362,7 +365,9 @@
 
 (defn auto-gen-config [paths options]
   (let [all-enabled (update-vals* @conf/default-config #(assoc % :enabled true))]
-    (conf/spit-config (run-impl paths {:config-override (merge options all-enabled)}))))
+    (conf/spit-config (run-impl paths {:config-override (merge (conf/merge-config nil nil)
+                                                               options
+                                                               all-enabled)}))))
 
 (defn run
   "Convert command line args to usable options, pass to runner, print output."

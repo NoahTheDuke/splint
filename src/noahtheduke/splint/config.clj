@@ -72,12 +72,14 @@
         summary (config 'summary (config :summary true))
         quiet (config 'quiet (config :quiet false))
         silent (config 'silent (config :silent false))
+        lang (config 'lang (config :lang "cljc"))
         autocorrect (config :autocorrect false)]
     {:output output
      :parallel parallel
      :summary summary
      :quiet quiet
      :silent silent
+     :lang lang
      :autocorrect autocorrect}))
 
 (defn merge-rules

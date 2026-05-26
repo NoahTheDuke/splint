@@ -31,11 +31,7 @@
                           'theophilusx/clj-auth "4fbbf8222d92227c821c3db34c75a45d6e540185"))
         results (delay
                   (run-impl [{:path @clj-auth}]
-                            {:config-override
-                             (-> (usefully-enabled-config)
-                                 (assoc :silent true)
-                                 (assoc :parallel false)
-                                 (assoc :clojure-version {:major 1 :minor 11}))}))
+                            {:config-override (usefully-enabled-config)}))
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)

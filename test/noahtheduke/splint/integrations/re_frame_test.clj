@@ -41,11 +41,7 @@
   (let [re-frame (delay (gl/procure "https://github.com/day8/re-frame.git" 'day8/re-frame "v1.3.0"))
         results (delay
                   (run-impl [{:path @re-frame}]
-                            {:config-override
-                             (-> (usefully-enabled-config)
-                                 (assoc :silent true)
-                                 (assoc :parallel false)
-                                 (assoc :clojure-version {:major 1 :minor 11}))}))
+                            {:config-override (usefully-enabled-config)}))
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)))]

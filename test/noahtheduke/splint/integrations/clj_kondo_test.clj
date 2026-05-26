@@ -69,12 +69,7 @@
         results (delay
                   (run-impl [{:path (str @clj-kondo "/src")}
                              {:path (str @clj-kondo "/test")}]
-                            {:config-override
-                             (-> (usefully-enabled-config)
-                                 (assoc :silent true)
-                                 (assoc :parallel false)
-                                 #_(assoc :autocorrect true)
-                                 (assoc :clojure-version {:major 1 :minor 11}))}))
+                            {:config-override (usefully-enabled-config)}))
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)))]

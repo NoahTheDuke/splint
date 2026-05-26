@@ -29,11 +29,7 @@
                           'HughPowell/restaurant "bf9e97a17aa3c561df95fe2187f717fda26d29d8"))
         results (delay
                   (run-impl [{:path @restaurant}]
-                            {:config-override
-                             (-> (usefully-enabled-config)
-                                 (assoc :silent true)
-                                 (assoc :parallel false)
-                                 (assoc :clojure-version {:major 1 :minor 11}))}))
+                            {:config-override (usefully-enabled-config)}))
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)

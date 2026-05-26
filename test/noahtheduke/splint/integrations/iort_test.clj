@@ -31,11 +31,7 @@
                           'com.eldrix/iort "4b591d6d5f5f7fea5e76c0e7ab445aa0addcb421"))
         results (delay
                   (run-impl [{:path @iort}]
-                            {:config-override
-                             (-> (usefully-enabled-config)
-                                 (assoc :silent true)
-                                 (assoc :parallel false)
-                                 (assoc :clojure-version {:major 1 :minor 11}))}))
+                            {:config-override (usefully-enabled-config)}))
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)

@@ -69,11 +69,7 @@
                              'com.github.clojure-lsp/clojure-lsp "2025.08.25-14.21.46"))
         results (delay
                   (run-impl [{:path @clojure-lsp}]
-                            {:config-override
-                             (-> (usefully-enabled-config)
-                                 (assoc :silent true)
-                                 (assoc :parallel false)
-                                 (assoc :clojure-version {:major 1 :minor 11}))}))
+                            {:config-override (usefully-enabled-config)}))
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)))]

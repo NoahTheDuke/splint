@@ -23,11 +23,7 @@
   (let [malapropism (delay (gl/procure "https://github.com/dpassen/malapropism.git" 'org.passen/malapropism "0.6.241"))
         results (delay
                   (run-impl [{:path @malapropism}]
-                            {:config-override
-                             (-> (usefully-enabled-config)
-                                 (assoc :silent true)
-                                 (assoc :parallel false)
-                                 (assoc :clojure-version {:major 1 :minor 11}))}))
+                            {:config-override (usefully-enabled-config)}))
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)))]

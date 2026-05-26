@@ -47,11 +47,7 @@
   (let [hermes (delay (gl/procure "https://github.com/wardle/hermes.git" 'com.heldrix/hermes "77ede487fd3c7b7f438d227dbdd9334db334ef48"))
         results (delay
                   (run-impl [{:path @hermes}]
-                            {:config-override
-                             (-> (usefully-enabled-config)
-                                 (assoc :silent true)
-                                 (assoc :parallel false)
-                                 (assoc :clojure-version {:major 1 :minor 11}))}))
+                            {:config-override (usefully-enabled-config)}))
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)))]

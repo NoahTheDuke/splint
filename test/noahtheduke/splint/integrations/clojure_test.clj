@@ -94,11 +94,7 @@
                              'org.clojure/clojure "clojure-1.12.1"))
         results (delay
                   (run-impl [{:path (str @clojure "/src")}]
-                            {:config-override
-                             (-> (usefully-enabled-config)
-                                 (assoc :silent true)
-                                 (assoc :parallel false)
-                                 (assoc :clojure-version {:major 1 :minor 11}))}))
+                            {:config-override (usefully-enabled-config)}))
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)))]

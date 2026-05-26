@@ -28,11 +28,7 @@
                           'terop/env-logger "1a82add79ae93ed5d935192a6261eb83c19dc0df"))
         results (delay
                   (run-impl [{:path @env-logger}]
-                            {:config-override
-                             (-> (usefully-enabled-config)
-                                 (assoc :silent true)
-                                 (assoc :parallel false)
-                                 (assoc :clojure-version {:major 1 :minor 11}))}))
+                            {:config-override (usefully-enabled-config)}))
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)

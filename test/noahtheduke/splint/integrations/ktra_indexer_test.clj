@@ -27,11 +27,7 @@
                           'terop/ktra-indexer "af2008c12a64af81350875e1aef7dbf43cb60303"))
         results (delay
                   (run-impl [{:path @ktra-indexer}]
-                            {:config-override
-                             (-> (usefully-enabled-config)
-                                 (assoc :silent true)
-                                 (assoc :parallel false)
-                                 (assoc :clojure-version {:major 1 :minor 11}))}))
+                            {:config-override (usefully-enabled-config)}))
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)

@@ -24,11 +24,7 @@
                           'terop/intransit "25c49ebdd15191bd9cc851cc18cf1013fd1ab49f"))
         results (delay
                   (run-impl [{:path @intransit}]
-                            {:config-override
-                             (-> (usefully-enabled-config)
-                                 (assoc :silent true)
-                                 (assoc :parallel false)
-                                 (assoc :clojure-version {:major 1 :minor 11}))}))
+                            {:config-override (usefully-enabled-config)}))
         diagnostics (delay (->> @results
                                 :diagnostics
                                 (group-by :rule-name)

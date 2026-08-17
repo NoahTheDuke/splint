@@ -46,7 +46,7 @@
     metrics/fn-length 159
     metrics/parameter-count 19
     naming/conventional-aliases 6
-    naming/conversion-functions 3
+    naming/conversion-functions 5
     naming/lisp-case 1
     naming/predicate 2
     performance/assoc-many 22
@@ -107,7 +107,7 @@
          (m/equals clojure-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1365 (count (:diagnostics @results)))))
+      (expect (= 1367 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))
     (it "raises no unknown errors"

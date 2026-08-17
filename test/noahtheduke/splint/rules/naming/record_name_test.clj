@@ -37,6 +37,18 @@
         :alt '(defrecord FooBar [a b c])}]
       "(defrecord Foo-bar [a b c])"
       (single-rule-config rule-name)))
+  (it "ignores all caps sections"
+    (expect-match
+      nil
+      "(defrecord BillingSDK [a b c])"
+      (single-rule-config rule-name)))
+  (it "ignores only the first all caps section"
+    (expect-match
+      [{:rule-name rule-name
+        :form '(defrecord Billing-SDK-and-JSON [a b c])
+        :alt '(defrecord BillingSdkAndJson [a b c])}]
+      "(defrecord Billing-SDK-and-JSON [a b c])"
+      (single-rule-config rule-name)))
   (it "doesn't crash in a macro"
     (expect-match
       nil

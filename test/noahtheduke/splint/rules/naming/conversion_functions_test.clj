@@ -16,6 +16,8 @@
     (expect-match
       [{:form '(defn f-to-c ...)
         :message "Use `->` instead of `to` in the names of conversion functions."
+        :line 1
+        :column 1
         :alt '(defn f->c ...)}]
       "(defn f-to-c [a] {:a a})"
       (single-rule-config rule-name)))

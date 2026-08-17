@@ -4,7 +4,12 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
-### Changed
+### Fixed
+
+- Fix `naming/record-name` to handle records with all-caps sections (such as `BillingSDK`). (See [#49](https://github.com/NoahTheDuke/splint/issues/49).)
+- Fix `naming/conversion-functions` to correctly note the line and column number. (See [#50](https://github.com/NoahTheDuke/splint/issues/50).)
+
+### Minutae
 
 - Bump `babashka/fs` to 0.5.33.
 - `noahtheduke.splint.test-helpers/with-temp-files` relies on built-in `fs` functions.

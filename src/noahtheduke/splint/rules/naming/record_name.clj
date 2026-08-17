@@ -5,6 +5,8 @@
 (ns ^:no-doc noahtheduke.splint.rules.naming.record-name
   (:require
    [camel-snake-kebab.core :as csk]
+   [clojure.string :as str]
+   [noahtheduke.splint.clojure-ext.core :refer [re-compile]]
    [noahtheduke.splint.diagnostic :refer [->diagnostic]]
    [noahtheduke.splint.rules :refer [defrule]]))
 
@@ -12,8 +14,13 @@
 
 (defn bad-name? [sexp]
   (when (symbol? sexp)
-    (let [record-name (str sexp)]
-      (not= record-name (csk/->PascalCase record-name)))))
+    (let [record-name (str sexp)
+          changed (csk/->PascalCase record-name)]
+      (and (not= record-name changed)
+           (if-let [match (re-find #"[A-Z][A-Z]+" record-name)]
+             (let [changed' (str/replace changed (re-compile match :case-insensitive) match)]
+               (not= record-name changed'))
+             true)))))
 
 (defrule naming/record-name
   "Records should use PascalCase. (Replacement is generated with [camel-snake-kebab](https://github.com/clj-commons/camel-snake-kebab).)

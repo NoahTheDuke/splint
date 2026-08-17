@@ -39,7 +39,7 @@
                  (when (and tail
                          (not (str/includes? head "-"))
                          (not (str/includes? tail "-")))
-                   (let [form (list 'defn ?f-name '...)
+                   (let [form' (list 'defn ?f-name '...)
                          new-form (list 'defn (symbol (str/replace (str ?f-name) "-to-" "->")) '...)]
-                     (->diagnostic ctx rule form {:replace-form new-form
-                                                  :form-meta (meta form)})))))})
+                     (->diagnostic ctx rule form' {:replace-form new-form
+                                                   :form-meta (meta form)})))))})

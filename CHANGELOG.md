@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## 1.25.0 - 2026-08-18
+
 ### Fixed
 
 - BREAKING: Fix `naming/record-name` to handle records with all-caps sections (such as `BillingSDK`). This can introduce new warnings (or remove old ones), so check before blinding updating. (See [#49](https://github.com/NoahTheDuke/splint/issues/49).)

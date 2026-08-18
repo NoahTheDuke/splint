@@ -89,7 +89,7 @@ inform-cljdoc version=current_version:
 @release version:
     git switch main
     echo 'Running tests'
-    just test-all-versions --output quiet
+    just test-all --output quiet
     echo 'Setting new version {{version}}'
     just set-version {{version}}
     echo 'Rendering docs'

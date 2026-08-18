@@ -6,7 +6,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ### Fixed
 
-- Fix `naming/record-name` to handle records with all-caps sections (such as `BillingSDK`). (See [#49](https://github.com/NoahTheDuke/splint/issues/49).)
+- BREAKING: Fix `naming/record-name` to handle records with all-caps sections (such as `BillingSDK`). This can introduce new warnings (or remove old ones), so check before blinding updating. (See [#49](https://github.com/NoahTheDuke/splint/issues/49).)
 - Fix `naming/conversion-functions` to correctly note the line and column number. (See [#50](https://github.com/NoahTheDuke/splint/issues/50).)
 
 ### Minutae

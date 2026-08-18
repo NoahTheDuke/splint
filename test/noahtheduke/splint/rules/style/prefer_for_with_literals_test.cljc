@@ -15,7 +15,7 @@
   (it "works with function literals"
     (expect-match
       [{:rule-name rule-name
-        :form '(map (splint/fn [%1] (hash-map :a 1 :b %1)) (range 10))
+        :form '(map (splint/fn [%1#] (hash-map :a 1 :b %1#)) (range 10))
         :message "Prefer `for` when creating a seq of data literals."
         :alt '(for [item (range 10)] {:a 1 :b item})}]
       "(map #(hash-map :a 1 :b %) (range 10))"

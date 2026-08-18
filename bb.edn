@@ -4,15 +4,15 @@
 
 {:min-bb-version "1.12.205"
  :paths ["src" "resources"]
- :deps {org.clojure/tools.cli {:mvn/version "1.1.230"}
-        borkdude/edamame {:mvn/version "1.5.35"}
+ :deps {org.clojure/tools.cli {:mvn/version "1.4.256"}
+        borkdude/edamame {:mvn/version "1.6.43"}
         camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
-        fipp/fipp {:mvn/version "0.6.26"}
+        fipp/fipp {:mvn/version "0.6.29"}
         org.flatland/ordered {:mvn/version "1.15.12"}}
  :tasks {splint noahtheduke.splint/-main
-         lazytest {:extra-deps {io.github.noahtheduke/lazytest {:mvn/version "1.8.0"}
-                                nubank/matcher-combinators {:mvn/version "3.9.1"}
-                                org.clojure/tools.gitlibs {:mvn/version "2.5.197"}}
+         lazytest {:extra-deps {io.github.noahtheduke/lazytest {:mvn/version "2.1.0"}
+                                nubank/matcher-combinators {:mvn/version "3.11.0"}
+                                org.clojure/tools.gitlibs {:mvn/version "2.6.217"}}
                    :extra-paths ["dev" "test"]
                    :task lazytest.main/-main}}
  :bbin/bin {splint {:main-opts ["-m" "noahtheduke.splint"]}}}

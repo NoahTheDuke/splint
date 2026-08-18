@@ -23,7 +23,7 @@
   (it "works with non-symbols"
     (expect-match
       [{:rule-name rule-name
-        :form '(not (some (splint/fn [%1] (even? (+ 1 %1))) coll))
-        :alt '(not-any? (splint/fn [%1] (even? (+ 1 %1))) coll)}]
+        :form '(not (some (splint/fn [%1#] (even? (+ 1 %1#))) coll))
+        :alt '(not-any? (splint/fn [%1#] (even? (+ 1 %1#))) coll)}]
       "(not (some #(even? (+ 1 %)) coll))"
       (single-rule-config rule-name))))

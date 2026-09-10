@@ -25,14 +25,12 @@
                (when (even? (count ?args))
                  (for [[bind expr] (partition 2 ?args)
                        :when (and (vector? bind)
-                               (= 2 (count bind))
-                               (vector? expr)
-                               (= 2 (count expr)))
+                                  (vector? expr)
+                                  (= 2 (count bind))
+                                  (= bind expr))
                        :let [[bind1 expr1] bind
-                             [bind2 expr2] expr]
-                       :when (and (= bind1 bind2)
-                               (= expr1 expr2))
-                       :let [old-form (list [bind1 expr1] [bind2 expr2])
+                             [bind2 expr2] expr
+                             old-form (list [bind1 expr1] [bind2 expr2])
                              new-form (list [bind1 expr1] [expr2 bind2])
                              message "Looks like an incorrect variable swap."]]
                    (->diagnostic ctx rule old-form {:message message

@@ -10,7 +10,7 @@
 
 (defrule lint/let-if
   "`if-let` exists so use it.
-  
+
   @safety
   Suggestions can be wrong as there's no code-walking to determine if `result` binding is used in falsy branch.
 

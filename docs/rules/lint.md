@@ -48,6 +48,7 @@
 - [lint/try-splicing](#linttry-splicing)
 - [lint/underscore-in-namespace](#lintunderscore-in-namespace)
 - [lint/update-with-swap](#lintupdate-with-swap)
+- [lint/useless-catch](#lintuseless-catch)
 - [lint/warn-on-reflection](#lintwarn-on-reflection)
 
 <!-- tocstop -->
@@ -1287,6 +1288,35 @@ If the `update` call's return value isn't ignored (it's used in an assignment or
 ; prefer
 (swap! (:counter state) + 5)
 ```
+
+---
+
+## lint/useless-catch
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+A `catch` clause that merely binds and rethrows the exception is a no-op, indicating a logical error of some kind.
+
+### Examples
+
+```clojure
+; avoid
+(try (do-stuff)
+  (catch Exception ex
+    (throw ex)))
+
+; prefer
+(try (do-stuff)
+  (catch Exception ex
+    (log/error ex)
+    (throw ex)))
+```
+
+### Reference
+
+* <https://docs.rubocop.org/rubocop/latest/cops_lint.html#lintuselessrescue>
 
 ---
 

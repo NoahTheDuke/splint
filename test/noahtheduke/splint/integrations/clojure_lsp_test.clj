@@ -28,6 +28,7 @@
     lint/let-when 1
     lint/redundant-call 1
     lint/thread-macro-one-arg 116
+    lint/useless-catch 1
     lint/warn-on-reflection 147
     metrics/fn-length 296
     metrics/parameter-count 47
@@ -81,6 +82,6 @@
          (m/equals clojure-lsp-diagnostics)
          (update-vals* @diagnostics count))))
     (it "sums correctly"
-      (expect (= 1289 (count (:diagnostics @results)))))
+      (expect (= 1290 (count (:diagnostics @results)))))
     (it "raises no errors"
       (expect (nil? (get diagnostics 'splint/error))))))

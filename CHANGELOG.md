@@ -4,6 +4,10 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+### New Rules
+
+- `lint/useless-catch`: Avoid `catch` clauses that merely rethrow the exception.
+
 ## 1.25.0 - 2026-08-18
 
 ### Fixed

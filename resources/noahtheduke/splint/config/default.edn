@@ -321,6 +321,13 @@
   :added "1.22.0"
   :updated "1.22.0"}
 
+ lint/useless-catch
+ {:description "Avoid `catch` clauses that only rethrow the exception."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"
+  :links ["https://docs.rubocop.org/rubocop/latest/cops_lint.html#lintuselessrescue"]}
+
  lint/warn-on-reflection
  {:description "Always set *warn-on-reflection* to avoid reflection in interop."
   :enabled false

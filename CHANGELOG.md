@@ -7,6 +7,15 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### New Rules
 
 - `lint/useless-catch`: Avoid `catch` clauses that merely rethrow the exception.
+- `lint/useless-destructure`: Avoid destructure bindings that result in no bound variables (such as `[{} a]`).
+
+### Changed
+
+- BREAKING: Include `fn` in `:splint/defn-form` parsing. This can introduce new warnings.
+
+### Fixed
+
+- Gracefully handle malformed fn/defn forms that have non-seqable post-attrs.
 
 ## 1.25.0 - 2026-08-18
 

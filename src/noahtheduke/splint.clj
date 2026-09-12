@@ -64,6 +64,7 @@
    noahtheduke.splint.rules.lint.underscore-in-namespace
    noahtheduke.splint.rules.lint.update-with-swap
    noahtheduke.splint.rules.lint.useless-catch
+   noahtheduke.splint.rules.lint.useless-destructure
    noahtheduke.splint.rules.lint.warn-on-reflection
 
    noahtheduke.splint.rules.metrics.fn-length

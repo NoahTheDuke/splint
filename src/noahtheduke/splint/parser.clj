@@ -92,24 +92,29 @@
                       (swap! ns-state update :imports merge imports)))
                   ;; Gotta apply location data here as using `:postprocess`
                   ;; skips automatic location data
-                  (cond-> obj
-                    (instance? ParseMap obj) (parse-map loc)
-                    (instance? ParseSet obj) (parse-set loc)
-                    (instance? clojure.lang.IObj obj)
-                    (-> (vary-meta merge loc)
-                      (attach-ns-meta ns-state))
-                    (and (list? obj)
-                      (symbol? (first obj))
-                      (symbol? (second obj))
-                      (#{"defn" "defn-"} (name (first obj))))
-                    (attach-defn-meta)
-                    (and (list? obj)
-                      (symbol? (first obj))
-                      (symbol? (second obj))
-                      (String/.equals "defmulti" (name (first obj))))
-                    (attach-defmulti-meta)
+                  (as-> obj $
+                    (cond-> $
+                      (instance? ParseMap $) (parse-map loc)
+                      (instance? ParseSet $) (parse-set loc))
+                    (cond-> $
+                      (instance? clojure.lang.IObj $)
+                      (-> (vary-meta merge loc)
+                        (attach-ns-meta ns-state)))
+                    (cond-> $
+                      (and (list? $)
+                        (symbol? (first $))
+                        (symbol? (second $))
+                        (#{"fn" "defn" "defn-"} (name (first $))))
+                      (attach-defn-meta))
+                    (cond-> $
+                      (and (list? $)
+                        (symbol? (first $))
+                        (symbol? (second $))
+                        (String/.equals "defmulti" (name (first $))))
+                      (attach-defmulti-meta))
                     ;; last because it will be rare
-                    (instance? BigInt obj) (parse-bigint)))
+                    (cond-> $
+                      (instance? BigInt $) (parse-bigint))))
    ; Each of dispatch literals should either be processed (uneval), or wrap the
    ; expression in a splint-specific "function call".
    ; @x

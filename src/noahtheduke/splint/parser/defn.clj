@@ -85,14 +85,14 @@
                           loc {:line (:line vm)
                                :column (:column vm)
                                :end-line (:end-line (meta form))
-                               :end-column (dec (:end-column (meta form)))}]
+                               :end-column (dec (:end-column (meta form) 1))}]
                       (-> (apply list fdecl)
                         (vary-meta (fnil conj {}) loc)
                         (list)))
                     ;; Otherwise, just use the existing list (which will have
                     ;; location data already).
                     (and (list? (first fdecl))
-                      (every? #(vector? (first %)) fdecl)) fdecl
+                      (every? #(and (seqable? %) (vector? (first %))) fdecl)) fdecl
                     ;; Explicitly, if given a faulty defn form, kick out
                     :else nil)]
         (when fdecl

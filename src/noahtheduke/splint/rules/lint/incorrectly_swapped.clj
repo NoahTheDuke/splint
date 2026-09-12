@@ -20,7 +20,7 @@
   ; prefer
   (let [[a b] [b a]] ...)
   "
-  {:pattern '(let [?*args] ?*_)
+  {:pattern '(let [?+args] ?*_)
    :on-match (fn [ctx rule form {:syms [?args]}]
                (when (even? (count ?args))
                  (for [[bind expr] (partition 2 ?args)

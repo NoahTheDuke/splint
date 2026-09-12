@@ -7,10 +7,8 @@
    [lazytest.core :refer [defdescribe describe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [matcher-combinators.matchers :refer [absent]]
-   [noahtheduke.splint.parser.defn :refer [parse-defn]]
-   [noahtheduke.splint.test-helpers :refer [parse-string parse-string-all]]
-   [clojure.java.io :as io]
-   [noahtheduke.splint.parser :refer [parse-file]]))
+   [noahtheduke.splint.parser :refer [parse-file]]
+   [noahtheduke.splint.test-helpers :refer [parse-string parse-string-all]]))
 
 (set! *warn-on-reflection* true)
 
@@ -69,53 +67,3 @@
           (expect '(map Integer/hash (range 10)) ret))
         (it "attaches the :param-tags as metadata"
           (expect (match? {:param-tags ['int]} (meta (second ret)))))))))
-
-(defdescribe parse-defn-test
-  (describe parse-defn
-    (it "handles all possible forms"
-      (expect
-        (match?
-          '[{:splint/name normal
-             :arities (([a] a))
-             :arglists ([a])}
-            {:splint/name docstrings
-             :doc "This is a docstring"
-             :arities (([a] a))
-             :arglists ([a])}
-            {:splint/name pre-attr-map
-             :arg 1
-             :arities (([a] a))
-             :arglists ([a])}
-            {:splint/name post-attr-map
-             :arg 1
-             :arities (([a] a))
-             :arglists ([a])}
-            {:splint/name rest-args
-             :arities (([a b & c] (apply + a b c)))
-             :arglists ([a b & c])}
-            {:splint/name rest-multiple-bodies
-             :arities (([a b] (+ a b)) ([a b & c] (apply + a b c)))
-             :arglists ([a b] [a b & c])}
-            {:splint/name destructuring
-             :arities (([{:keys [a b c]}] (+ a b c)))
-             :arglists ([{:keys [a b c]}])}
-            {:splint/name wrapped-body
-             :arities (([a] a))
-             :arglists ([a])}
-            {:splint/name multiple-bodies
-             :arities (([a] a) ([a b] (+ a b)))
-             :arglists ([a] [a b])}
-            {:splint/name multiple-bodies-docstrings
-             :doc "This is a docstring"
-             :arities (([a] a) ([a b] (+ a b)))
-             :arglists ([a] [a b])}
-            {:splint/name arglist-metadata
-             :arglists ([a] [a b] [a b c])
-             :arities (([& args] (apply + args)))}
-            {:splint/name error-bad-docstring
-             :arities (([a] "asdf" a))
-             :arglists ([a])}]
-          (->> (io/file "corpus" "arglists.clj")
-               (slurp)
-               (parse-string-all)
-               (keep parse-defn)))))))

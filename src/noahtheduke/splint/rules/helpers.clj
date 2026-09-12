@@ -60,6 +60,14 @@
   (and (symbol? sexp)
     (String/.equals "re-pattern" (name sexp))))
 
+(defn let?? [sexp]
+  (and (symbol? sexp)
+    (#{"let" "if-let" "when-let" "if-some" "when-some" "loop"} (name sexp))))
+
+(defn for-doseq?? [sexp]
+  (and (symbol? sexp)
+    (#{"for" "doseq"} (name sexp))))
+
 (defn simple-literal? [sexp]
   (utils/simple-literal? sexp))
 

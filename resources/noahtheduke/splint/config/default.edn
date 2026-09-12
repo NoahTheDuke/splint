@@ -328,6 +328,12 @@
   :updated "<<next>>"
   :links ["https://docs.rubocop.org/rubocop/latest/cops_lint.html#lintuselessrescue"]}
 
+ lint/useless-destructure
+ {:description "Avoid empty destructure bindings in let or defn."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  lint/warn-on-reflection
  {:description "Always set *warn-on-reflection* to avoid reflection in interop."
   :enabled false

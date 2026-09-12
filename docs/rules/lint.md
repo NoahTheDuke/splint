@@ -49,6 +49,7 @@
 - [lint/underscore-in-namespace](#lintunderscore-in-namespace)
 - [lint/update-with-swap](#lintupdate-with-swap)
 - [lint/useless-catch](#lintuseless-catch)
+- [lint/useless-destructure](#lintuseless-destructure)
 - [lint/warn-on-reflection](#lintwarn-on-reflection)
 
 <!-- tocstop -->
@@ -1317,6 +1318,41 @@ A `catch` clause that merely binds and rethrows the exception is a no-op, indica
 ### Reference
 
 * <https://docs.rubocop.org/rubocop/latest/cops_lint.html#lintuselessrescue>
+
+---
+
+## lint/useless-destructure
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | <<next>>      | <<next>>        |
+
+Destructure targets can be empty, resulting in no variables bound. This usually indicates a bug or mistake in the binding.
+
+Checks the binding vectors of the following built-ins:
+* `let`, `loop`
+* `if-let`, `if-some`, `when-let`, `when-some`
+* `for`, `doseq`
+
+### Examples
+
+```clojure
+; avoid
+(let [{} (some-call)]
+  ...)
+
+; avoid
+(for [[] (range 5)]
+  ...)
+
+; prefer
+(let [foo (some-call)]
+  ...)
+
+; or if the variable is unused
+(let [_ (some-call)]
+  ...)
+```
 
 ---
 

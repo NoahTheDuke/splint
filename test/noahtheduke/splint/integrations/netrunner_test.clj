@@ -35,7 +35,7 @@
     lint/thread-macro-one-arg 95
     lint/warn-on-reflection 186
     metrics/fn-length 638
-    metrics/parameter-count 255
+    metrics/parameter-count 256
     naming/conventional-aliases 34
     naming/conversion-functions 14
     naming/predicate 27
@@ -99,7 +99,7 @@
         (m/equals netrunner-diagnostics)
         (update-vals* @diagnostics count)))
     (expect-it "sums correctly"
-      (= 4066 (count (:diagnostics @results))))
+      (= 4067 (count (:diagnostics @results))))
     (expect-it "raises no errors"
       (nil? (get diagnostics 'splint/error)))
     (expect-it "raises no unknown errors"

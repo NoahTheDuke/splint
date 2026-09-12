@@ -236,7 +236,7 @@
         (when (> (count dups) 1) "s")
         ": " (interpose ", " dups)))))
 
-(deftype ParseMap [elements])
+(defrecord ParseMap [elements])
 
 (defn parse-map
   [^ParseMap obj loc]
@@ -261,7 +261,7 @@
                     :column (:column loc)})))))
     (apply om/ordered-map elements)))
 
-(deftype ParseSet [elements])
+(defrecord ParseSet [elements])
 
 (defn parse-set
   [^ParseSet obj loc]

@@ -337,8 +337,11 @@
   (let [all-diagnostics @(:diagnostics ctx)
         grouped-diagnostics (group-by (juxt :filename :line :column :rule-name) all-diagnostics)
         filtered-diagnostics (mapv* (comp first val) grouped-diagnostics)
-        checked-files (into [] (distinct) @(:checked-files ctx))
-        file-strs (mapv* str files)]
+        checked-files (into [] (comp
+                                 (distinct)
+                                 (map str))
+                        @(:checked-files ctx))
+        file-strs (mapv (comp str :file) files)]
     {:diagnostics filtered-diagnostics
      :files file-strs
      :checked-files checked-files
@@ -365,9 +368,10 @@
 
 (defn auto-gen-config [paths options]
   (let [all-enabled (update-vals* @conf/default-config #(assoc % :enabled true))]
-    (conf/spit-config (run-impl paths {:config-override (merge (conf/merge-config nil nil)
-                                                               options
-                                                               all-enabled)}))))
+    (conf/spit-config options
+      (run-impl paths {:config-override (merge (conf/merge-config nil nil)
+                                          options
+                                          all-enabled)}))))
 
 (defn run
   "Convert command line args to usable options, pass to runner, print output."
@@ -377,8 +381,9 @@
           {:keys [options paths exit-message errors ok]} (validate-opts args)
           project-file (conf/read-project-file
                          (io/file "deps.edn") (io/file "project.clj"))
-          paths (mapv* #(hash-map :path %)
-                  (or (not-empty paths) (:paths project-file)))
+          paths (when-not errors
+                  (mapv* #(hash-map :path %)
+                    (or (not-empty paths) (:paths project-file))))
           options (assoc options :clojure-version (or (:clojure-version project-file)
                                                     *clojure-version*))]
       (cond
@@ -391,7 +396,8 @@
         (do (when-not (:quiet options)
               (println "splint errors:")
               (println "Paths must be provided in a project file (project.clj or deps.edn) or as the final arguments when calling. See --help for details."))
-          {:exit 1})
+          {:exit 1
+           :errors ["No paths found."]})
         (:auto-gen-config options)
         (auto-gen-config paths options)
         :else
@@ -405,7 +411,8 @@
         (case (:type data)
           :config (do (println "Error reading" (str (:file data)))
                     (println (ex-message ex))
-                    {:exit 1})
+                    {:message (ex-message ex)
+                     :exit 1})
           ; else
           (throw ex))))))
 

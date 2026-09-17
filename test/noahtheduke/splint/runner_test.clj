@@ -6,7 +6,7 @@
   (:require
    [clojure.java.io :as io]
    [clojure.string :as str]
-   [lazytest.core :refer [defdescribe expect it]]
+   [lazytest.core :refer [defdescribe describe expect expect-it it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]
    [noahtheduke.splint.dev :as dev]
@@ -16,7 +16,7 @@
                                             with-out-str-data-map
                                             with-temp-files]]) 
   (:import
-    [java.text SimpleDateFormat]))
+   [java.text SimpleDateFormat]))
 
 (set! *warn-on-reflection* true)
 
@@ -254,9 +254,7 @@
 
 (defdescribe auto-gen-config-test
   (it "includes all failing diagnostics"
-    (with-redefs [spit (fn [file content]
-                         {:file file
-                          :content content})]
+    (with-redefs [spit (constantly nil)]
       (expect
         (match?
           {:file ".splint.edn"
@@ -294,69 +292,111 @@
 
 (defdescribe only-flag-test
   (let [only-test-file (io/file "corpus" "only_test.clj")]
-    (it "can select a single rule"
-      (expect
-        (match?
-         {:result {:diagnostics [{:rule-name 'style/plus-one
-                                  :filename only-test-file}]}}
-         (with-out-str-data-map
-           (sut/run ["--no-parallel" "--only" "style/plus-one" "--" (str only-test-file)])))))
-    (it "can select a genre"
-      (expect
-        (match?
-         {:result {:diagnostics [{:rule-name 'style/useless-do
-                                  :filename only-test-file}
-                                 {:rule-name 'style/plus-one
-                                  :filename only-test-file}]}}
-         (with-out-str-data-map
-           (sut/run ["--no-parallel" "--only" "style" "--" (str only-test-file)])))))
-    (it "can select multiple rules"
-      (expect
-        (match?
-         {:result {:diagnostics [{:rule-name 'naming/single-segment-namespace
-                                  :filename only-test-file}
-                                 {:rule-name 'style/plus-one
-                                  :filename only-test-file}]}}
-         (with-out-str-data-map
-           (sut/run ["--no-parallel"
-                     "--only" "style/plus-one"
-                     "--only" "naming/single-segment-namespace"
-                     "--" (str only-test-file)])))))
-    (it "can select multiple genres"
-      (expect
-        (match?
-         {:result {:diagnostics [{:rule-name 'naming/single-segment-namespace
-                                  :filename only-test-file}
-                                 {:rule-name 'style/useless-do
-                                  :filename only-test-file}
-                                 {:rule-name 'style/plus-one
-                                  :filename only-test-file}]}}
-         (with-out-str-data-map
-           (sut/run ["--no-parallel"
-                     "--only" "style"
-                     "--only" "naming"
-                     "--" (str only-test-file)])))))
-    (it "can select mix and match"
-      (expect
-        (match?
-         {:result {:diagnostics [{:rule-name 'naming/single-segment-namespace
-                                  :filename only-test-file}
-                                 {:rule-name 'style/plus-one
-                                  :filename only-test-file}]}}
-         (with-out-str-data-map
-           (sut/run ["--no-parallel"
-                     "--only" "style/plus-one"
-                     "--only" "naming"
-                     "--" (str only-test-file)])))))
-    (it "throws an error if given an incorrect rule or genre"
-      (expect
-        (match?
-         {:result {:exit 1
-                   :message string?
-                   :errors ["Failed to validate \"--only stool\": Not a valid rule."
-                            "Failed to validate \"--only naming/DOES-NOT-MATCH\": Not a valid rule."]}}
-         (with-out-str-data-map
-           (sut/run ["--no-parallel"
-                     "--only" "stool"
-                     "--only" "naming/DOES-NOT-MATCH"
-                     "--" (str only-test-file)])))))))
+    (describe nil
+      (for [arg [["--no-parallel"
+                  "--only" "style/plus-one"
+                  "--" (str only-test-file)]
+                 {:options
+                  {:parallel false
+                   :only #{'style/plus-one}}
+                  :paths [(str only-test-file)]}]]
+        (describe (if (map? arg) "-X" "-M")
+          (expect-it "can select a single rule"
+            (match?
+              {:result {:diagnostics [{:rule-name 'style/plus-one
+                                       :filename only-test-file}]}}
+              (with-out-str-data-map
+                (sut/run arg))))))
+      (for [arg [["--no-parallel"
+                  "--only" "style"
+                  "--" (str only-test-file)]
+                 {:options
+                  {:parallel false
+                   :only #{'style}}
+                  :paths [(str only-test-file)]}]]
+        (describe (if (map? arg) "-X" "-M")
+          (expect-it "can select a genre"
+            (match?
+              {:result {:diagnostics [{:rule-name 'style/useless-do
+                                       :filename only-test-file}
+                                      {:rule-name 'style/plus-one
+                                       :filename only-test-file}]}}
+              (with-out-str-data-map
+                (sut/run arg))))))
+      (for [arg [["--no-parallel"
+                  "--only" "style/plus-one"
+                  "--only" "naming/single-segment-namespace"
+                  "--" (str only-test-file)]
+                 {:options
+                  {:parallel false
+                   :only #{'style/plus-one 'naming/single-segment-namespace}}
+                  :paths [(str only-test-file)]}]]
+        (describe (if (map? arg) "-X" "-M")
+          (expect-it "can select multiple rules"
+            (match?
+              {:result {:diagnostics [{:rule-name 'naming/single-segment-namespace
+                                       :filename only-test-file}
+                                      {:rule-name 'style/plus-one
+                                       :filename only-test-file}]}}
+              (with-out-str-data-map
+                (sut/run arg))))))
+      (for [arg [["--no-parallel"
+                  "--only" "style"
+                  "--only" "naming"
+                  "--" (str only-test-file)]
+                 {:options
+                  {:parallel false
+                   :only #{'naming 'style}}
+                  :paths [(str only-test-file)]}]]
+        (describe (if (map? arg) "-X" "-M")
+          (expect-it "can select multiple genres"
+            (match?
+              {:result {:diagnostics [{:rule-name 'naming/single-segment-namespace
+                                       :filename only-test-file}
+                                      {:rule-name 'style/useless-do
+                                       :filename only-test-file}
+                                      {:rule-name 'style/plus-one
+                                       :filename only-test-file}]}}
+              (with-out-str-data-map
+                (sut/run arg))))))
+      (for [arg [["--no-parallel"
+                  "--only" "style/plus-one"
+                  "--only" "naming"
+                  "--" (str only-test-file)]
+                 {:options
+                  {:parallel false
+                   :only #{'naming 'style/plus-one}}
+                  :paths [(str only-test-file)]}]]
+        (describe (if (map? arg) "-X" "-M")
+          (it "can select mix and match"
+            (expect
+              (match?
+                {:result {:diagnostics [{:rule-name 'naming/single-segment-namespace
+                                         :filename only-test-file}
+                                        {:rule-name 'style/plus-one
+                                         :filename only-test-file}]}}
+                (with-out-str-data-map
+                  (sut/run arg)))))))
+      (describe "-M"
+        (expect-it "throws an error if given an incorrect rule or genre"
+          (match?
+            {:result {:exit 1
+                      :message string?
+                      :errors ["Failed to validate \"--only stool\": Not a valid rule."
+                               "Failed to validate \"--only naming/DOES-NOT-MATCH\": Not a valid rule."]}}
+            (with-out-str-data-map
+              (sut/run ["--no-parallel"
+                        "--only" "stool"
+                        "--only" "naming/DOES-NOT-MATCH"
+                        "--" (str only-test-file)])))))
+      (describe "-X"
+        (expect-it "throws an error if given an incorrect rule or genre"
+          (match?
+            {:result {:exit 1
+                      :message string?
+                      :errors [string?]}}
+            (with-out-str-data-map
+              (sut/run {:options
+                        {:parallel false
+                         :only #{'stool 'naming/DOES-NOT-MATCH}}
+                        :paths [(str only-test-file)]}))))))))

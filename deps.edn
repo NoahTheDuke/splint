@@ -13,7 +13,8 @@
         rewrite-clj/rewrite-clj {:mvn/version "1.3.58"}}
  :aliases
  {:run {:extra-paths ["classes"]
-        :main-opts ["-m" "noahtheduke.splint"]}
+        :main-opts ["-m" "noahtheduke.splint"]
+        :exec-fn noahtheduke.splint/x-main}
   :dev {:extra-paths ["dev"]
         :extra-deps {org.clojure/tools.namespace {:mvn/version "1.5.1"}
                      criterium/criterium {:mvn/version "0.4.6"}

@@ -148,8 +148,16 @@
 
 (set! *warn-on-reflection* true)
 
+(defn x-main
+  "For use in -X/-T usage, takes a map of already parsed options, throws instead of a non-0 System/exit."
+  [opts]
+  (let [{:keys [exit] :as ret} (runner/run opts)]
+    (when-not (zero? exit)
+      (throw (ex-info "Failed run" ret)))))
+
 (defn -main
   "Pass-through to runner which does all the work."
   [& args]
   (let [{:keys [exit]} (runner/run args)]
+    (shutdown-agents)
     (System/exit (or exit 0))))

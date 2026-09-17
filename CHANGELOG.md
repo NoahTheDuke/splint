@@ -12,6 +12,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Changed
 
 - BREAKING: Include `fn` in `:splint/defn-form` parsing. This can introduce new warnings.
+- Added a tentative `-X` entrypoint to make programmatic usage easier.
 
 ### Fixed
 

@@ -6,6 +6,7 @@
   (:require
    [clojure.data :as data]
    [clojure.pprint :as pp]
+   [clojure.spec.alpha :as s]
    [clojure.string :as str]
    [clojure.tools.cli :as cli]
    [noahtheduke.splint.clojure-ext.core :refer [postwalk* update-keys*]]
@@ -15,9 +16,36 @@
 
 (set! *warn-on-reflection* true)
 
+
+(s/def ::output
+  (let [o #{"simple" "full" "clj-kondo" "markdown" "json" "json-pretty" "edn" "edn-pretty"}]
+    (into o (map keyword) o)))
+(s/def ::required-files (s/* string?))
+(s/def ::only-entry (s/and symbol?
+                #(or (contains? (:rules @global-rules) %)
+                   (contains? (:genres @global-rules) %))))
+(s/def ::only (s/coll-of ::only-entry :into #{}))
+(s/def ::parallel (s/nilable boolean?))
+(s/def ::lang #{"clj" "cljs" "cljc"})
+(s/def ::autocorrect (s/nilable boolean?))
+(s/def ::interactive (s/nilable boolean?))
+(s/def ::quiet (s/nilable boolean?))
+(s/def ::silent (s/nilable boolean?))
+(s/def ::summary (s/nilable boolean?))
+(s/def ::errors (s/nilable boolean?))
+(s/def ::print-config #{"diff" "local" "full"})
+(s/def ::auto-gen-config (s/nilable boolean?))
+(s/def ::help (s/nilable boolean?))
+(s/def ::version (s/nilable boolean?))
+
+(s/def ::paths (s/coll-of string?))
+(s/def ::options (s/keys :opt-un [::output ::required-files ::only ::parallel ::lang ::autocorrect ::interactive ::quiet ::silent ::summary ::errors ::print-config ::auto-gen-config ::help ::version ::paths]))
+(s/def ::arguments (s/coll-of string?))
+(s/def ::validated-opts (s/keys :opt-un [::options ::arguments]))
+
 (def cli-options
   [["-o" "--output FMT" "Output format: simple, full, clj-kondo, markdown, json, json-pretty, edn, edn-pretty."
-    :validate [#{"simple" "full" "clj-kondo" "markdown" "json" "json-pretty" "edn" "edn-pretty"}
+    :validate [#(s/valid? ::output %)
                "Not a valid output format (simple, full, clj-kondo, markdown, json, json-pretty, edn, edn-pretty)"]]
    ["-r" "--require FILE" "Require additional custom rules."
     :id :required-files
@@ -26,13 +54,12 @@
    [nil "--only RULE" "Run only the chosen rule(s) or genre(s)."
     :multi true
     :parse-fn symbol
-    :validate [#(or (contains? (:rules @global-rules) %)
-                    (contains? (:genres @global-rules) %))
+    :validate [#(s/valid? ::only-entry %)
                "Not a valid rule."]
     :update-fn (fnil conj #{})]
    [nil "--[no-]parallel" "Run splint in parallel. Defaults to true."]
    [nil "--lang LANG" "Which dialect to check? Used to get branches in reader conditionals as well. If \"cljc\", will check both \"clj\" and \"cljs\" files/branches. Defaults to \"cljc\"."
-    :validate [#{"clj" "cljs" "cljc"}
+    :validate [#(s/valid? ::lang %)
                "Not a valid dialect (clj, cljs, cljc)."]]
    [nil "--autocorrect" "Automatically apply safe changes."]
    [nil "--interactive" "Run autocorrect interactively."]
@@ -41,15 +68,15 @@
    [nil "--[no-]summary" "Don't print summary. Defaults to true."]
    [nil "--errors" "Only print error diagnostics."]
    [nil "--print-config TYPE" "Pretty-print the config: diff, local, full."
-    :validate [#{"diff" "local" "full"}
+    :validate [#(s/valid? ::print-config %)
                "Not a valid selection (diff, local, full)."]]
    [nil "--auto-gen-config" "Generate a passing config file for chosen paths."]
    ["-h" "--help" "Print help information."]
    ["-v" "--version" "Print version information."]])
 
-(defn help-message
-  [specs]
-  (let [lines [(splint-version)
+(defn help-message []
+  (let [specs (cli/parse-opts [] cli-options :strict true :summary-fn identity)
+        lines [(splint-version)
                ""
                "Usage:"
                "  splint [options]"
@@ -92,7 +119,7 @@
        (with-out-str (pp/pprint result)))
      :ok true}))
 
-(defn print-errors
+(defn exit-with-errors
   [errors]
   {:exit-message (str/join \newline (cons "splint errors:" errors))
    :errors errors
@@ -109,27 +136,43 @@
                   options)]
     options))
 
+(defn validate-map-opts
+  [opts]
+  (let [parsed (s/conform ::validated-opts opts)]
+    (if (s/invalid? parsed)
+      {:errors [(with-out-str (s/explain ::validated-opts opts))]
+       :options (dissoc opts :paths)
+       :arguments (:paths opts)}
+      (let [{:keys [options paths]} parsed
+            options (cond-> options
+                      (:output parsed) (update :output name)
+                      (:lang parsed) (update :lang keyword)
+                      (:print-config parsed) (update :print-config keyword))]
+        {:options (dissoc options :paths)
+         :arguments paths}))))
+
 (defn validate-opts
-  "Parse and validate seq of strings.
+  "Parse and validate a map or seq of strings.
 
-  Returns either a map of {:exit-message \"some str\" :ok logical-boolean}
-  or {:options {map of cli opts} :paths [seq of strings]}.
+  Returns either a map of `{:exit-message \"some str\" :ok logical-boolean}`
+  or `{:options {map of cli opts} :paths [seq of strings]}`.
 
-  :ok is false if given invalid options or an option is provided after paths."
+  `:ok` is false if given invalid options or an option is provided after paths."
   [args]
-  (let [{:keys [arguments options errors summary]}
-        (cli/parse-opts args cli-options :strict true :summary-fn identity)]
+  (let [{:keys [arguments options errors]}
+        (if (map? args)
+          (validate-map-opts args)
+          (cli/parse-opts args cli-options :strict true :summary-fn identity))]
     (cond
-      (:help options) (help-message summary)
-      (:version options) {:exit-message (splint-version) :ok true}
-      errors (print-errors errors)
+      (:help options) (help-message)
+      (:version options) {:exit-message (splint-version)
+                          :ok true}
+      errors (exit-with-errors errors)
       (or (:config options) (:print-config options)) (print-config options)
       ; Treat any path strings that begin with '--' as suspect and reject the
       ; whole call. No doubt this fails for some paths, but if you're doing
       ; that, get outta here.
       :else (if-let [errors (seq (filter #(str/starts-with? % "--") arguments))]
-              (print-errors (mapv #(str (pr-str %) " must come before paths") errors))
-              (let [options (set-autocorrect-additions options)
-                    paths (vec arguments)]
-                {:options options
-                 :paths paths})))))
+              (exit-with-errors (mapv #(str (pr-str %) " must come before paths") errors))
+              {:options (set-autocorrect-additions options)
+               :paths (vec arguments)}))))

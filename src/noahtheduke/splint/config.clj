@@ -7,13 +7,13 @@
    [clojure.java.io :as io]
    [clojure.string :as str]
    [edamame.core :as e]
-   [noahtheduke.splint.clojure-ext.core :refer [mapv* parse-long*]]
+   [noahtheduke.splint.clojure-ext.core :refer [mapv* parse-long*
+                                                re-named-groups]]
    [noahtheduke.splint.path-matcher :refer [->matcher]]
    [noahtheduke.splint.rules :refer [global-rules]])
   (:import
    (java.io File)
-   [java.text SimpleDateFormat]
-   [java.util.regex Matcher]))
+   (java.text SimpleDateFormat)))
 
 (set! *warn-on-reflection* true)
 
@@ -179,7 +179,9 @@
   [ctx rule-name]
   (-> ctx :rules rule-name :config))
 
-(defn spit-config [{:keys [diagnostics]}]
+(defn spit-config
+  "Creates a .splint file from the provided diagnostics (typically the results-map from runner/run-impl). Returns a boolean indicating whether the file was created or not."
+  [options {:keys [diagnostics] :as results}]
   (let [rule-strs (->> (group-by :rule-name diagnostics)
                     (into (sorted-map))
                     (reduce-kv
@@ -201,24 +203,30 @@
                       "{"
                       (str " " (str/trim (str/join "\n\n" rule-strs)))
                       "}"])]
-    (spit ".splint.edn" new-config)))
+    (try
+      (spit ".splint.edn" new-config)
+      (-> results
+        (assoc :file ".splint.edn")
+        (assoc :content new-config))
+      (catch Exception ex
+        (when-not (:quiet options)
+          (println "Error in creating auto-gen config:")
+          (println (ex-message ex)))
+        {:message (ex-message ex)
+         :exit 1}))))
 
 (defn parse-clojure-version
   [version]
-  (let [pat #"(?<major>\d+)\.(?<minor>\d+)\.(?<incremental>\d+)(?:-(?<qualifier>[a-zA-Z0-9_]+))?(?:-(?<snapshot>SNAPSHOT))?"
-        m (re-matcher pat version)
-        _ (Matcher/.matches m)
-        qualifier (Matcher/.group m "qualifier")
-        snapshot (if (Matcher/.equals "SNAPSHOT" qualifier)
-                   qualifier
-                   (Matcher/.group m "snapshot"))
-        qualifier (when-not (Matcher/.equals "SNAPSHOT" qualifier)
-                    qualifier)]
-    {:major (parse-long* (Matcher/.group m "major"))
-     :minor (parse-long* (Matcher/.group m "minor"))
-     :incremental (parse-long* (Matcher/.group m "incremental"))
-     :qualifier qualifier
-     :snapshot snapshot}))
+  (let [pat #"(?<major>\d+)\.(?<minor>\d+)\.(?<incremental>\d+)(?:-(?<qualifier>[a-zA-Z0-9_.]+))?(?:-(?<snapshot>SNAPSHOT))?"]
+    (when-let [match (first (re-named-groups pat version))]
+      (-> match
+        (update :major parse-long*)
+        (update :minor parse-long*)
+        (update :incremental parse-long*)
+        (update :qualifier #(when-not (String/.equals "SNAPSHOT" %) %))
+        (update :snapshot #(if (String/.equals "SNAPSHOT" (:qualifier match))
+                             (:qualifier match)
+                             %))))))
 
 (defn project-clojure-version
   [project-map]

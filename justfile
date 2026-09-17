@@ -36,7 +36,7 @@ clojure-lsp:
 alias lint := clj-kondo
 
 [no-exit-message]
-@test-raw *args:
+test-raw *args:
     clojure -M:dev:test:runner --md README.md {{args}}
 
 [no-exit-message]
@@ -53,9 +53,9 @@ test-all *args:
     just clojure-lsp
     bb run splint
     bb run lazytest {{test-all-args}} {{args}}
-    clojure -M:v1.10:dev:test:runner {{test-all-args}} {{args}}
     clojure -M:v1.11:dev:test:runner {{test-all-args}} {{args}}
     clojure -M:v1.12:dev:test:runner {{test-all-args}} {{args}}
+    clojure -M:v1.13:dev:test:runner {{test-all-args}} {{args}}
 
 @new-rule arg:
     clojure -M:new-rule -n {{arg}}

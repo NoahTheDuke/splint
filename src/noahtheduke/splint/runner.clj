@@ -6,6 +6,8 @@
   "Handles parsing and linting all of given files."
   (:require
    [clojure.java.io :as io]
+   [farolero.core :as faro :refer [handler-bind multiple-value-bind
+                                   restart-case values wrap-exceptions]]
    [noahtheduke.splint.cli :refer [validate-opts]]
    [noahtheduke.splint.clojure-ext.core :refer [mapv* pmap* run!* update-vals*]]
    [noahtheduke.splint.config :as conf]
@@ -72,35 +74,36 @@
 
 (defn check-form
   "For each rule: if the rule is enabled, call `check-rule`.
-  If `check-rule` returns a non-nil result, add or append it to the accumulator.
-  Otherwise, return the accumulator."
+  If `check-rule` returns a non-nil result, add it to the ctx diagnostics."
   [ctx rule-names form]
-  (reduce
-    (fn [acc rule-name]
-      (let [rule (-> ctx :rules rule-name)]
-        (if (-> rule :config :enabled)
-          (try
-            (if-some [result (check-rule ctx rule form)]
-              (if (sequential? result)
-                (into acc result)
-                (conj acc result))
-              acc)
-            (catch Exception ex
-              (conj acc (runner-error->diagnostic
-                          ex {:error-name 'splint/error
-                              :form form
-                              :rule-name (:full-name rule)
-                              :filename (:filename ctx)}))))
-          acc)))
-    nil
-    rule-names))
+  (let [rules (:rules ctx)]
+    (run!*
+      (fn [rule-name]
+        (let [rule (rules rule-name)]
+          (when (-> rule :config :enabled)
+            (restart-case
+              (wrap-exceptions
+                (when-some [result (check-rule ctx rule form)]
+                  (if (sequential? result)
+                    (swap! (:diagnostics ctx) into result)
+                    (swap! (:diagnostics ctx) conj result))))
+              (::faro/continue [] :report "Record this rule failure and skip it"
+                (swap! (:diagnostics ctx)
+                  conj (runner-error->diagnostic
+                         ex {:error-name 'splint/error
+                             :form form
+                             :rule-name (:full-name rule)
+                             :filename (:filename ctx)})))
+             ))))
+      rule-names)))
 
 (defn check-and-store!
   "Checks a given form against the appropriate rules then calls `on-match` to build the
   diagnostic and store it in `ctx`."
   [ctx rule-names form]
-  (when-let [diagnostics (check-form ctx rule-names form)]
-    (swap! (:diagnostics ctx) into diagnostics)
+  (check-form ctx rule-names form)
+  #_(when-let [diagnostics (check-form ctx rule-names form)]
+    ; (swap! (:diagnostics ctx) into diagnostics)
     nil))
 
 (defn update-rules [rules-map form]
@@ -212,15 +215,11 @@
                        (assoc :error-name 'splint/parsing-error)
                        (assoc :filename file)
                        (assoc :form-meta {:line (:line data)
-                                          :column (:column data)}))
-                diagnostic (runner-error->diagnostic ex data)]
-            (swap! (:diagnostics ctx) conj diagnostic)
-            nil)
-          (let [diagnostic (runner-error->diagnostic
-                             ex {:error-name 'splint/unknown-error
-                                 :filename file})]
-            (swap! (:diagnostics ctx) conj diagnostic)
-            nil))))))
+                                          :column (:column data)}))]
+            (faro/error ex data))
+          (let [data {:error-name 'splint/unknown-error
+                      :filename file}]
+            (faro/error ex data)))))))
 
 (defn slurp-file [file-obj]
   (if (:contents file-obj)
@@ -231,18 +230,23 @@
   (pmap* #(parse-and-check-file ctx (slurp-file %)) files))
 
 (defn check-files-serial [ctx files]
-  (mapv* #(parse-and-check-file ctx (slurp-file %)) files))
+  (prn :check-files-serial)
+  (mapv* #(do (prn :file %)
+            (parse-and-check-file ctx (slurp-file %))) files))
 
 (defn check-files!
   "Call into the relevant `check-path-X` function, depending on the given config."
   [ctx files]
-  (cond
-    (-> ctx :config :autocorrect)
-    ((requiring-resolve 'noahtheduke.splint.runners.autocorrect/check-files) ctx files)
-    (-> ctx :config :parallel)
-    (check-files-parallel ctx files)
-    :else
-    (check-files-serial ctx files)))
+  (handler-bind [::faro/error (fn [condition]
+                                (prn :check-files! condition)
+                                (faro/continue))]
+    (cond
+      (-> ctx :config :autocorrect)
+      ((requiring-resolve 'noahtheduke.splint.runners.autocorrect/check-files) ctx files)
+      (-> ctx :config :parallel)
+      (check-files-parallel ctx files)
+      :else
+      (check-files-serial ctx files))))
 
 (defn prepare-rules [config rules]
   (let [{only-genres false

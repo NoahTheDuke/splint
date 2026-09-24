@@ -8,7 +8,8 @@
         borkdude/edamame {:mvn/version "1.6.44"}
         camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
         fipp/fipp {:mvn/version "0.6.29"}
-        org.flatland/ordered {:mvn/version "1.15.12"}}
+        org.flatland/ordered {:mvn/version "1.15.12"}
+        org.suskalo/farolero {:mvn/version "1.5.1"}}
  :tasks {splint noahtheduke.splint/-main
          lazytest {:extra-deps {io.github.noahtheduke/lazytest {:mvn/version "2.1.0"}
                                 nubank/matcher-combinators {:mvn/version "3.11.0"}

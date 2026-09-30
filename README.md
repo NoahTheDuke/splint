@@ -37,7 +37,7 @@ Add this to `project.clj`:
 
 ```clojure lazytest/skip=true
 :profiles {:dev {:dependencies [[io.github.noahtheduke/splint "1.25.0"]]}}
-:aliases {"splint" ["run" "-m" "noahtheduke.splint"]})
+:aliases {"splint" ["run" "-m" "noahtheduke.splint"]}
 ```
 
 Run with `lein splint [args...]`.

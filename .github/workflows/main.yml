@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Prepare java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: 'zulu'
           java-version: ${{ matrix.java }}
@@ -28,9 +28,9 @@ jobs:
           clojure-lsp-version: 2025.03.07-17.42.36
 
       - name: Install clojure tools
-        uses: DeLaGuardo/setup-clojure@13.6.1
+        uses: DeLaGuardo/setup-clojure@13.7.0
         with:
-          cli: 1.12.5.1664
+          cli: 1.12.6.1673
           bb: 1.13.219
 
       - name: Cache clojure dependencies
@@ -52,11 +52,11 @@ jobs:
       - name: bb lazytest
         run: bb run lazytest --output summary
 
-      - name: "1.10 Tests"
-        run: clojure -M:v1.10:dev:test:runner --output summary
-
       - name: "1.11 Tests"
         run: clojure -M:v1.11:dev:test:runner --output summary
 
       - name: "1.12 Tests"
         run: clojure -M:v1.12:dev:test:runner --output summary
+
+      - name: "1.13 Tests"
+        run: clojure -M:v1.13:dev:test:runner --output summary

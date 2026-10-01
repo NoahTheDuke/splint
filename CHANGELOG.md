@@ -17,6 +17,11 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Gracefully handle malformed fn/defn forms that have non-seqable post-attrs.
 
+### Minutae
+
+- Bump `edamame` to `1.5.44`.
+- Bump `rewrite-clj` to `1.3.58`.
+
 ## 1.25.0 - 2026-08-18
 
 ### Fixed

@@ -7,13 +7,13 @@
    [clojure.java.io :as io]
    [clojure.string :as str]
    [edamame.core :as e]
-   [noahtheduke.splint.clojure-ext.core :refer [mapv* parse-long*
-                                                re-named-groups]]
+   [noahtheduke.splint.clojure-ext.core :refer [mapv* parse-long*]]
    [noahtheduke.splint.path-matcher :refer [->matcher]]
    [noahtheduke.splint.rules :refer [global-rules]])
   (:import
    (java.io File)
-   (java.text SimpleDateFormat)))
+   (java.text SimpleDateFormat)
+   [java.util.regex Matcher]))
 
 (set! *warn-on-reflection* true)
 
@@ -217,16 +217,20 @@
 
 (defn parse-clojure-version
   [version]
-  (let [pat #"(?<major>\d+)\.(?<minor>\d+)\.(?<incremental>\d+)(?:-(?<qualifier>[a-zA-Z0-9_.]+))?(?:-(?<snapshot>SNAPSHOT))?"]
-    (when-let [match (first (re-named-groups pat version))]
-      (-> match
-        (update :major parse-long*)
-        (update :minor parse-long*)
-        (update :incremental parse-long*)
-        (update :qualifier #(when-not (String/.equals "SNAPSHOT" %) %))
-        (update :snapshot #(if (String/.equals "SNAPSHOT" (:qualifier match))
-                             (:qualifier match)
-                             %))))))
+  (let [pat #"(?<major>\d+)\.(?<minor>\d+)\.(?<incremental>\d+)(?:-(?<qualifier>[a-zA-Z0-9_]+))?(?:-(?<snapshot>SNAPSHOT))?"
+        m (re-matcher pat version)
+        _ (Matcher/.matches m)
+        qualifier (Matcher/.group m "qualifier")
+        snapshot (if (Matcher/.equals "SNAPSHOT" qualifier)
+                   qualifier
+                   (Matcher/.group m "snapshot"))
+        qualifier (when-not (Matcher/.equals "SNAPSHOT" qualifier)
+                    qualifier)]
+    {:major (parse-long* (Matcher/.group m "major"))
+     :minor (parse-long* (Matcher/.group m "minor"))
+     :incremental (parse-long* (Matcher/.group m "incremental"))
+     :qualifier qualifier
+     :snapshot snapshot}))
 
 (defn project-clojure-version
   [project-map]

@@ -15,7 +15,7 @@
     (clojure.lang BigInt)
     (java.io File)
     (java.nio.file PathMatcher)
-    (java.util.regex Pattern Matcher)))
+    (java.util.regex Pattern)))
 
 (set! *warn-on-reflection* true)
 
@@ -338,34 +338,6 @@
 (comment
   (re-find (re-compile ".*#comment\n" :dotall :comments) "a#comment\nb"))
 ; "a#comment\n"
-
-(defn re-named-groups
-  "Takes a regex pattern with named capture groups and a string. Returns a vector of maps with each named capture as keyword and the match as value.
-
-  Returns nil if pattern contains no named capture groups or there are no matches.
-
-  ```clojure
-  (re-named-groups #\"(?<major>\\d+)\\.(?<minor>\\d+)\" \"1.234 b 2.4\")
-  ;=> [{:major \"1\" :minor \"234\"} {:major \"2\" :minor \"4\"}]
-  ```"
-  [re s]
-  (let [^Pattern re (re-compile re)]
-    (when-let [groups (Pattern/.namedGroups re)]
-      (let [m (re-matcher re s)]
-        (loop [ret (transient [])
-               m m]
-          (if (re-find m)
-            (let [match (reduce-kv
-                          (fn [acc group-name ^long idx]
-                            (assoc! acc (keyword group-name) (Matcher/.group m idx)))
-                          (transient {})
-                          groups)]
-              (recur (conj! ret (persistent! match)) m))
-            (not-empty (persistent! ret))))))))
-
-(comment
-  (re-named-groups #"(?<major>\d+)\.(?<minor>\d+)" "1.234 b 2.4"))
-; [{:major "1", :minor "234"} {:major "2", :minor "4"}]
 
 (defn ^:no-doc get-arg
   "For internal use only.

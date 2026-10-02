@@ -46,7 +46,7 @@ test *args="--output results --output summary":
     bb run lazytest -e :integration {{args}}
     just test-raw -e :integration {{args}}
 
-test-all-args := "--doctests --md README.md --dir test --output results --output summary"
+test-all-args := "--doctests --md README.md --dir test --output short"
 
 [no-exit-message]
 test-all *args:

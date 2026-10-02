@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest]
-        java: [11, 17, 21]
+        java: [17, 21, 25]
 
     runs-on: ${{ matrix.os }}
 
@@ -25,7 +25,7 @@ jobs:
       - name: Setup clojure-lsp
         uses: clojure-lsp/setup-clojure-lsp@v1
         with:
-          clojure-lsp-version: 2025.03.07-17.42.36
+          clojure-lsp-version: 2026.02.20-16.08.58
 
       - name: Install clojure tools
         uses: DeLaGuardo/setup-clojure@13.7.0
@@ -50,13 +50,13 @@ jobs:
         run: bb run splint
 
       - name: bb lazytest
-        run: bb run lazytest --output summary
+        run: bb run lazytest --doctests --md README.md --dir test --output short
 
       - name: "1.11 Tests"
-        run: clojure -M:v1.11:dev:test:runner --output summary
+        run: clojure -M:v1.11:dev:test:runner --doctests --md README.md --dir test --output short
 
       - name: "1.12 Tests"
-        run: clojure -M:v1.12:dev:test:runner --output summary
+        run: clojure -M:v1.12:dev:test:runner --doctests --md README.md --dir test --output short
 
       - name: "1.13 Tests"
-        run: clojure -M:v1.13:dev:test:runner --output summary
+        run: clojure -M:v1.13:dev:test:runner --doctests --md README.md --dir test --output short

@@ -20,7 +20,7 @@
 (s/def ::output
   (let [o #{"simple" "full" "clj-kondo" "markdown" "json" "json-pretty" "edn" "edn-pretty"}]
     (into o (map keyword) o)))
-(s/def ::required-files (s/* string?))
+(s/def ::require (s/* string?))
 (s/def ::only-entry (s/and symbol?
                 #(or (contains? (:rules @global-rules) %)
                    (contains? (:genres @global-rules) %))))
@@ -39,16 +39,13 @@
 (s/def ::version (s/nilable boolean?))
 
 (s/def ::paths (s/coll-of string?))
-(s/def ::options (s/keys :opt-un [::output ::required-files ::only ::parallel ::lang ::autocorrect ::interactive ::quiet ::silent ::summary ::errors ::print-config ::auto-gen-config ::help ::version ::paths]))
-(s/def ::arguments (s/coll-of string?))
-(s/def ::validated-opts (s/keys :opt-un [::options ::arguments]))
+(s/def ::options (s/keys :opt-un [::output ::require ::only ::parallel ::lang ::autocorrect ::interactive ::quiet ::silent ::summary ::errors ::print-config ::auto-gen-config ::help ::version ::paths]))
 
 (def cli-options
   [["-o" "--output FMT" "Output format: simple, full, clj-kondo, markdown, json, json-pretty, edn, edn-pretty."
     :validate [#(s/valid? ::output %)
                "Not a valid output format (simple, full, clj-kondo, markdown, json, json-pretty, edn, edn-pretty)"]]
    ["-r" "--require FILE" "Require additional custom rules."
-    :id :required-files
     :multi true
     :update-fn (fnil conj [])]
    [nil "--only RULE" "Run only the chosen rule(s) or genre(s)."
@@ -138,18 +135,18 @@
 
 (defn validate-map-opts
   [opts]
-  (let [parsed (s/conform ::validated-opts opts)]
+  (let [parsed (s/conform ::options opts)]
     (if (s/invalid? parsed)
-      {:errors [(with-out-str (s/explain ::validated-opts opts))]
+      {:errors [(with-out-str (s/explain ::options opts))]
        :options (dissoc opts :paths)
        :arguments (:paths opts)}
-      (let [{:keys [options paths]} parsed
-            options (cond-> options
+      (let [options (cond-> parsed
+                      (:paths parsed) (dissoc :paths)
                       (:output parsed) (update :output name)
                       (:lang parsed) (update :lang keyword)
                       (:print-config parsed) (update :print-config keyword))]
-        {:options (dissoc options :paths)
-         :arguments paths}))))
+        {:options options
+         :arguments (or (:paths parsed) [])}))))
 
 (defn validate-opts
   "Parse and validate a map or seq of strings.

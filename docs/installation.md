@@ -4,12 +4,15 @@ When used in a project as a library, put it in an alias to make it easier to inv
 
 ## Clojure CLI
 
+Either `-M` or `-X`, depending on your preference.
+
 ```clojure
 :aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.25.0"}}
-                   :main-opts ["-m" "noahtheduke.splint"]}}
+                   :main-opts ["-m" "noahtheduke.splint"]
+                   :exec-fn noahtheduke.splint/x-main}}
 ```
 
-Run with `clojure -M:splint [args...]`.
+Run with `clojure -M:splint [args...]` or `clojure -X:splint ...`.
 
 ## Leiningen
 

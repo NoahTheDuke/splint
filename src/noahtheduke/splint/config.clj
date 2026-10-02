@@ -161,7 +161,7 @@
   f)
 
 (defn require-files! [local options]
-  (->> (:required-files options)
+  (->> (:require options)
        (into (vec (:require local ('require local))))
        (mapv* require-file!)
        (not-empty)))
@@ -170,9 +170,9 @@
   ([options] (load-config (:local (find-local-config)) options))
   ([local options]
    (let [required-files (require-files! local options)]
-     (conj (merge-config @default-config local)
-           options
-           {:required-files required-files}))))
+     (merge (merge-config @default-config local)
+       options
+       {:require required-files}))))
 
 (defn get-config
   "Return merged config for a specific rule."

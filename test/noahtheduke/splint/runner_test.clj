@@ -237,7 +237,7 @@
            :replace '(= 2 2)})")
       (println-to-file! test-file "(= 1 1)")
       (let [existing-rules @global-rules
-            options {:required-files [(str test-rule)]
+            options {:require [(str test-rule)]
                      :clojure-version *clojure-version*}
             results (sut/run-impl [test-file] options)]
         (expect (match? [{:rule-name 'dev/eq-1-1
@@ -296,9 +296,8 @@
       (for [arg [["--no-parallel"
                   "--only" "style/plus-one"
                   "--" (str only-test-file)]
-                 {:options
-                  {:parallel false
-                   :only #{'style/plus-one}}
+                 {:parallel false
+                  :only #{'style/plus-one}
                   :paths [(str only-test-file)]}]]
         (describe (if (map? arg) "-X" "-M")
           (expect-it "can select a single rule"
@@ -310,9 +309,8 @@
       (for [arg [["--no-parallel"
                   "--only" "style"
                   "--" (str only-test-file)]
-                 {:options
-                  {:parallel false
-                   :only #{'style}}
+                 {:parallel false
+                  :only #{'style}
                   :paths [(str only-test-file)]}]]
         (describe (if (map? arg) "-X" "-M")
           (expect-it "can select a genre"
@@ -327,9 +325,8 @@
                   "--only" "style/plus-one"
                   "--only" "naming/single-segment-namespace"
                   "--" (str only-test-file)]
-                 {:options
-                  {:parallel false
-                   :only #{'style/plus-one 'naming/single-segment-namespace}}
+                 {:parallel false
+                  :only #{'style/plus-one 'naming/single-segment-namespace}
                   :paths [(str only-test-file)]}]]
         (describe (if (map? arg) "-X" "-M")
           (expect-it "can select multiple rules"
@@ -344,9 +341,8 @@
                   "--only" "style"
                   "--only" "naming"
                   "--" (str only-test-file)]
-                 {:options
-                  {:parallel false
-                   :only #{'naming 'style}}
+                 {:parallel false
+                  :only #{'naming 'style}
                   :paths [(str only-test-file)]}]]
         (describe (if (map? arg) "-X" "-M")
           (expect-it "can select multiple genres"
@@ -363,9 +359,8 @@
                   "--only" "style/plus-one"
                   "--only" "naming"
                   "--" (str only-test-file)]
-                 {:options
-                  {:parallel false
-                   :only #{'naming 'style/plus-one}}
+                 {:parallel false
+                  :only #{'naming 'style/plus-one}
                   :paths [(str only-test-file)]}]]
         (describe (if (map? arg) "-X" "-M")
           (it "can select mix and match"
@@ -396,7 +391,6 @@
                       :message string?
                       :errors [string?]}}
             (with-out-str-data-map
-              (sut/run {:options
-                        {:parallel false
-                         :only #{'stool 'naming/DOES-NOT-MATCH}}
+              (sut/run {:parallel false
+                        :only #{'stool 'naming/DOES-NOT-MATCH}
                         :paths [(str only-test-file)]}))))))))

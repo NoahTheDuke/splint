@@ -86,13 +86,13 @@
           (sut/validate-opts ["--" "files"]))))
     (it "--require"
       (expect
-        (match? {:options {:required-files ["a"]}}
+        (match? {:options {:require ["a"]}}
           (sut/validate-opts ["-r" "a"])))
       (expect
-        (match? {:options {:required-files ["a"]}}
+        (match? {:options {:require ["a"]}}
           (sut/validate-opts ["--require" "a"])))
       (expect
-        (match? {:options {:required-files ["a" "b"]}}
+        (match? {:options {:require ["a" "b"]}}
           (sut/validate-opts ["--require" "a" "--require" "b"]))))
     (it "--only"
       (expect
@@ -105,20 +105,20 @@
         (match? {:options {:only #{'style/def-fn 'performance}}}
           (sut/validate-opts ["--only" "style/def-fn" "--only" "performance"])))))
   (describe "map opts"
-    (expect-it "rejects non-map :options"
+    (expect-it "rejects non-seq :paths"
       (match? {:exit-message string?
                :ok false
                :errors [string?]}
-        (sut/validate-opts {:options :only})))
+        (sut/validate-opts {:paths :abc})))
     (expect-it "rejects :only with non-strings"
       (match? {:exit-message string?}
-        (sut/validate-opts {:options {:only [1]}})))
+        (sut/validate-opts {:only [1]})))
     (expect-it "rejects non-seq :arguments"
       (match? {:ok false}
-        (sut/validate-opts {:options {:paths "hello"}})))
+        (sut/validate-opts {:paths "hello"})))
     (expect-it "accepts nilable entries"
       (match? {:options {:auto-gen-config nil}}
-        (sut/validate-opts {:options {:auto-gen-config nil}})))
+        (sut/validate-opts {:auto-gen-config nil})))
     (expect-it "returns the given object"
       (match? {:options {:only #{'style/def-fn 'performance}}}
-        (sut/validate-opts {:options {:only #{'style/def-fn 'performance}}})))))
+        (sut/validate-opts {:only #{'style/def-fn 'performance}})))))

@@ -1,5 +1,9 @@
 # Basic Usage
 
+The primary usage and entrypoint is through the `-M` cli interface. However, there is tentative support for `-X` and programatic usage.
+
+## -M
+
 ```text
 $ clojure -M:splint --help
 splint v1.25.0
@@ -31,7 +35,7 @@ $ clojure -M:splint src/noahtheduke/splint.clj test/
 Linting took 241ms, checked 115 files, 5 style warnings
 ```
 
-## Command-line options
+### Command-line options
 
 * `-o`, `--output FMT`: Output format: `simple`, `full`, `clj-kondo`, `markdown`, `json`, `json-pretty`. Defaults to `full`. (See below for description of each.)
 * `-r`, `--require FILE`: Require additional custom rules by loading specified files. Can be provided multiple times. (See [Writing a new rule][new rule] for further details.)
@@ -51,7 +55,40 @@ Some of the above options can be set in the [configuration file][configuration].
 [configuration]: configuration.md
 [new rule]: develop-new-rule.md#writing-a-new-rule
 
-### Output styles
+## -X
+
+```text
+$ clojure -X:splint :help true
+splint v1.25.0
+
+Usage:
+  splint [options]
+  splint [options] [path...]
+  splint [options] -- [path...]
+
+Options:
+...
+```
+
+### Shape of expected inputs
+
+The above `-M` cli args are available nearly one-to-one in the `-X` form. See above for descriptions of them. The main difference is that instead of passing paths as trailing args, they're passed in an explicit sequence.
+
+* `:paths [FILES...]`
+* `:output FMT`
+* `:require FILE`
+* `:only RULE`
+* `:parallel true/false`
+* `:autocorrect true/false`
+* `:quiet true/false`
+* `:silent true/false`
+* `:summary true/false`
+* `:errors true/false`
+* `:print-config TYPE`
+* `:help true/false`
+* `:version true/false`
+
+## Output styles
 
 **simple:**
 Prints the filepath and location within the file, the name of the rule, and the message of the rule.
@@ -136,7 +173,7 @@ Same as `json` but uses `clojure.data.json`'s `pprint`.
  "filename":"../netrunner/test/clj/game/core/say_test.clj"}
 ```
 
-### Config styles
+## Config styles
 
 **diff:**
 Only prints the difference between the Splint defaults and the loaded `.splint.edn` file. This is useful when explicitly setting local options to their default.

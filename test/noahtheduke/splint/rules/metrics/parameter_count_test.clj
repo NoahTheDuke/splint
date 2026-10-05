@@ -26,19 +26,19 @@
   (it "works with multiple arglists"
     (expect-match
       [{:rule-name 'metrics/parameter-count
-        :form '[a b c d e f]
-        :message "Avoid parameter lists with more than 4 parameters."
-        :line 1
-        :column 30
-        :end-line 1
-        :end-column 43}
-       {:rule-name 'metrics/parameter-count
         :form '[a b c d e]
         :message "Avoid parameter lists with more than 4 parameters."
         :line 1
         :column 16
         :end-line 1
-        :end-column 27}]
+        :end-column 27}
+       {:rule-name 'metrics/parameter-count
+        :form '[a b c d e f]
+        :message "Avoid parameter lists with more than 4 parameters."
+        :line 1
+        :column 30
+        :end-line 1
+        :end-column 43}]
       "(defn example ([a b c d e]) ([a b c d e f]))"
       '{metrics/parameter-count {:enabled true}}))
 

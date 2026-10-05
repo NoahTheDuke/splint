@@ -23,11 +23,11 @@
   (it "checks multiple cases at once"
     (expect-match
       [{:rule-name rule-name
-        :form '(bar bar)
+        :form '(foo foo)
         :message "Avoid no-op assignment."
         :alt nil}
        {:rule-name rule-name
-        :form '(foo foo)
+        :form '(bar bar)
         :message "Avoid no-op assignment."
         :alt nil}]
       "(let [foo 1 foo foo bar foo bar bar] bar)"

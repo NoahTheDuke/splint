@@ -12,7 +12,7 @@
 (def rule-name 'lint/duplicate-case-test)
 
 (defdescribe duplicate-case-test-test
-  (it "respects"
+  (it "matches the first instance"
     (expect-match
       [{:rule-name 'lint/duplicate-case-test
         :form '(case x :foo :bar :foo :baz)
@@ -23,31 +23,33 @@
         :end-line 1
         :end-column 29}]
       "(case x :foo :bar :foo :baz)"
-      (single-rule-config rule-name))
+      (single-rule-config rule-name)))
+  (it "knows how to handle quoted symbols"
     (expect-match
       [{:rule-name 'lint/duplicate-case-test
         :form '(case x 'foo :bar 'foo :baz)
-        :message "Duplicate case test constant: foo"
+        :message "Duplicate case test constant: quote"
         :alt nil}
        {:rule-name 'lint/duplicate-case-test
         :form '(case x 'foo :bar 'foo :baz)
-        :message "Duplicate case test constant: quote"
+        :message "Duplicate case test constant: foo"
         :alt nil}]
       "(case x 'foo :bar 'foo :baz)"
-      (single-rule-config rule-name))
+      (single-rule-config rule-name)))
+  (it "knows how to handle multiple values"
     (expect-match
       [{:rule-name 'lint/duplicate-case-test
+        :message "Duplicate case test constant: bar"
+        :line 1
+        :column 21
+        :end-line 1
+        :end-column 24}
+       {:rule-name 'lint/duplicate-case-test
         :form '(case x (foo bar) 1 bar 2 (bar baz) 5)
         :message "Duplicate case test constant: bar"
         :line 1
         :column 28
         :end-line 1
-        :end-column 31}
-       {:rule-name 'lint/duplicate-case-test
-        :message "Duplicate case test constant: bar"
-        :line 1
-        :column 21
-        :end-line 1
-        :end-column 24}]
+        :end-column 31}]
       "(case x (foo bar) 1 bar 2 (bar baz) 5)"
       (single-rule-config rule-name))))

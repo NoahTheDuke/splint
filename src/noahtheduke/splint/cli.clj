@@ -6,9 +6,9 @@
   (:require
    [clojure.data :as data]
    [clojure.pprint :as pp]
-   [clojure.spec.alpha :as s]
    [clojure.string :as str]
    [clojure.tools.cli :as cli]
+   [medley.core :refer [index-by]]
    [noahtheduke.splint.clojure-ext.core :refer [postwalk* update-keys*]]
    [noahtheduke.splint.config :refer [default-config find-local-config
                                       load-config splint-version]]
@@ -16,48 +16,32 @@
 
 (set! *warn-on-reflection* true)
 
-
-(s/def ::output
-  (let [o #{"simple" "full" "clj-kondo" "markdown" "json" "json-pretty" "edn" "edn-pretty"}]
-    (into o (map keyword) o)))
-(s/def ::require (s/* string?))
-(s/def ::only-entry (s/and symbol?
-                #(or (contains? (:rules @global-rules) %)
-                   (contains? (:genres @global-rules) %))))
-(s/def ::only (s/coll-of ::only-entry :into #{}))
-(s/def ::parallel (s/nilable boolean?))
-(s/def ::lang #{"clj" "cljs" "cljc"})
-(s/def ::autocorrect (s/nilable boolean?))
-(s/def ::interactive (s/nilable boolean?))
-(s/def ::quiet (s/nilable boolean?))
-(s/def ::silent (s/nilable boolean?))
-(s/def ::summary (s/nilable boolean?))
-(s/def ::errors (s/nilable boolean?))
-(s/def ::print-config #{"diff" "local" "full"})
-(s/def ::auto-gen-config (s/nilable boolean?))
-(s/def ::help (s/nilable boolean?))
-(s/def ::version (s/nilable boolean?))
-
-(s/def ::paths (s/coll-of string?))
-(s/def ::options (s/keys :opt-un [::output ::require ::only ::parallel ::lang ::autocorrect ::interactive ::quiet ::silent ::summary ::errors ::print-config ::auto-gen-config ::help ::version ::paths]))
+(defn kw-str->str [k]
+  (let [k (name k)]
+    (if (str/starts-with? k ":") (subs k 1) k)))
 
 (def cli-options
   [["-o" "--output FMT" "Output format: simple, full, clj-kondo, markdown, json, json-pretty, edn, edn-pretty."
-    :validate [#(s/valid? ::output %)
-               "Not a valid output format (simple, full, clj-kondo, markdown, json, json-pretty, edn, edn-pretty)"]]
+    :validate [(let [v #{"simple" "full" "clj-kondo" "markdown" "json" "json-pretty" "edn" "edn-pretty"}]
+                 (into v (map #(str ":" %)) v))
+               "Not a valid output format (simple, full, clj-kondo, markdown, json, json-pretty, edn, edn-pretty)"]
+    :parse-fn kw-str->str]
    ["-r" "--require FILE" "Require additional custom rules."
     :multi true
     :update-fn (fnil conj [])]
    [nil "--only RULE" "Run only the chosen rule(s) or genre(s)."
     :multi true
     :parse-fn symbol
-    :validate [#(s/valid? ::only-entry %)
+    :validate [#(or (contains? (:rules @global-rules) %)
+                    (contains? (:genres @global-rules) %))
                "Not a valid rule."]
     :update-fn (fnil conj #{})]
    [nil "--[no-]parallel" "Run splint in parallel. Defaults to true."]
-   [nil "--lang LANG" "Which dialect to check? Used to get branches in reader conditionals as well. If \"cljc\", will check both \"clj\" and \"cljs\" files/branches. Defaults to \"cljc\"."
-    :validate [#(s/valid? ::lang %)
-               "Not a valid dialect (clj, cljs, cljc)."]]
+   [nil "--lang LANG" "Which dialect to check? If \"cljc\", will check both \"clj\" and \"cljs\" files/branches. Defaults to \"cljc\"."
+    :validate [(let [v #{"clj" "cljs" "cljc"}]
+                 (into v (map #(str ":" %)) v))
+               "Not a valid dialect (clj, cljs, cljc)."]
+    :parse-fn kw-str->str]
    [nil "--autocorrect" "Automatically apply safe changes."]
    [nil "--interactive" "Run autocorrect interactively."]
    ["-q" "--quiet" "Print no diagnostics, only summary."]
@@ -65,24 +49,75 @@
    [nil "--[no-]summary" "Don't print summary. Defaults to true."]
    [nil "--errors" "Only print error diagnostics."]
    [nil "--print-config TYPE" "Pretty-print the config: diff, local, full."
-    :validate [#(s/valid? ::print-config %)
-               "Not a valid selection (diff, local, full)."]]
+    :validate [(let [v #{"diff" "local" "full"}]
+                 (into v (map #(str ":" %)) v))
+               "Not a valid selection (diff, local, full)."]
+    :parse-fn kw-str->str]
    [nil "--auto-gen-config" "Generate a passing config file for chosen paths."]
    ["-h" "--help" "Print help information."]
    ["-v" "--version" "Print version information."]])
 
-(defn help-message []
-  (let [specs (cli/parse-opts [] cli-options :strict true :summary-fn identity)
-        lines [(splint-version)
-               ""
-               "Usage:"
-               "  splint [options]"
-               "  splint [options] [path...]"
-               "  splint [options] -- [path...]"
-               ""
-               "Options:"
-               (cli/summarize specs)
-               ""]]
+(defn usage [t]
+  (if (= :x t)
+    ["  clojure -X:splint [key-path/value pairs]"]
+    ["  clojure -M:splint [options]"
+     "  clojure -M:splint [options] [path...]"
+     "  clojure -M:splint [options] -- [path...]"]))
+
+(defn example [t]
+  (if (= :x t)
+    "For example: clojure -X:splint :parallel false :lang :clj :output :simple :paths '[\"test/example.clj\"]'"
+    "For example: clojure -M:splint --no-parallel --lang clj --output simple -- test/example.clj"))
+
+(defn m-summary [specs]
+  (cli/summarize specs))
+
+(defn format-opt [opt]
+  (as-> opt $
+    (cond-> $
+      (str/starts-with? $ "--") (subs 2))
+    (if (str/starts-with? $ "[no-]")
+      (subs $ 5)
+      $)
+    (str ":" $)))
+
+(defn make-summary-part
+  "Given a single compiled option spec, turn it into a formatted string."
+  [spec]
+  (let [{:keys [long-opt required multi desc]} spec
+        opt (cond
+              (and required multi)
+              (str long-opt " " [(str (str/lower-case required) "...")])
+              required
+              (str long-opt " " (keyword (str/lower-case required)))
+              :else long-opt)]
+    [(format-opt opt) (or desc "")]))
+
+(defn x-summary [specs]
+  (let [parts (map make-summary-part specs)
+        lens (apply map (fn [& cols] (apply max (map count cols))) parts)
+        lines (cli/format-lines lens parts)]
+    (str/join \newline lines)))
+
+(defn options [t]
+  (let [specs (:summary (cli/parse-opts [] cli-options :strict true :summary-fn identity))]
+    (if (= :x t)
+      (x-summary specs)
+      (m-summary specs))))
+
+(defn help-message [t]
+  (let [lines `[~(splint-version)
+                ""
+                "Splint is a Clojure linter focused on style and code shape. It aims to warn about many of the guidelines in the Clojure Style Guide. It is inspired by the Ruby linter RuboCop and the Clojure linter Kibit."
+                ""
+                "Usage:"
+                ~@(usage t)
+                ""
+                ~(example t)
+                ""
+                "Options:"
+                ~(options t)
+                ""]]
     {:exit-message (str/join \newline lines)
      :ok true}))
 
@@ -133,20 +168,20 @@
                   options)]
     options))
 
-(defn validate-map-opts
-  [opts]
-  (let [parsed (s/conform ::options opts)]
-    (if (s/invalid? parsed)
-      {:errors [(with-out-str (s/explain ::options opts))]
-       :options (dissoc opts :paths)
-       :arguments (:paths opts)}
-      (let [options (cond-> parsed
-                      (:paths parsed) (dissoc :paths)
-                      (:output parsed) (update :output name)
-                      (:lang parsed) (update :lang keyword)
-                      (:print-config parsed) (update :print-config keyword))]
-        {:options options
-         :arguments (or (:paths parsed) [])}))))
+(def cli-opt-map
+  (delay (index-by :id (#'cli/compile-option-specs cli-options))))
+
+(defn convert-map [m]
+  (let [without-paths (dissoc m :paths)
+        args (for [[k v] without-paths
+                   :let [cli-opt (get @cli-opt-map k)
+                         o (or (:short-opt cli-opt) (:long-opt cli-opt))
+                         v (if (:parse-fn cli-opt) ((:parse-fn cli-opt) v) v)]]
+               (cond
+                 (not (str/starts-with? o "--[no-]")) [o (str v)]
+                 v [(str "--" (subs o 7))]
+                 :else [(str "--no-" (subs o 7))]))]
+    `[~@(into [] cat args) "--" ~@(:paths m)]))
 
 (defn validate-opts
   "Parse and validate a map or seq of strings.
@@ -156,12 +191,11 @@
 
   `:ok` is false if given invalid options or an option is provided after paths."
   [args]
-  (let [{:keys [arguments options errors]}
-        (if (map? args)
-          (validate-map-opts args)
-          (cli/parse-opts args cli-options :strict true :summary-fn identity))]
+  (let [t (if (map? args) :x :m)
+        args' (if (= :x t) (convert-map args) args)
+        {:keys [arguments options errors]} (cli/parse-opts args' cli-options :strict true :summary-fn identity)]
     (cond
-      (:help options) (help-message)
+      (:help options) (help-message t)
       (:version options) {:exit-message (splint-version)
                           :ok true}
       errors (exit-with-errors errors)

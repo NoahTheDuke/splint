@@ -5,6 +5,7 @@
 {:paths ["src" "resources"]
  :deps {org.clojure/tools.cli {:mvn/version "1.4.256"}
         org.clojure/spec.alpha {:mvn/version "0.6.249"}
+        dev.weavejester/medley {:mvn/version "1.10.0"}
         borkdude/edamame {:mvn/version "1.6.44"}
         camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
         org.clojure/data.json {:mvn/version "2.5.2"}

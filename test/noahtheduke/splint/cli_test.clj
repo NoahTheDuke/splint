@@ -15,7 +15,7 @@
   (describe "string arguments"
     (it "--help"
       (expect
-        (match? {:exit-message #"splint v.*\n\n.*\n\nUsage"
+        (match? {:exit-message #"splint v.*"
                  :ok true}
           (sut/validate-opts ["-h"])))
       (expect

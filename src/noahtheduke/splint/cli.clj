@@ -21,12 +21,12 @@
     (if (str/starts-with? k ":") (subs k 1) k)))
 
 (def cli-options
-  [["-o" "--output FMT" "Output format: simple, full, clj-kondo, markdown, json, json-pretty, edn, edn-pretty."
+  [["-o" "--output FMT" "Output format: \"simple\", \"full\", \"clj-kondo\", \"markdown\", \"json\", \"json-pretty\", \"edn\", \"edn-pretty\". Defaults to \"full\"."
     :validate [(let [v #{"simple" "full" "clj-kondo" "markdown" "json" "json-pretty" "edn" "edn-pretty"}]
                  (into v (map #(str ":" %)) v))
                "Not a valid output format (simple, full, clj-kondo, markdown, json, json-pretty, edn, edn-pretty)"]
     :parse-fn kw-str->str]
-   ["-r" "--require FILE" "Require additional custom rules."
+   ["-r" "--require PATH" "Require additional custom rules."
     :multi true
     :update-fn (fnil conj [])]
    [nil "--only RULE" "Run only the chosen rule(s) or genre(s)."
@@ -43,34 +43,26 @@
                "Not a valid dialect (clj, cljs, cljc)."]
     :parse-fn kw-str->str]
    [nil "--autocorrect" "Automatically apply safe changes."]
-   [nil "--interactive" "Run autocorrect interactively."]
-   ["-q" "--quiet" "Print no diagnostics, only summary."]
-   ["-s" "--silent" "Don't print suggestions or summary."]
-   [nil "--[no-]summary" "Don't print summary. Defaults to true."]
+   [nil "--interactive" "Run autocorrect interactively. (Does nothing if `--autocorrect` is not passed.)"]
+   [nil "--[no-]summary" "Print summary. Defaults to true."]
+   ["-q" "--quiet" "Print no diagnostics."]
+   ["-s" "--silent" "Don't print suggestions or summary. Overrides `--quite` and `--summary`."]
    [nil "--errors" "Only print error diagnostics."]
-   [nil "--print-config TYPE" "Pretty-print the config: diff, local, full."
+   [nil "--print-config TYPE" "Pretty-print the config: \"diff\", \"local\", \"full\"."
     :validate [(let [v #{"diff" "local" "full"}]
                  (into v (map #(str ":" %)) v))
                "Not a valid selection (diff, local, full)."]
     :parse-fn kw-str->str]
    [nil "--auto-gen-config" "Generate a passing config file for chosen paths."]
-   ["-h" "--help" "Print help information."]
-   ["-v" "--version" "Print version information."]])
-
-(defn usage [t]
-  (if (= :x t)
-    ["  clojure -X:splint [key-path/value pairs]"]
-    ["  clojure -M:splint [options]"
-     "  clojure -M:splint [options] [path...]"
-     "  clojure -M:splint [options] -- [path...]"]))
-
-(defn example [t]
-  (if (= :x t)
-    "For example: clojure -X:splint :parallel false :lang :clj :output :simple :paths '[\"test/example.clj\"]'"
-    "For example: clojure -M:splint --no-parallel --lang clj --output simple -- test/example.clj"))
+   ["-h" "--help" "Print this help message."]
+   ["-v" "--version" "Print the version (for use in tools)."]])
 
 (defn m-summary [specs]
-  (cli/summarize specs))
+  {:usage ["  clojure -M:splint [options]"
+           "  clojure -M:splint [options] [path...]"
+           "  clojure -M:splint [options] -- [path...]"]
+   :example ["For example: clojure -M:splint --no-parallel --lang clj --output simple -- test/example.clj"]
+   :options (cli/summarize specs)})
 
 (defn format-opt [opt]
   (as-> opt $
@@ -84,39 +76,55 @@
 (defn make-summary-part
   "Given a single compiled option spec, turn it into a formatted string."
   [spec]
-  (let [{:keys [long-opt required multi desc]} spec
+  (let [{:keys [long-opt required multi desc parse-fn]} spec
         opt (cond
               (and required multi)
-              (str long-opt " " [(str (str/lower-case required) "...")])
+              (let [required (str (str/lower-case required) "s")
+                    required (if parse-fn (parse-fn required) required)]
+                (str long-opt " " [required]))
               required
-              (str long-opt " " (keyword (str/lower-case required)))
+              (let [required (str/lower-case required)
+                    required (if parse-fn (parse-fn required) required)]
+                (str long-opt " " (pr-str required)))
               :else long-opt)]
     [(format-opt opt) (or desc "")]))
 
-(defn x-summary [specs]
-  (let [parts (map make-summary-part specs)
+(defn x-summarize [specs]
+  (let [path-spec {:id :paths
+                   :long-opt "--paths"
+                   :required "PATH"
+                   :multi true
+                   :desc "Paths to check"}
+        specs' (cons path-spec specs)
+        parts (map make-summary-part specs')
         lens (apply map (fn [& cols] (apply max (map count cols))) parts)
         lines (cli/format-lines lens parts)]
     (str/join \newline lines)))
 
-(defn options [t]
-  (let [specs (:summary (cli/parse-opts [] cli-options :strict true :summary-fn identity))]
-    (if (= :x t)
-      (x-summary specs)
-      (m-summary specs))))
+(defn x-summary [specs]
+  {:usage ["  clojure -X:splint [key-path/value pairs]"]
+   :example ["For example: clojure -X:splint :parallel false :lang :clj :output :simple :paths '[\"test/example.clj\"]'"
+             ""
+             "NOTE: Paths must be passed as `:paths '[\"path\" \"path\" ...]'`. (Please be aware of quoting rules, as discussed in the Clojure CLI docs.) Options such as `:lang` can be keywords, symbols, or strings. Options with `nil` values will be ignored."]
+   :options (x-summarize specs)})
 
 (defn help-message [t]
-  (let [lines `[~(splint-version)
+  (let [version (splint-version)
+        specs (:summary (cli/parse-opts [] cli-options :strict true :summary-fn identity))
+        {:keys [usage example options]} (if (= :x t) (x-summary specs) (m-summary specs))
+        lines `[~version
                 ""
                 "Splint is a Clojure linter focused on style and code shape. It aims to warn about many of the guidelines in the Clojure Style Guide. It is inspired by the Ruby linter RuboCop and the Clojure linter Kibit."
                 ""
-                "Usage:"
-                ~@(usage t)
+                "If run without any options, it will read your deps.edn or project.clj and scan the src paths, and any paths in the `:test` alias."
                 ""
-                ~(example t)
+                "Usage:"
+                ~@usage
+                ""
+                ~@example
                 ""
                 "Options:"
-                ~(options t)
+                ~options
                 ""]]
     {:exit-message (str/join \newline lines)
      :ok true}))

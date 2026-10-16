@@ -1,6 +1,6 @@
 # Basic Usage
 
-The primary usage and entrypoint is through the `-M` cli interface. However, there is tentative support for `-X` and programatic usage.
+The primary usage and entrypoint is through the `-M` cli interface, tho `-X` support and a programmatic entrypoint is offered through `noahtheduke.splint/x-main`.
 
 ## -M
 
@@ -9,9 +9,9 @@ $ clojure -M:splint --help
 splint v1.25.0
 
 Usage:
-  splint [options]
-  splint [options] [path...]
-  splint [options] -- [path...]
+  clojure -M:splint [options]
+  clojure -M:splint [options] [path...]
+  clojure -M:splint [options] -- [path...]
 
 Options:
 ...
@@ -41,19 +41,23 @@ Linting took 241ms, checked 115 files, 5 style warnings
 * `-r`, `--require FILE`: Require additional custom rules by loading specified files. Can be provided multiple times. (See [Writing a new rule][new rule] for further details.)
 * `--only RULE`: Run only the specified rule(s) or genre(s).
 * `--[no-]parallel`: Run Splint in parallel. Defaults to `true`.
-* `--autocorrect`: Automatically apply safe changes.
-* `-q`, `--quiet`: Print no diagnostics, only summary.
-* `-s`, `--silent`: Print no diagnostics or summary. Overrides `--summary`.
+*  `--lang LANG`: Which dialect to check? If `cljc`, will check both `clj` and `cljs` files/branches. Defaults to `cljc`.
+* `--autocorrect`: Automatically apply safe changes. (See the [Rules Overview][rules] for more details.)
+* `--interactive`: Run autocorrect interactively. (Does nothing if `--autocorrect` is not passed.)
 * `--[no-]summary`: Print summary. Defaults to `true`.
+* `-q`, `--quiet`: Print no diagnostics.
+* `-s`, `--silent`: Print no diagnostics or summary. Overrides `--quiet` and `--summary`.
 * `--errors`: Limits printed diagnostics to parsing or internal Splint errors.
 * `--print-config TYPE`: Print the absolute path of the loaded config, and prints the contents of the loaded config according to the chosen type: `diff` for the difference between default and loaded config file, `local` for the contents of the loaded config file, and `full` for the merged default and loaded config file.
+* `--auto-gen-config`: Generate a passing config file for chosen paths. (See [configuration][configuration] for more details.)
 * `-h`, `--help`: Print the command line options.
-* `-v`, `--version`: Print the current version.
+* `-v`, `--version`: Print the version (useful for other tools).
 
 Some of the above options can be set in the [configuration file][configuration]. See that page for further details.
 
 [configuration]: configuration.md
 [new rule]: develop-new-rule.md#writing-a-new-rule
+[rules]: rules-overview.md
 
 ## -X
 
@@ -62,31 +66,51 @@ $ clojure -X:splint :help true
 splint v1.25.0
 
 Usage:
-  splint [options]
-  splint [options] [path...]
-  splint [options] -- [path...]
+  clojure -X:splint [key-path/value pairs]
 
 Options:
 ...
 ```
 
+As above, `splint` will read `deps.edn` or `project.clj` if no `:paths` are passed, and diagnostics will be printed according to `:output`. If an diagnostics are raised, an exception is thrown instead of exiting with a non-zero number:
+
+```
+$ clojure -X:splint :paths '["src"]'
+src/noahtheduke/splint/parser/ns.clj:171:7 [style/plus-one] - Use `inc` instead of recreating it.
+(+ 1 1)
+Consider using:
+(inc 1)
+
+Linting took 502ms, checked 142 files, 1 style warnings
+Execution error (ExceptionInfo) at noahtheduke.splint/x-main (splint.clj:156).
+Failed run
+
+Full report at:
+/var/folders/mp/l5hpkwss6p749m_74mk2ksl80000gn/T/clojure-17811884274698531129.edn
+```
+
 ### Shape of expected inputs
 
-The above `-M` cli args are available nearly one-to-one in the `-X` form. See above for descriptions of them. The main difference is that instead of passing paths as trailing args, they're passed in an explicit sequence.
+The above `-M` cli args are available nearly one-to-one in the `-X` form. See above for descriptions of them. The main difference is that instead of passing paths as trailing args, they must be passed in an explicit sequence of strings. (Note quoting rules as discussed in the [Clojure CLI Reference][cli-ref].)
 
-* `:paths [FILES...]`
-* `:output FMT`
-* `:require FILE`
-* `:only RULE`
-* `:parallel true/false`
-* `:autocorrect true/false`
-* `:quiet true/false`
-* `:silent true/false`
-* `:summary true/false`
-* `:errors true/false`
-* `:print-config TYPE`
-* `:help true/false`
-* `:version true/false`
+* `:paths ["paths"]`
+* `:output "fmt"`
+* `:require ["paths"]`
+* `:only [rules]`
+* `:parallel`
+* `:lang "lang"`
+* `:autocorrect`
+* `:interactive`
+* `:summary`
+* `:quiet`
+* `:silent`
+* `:errors`
+* `:print-config "type"`
+* `:auto-gen-config`
+* `:help`
+* `:version`
+
+[cli-ref]: https://clojure.org/reference/clojure_cli#quoting
 
 ## Output styles
 

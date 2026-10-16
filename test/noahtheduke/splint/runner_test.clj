@@ -8,6 +8,7 @@
    [clojure.string :as str]
    [lazytest.core :refer [defdescribe describe expect expect-it it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
+   [matcher-combinators.matchers :refer [in-any-order]]
    [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]
    [noahtheduke.splint.dev :as dev]
    [noahtheduke.splint.rules :refer [global-rules]]
@@ -389,7 +390,9 @@
           (match?
             {:result {:exit 1
                       :message string?
-                      :errors [string?]}}
+                      :errors (in-any-order
+                               ["Failed to validate \"--only stool\": Not a valid rule."
+                                "Failed to validate \"--only naming/DOES-NOT-MATCH\": Not a valid rule."])}}
             (with-out-str-data-map
               (sut/run {:parallel false
                         :only #{'stool 'naming/DOES-NOT-MATCH}

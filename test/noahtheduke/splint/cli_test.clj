@@ -15,7 +15,7 @@
   (describe "string arguments"
     (it "--help"
       (expect
-        (match? {:exit-message #"splint v.*\n\nUsage"
+        (match? {:exit-message #"splint v.*\n\n.*\n\nUsage"
                  :ok true}
           (sut/validate-opts ["-h"])))
       (expect
@@ -105,19 +105,11 @@
         (match? {:options {:only #{'style/def-fn 'performance}}}
           (sut/validate-opts ["--only" "style/def-fn" "--only" "performance"])))))
   (describe "map opts"
-    (expect-it "rejects non-seq :paths"
-      (match? {:exit-message string?
-               :ok false
-               :errors [string?]}
-        (sut/validate-opts {:paths :abc})))
     (expect-it "rejects :only with non-strings"
       (match? {:exit-message string?}
         (sut/validate-opts {:only [1]})))
-    (expect-it "rejects non-seq :arguments"
-      (match? {:ok false}
-        (sut/validate-opts {:paths "hello"})))
     (expect-it "accepts nilable entries"
-      (match? {:options {:auto-gen-config nil}}
+      (match? {:options {:auto-gen-config absent}}
         (sut/validate-opts {:auto-gen-config nil})))
     (expect-it "returns the given object"
       (match? {:options {:only #{'style/def-fn 'performance}}}

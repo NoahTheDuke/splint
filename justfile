@@ -42,8 +42,7 @@ test-raw *args:
 [no-exit-message]
 test *args="--output results --output summary":
     just clojure-lsp
-    bb run splint
-    bb run lazytest -e :integration {{args}}
+    just run
     just test-raw -e :integration {{args}}
 
 test-all-args := "--doctests --md README.md --dir test --output short"
@@ -53,6 +52,7 @@ test-all *args:
     just clojure-lsp
     bb run splint
     bb run lazytest {{test-all-args}} {{args}}
+    just run
     clojure -M:v1.11:dev:test:runner {{test-all-args}} {{args}}
     clojure -M:v1.12:dev:test:runner {{test-all-args}} {{args}}
     clojure -M:v1.13:dev:test:runner {{test-all-args}} {{args}}

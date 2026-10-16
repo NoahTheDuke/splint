@@ -172,18 +172,23 @@
   (delay (index-by :id (:summary (cli/parse-opts [] cli-options :summary-fn identity)))))
 
 (defn convert-map [m]
-  (let [without-paths (dissoc m :paths)
+  (let [paths (:paths m)
+        paths (cond (and (sequential? paths) (not-empty paths)) (cons "--" paths)
+                    paths ["--" paths]
+                    :else [])
+        without-paths (dissoc m :paths)
         args (for [[k v] without-paths
                    :let [cli-opt (get @cli-opt-map k)
                          o (or (:short-opt cli-opt) (:long-opt cli-opt))
                          v (if (:multi cli-opt) v [v])]
                    v v
+                   :when (some? v)
                    :let [v (if (:parse-fn cli-opt) ((:parse-fn cli-opt) v) v)]]
                (cond
-                 (not (str/starts-with? o "--[no-]")) [o (str v)]
-                 v [(str "--" (subs o 7))]
+                 (str/starts-with? o "--[no-]") [(str "--" (subs o 7))]
+                 v [o (str v)]
                  :else [(str "--no-" (subs o 7))]))]
-    `[~@(into [] cat args) "--" ~@(:paths m)]))
+    `[~@(into [] cat args) ~@paths]))
 
 (defn validate-opts
   "Parse and validate a map or seq of strings.

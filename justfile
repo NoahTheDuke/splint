@@ -51,8 +51,7 @@ test-all-args := "--doctests --md README.md --dir test --output short"
 test-all *args:
     just clojure-lsp
     bb run splint
-    bb run lazytest {{test-all-args}} {{args}}
-    just run
+    @just run
     clojure -M:v1.11:dev:test:runner {{test-all-args}} {{args}}
     clojure -M:v1.12:dev:test:runner {{test-all-args}} {{args}}
     clojure -M:v1.13:dev:test:runner {{test-all-args}} {{args}}

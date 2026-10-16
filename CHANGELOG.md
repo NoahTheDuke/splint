@@ -12,11 +12,12 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 ### Changed
 
 - BREAKING: Include `fn` in `:splint/defn-form` parsing. This can introduce new warnings.
-- Added a tentative `-X` entrypoint to make programmatic usage easier.
+- Add an `-X` entrypoint to make programmatic usage easier.
 
 ### Fixed
 
 - Gracefully handle malformed fn/defn forms that have non-seqable post-attrs.
+- Allow `(fn [e] (throw e))` in `lint/fn-wrapper`. (See [#56](https://github.com/NoahTheDuke/splint/issues/56).)
 
 ### Minutae
 

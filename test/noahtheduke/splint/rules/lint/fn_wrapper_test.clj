@@ -16,7 +16,8 @@
     (expect-match '[{:alt f}] "(fn* [arg] (f arg))" (single-rule-config rule-name))
     (expect-match '[{:alt f}] "(fn [arg] (f arg))" (single-rule-config rule-name))
     (expect-match '[{:alt f}] "#(f %)" (single-rule-config rule-name)))
-
+  (it "ignores throw"
+    (expect-match nil "(fn [e] (throw e))" (single-rule-config rule-name)))
   (it "ignores interop functions"
     (expect-match nil "#(Integer/parseInt %)" (single-rule-config rule-name))
     (expect-match nil "(do (import (java.util.regex Pattern)) #(Pattern/compile %))" (single-rule-config rule-name))

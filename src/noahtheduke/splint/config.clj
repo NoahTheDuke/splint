@@ -4,6 +4,7 @@
 
 (ns noahtheduke.splint.config
   (:require
+   [babashka.fs :as fs]
    [clojure.java.io :as io]
    [clojure.string :as str]
    [edamame.core :as e]
@@ -11,14 +12,13 @@
    [noahtheduke.splint.path-matcher :refer [->matcher]]
    [noahtheduke.splint.rules :refer [global-rules]])
   (:import
-   (java.io File)
    (java.text SimpleDateFormat)
    [java.util.regex Matcher]))
 
 (set! *warn-on-reflection* true)
 
 (def version
-  (delay (-> (io/file "noahtheduke" "splint" "SPLINT_VERSION")
+  (delay (-> (fs/file "noahtheduke" "splint" "SPLINT_VERSION")
            (str)
            (io/resource)
            (slurp)
@@ -44,7 +44,7 @@
        (first v)))))
 
 (def default-config-file
-  (io/resource (str (io/file "noahtheduke" "splint" "config" "default.edn"))))
+  (io/resource (str (fs/file "noahtheduke" "splint" "config" "default.edn"))))
 
 (defn read-default-config []
   (slurp-edn default-config-file))
@@ -53,13 +53,13 @@
   (delay (read-default-config)))
 
 (defn find-local-config []
-  (loop [dir (File/.getParentFile (File/.getAbsoluteFile (io/file ".")))]
-    (let [config (io/file dir ".splint.edn")]
-      (if (File/.exists config)
+  (loop [dir (fs/parent (fs/absolutize "."))]
+    (let [config (fs/file dir ".splint.edn")]
+      (if (fs/exists? config)
         {:dir dir
-         :file (File/.getAbsoluteFile config)
+         :file (fs/absolutize config)
          :local (slurp-edn config)}
-        (when-let [parent (File/.getParentFile dir)]
+        (when-let [parent (fs/parent dir)]
           (recur parent))))))
 
 (defn get-opts-from-config
@@ -283,12 +283,12 @@
 (defn read-project-file
   "Read the first available proejct config file.
   In order, checks deps.edn, project.clj, boot."
-  [^File deps-edn ^File project-clj]
+  [deps-edn project-clj]
   (let [project-file
         (cond
-          (and deps-edn (File/.exists deps-edn))
+          (and deps-edn (fs/exists? deps-edn))
           (assoc (slurp-edn deps-edn) ::type :deps-edn)
-          (and project-clj (File/.exists project-clj))
+          (and project-clj (fs/exists? project-clj))
           (let [v (->> (slurp-edn project-clj {:multiple true})
                     (filter #(and (seq? %) (= 'defproject (first %))))
                     first

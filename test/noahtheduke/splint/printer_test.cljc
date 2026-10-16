@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.printer-test
   (:require
-   [clojure.java.io :as io]
+   [babashka.fs :as fs]
    [clojure.string :as str]
    [lazytest.core :refer [defdescribe describe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
@@ -15,7 +15,7 @@
 (set! *warn-on-reflection* true)
 
 (def diagnostics
-  (->> (check-all (io/file "corpus" "printer_test.clj")
+  (->> (check-all (fs/file "corpus" "printer_test.clj")
          {'naming/single-segment-namespace {:enabled false}})
     (map #(update % :exception
             (fn [ex]
@@ -330,7 +330,7 @@
 
 (defdescribe print-form-test
   (it "prints all special characters"
-    (let [f (slurp (io/file "corpus" "special_characters.clj"))
+    (let [f (slurp (fs/file "corpus" "special_characters.clj"))
           parsed (parser/parse-file {:contents f :ext :clj})]
       (expect (= (format "[%s]"
                          (->> ["@a"

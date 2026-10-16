@@ -5,8 +5,8 @@
 (ns noahtheduke.splint.self-test
   "Tests of Splint's own code base: sorting, etc."
   (:require
+   [babashka.fs :as fs]
    [clojure.edn :as edn]
-   [clojure.java.io :as io]
    [clojure.string :as str]
    [lazytest.core :refer [defdescribe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
@@ -14,9 +14,7 @@
    [noahtheduke.splint.parser :refer [parse-file]]
    [noahtheduke.splint.rules :refer [global-rules]]
    [noahtheduke.splint.runner :as splint :refer [prepare-rules]]
-   [noahtheduke.splint.test-helpers :refer [with-out-str-data-map]])
-  (:import
-   (java.io File)))
+   [noahtheduke.splint.test-helpers :refer [with-out-str-data-map]]))
 
 (set! *warn-on-reflection* true)
 
@@ -80,8 +78,8 @@
 (defdescribe license-test
   (it "all files have license headers"
     (let [files (->> ["dev" "resources" "src" "test"]
-                     (mapcat #(file-seq (io/file %)))
-                     (filter #(and (File/.isFile ^File %)
+                     (mapcat #(file-seq (fs/file %)))
+                     (filter #(and (fs/regular-file? %)
                                    (some (fn [ft] (str/ends-with? % ft))
                                          [".clj" ".cljs" ".cljc" ".edn"]))))]
       (doseq [file files

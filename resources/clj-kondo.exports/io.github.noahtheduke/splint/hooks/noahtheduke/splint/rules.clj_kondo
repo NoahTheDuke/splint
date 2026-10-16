@@ -125,7 +125,7 @@
             :autocorrect (validate-type v bool-node? "boolean")
             :ext (validate-type v #(let [% (api/sexpr %)]
                                      (or (keyword? %)
-                                         (and (sequential? %)
+                                         (and (or (set? %) (sequential? %))
                                               (every? keyword? %))))
                                 "keyword or seq of keywords")
             #_:else nil))

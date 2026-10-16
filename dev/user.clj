@@ -16,12 +16,6 @@
 (set! *warn-on-reflection* true)
 
 (import-vars
-  [clojure.repl
-   source apropos dir pst doc find-doc]
-  [clojure.java.javadoc
-   javadoc]
-  [clojure.pprint
-   pp pprint]
   [clojure.tools.namespace.repl
    refresh-all]
   [clj-java-decompiler.core

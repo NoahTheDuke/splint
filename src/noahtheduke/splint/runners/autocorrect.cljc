@@ -4,6 +4,7 @@
 
 (ns noahtheduke.splint.runners.autocorrect 
   (:require
+   [babashka.fs :as fs]
    [clojure.set :as set]
    [clojure.string :as str]
    clojure.tools.reader.reader-types
@@ -16,7 +17,6 @@
    [rewrite-clj.node :as n]
    [rewrite-clj.zip :as z])
   (:import
-   [java.io File]
    [noahtheduke.splint.clojure_ext.core ParseMap ParseSet]))
 
 (set! *warn-on-reflection* true)
@@ -260,7 +260,7 @@
 (defn check-files
   [ctx files]
   (doseq [file-obj (filterv #((:features %) :clj) files)
-          :let [{:keys [ext ^File file contents]} (run/slurp-file file-obj)]]
+          :let [{:keys [ext file contents]} (run/slurp-file file-obj)]]
     (try
       (swap! (:checked-files ctx) conj file)
       (let [zloc (z/of-string* contents {:track-position? true})
@@ -270,7 +270,7 @@
                     (assoc :file-str contents)
                     (run/pre-filter-rules))
             zloc (walk ctx zloc)]
-        (when (.exists file)
+        (when (fs/exists? file)
           (when-let [new-contents (not-empty (z/root-string zloc))]
             (spit file new-contents)))
         nil)

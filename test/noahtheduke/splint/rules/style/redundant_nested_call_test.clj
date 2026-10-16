@@ -4,11 +4,11 @@
 
 (ns noahtheduke.splint.rules.style.redundant-nested-call-test
   (:require
+   [babashka.fs :as fs]
    [lazytest.core :refer [defdescribe it]]
-   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]
-   [clojure.java.io :as io]
+   [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]
    [noahtheduke.splint.dev :as dev]
-   [noahtheduke.splint.clojure-ext.core :refer [update-vals*]]))
+   [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
 (set! *warn-on-reflection* true)
 
@@ -66,5 +66,5 @@
         :message "`str` unconditionally returns a string."
         :alt '(str (another-call))
         :line 14}]
-      (io/file "corpus" "nested_calls.clj")
+      (fs/file "corpus" "nested_calls.clj")
       (update-vals* @dev/dev-config #(assoc % :enabled true)))))

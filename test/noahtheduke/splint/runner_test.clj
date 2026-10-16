@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.runner-test
   (:require
-   [clojure.java.io :as io]
+   [babashka.fs :as fs]
    [clojure.string :as str]
    [lazytest.core :refer [defdescribe describe expect expect-it it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
@@ -46,7 +46,7 @@
         :column 1
         :end-line 1
         :end-column 36
-        :filename (io/file "example.clj")
+        :filename (fs/file "example.clj")
         :exception {:cause "matched"
                     :data {:extra :data}
                     :via [{:type 'clojure.lang.ExceptionInfo
@@ -63,7 +63,7 @@
         :column 1
         :end-line 5
         :end-column 21
-        :filename (io/file "corpus/throw_in_middle.clj")
+        :filename (fs/file "corpus/throw_in_middle.clj")
         :exception nil}
        {:rule-name 'splint/error
         :form '(very-special-symbol :do-not-match)
@@ -73,7 +73,7 @@
         :column 1
         :end-line 7
         :end-column 36
-        :filename (io/file "corpus" "throw_in_middle.clj")
+        :filename (fs/file "corpus" "throw_in_middle.clj")
         :exception {:cause "matched"
                     :data {:extra :data}
                     :via [{:type 'clojure.lang.ExceptionInfo
@@ -87,9 +87,9 @@
         :column 1
         :end-column 29
         :end-line 9
-        :filename (io/file "corpus/throw_in_middle.clj")
+        :filename (fs/file "corpus/throw_in_middle.clj")
         :exception nil}]
-      (io/file "corpus" "throw_in_middle.clj"))))
+      (fs/file "corpus" "throw_in_middle.clj"))))
 
 (defdescribe parse-error-test
   (it "gracefully handles parsing errors"
@@ -102,7 +102,7 @@
         :column 1
         :end-line nil
         :end-column nil
-        :filename (io/file "corpus/parse_error.clj")
+        :filename (fs/file "corpus/parse_error.clj")
         :exception {:cause "Map literal contains duplicate key: :a"
                     :data {:type :edamame/error
                            :line 5
@@ -112,7 +112,7 @@
                            :data {:type :edamame/error
                                   :line 5
                                   :column 1}}]}}]
-      (io/file "corpus" "parse_error.clj"))))
+      (fs/file "corpus" "parse_error.clj"))))
 
 (defdescribe prepare-rules-test
   (it "combines config and rules"
@@ -289,10 +289,10 @@
                 " ;; Prefer `when-not` to `(when (not x) ...)`."
                 " style/when-not-call {:enabled false}"
                 "}"])}
-          (sut/auto-gen-config [(io/file "corpus" "printer_test.clj")] {:clojure-version {:major 1 :minor 11}}))))))
+          (sut/auto-gen-config [(fs/file "corpus" "printer_test.clj")] {:clojure-version {:major 1 :minor 11}}))))))
 
 (defdescribe only-flag-test
-  (let [only-test-file (io/file "corpus" "only_test.clj")]
+  (let [only-test-file (fs/file "corpus" "only_test.clj")]
     (describe nil
       (for [arg [["--no-parallel"
                   "--only" "style/plus-one"

@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.rules.lint.warn-on-reflection-test
   (:require
-   [clojure.java.io :as io]
+   [babashka.fs :as fs]
    [lazytest.core :refer [defdescribe it]]
    [noahtheduke.splint.test-helpers :refer [expect-match single-rule-config]]))
 
@@ -23,8 +23,8 @@
         :column 1
         :end-line 7
         :end-column 20
-        :filename (io/file "corpus" "arglists.clj")}]
-      (io/file "corpus" "arglists.clj")
+        :filename (fs/file "corpus" "arglists.clj")}]
+      (fs/file "corpus" "arglists.clj")
       (single-rule-config rule-name))
     (expect-match
       [{:rule-name 'lint/warn-on-reflection}]

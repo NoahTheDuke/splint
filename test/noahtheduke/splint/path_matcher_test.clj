@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.path-matcher-test
   (:require
-   [clojure.java.io :as io]
+   [babashka.fs :as fs]
    [lazytest.core :refer [defdescribe expect it]]
    [noahtheduke.splint.path-matcher :as sut]))
 
@@ -12,50 +12,50 @@
 
 (defdescribe matches-test
   (it "glob:"
-    (let [foo (io/file "aa/bb/foo.clj")
-            bar (io/file "aa/bb/bar.clj")
-            qux (io/file "aa/cc/qux.clj")
-            lup (io/file "lup.clj")]
+    (let [foo (fs/file "aa/bb/foo.clj")
+          bar (fs/file "aa/bb/bar.clj")
+          qux (fs/file "aa/cc/qux.clj")
+          lup (fs/file "lup.clj")]
       (expect (sut/matches (sut/->matcher "glob:**/foo.clj") foo))
       (expect [true true true false]
         (mapv (partial sut/matches (sut/->matcher "glob:aa/**"))
-              [foo bar qux lup]))
+          [foo bar qux lup]))
       (expect [true true false false]
         (mapv (partial sut/matches (sut/->matcher "glob:**/bb/*"))
-              [foo bar qux lup]))))
+          [foo bar qux lup]))))
   (it "regex:"
-    (let [foo (io/file "aa/bb/foo.clj")
-            bar (io/file "aa/bb/bar.clj")
-            qux (io/file "aa/cc/qux.clj")
-            lup (io/file "lup.clj")]
+    (let [foo (fs/file "aa/bb/foo.clj")
+          bar (fs/file "aa/bb/bar.clj")
+          qux (fs/file "aa/cc/qux.clj")
+          lup (fs/file "lup.clj")]
       (expect (sut/matches (sut/->matcher "regex:.*foo\\.clj") foo))
       (expect [true true true false]
         (mapv (partial sut/matches (sut/->matcher "regex:aa/.*/.*\\.clj"))
-              [foo bar qux lup]))
+          [foo bar qux lup]))
       (expect [false false false true]
         (mapv (partial sut/matches (sut/->matcher "regex:lup\\.clj"))
-              [foo bar qux lup]))))
+          [foo bar qux lup]))))
   (it "re-find:"
-    (let [foo (io/file "aa/bb/foo.clj")
-            bar (io/file "aa/bb/bar.clj")
-            qux (io/file "aa/cc/qux.clj")
-            lup (io/file "lup.clj")]
+    (let [foo (fs/file "aa/bb/foo.clj")
+          bar (fs/file "aa/bb/bar.clj")
+          qux (fs/file "aa/cc/qux.clj")
+          lup (fs/file "lup.clj")]
       (expect (sut/matches (sut/->matcher "re-find:foo.clj") foo))
       (expect [true true true false]
         (mapv (partial sut/matches (sut/->matcher "re-find:aa/.*/"))
-              [foo bar qux lup]))
+          [foo bar qux lup]))
       (expect [false false false true]
         (mapv (partial sut/matches (sut/->matcher "re-find:lup.clj"))
-              [foo bar qux lup]))))
+          [foo bar qux lup]))))
   (it "string:"
-    (let [foo (io/file "aa/bb/foo.clj")
-            bar (io/file "aa/bb/bar.clj")
-            qux (io/file "aa/cc/qux.clj")
-            lup (io/file "lup.clj")]
+    (let [foo (fs/file "aa/bb/foo.clj")
+          bar (fs/file "aa/bb/bar.clj")
+          qux (fs/file "aa/cc/qux.clj")
+          lup (fs/file "lup.clj")]
       (expect (sut/matches (sut/->matcher "string:foo.clj") foo))
       (expect [false false false false]
         (mapv (partial sut/matches (sut/->matcher "string:aa/.*/"))
-              [foo bar qux lup]))
+          [foo bar qux lup]))
       (expect [true true false false]
         (mapv (partial sut/matches (sut/->matcher "string:b"))
-              [foo bar qux lup])))))
+          [foo bar qux lup])))))

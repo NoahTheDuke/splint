@@ -134,7 +134,7 @@
 (s/def ::minor int?)
 (s/def ::incremental int?)
 (s/def ::min-clojure-version (s/keys :opt-un [::major ::minor ::incremental]))
-(s/def ::ext (s/or :single keyword? :multiple (s/coll-of keyword? :kind vector?)))
+(s/def ::ext (s/or :single keyword? :multiple (s/coll-of keyword? :kind (some-fn set? vector?))))
 (s/def ::autocorrect boolean?)
 (s/def ::config-coercer any?)
 (s/def ::opts (s/keys :req-un [(or ::pattern ::patterns)

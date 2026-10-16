@@ -22,8 +22,8 @@
    [noahtheduke.splint.runner :refer [run-impl]]
    [noahtheduke.splint.utils :refer [drop-quote]]) 
   (:import
-   [java.io File]
-   [noahtheduke.splint.path_matcher MatchHolder]))
+   (java.io File)
+   (noahtheduke.splint.path_matcher MatchHolder)))
 
 (set! *warn-on-reflection* true)
 
@@ -137,7 +137,7 @@
 (defn file-match [^File this actual]
   (cond
     (instance? File actual)
-    (if (String/.equals (File/.getName this) (File/.getName ^File actual))
+    (if (= (fs/file-name this) (fs/file-name actual))
       {::result/type :match
        ::result/value actual
        ::result/weight 0}
@@ -145,8 +145,8 @@
        ::result/value (->Mismatch this actual)
        ::result/weight 1})
     (string? actual)
-    (let [this-path (str/split (File/.getAbsolutePath this) (re-pattern fs/file-separator))
-          actual-path (str/split (File/.getAbsolutePath (io/file actual)) #"/")]
+    (let [this-path (str/split (fs/absolutize this) (re-pattern fs/file-separator))
+          actual-path (str/split (fs/absolutize actual) #"/")]
       (if (= this-path actual-path)
         {::result/type :match
          ::result/value actual

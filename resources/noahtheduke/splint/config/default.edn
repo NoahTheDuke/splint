@@ -159,6 +159,12 @@
   :added "0.1"
   :updated "1.19.0"}
 
+ lint/invalid-regex
+ {:description "Avoid invalid regex literals."
+  :enabled true
+  :added "<<next>>"
+  :updated "<<next>>"}
+
  lint/let-if
  {:description "Prefer `if-let` to `(let [x (abc)] (if x y z))`."
   :enabled true

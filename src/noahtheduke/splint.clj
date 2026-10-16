@@ -40,6 +40,7 @@
    noahtheduke.splint.rules.lint.if-same-truthy
    noahtheduke.splint.rules.lint.incorrectly-swapped
    noahtheduke.splint.rules.lint.into-literal
+   noahtheduke.splint.rules.lint.invalid-regex
    noahtheduke.splint.rules.lint.let-if
    noahtheduke.splint.rules.lint.let-when
    noahtheduke.splint.rules.lint.locking-object

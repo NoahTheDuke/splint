@@ -6,6 +6,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ### New Rules
 
+- `lint/invalid-regex`: Avoid invalid regex literals (`#"["`). (clj only)
 - `lint/useless-catch`: Avoid `catch` clauses that merely rethrow the exception.
 - `lint/useless-destructure`: Avoid destructure bindings that result in no bound variables (such as `[{} a]`).
 
@@ -23,6 +24,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Bump `edamame` to `1.5.44`.
 - Bump `rewrite-clj` to `1.3.58`.
+- Switch `clojure.java.io` and `java.io.File` usage to `babashka/fs`.
 
 ## 1.25.0 - 2026-08-18
 

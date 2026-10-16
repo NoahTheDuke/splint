@@ -4,7 +4,7 @@
 
 (ns generate-docs
   (:require
-   [clojure.java.io :as io]
+   [babashka.fs :as fs]
    [clojure.string :as str]
    [doric.core :refer [table]]
    [noahtheduke.splint]
@@ -194,8 +194,8 @@
 
 (defn print-genre-to-file [genre]
   (let [page (genre-page genre)
-        filename (io/file "docs" "rules" (str genre ".md"))]
-    (io/make-parents filename)
+        filename (fs/file "docs" "rules" (str genre ".md"))]
+    (fs/create-dir (fs/parent filename))
     (println "* saving" (str filename))
     (spit filename (str page \newline))))
 

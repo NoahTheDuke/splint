@@ -27,3 +27,4 @@
 /target
 tests-user.edn
 .DS_Store
+.cljconf

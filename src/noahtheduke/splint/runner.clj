@@ -5,7 +5,7 @@
 (ns noahtheduke.splint.runner
   "Handles parsing and linting all of given files."
   (:require
-   [clojure.java.io :as io]
+   [babashka.fs :as fs]
    [noahtheduke.splint.cli :refer [validate-opts]]
    [noahtheduke.splint.clojure-ext.core :refer [mapv* pmap* run!* update-vals*]]
    [noahtheduke.splint.config :as conf]
@@ -16,7 +16,6 @@
    [noahtheduke.splint.rules :refer [global-rules]]
    [noahtheduke.splint.utils :refer [simple-type support-clojure-version?]])
   (:import
-   (java.io File)
    (noahtheduke.splint.diagnostic Diagnostic)))
 
 (set! *warn-on-reflection* true)
@@ -190,7 +189,7 @@
 
 (defn parse-and-check-file
   "Parse the given file and then check each form."
-  [ctx {:keys [ext ^File file contents] :as file-obj}]
+  [ctx {:keys [ext file contents] :as file-obj}]
   (try
     (when-let [parsed-file (parse-file file-obj)]
       (swap! (:checked-files ctx) conj file)
@@ -286,39 +285,30 @@
           rule-names)
       (update :rules-by-type update-vals* sort))))
 
-(defn get-extension [^File file]
-  (let [filename (File/.getName file)
-        i (String/.lastIndexOf filename ".")]
-    (when (< i (dec (count filename)))
-      (subs filename (inc i)))))
-
-(defn- file->path-objs [ctx ^File file]
-  (when (File/.isFile file)
-    (let [lang (-> ctx :config :lang)
-          ext (get-extension file)]
-      (case (when (or (String/.equals "cljc" lang)
-                      (= ext lang))
-              ext)
-        "cljc"
-        [{:features #{:clj} :ext :cljc :file file}
-         {:features #{:cljs} :ext :cljc :file file}]
-        "clj"
-        [{:features #{:clj} :ext :clj :file file}]
-        "cljs"
-        [{:features #{:cljs} :ext :cljs :file file}]
-        ; else
-        nil))))
+(defn- file->path-objs [ctx file]
+  (let [lang (-> ctx :config :lang)
+        ext (fs/extension file)]
+    (case (when (or (String/.equals "cljc" lang)
+                    (= ext lang))
+            ext)
+      "cljc"
+      [{:features #{:clj} :ext :cljc :file file}
+       {:features #{:cljs} :ext :cljc :file file}]
+      "clj"
+      [{:features #{:clj} :ext :clj :file file}]
+      "cljs"
+      [{:features #{:cljs} :ext :cljs :file file}]
+      ; else
+      nil)))
 
 (defn- make-path-obj [ctx path]
   (cond
     (map? path)
     (mapcat #(file->path-objs ctx %)
-      (file-seq (io/file (:path path))))
+      (file-seq (fs/file (:path path))))
     (string? path)
-    [{:file (io/file "example.clj")
-      :contents path
-      :features #{:clj}
-      :ext :clj}]
+    (some->> (file->path-objs ctx (fs/file "example.clj"))
+      (mapv #(assoc % :contents path)))
     (instance? java.io.File path)
     (file->path-objs ctx path)))
 
@@ -380,7 +370,7 @@
     (let [start-time (System/currentTimeMillis)
           {:keys [options paths exit-message errors ok]} (validate-opts args)
           project-file (conf/read-project-file
-                         (io/file "deps.edn") (io/file "project.clj"))
+                         (fs/file "deps.edn") (fs/file "project.clj"))
           paths (when-not errors
                   (mapv* #(hash-map :path %)
                     (or (not-empty paths) (:paths project-file))))

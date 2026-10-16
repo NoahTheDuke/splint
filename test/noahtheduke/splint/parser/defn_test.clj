@@ -4,7 +4,7 @@
 
 (ns noahtheduke.splint.parser.defn-test 
   (:require
-   [clojure.java.io :as io]
+   [babashka.fs :as fs]
    [lazytest.core :refer [defdescribe expect it]]
    [lazytest.extensions.matcher-combinators :refer [match?]]
    [noahtheduke.splint.parser.defn :refer [parse-defn]]
@@ -56,7 +56,7 @@
           {:splint/name error-bad-docstring
            :arities (([a] "asdf" a))
            :arglists ([a])}]
-        (->> (io/file "corpus" "arglists.clj")
+        (->> (fs/file "corpus" "arglists.clj")
           (slurp)
           (parse-string-all)
           (keep parse-defn))))))

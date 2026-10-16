@@ -31,7 +31,7 @@
     :update-fn (fnil conj [])]
    [nil "--only RULE" "Run only the chosen rule(s) or genre(s)."
     :multi true
-    :parse-fn symbol
+    :parse-fn (comp symbol str)
     :validate [#(or (contains? (:rules @global-rules) %)
                     (contains? (:genres @global-rules) %))
                "Not a valid rule."]
@@ -169,14 +169,16 @@
     options))
 
 (def cli-opt-map
-  (delay (index-by :id (#'cli/compile-option-specs cli-options))))
+  (delay (index-by :id (:summary (cli/parse-opts [] cli-options :summary-fn identity)))))
 
 (defn convert-map [m]
   (let [without-paths (dissoc m :paths)
         args (for [[k v] without-paths
                    :let [cli-opt (get @cli-opt-map k)
                          o (or (:short-opt cli-opt) (:long-opt cli-opt))
-                         v (if (:parse-fn cli-opt) ((:parse-fn cli-opt) v) v)]]
+                         v (if (:multi cli-opt) v [v])]
+                   v v
+                   :let [v (if (:parse-fn cli-opt) ((:parse-fn cli-opt) v) v)]]
                (cond
                  (not (str/starts-with? o "--[no-]")) [o (str v)]
                  v [(str "--" (subs o 7))]

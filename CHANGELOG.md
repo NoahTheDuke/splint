@@ -4,6 +4,8 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 ## Unreleased
 
+## 1.26.0 - 2026-11-24
+
 ### New Rules
 
 - `lint/invalid-regex`: Avoid invalid regex literals (`#"["`). (clj only)

@@ -25,6 +25,7 @@
 - [lint/if-same-truthy](#lintif-same-truthy)
 - [lint/incorrectly-swapped](#lintincorrectly-swapped)
 - [lint/into-literal](#lintinto-literal)
+- [lint/invalid-regex](#lintinvalid-regex)
 - [lint/let-if](#lintlet-if)
 - [lint/let-when](#lintlet-when)
 - [lint/locking-object](#lintlocking-object)
@@ -394,9 +395,9 @@ even?
 
 ### Configurable Attributes
 
-| Name             | Default | Options |
-| ---------------- | ------- | ------- |
-| `:names-to-skip` | `#{}`   | Set     |
+| Name             | Default    | Options |
+| ---------------- | ---------- | ------- |
+| `:names-to-skip` | `#{throw}` | Set     |
 
 ### Reference
 
@@ -628,6 +629,26 @@ It can be necessary to swap two variables. This usually requires an intermediate
 
 ; prefer
 (set coll)
+```
+
+---
+
+## lint/invalid-regex
+
+| Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
+| ------------------ | ---- | ----------- | ------------- | --------------- |
+| true               | true | false       | 1.26.0        | 1.26.0          |
+
+Invalid patterns in regex literals can lead to code not loading or crashing.
+
+### Examples
+
+```clojure
+; avoid
+#"[a-z"
+
+; prefer
+#"[a-z]"
 ```
 
 ---
@@ -1296,7 +1317,7 @@ If the `update` call's return value isn't ignored (it's used in an assignment or
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | <<next>>      | <<next>>        |
+| true               | true | false       | 1.26.0        | 1.26.0          |
 
 A `catch` clause that merely binds and rethrows the exception is a no-op, indicating a logical error of some kind.
 
@@ -1325,7 +1346,7 @@ A `catch` clause that merely binds and rethrows the exception is a no-op, indica
 
 | Enabled by default | Safe | Autocorrect | Version Added | Version Updated |
 | ------------------ | ---- | ----------- | ------------- | --------------- |
-| true               | true | false       | <<next>>      | <<next>>        |
+| true               | true | false       | 1.26.0        | 1.26.0          |
 
 Destructure targets can be empty, resulting in no variables bound. This usually indicates a bug or mistake in the binding.
 

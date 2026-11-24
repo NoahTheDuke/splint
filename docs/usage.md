@@ -6,7 +6,7 @@ The primary usage and entrypoint is through the `-M` cli interface, tho `-X` sup
 
 ```text
 $ clojure -M:splint --help
-splint v1.25.0
+splint v1.26.0
 
 Usage:
   clojure -M:splint [options]
@@ -63,7 +63,7 @@ Some of the above options can be set in the [configuration file][configuration].
 
 ```text
 $ clojure -X:splint :help true
-splint v1.25.0
+splint v1.26.0
 
 Usage:
   clojure -X:splint [key-path/value pairs]

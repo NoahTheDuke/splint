@@ -7,7 +7,7 @@ When used in a project as a library, put it in an alias to make it easier to inv
 Either `-M` or `-X`, depending on your preference.
 
 ```clojure
-:aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.25.0"}}
+:aliases {:splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.26.0"}}
                    :main-opts ["-m" "noahtheduke.splint"]
                    :exec-fn noahtheduke.splint/x-main}}
 ```
@@ -19,7 +19,7 @@ Run with `clojure -M:splint [args...]` or `clojure -X:splint ...`.
 Add this to `project.clj`:
 
 ```clojure
-:profiles {:dev {:dependencies [[io.github.noahtheduke/splint "1.25.0"]]}}
+:profiles {:dev {:dependencies [[io.github.noahtheduke/splint "1.26.0"]]}}
 :aliases {"splint" ["run" "-m" "noahtheduke.splint"]}
 ```
 
@@ -30,7 +30,7 @@ Run with `lein splint [args...]`.
 Requires version 1.12.205 or later. If using `bb.edn`, add this to `bb.edn`:
 
 ```clojure
-:tasks {splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.25.0"}}
+:tasks {splint {:extra-deps {io.github.noahtheduke/splint {:mvn/version "1.26.0"}}
                 :task noahtheduke.splint/-main}}
 ```
 
@@ -42,7 +42,7 @@ It can also be installed using `bbin`:
 $ bbin install io.github.noahtheduke/splint
 {:coords
  #:git{:url "https://github.com/noahtheduke/splint",
-       :tag "v1.25.0",
+       :tag "v1.26.0",
        :sha "..."},
  :lib io.github.noahtheduke/splint}
 ```

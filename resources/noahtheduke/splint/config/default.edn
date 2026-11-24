@@ -162,8 +162,8 @@
  lint/invalid-regex
  {:description "Avoid invalid regex literals."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.26.0"
+  :updated "1.26.0"}
 
  lint/let-if
  {:description "Prefer `if-let` to `(let [x (abc)] (if x y z))`."
@@ -330,15 +330,15 @@
  lint/useless-catch
  {:description "Avoid `catch` clauses that only rethrow the exception."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"
+  :added "1.26.0"
+  :updated "1.26.0"
   :links ["https://docs.rubocop.org/rubocop/latest/cops_lint.html#lintuselessrescue"]}
 
  lint/useless-destructure
  {:description "Avoid empty destructure bindings in let or defn."
   :enabled true
-  :added "<<next>>"
-  :updated "<<next>>"}
+  :added "1.26.0"
+  :updated "1.26.0"}
 
  lint/warn-on-reflection
  {:description "Always set *warn-on-reflection* to avoid reflection in interop."

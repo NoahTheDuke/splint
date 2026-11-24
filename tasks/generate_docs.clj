@@ -195,7 +195,7 @@
 (defn print-genre-to-file [genre]
   (let [page (genre-page genre)
         filename (fs/file "docs" "rules" (str genre ".md"))]
-    (fs/create-dir (fs/parent filename))
+    (fs/create-dirs (fs/parent filename))
     (println "* saving" (str filename))
     (spit filename (str page \newline))))
 

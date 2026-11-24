@@ -76,7 +76,7 @@
         #_:else (n/sexpr node))
       (let [children (->> (n/children node)
                           (remove n/printable-only?)
-                          (keep #(node->sexpr ctx %))
+                          (map #(node->sexpr ctx %))
                           (remove #{::missing-reader-cond})
                           (doall))]
         (case tag

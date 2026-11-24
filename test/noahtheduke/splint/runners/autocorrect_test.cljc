@@ -4,13 +4,14 @@
 
 (ns noahtheduke.splint.runners.autocorrect-test
   (:require
+   [babashka.fs :as fs]
+   [clojure.string :as str]
    [lazytest.core :refer [defdescribe expect it]]
+   [lazytest.extensions.matcher-combinators :refer [match?]]
    [noahtheduke.splint.test-helpers :refer [check-all prep-dev-config
                                             println-to-file!
                                             with-out-str-data-map
-                                            with-temp-files]]
-   [lazytest.extensions.matcher-combinators :refer [match?]]
-   [clojure.string :as str]))
+                                            with-temp-files]]))
 
 (set! *warn-on-reflection* true)
 
@@ -81,3 +82,25 @@
                       "      (assoc :xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx :yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy)"
                       "      (assoc :z @foo)))"])
            (str/trim (slurp file)))))))
+
+(defdescribe issue-58-dropping-nils-test
+  (it "keeps nils"
+    (with-temp-files [file "issue_58/example.clj"]
+      (spit file (slurp (fs/file "corpus" "issue_58" "example.clj")))
+      (let [{diagnostics :result
+             _s :string}
+            (with-out-str-data-map
+              (check-all file
+                (prep-dev-config
+                  {:autocorrect true
+                   'performance/assoc-many {:enabled true}})))]
+        (expect (match?
+                  [{:rule-name 'lint/if-nil-else
+                    :line 4 :column 3}
+                   {:rule-name 'lint/if-nil-else
+                    :line 7 :column 3}]
+                  diagnostics))
+        (expect
+          (=
+            (str/trim (slurp (fs/file "corpus" "issue_58" "result.clj")))
+            (str/trim (slurp file))))))))

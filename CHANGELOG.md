@@ -19,6 +19,7 @@ This changelog is loose. Versions are not semantic, they are incremental. Splint
 
 - Gracefully handle malformed fn/defn forms that have non-seqable post-attrs.
 - Allow `(fn [e] (throw e))` in `lint/fn-wrapper`. (See [#56](https://github.com/NoahTheDuke/splint/issues/56).)
+- Keep nils when parsing forms for `--autocorrect`. (See [#58](https://github.com/NoahTheDuke/splint/issues/58).)
 
 ### Minutae
 

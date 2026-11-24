@@ -43,6 +43,19 @@
     (expect-match nil
       "(case elem (-> ->>) true false)"
       (single-rule-config rule-name)))
+  (describe "issue 57"
+    (it "ignores .methods"
+      (expect-match nil
+        "(. obj (max 5))"
+        (single-rule-config rule-name)))
+    (it "ignores .."
+      (expect-match nil
+        "(.. z/z (string) (min 1) (max 200))"
+        (single-rule-config rule-name)))
+    (it "ignores doto"
+      (expect-match nil
+        "(doto x (min 1))"
+        (single-rule-config rule-name))))
   (describe "autocorrect"
     (it "handles max in thread"
       (expect-match nil

@@ -11,8 +11,10 @@
 
 (defn check-parent [ctx]
   (when-let [parent-form (:parent-form ctx)]
-    (and (seq? parent-form)
-      (#{'case '-> '->> 'cond-> 'cond->> 'some-> 'some->>} (first parent-form)))))
+    (when-let [parent (first parent-form)]
+      (when (symbol? parent)
+        (#{"case" "->" "->>" "cond->" "cond->>" "some->" "some->>" "." ".." "doto"}
+          (name parent))))))
 
 (defrule lint/redundant-call
   "A number of core functions take any number of arguments and return the arg if given only one. These calls are effectively no-ops, redundant, so they should be avoided.

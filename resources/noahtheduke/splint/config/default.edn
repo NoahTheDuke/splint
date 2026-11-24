@@ -94,7 +94,7 @@
   :safe false
   :added "0.1"
   :updated "0.1"
-  :names-to-skip #{}
+  :names-to-skip #{throw}
   :guide-ref "#no-useless-anonymous-fns"}
 
  lint/identical-branches

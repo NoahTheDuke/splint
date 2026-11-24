@@ -42,7 +42,6 @@
                (let [config (:config rule)]
                  (when-not (or (and (symbol? ?fun)
                                     (contains? (:names-to-skip config) (symbol (name ?fun))))
-                               (interop? ?fun)
-                               (= 'throw ?fun))
+                               (interop? ?fun))
                    (->diagnostic ctx rule form {:replace-form ?fun
                                                 :message "No need to wrap function. Clojure supports first-class functions."}))))})
